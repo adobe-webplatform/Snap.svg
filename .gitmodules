@@ -1,3 +1,9 @@
+[submodule "test/mocha"]
+	path = test/mocha
+	url = https://github.com/visionmedia/mocha.git
 [submodule "eve"]
-    path = eve
-    url = git://github.com/adobe-webplatform/eve.git
+	path = eve
+	url = https://github.com/adobe-webplatform/eve.git
+[submodule "test/expect"]
+	path = test/expect
+	url = https://github.com/LearnBoost/expect.js.git
