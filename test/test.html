@@ -3,19 +3,25 @@
     <head>
         <meta charset="utf-8">
         <title>Savage Tests</title>
-        <link rel="stylesheet" href="mocha.css" />
-        <script src="../mywork/eve/eve.js"></script>
-        <script src="mina.js"></script>
-        <script src="elemental.js"></script>
-        <script src="svg.js"></script>
-        <script src="savage.set.js"></script>
+        <style media="screen">
+            svg {
+                position: absolute;
+                top: -999em;
+                left: -999em;
+            }
+        </style>
+        <link rel="stylesheet" href="mocha/mocha.css">
+        <script src="../eve/eve.js"></script>
+        <script src="../mina.js"></script>
+        <script src="../elemental.js"></script>
+        <script src="../svg.js"></script>
+        <script src="../savage.set.js"></script>
     </head>
     <body>
         <div id="mocha"></div>
-
-        <script src="expect.js"></script>
-        <script src="mocha.js"></script>
-        <script>mocha.setup('bdd');</script>
+        <script src="expect/expect.js"></script>
+        <script src="mocha/mocha.js"></script>
+        <script>mocha.setup("bdd");</script>
         <script>
         describe("System check", function () {
             it("Savage exists", function () {
@@ -159,6 +165,182 @@
                 expect(C).to.not.be(null);
                 expect(C.getAttribute("x")).to.be("10");
                 expect(C.textContent).to.be("test");
+            });
+        });
+        describe("Colours", function () {
+            it("parses hex colour", function () {
+                expect(Savage.color("#fC0").hex).to.be("#ffcc00");
+            });
+            it("parses RGB", function () {
+                var c = Savage.color("rgb(255, 204, 0)");
+                expect(c.hex).to.be("#ffcc00");
+                expect(c.r).to.be(255);
+                expect(c.g).to.be(204);
+                expect(c.b).to.be(0);
+            });
+            it("parses HSL", function () {
+                var c = Savage.color("hsl(0.1333, 1, .5)");
+                expect(c.hex).to.be("#ffcc00");
+                expect(c.h.toFixed(3)).to.be("0.133");
+                expect(c.s).to.be(1);
+                expect(c.l).to.be(.5);
+            });
+            it("parses HSB", function () {
+                var c = Savage.color("hsb(0.1333, 1, 1)");
+                expect(c.hex).to.be("#ffcc00");
+                expect(c.h.toFixed(3)).to.be("0.133");
+                expect(c.s).to.be(1);
+                expect(c.v).to.be(1);
+            });
+            it("parses RGBA", function () {
+                var c = Savage.color("rgba(255, 204, 0, .75)");
+                expect(c.hex).to.be("#ffcc00");
+                expect(c.r).to.be(255);
+                expect(c.g).to.be(204);
+                expect(c.b).to.be(0);
+                expect(c.opacity).to.be(.75);
+            });
+            it("parses HSLA", function () {
+                var c = Savage.color("hsla(0.1333, 1, .5, .5)");
+                expect(c.hex).to.be("#ffcc00");
+                expect(c.r).to.be(255);
+                expect(c.g).to.be(204);
+                expect(c.b).to.be(0);
+                expect(c.opacity).to.be(.5);
+            });
+            it("parses HSBA", function () {
+                var c = Savage.color("hsba(0.1333, 1, 1, .5)");
+                expect(c.hex).to.be("#ffcc00");
+                expect(c.r).to.be(255);
+                expect(c.g).to.be(204);
+                expect(c.b).to.be(0);
+                expect(c.opacity).to.be(.5);
+            });
+            it("parses names", function () {
+                var c = Savage.color("DodgerBlue");
+                expect(c.hex).to.be("#1e90ff");
+                c = Savage.color("FireBrick");
+                expect(c.hex).to.be("#b22222");
+                c = Savage.color("MintCream");
+                expect(c.hex).to.be("#f5fffa");
+            });
+        });
+        describe("Attributes", function () {
+            var s, r;
+            beforeEach(function () {
+                s = Savage(100, 100);
+                r = s.rect(10, 10, 50, 50);
+            });
+            afterEach(function () {
+                s.remove();
+            });
+            function colorTestProp(key) {
+                var o = {};
+                return function () {
+                    o[key] = "#fc0";
+                    r.attr(o);
+                    expect(r.node.getAttribute(key)).to.be("#ffcc00");
+                    o[key] = "rgb(255, 204, 0)";
+                    r.attr(o);
+                    expect(r.node.getAttribute(key)).to.be("#ffcc00");
+                    o[key] = "hsl(0.1333, 1, .5)";
+                    r.attr(o);
+                    expect(r.node.getAttribute(key)).to.be("#ffcc00");
+                    o[key] = "hsb(0.1333, 1, 1)";
+                    r.attr(o);
+                    expect(r.node.getAttribute(key)).to.be("#ffcc00");
+                    o[key] = "rgba(255, 204, 0, .5)";
+                    r.attr(o);
+                    expect(r.node.getAttribute(key)).to.be("rgba(255,204,0,0.5)");
+                    o[key] = "hsla(0.1333, 1, .5, .5)";
+                    r.attr(o);
+                    expect(r.node.getAttribute(key)).to.be("rgba(255,204,0,0.5)");
+                    o[key] = "hsba(0.1333, 1, 1, .5)";
+                    r.attr(o);
+                    expect(r.node.getAttribute(key)).to.be("rgba(255,204,0,0.5)");
+                };
+            }
+            function colorTestStyle(key) {
+                var o = {};
+                return function () {
+                    function val() {
+                        return Savage.color(r.node.style[key]).hex;
+                    }
+                    o[key] = "#fc0";
+                    r.attr(o);
+                    expect(val()).to.be("#ffcc00");
+                    o[key] = "rgb(255, 204, 0)";
+                    r.attr(o);
+                    expect(val()).to.be("#ffcc00");
+                    o[key] = "hsl(0.1333, 1, .5)";
+                    r.attr(o);
+                    expect(val()).to.be("#ffcc00");
+                    o[key] = "hsb(0.1333, 1, 1)";
+                    r.attr(o);
+                    expect(val()).to.be("#ffcc00");
+                    o[key] = "rgba(255, 204, 0, .5)";
+                    r.attr(o);
+                    expect(val()).to.be("#ffcc00");
+                    o[key] = "hsla(0.1333, 1, .5, .5)";
+                    r.attr(o);
+                    expect(val()).to.be("#ffcc00");
+                    o[key] = "hsba(0.1333, 1, 1, .5)";
+                    r.attr(o);
+                    expect(val()).to.be("#ffcc00");
+                };
+            }
+            it("sets fill", colorTestProp("fill"));
+            it("sets stroke", colorTestStyle("stroke"));
+            it("circle core attributes", function () {
+                var c = s.circle(10, 20, 30);
+                expect(c.node.getAttribute("cx")).to.be("10");
+                expect(c.node.getAttribute("cy")).to.be("20");
+                expect(c.node.getAttribute("r")).to.be("30");
+                c.attr({
+                    cx: 40,
+                    cy: 50,
+                    r: "5%"
+                });
+                expect(c.node.getAttribute("cx")).to.be("40");
+                expect(c.node.getAttribute("cy")).to.be("50");
+                expect(c.node.getAttribute("r")).to.be("5%");
+            });
+            it("rect core attributes", function () {
+                var c = s.rect(10, 20, 30, 40);
+                expect(c.node.getAttribute("x")).to.be("10");
+                expect(c.node.getAttribute("y")).to.be("20");
+                expect(c.node.getAttribute("width")).to.be("30");
+                expect(c.node.getAttribute("height")).to.be("40");
+                c.attr({
+                    x: 40,
+                    y: 50,
+                    width: "5%",
+                    height: "6%",
+                    r: 10
+                });
+                expect(c.node.getAttribute("x")).to.be("40");
+                expect(c.node.getAttribute("y")).to.be("50");
+                expect(c.node.getAttribute("width")).to.be("5%");
+                expect(c.node.getAttribute("height")).to.be("6%");
+                expect(c.node.getAttribute("rx")).to.be("10");
+                expect(c.node.getAttribute("ry")).to.be("10");
+            });
+            it("ellipse core attributes", function () {
+                var c = s.ellipse(10, 20, 30, 40);
+                expect(c.node.getAttribute("cx")).to.be("10");
+                expect(c.node.getAttribute("cy")).to.be("20");
+                expect(c.node.getAttribute("rx")).to.be("30");
+                expect(c.node.getAttribute("ry")).to.be("40");
+                c.attr({
+                    cx: 40,
+                    cy: 50,
+                    rx: "5%",
+                    ry: "6%"
+                });
+                expect(c.node.getAttribute("cx")).to.be("40");
+                expect(c.node.getAttribute("cy")).to.be("50");
+                expect(c.node.getAttribute("rx")).to.be("5%");
+                expect(c.node.getAttribute("ry")).to.be("6%");
             });
         });
         </script>

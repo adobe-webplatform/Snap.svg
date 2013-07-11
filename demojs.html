@@ -3,6 +3,11 @@
     <head>
         <meta charset="utf-8">
         <title>Savage</title>
+        <style media="screen">
+        body {
+            background: #030 url("bg.png");
+        }
+        </style>
         <script src="eve/eve.js"></script>
         <script src="mina.js"></script>
         <script src="elemental.js"></script>
@@ -25,31 +30,31 @@
         </script>
         <script>
         window.onload = function () {
-            // // 1
+            // 1
             var s = Savage("100%", 600);
-            // // 2
+            // 2
             var c = s.circle(100, 100, 50);
-            // // 3
+            // 3
             c.attr({
                 fill: "#bada55",
                 stroke: "#000",
                 "stroke-width": 5
             });
-            // // 4
+            // 4
             var c2 = s.circle(70, 100, 40);
-            var g = s.g(c2, s.circle(130, 100, 40));
+            var g = s.group(c2, s.circle(130, 100, 40));
             g.attr({
                 fill: "#fff"
             });
-            // // 5
+            // 5
             c.attr({
                 mask: g
             });
-            // // 6
+            // 6
             c2.animate({r: 25}, 1000);
-            // // 7
+            // 7
             g.select("circle:nth-child(2)").animate({r: 25}, 1000);
-            // // 8
+            // 8
             var p = s.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
                     fill: "none",
                     stroke: "#bada55",
@@ -58,26 +63,33 @@
             c.attr({
                 fill: p
             });
-            // // 9
+            // 9
             g.attr({
                 fill: Savage(document.getElementById("pattern"))
             });
-            // // 10
+            // 10
+            g.attr({fill: "r()#fff-#000"});
+            // 11
+            g.attr({fill: "R(100, 100, 50)#fff-#000"});
+            // 12
             var svg = document.getElementById("svg").text;
             var f = Savage.fragment(svg);
             f.select("path[fill='#D40000']").attr({fill: "#bada55"});
-            g = s.g(f.selectAll("path"));
+            g = s.group(f.selectAll("path"));
             s.append(g);
-            // // 11
+            // 13
             g.attr({
                 transform: "r45t100,0s.5"
             });
-            console.log(g.attr("transform"));
-            // // 12
+            // console.log(g.attr("transform"));
+            // 14
             s.text(200, 100, "SAVAGE");
-            // // 13
-            var t = s.text(200, 120, ["S","A","V","A","G","E"]);
-            t.selectAll("tspan tspan:nth-child(odd)").attr({fill: "red"});
+            // 15
+            var t = s.text(200, 120, "SAVAGE".split(""));
+            t.selectAll("tspan tspan:nth-child(odd)").attr({
+                fill: "#900",
+                "font-size": "20px"
+            });
         };
         </script>
     </head>

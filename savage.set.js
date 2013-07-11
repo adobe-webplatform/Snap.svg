@@ -1,7 +1,6 @@
-(function () {
+Savage.plugin(function (Savage, Element, Paper, glob) {
     var mmax = Math.max,
-        mmin = Math.min,
-        g = eve("savage.globals")[0];
+        mmin = Math.min;
 
     // Set
     var Set = function (items) {
@@ -71,9 +70,9 @@
         }
         return this;
     };
-    setproto.attr = function (name, value) {
+    setproto.attr = function (value) {
         for (var i = 0, ii = this.items.length; i < ii; i++) {
-            this.items[i].attr(name, value);
+            this.items[i].attr(value);
         }
         return this;
     };
@@ -190,11 +189,11 @@
     };
     setproto.type = "set";
     // export
-    g.savage.set = function () {
+    Savage.set = function () {
         var set = new Set;
         if (arguments.length) {
             set.push.apply(set, Array.prototype.slice.call(arguments, 0));
         }
         return set;
     };
-})();
+});

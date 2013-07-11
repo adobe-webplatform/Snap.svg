@@ -11,6 +11,8 @@ var Savage = function (w, h) {
             return new Element(glob.doc.querySelector(w));
         }
     }
+    w = w == null ? "100%" : w;
+    h = h == null ? "100%" : h;
     return new Paper(w, h);
 };
 var glob = {
@@ -38,13 +40,12 @@ var has = "hasOwnProperty",
     spaces = "\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029",
     separator = new RegExp("[," + spaces + "]+"),
     whitespace = new RegExp("[" + spaces + "]", "g"),
-    commaSpaces = new RegExp("[" + spaces + "]*,[" + spaces + "*]"),
+    commaSpaces = new RegExp("[" + spaces + "]*,[" + spaces + "]*"),
     hsrg = {hs: 1, rg: 1},
     p2s = /,?([a-z]),?/gi,
     pathCommand = new RegExp("([a-z])[" + spaces + ",]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[" + spaces + "]*,?[" + spaces + "]*)+)", "ig"),
     tCommand = new RegExp("([rstm])[" + spaces + ",]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[" + spaces + "]*,?[" + spaces + "]*)+)", "ig"),
     pathValues = new RegExp("(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[" + spaces + "]*,?[" + spaces + "]*", "ig"),
-    radial_gradient = new RegExp("^r(?:\\(([^,]+?)[" + spaces + "]*,[" + spaces + "]*([^\\)]+?)\\))?"),
     idgen = 0,
     idprefix = "S" + (+new Date).toString(36),
     ID = function () {
@@ -109,6 +110,24 @@ function is(o, type) {
             (type == "array" && Array.isArray && Array.isArray(o)) ||
             objectToString.call(o).slice(8, -1).toLowerCase() == type;
 }
+var preload = (function () {
+    function onerror() {
+        this.parentNode.removeChild(this);
+    }
+    return function (src, f) {
+        var img = glob.doc.createElement("img"),
+            body = glob.doc.body;
+        img.style.cssText = "position:absolute;left:-9999em;top:-9999em";
+        img.onload = function () {
+            f.call(img);
+            img.onload = img.onerror = null;
+            body.removeChild(img);
+        };
+        img.onerror = onerror;
+        body.appendChild(img);
+        img.src = src;
+    };
+}());
 function clone(obj) {
     if (typeof obj == "function" || Object(obj) !== obj) {
         return obj;
@@ -425,7 +444,7 @@ Savage.Matrix = Matrix;
  #     <li>Colour name (“<code>red</code>”, “<code>green</code>”, “<code>cornflowerblue</code>”, etc)</li>
  #     <li>#••• — shortened HTML colour: (“<code>#000</code>”, “<code>#fc0</code>”, etc)</li>
  #     <li>#•••••• — full length HTML colour: (“<code>#000000</code>”, “<code>#bd2300</code>”)</li>
- #     <li>rgb(•••, •••, •••) — red, green and blue channels’ values: (“<code>rgb(200,&nbsp;100,&nbsp;0)</code>”)</li>
+ #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (“<code>rgb(200,&nbsp;100,&nbsp;0)</code>”)</li>
  #     <li>rgb(•••%, •••%, •••%) — same as above, but in %: (“<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>”)</li>
  #     <li>hsb(•••, •••, •••) — hue, saturation and brightness values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;1)</code>”)</li>
  #     <li>hsb(•••%, •••%, •••%) — same as above, but in %</li>
@@ -438,7 +457,7 @@ Savage.Matrix = Matrix;
  o     g (number) green,
  o     b (number) blue
  o     hex (string) color in HTML/CSS format: #••••••,
- o     error (boolean) true if string can’t be parsed
+ o     error (boolean) true if string cant be parsed
  o }
 \*/
 Savage.getRGB = cacher(function (colour) {
@@ -571,7 +590,9 @@ hsltoString = function () {
     return "hsl(" + [this.h, this.s, this.l] + ")";
 },
 rgbtoString = function () {
-    return this.hex;
+    return this.opacity == 1 || this.opacity == null ?
+            this.hex :
+            "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
 },
 prepareRGB = function (r, g, b) {
     if (g == null && is(r, "object") && "r" in r && "g" in r && "b" in r) {
@@ -594,9 +615,9 @@ prepareRGB = function (r, g, b) {
     return [r, g, b];
 },
 packageRGB = function (r, g, b, o) {
-    r *= 255;
-    g *= 255;
-    b *= 255;
+    r = math.round(r * 255);
+    g = math.round(g * 255);
+    b = math.round(b * 255);
     var rgb = {
         r: r,
         g: g,
@@ -621,7 +642,7 @@ packageRGB = function (r, g, b, o) {
  o     g (number) green,
  o     b (number) blue,
  o     hex (string) color in HTML/CSS format: #••••••,
- o     error (boolean) `true` if string can’t be parsed,
+ o     error (boolean) `true` if string cant be parsed,
  o     h (number) hue,
  o     s (number) saturation,
  o     v (number) value (brightness),
@@ -1696,11 +1717,20 @@ function Element(el) {
     el.savage = id;
     hub[id] = this;
 }
+function arrayFirstValue(arr) {
+    var res;
+    for (var i = 0, ii = arr.length; i < ii; i++) {
+        res = res || arr[i];
+        if (res) {
+            return res;
+        }
+    }
+}
 (function (elproto) {
     elproto.attr = function (params) {
         var node = this.node;
         if (is(params, "string")) {
-            return eve("savage.util.getattr." + params, this)[0];
+            return arrayFirstValue(eve("savage.util.getattr." + params, this));
         }
         for (var att in params) {
             if (params[has](att)) {
@@ -1883,6 +1913,31 @@ function Element(el) {
         p.node.appendChild(this.node);
         return p;
     };
+    elproto.marker = function (x, y, width, height, refX, refY) {
+        var p = make("marker", this.paper.defs);
+        if (x == null) {
+            x = this.getBBox();
+        }
+        if (x && "x" in x) {
+            y = x.y;
+            width = x.width;
+            height = x.height;
+            refX = x.refX;
+            refY = x.refY;
+            x = x.x;
+        }
+        $(p.node, {
+            viewBox: [x, y, width, height].join(S),
+            markerWidth: width,
+            markerHeight: height,
+            orient: "auto",
+            refX: refX || 0,
+            refY: refY || 0,
+            id: p.id
+        });
+        p.node.appendChild(this.node);
+        return p;
+    };
     // animation
     function applyAttr(el, key) {
         var at = {};
@@ -2026,6 +2081,38 @@ function wrap(dom) {
         }
         return el;
     };
+    proto.image = function (src, x, y, width, height) {
+        var el = make("image", this.node);
+        if (is(src, "object") && "src" in src) {
+            el.attr(src);
+        } else if (src != null) {
+            var set = {
+                "xlink:href": src,
+                preserveAspectRatio: "none"
+            };
+            if (x != null && y != null) {
+                set.x = x;
+                set.y = y;
+            }
+            if (width != null && height != null) {
+                set.width = width;
+                set.height = height;
+            } else {
+                preload(src, function () {
+                    $(el.node, {
+                        width: this.offsetWidth,
+                        height: this.offsetHeight
+                    });
+                });
+            }
+            $(el.node, set);
+        }
+        return el;
+    };
+    proto.custom = function (name) {
+        var el = make(name, this.node);
+        return el;
+    };
     proto.ellipse = function (cx, cy, rx, ry) {
         var el = make("ellipse", this.node);
         if (is(cx, "object") && "cx" in cx) {
@@ -2139,7 +2226,7 @@ function wrap(dom) {
     // gradients
     (function () {
         proto.gradient = function (str) {
-            var grad = eve("savage.util.grad.parse", null, str)[0],
+            var grad = arrayFirstValue(eve("savage.util.grad.parse", null, str)),
                 el;
             if (grad.type.toLowerCase() == "l") {
                 el = this.gradientLinear.apply(this, grad.params);
@@ -2147,7 +2234,7 @@ function wrap(dom) {
                 el = this.gradientRadial.apply(this, grad.params);
             }
             if (grad.type != grad.type.toLowerCase()) {
-                el.attr({
+                $(el.node, {
                     gradientUnits: "userSpaceOnUse"
                 });
             }
@@ -2195,9 +2282,9 @@ function wrap(dom) {
                     y2 = $(this.node, "y2") || 0;
                 return box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
             } else {
-                var cx = this.node.cx,
-                    cy = this.node.cy,
-                    r = this.node.r;
+                var cx = this.node.cx || .5,
+                    cy = this.node.cy || .5,
+                    r = this.node.r || 0;
                 return box(cx - r, cy - r, r * 2, r * 2);
             }
         }
@@ -2212,6 +2299,26 @@ function wrap(dom) {
                     y1: y1,
                     x2: x2,
                     y2: y2
+                });
+            }
+            return el;
+        };
+        proto.gradientRadial = function (cx, cy, r, fx, fy) {
+            var el = make("radialGradient", this.node);
+            el.stops = stops;
+            el.addStop = addStop;
+            el.getBBox = getBBox;
+            if (cx != null) {
+                $(el.node, {
+                    cx: cx,
+                    cy: cy,
+                    r: r
+                });
+            }
+            if (fx != null && fy != null) {
+                $(el.node, {
+                    fx: fx,
+                    fy: fy
                 });
             }
             return el;
@@ -2351,6 +2458,15 @@ eve.on("savage.util.attr.transform", function (value) {
     this.transform(value);
     eve.stop();
 });
+eve.on("savage.util.attr.r", function (value) {
+    if (this.type == "rect") {
+        eve.stop();
+        $(this.node, {
+            rx: value,
+            ry: value
+        });
+    }
+});
 eve.on("savage.util.attr.text", function (value) {
     if (this.type == "text") {
         var i = 0,
@@ -2376,15 +2492,24 @@ eve.on("savage.util.attr.text", function (value) {
 });
 // default
 var availableAttributes = {
-    rect: {x: 0, y: 0, width: 0, height: 0, rx: 0, ry: 0},
-    circle: {cx: 0, cy: 0, r: 0},
-    ellipse: {cx: 0, cy: 0, rx: 0, ry: 0},
-    line: {x1: 0, y1: 0, x2: 0, y2: 0},
-    polyline: {points: ""},
-    polygon: {points: ""},
-    text: {x: 0, y: 0, dx: 0, dy: 0, rotate: 0, textLength: 0},
-    tspan: {x: 0, y: 0, dx: 0, dy: 0, rotate: 0, textLength: 0},
-    path: {d: ""}
+    rect: {x: 0, y: 0, width: 0, height: 0, rx: 0, ry: 0, "class": 0},
+    circle: {cx: 0, cy: 0, r: 0, "class": 0},
+    ellipse: {cx: 0, cy: 0, rx: 0, ry: 0, "class": 0},
+    line: {x1: 0, y1: 0, x2: 0, y2: 0, "class": 0},
+    polyline: {points: "", "class": 0},
+    polygon: {points: "", "class": 0},
+    text: {x: 0, y: 0, dx: 0, dy: 0, rotate: 0, textLength: 0, lengthAdjust: 0, "class": 0},
+    tspan: {x: 0, y: 0, dx: 0, dy: 0, rotate: 0, textLength: 0, lengthAdjust: 0, "class": 0},
+    textPath: {"xlink:href": 0, startOffset: 0, method: 0, spacing: 0, "class": 0},
+    marker: {viewBox: 0, preserveAspectRatio: 0, refX: 0, refY: 0, markerUnits: 0, markerWidth: 0, markerHeight: 0, orient: 0, "class": 0},
+    linearGradient: {x1: 0, y1: 0, x2: 0, y2: 0, gradientUnits: 0, gradientTransform: 0, spreadMethod: 0, "xlink:href": 0, "class": 0},
+    radialGradient: {cx: 0, cy: 0, r: 0, fx: 0, fy: 0, gradientUnits: 0, gradientTransform: 0, spreadMethod: 0, "xlink:href": 0, "class": 0},
+    stop: {offset: 0, "class": 0},
+    pattern: {viewBox: 0, preserveAspectRatio: 0, x: 0, y: 0, width: 0, height: 0, patternUnits: 0, patternContentUnits: 0, patternTransform: 0, "xlink:href": 0, "class": 0},
+    clipPath: {transform: 0, clipPathUnits: 0, "class": 0},
+    mask: {x: 0, y: 0, width: 0, height: 0, maskUnits: 0, maskContentUnits: 0, "class": 0},
+    image: {preserveAspectRatio: 0, transform: 0, x: 0, y: 0, width: 0, height: 0, "xlink:href": 0, "class": 0},
+    path: {d: "", "class": 0}
 };
 eve.on("savage.util.attr", function (value) {
     var att = eve.nt();
@@ -2402,6 +2527,12 @@ eve.on("savage.util.attr", function (value) {
 eve.on("savage.util.getattr.transform", function () {
     eve.stop();
     return this.transform();
+})(-1);
+eve.on("savage.util.getattr.r", function () {
+    if (this.type == "rect" && $(this.node, "rx") == $(this.node, "ry")) {
+        eve.stop();
+        return $(this.node, "rx");
+    }
 })(-1);
 eve.on("savage.util.getattr.viewBox", function () {
     eve.stop();
@@ -2424,16 +2555,11 @@ eve.on("savage.util.getattr", function () {
     if (availableAttributes[has](this.type) && availableAttributes[this.type][has](att)) {
         return this.node.getAttribute(att);
     } else {
-        return document.defaultView.getComputedStyle(this.node, null).getPropertyValue(style);
+        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(style);
     }
 });
-eve.on("savage.globals", function () {
-    return {
-        savage: Savage,
-        element: Element,
-        paper: Paper,
-        glob: glob
-    };
-});
+Savage.plugin = function (f) {
+    f(Savage, Element, Paper, glob);
+};
 return Savage;
 }());
