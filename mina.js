@@ -21,7 +21,18 @@ window.mina = (function () {
                        function (callback) {
                            setTimeout(callback, 16);
                        },
+    isArray = Array.isArray || function (a) {
+        return a instanceof Array ||
+            Object.prototype.toString.call(a) == "[object Array]";
+    },
     diff = function (a, b, A, B) {
+        if (isArray(a)) {
+            res = [];
+            for (var i = 0, ii = a.length; i < ii; i++) {
+                res[i] = diff(a[i], b, A[i], B);
+            }
+            return res;
+        }
         var dif = (A - a) / (B - b);
         return function (bb) {
             return a + dif * (bb - b);
@@ -31,12 +42,24 @@ window.mina = (function () {
         return +new Date;
     },
     frame = function () {
+        var value, one;
         for (var i = 0; i < animations.length; i++) {
             var a = animations[i],
-                gen = a.b + (a.gen() - a.b) * a["*"] + a["+"],
-                value = a.dif(gen),
+                gen = a.b + (a.gen() - a.b) * a["*"] + a["+"];
+            if (isArray(a.a)) {
+                value = [];
+                for (var j = 0, jj = a.a.length; j < jj; j++) {
+                    value[j] = a.dif[j](gen);
+                    one = a.A[j] - a.a[j];
+                    value[j] = one ?
+                        a.a[j] + a.easing((value[j] - a.a[j]) / one) * one :
+                        a.a[j];
+                }
+            } else {
+                value = a.dif(gen);
                 one = a.A - a.a;
-            value = a.a + a.easing((value - a.a) / one) * one;
+                value = a.a + a.easing((value - a.a) / one) * one;
+            }
             try {
                 if (a.stopper(gen)) {
                     if (--a.iterations) {

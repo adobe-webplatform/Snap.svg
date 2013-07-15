@@ -37,6 +37,7 @@ var has = "hasOwnProperty",
     colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?)%?\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?)%?\s*\))\s*$/i,
     isnan = {"NaN": 1, "Infinity": 1, "-Infinity": 1},
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
+    reURLValue = /^url\(#?([^)]+)\)$/,
     spaces = "\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029",
     separator = new RegExp("[," + spaces + "]+"),
     whitespace = new RegExp("[" + spaces + "]", "g"),
@@ -860,15 +861,105 @@ function box(x, y, width, height) {
     };
 }
 // Transformations
-function path2string() {
+var path2string = Savage.path2string = function () {
     return this.join(",").replace(p2s, "$1");
-}
+};
 function pathClone(pathArray) {
     var res = clone(pathArray);
     res.toString = path2string;
     return res;
 }
-function parseTransformString(TString) {
+
+// http://schepers.cc/getting-to-the-point
+function catmullRom2bezier(crp, z) {
+    var d = [];
+    for (var i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
+        var p = [
+                    {x: +crp[i - 2], y: +crp[i - 1]},
+                    {x: +crp[i],     y: +crp[i + 1]},
+                    {x: +crp[i + 2], y: +crp[i + 3]},
+                    {x: +crp[i + 4], y: +crp[i + 5]}
+                ];
+        if (z) {
+            if (!i) {
+                p[0] = {x: +crp[iLen - 2], y: +crp[iLen - 1]};
+            } else if (iLen - 4 == i) {
+                p[3] = {x: +crp[0], y: +crp[1]};
+            } else if (iLen - 2 == i) {
+                p[2] = {x: +crp[0], y: +crp[1]};
+                p[3] = {x: +crp[2], y: +crp[3]};
+            }
+        } else {
+            if (iLen - 4 == i) {
+                p[3] = p[2];
+            } else if (!i) {
+                p[0] = {x: +crp[i], y: +crp[i + 1]};
+            }
+        }
+        d.push(["C",
+              (-p[0].x + 6 * p[1].x + p[2].x) / 6,
+              (-p[0].y + 6 * p[1].y + p[2].y) / 6,
+              (p[1].x + 6 * p[2].x - p[3].x) / 6,
+              (p[1].y + 6*p[2].y - p[3].y) / 6,
+              p[2].x,
+              p[2].y
+        ]);
+    }
+
+    return d;
+}
+/*\
+ * Savage.parsePathString
+ [ method ]
+ **
+ * Utility method
+ **
+ * Parses given path string into an array of arrays of path segments.
+ > Parameters
+ - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
+ = (array) array of segments.
+\*/
+Savage.parsePathString = function (pathString) {
+    if (!pathString) {
+        return null;
+    }
+    var pth = paths(pathString);
+    if (pth.arr) {
+        return pathClone(pth.arr);
+    }
+    
+    var paramCounts = {a: 7, c: 6, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, z: 0},
+        data = [];
+    if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
+        data = pathClone(pathString);
+    }
+    if (!data.length) {
+        Str(pathString).replace(pathCommand, function (a, b, c) {
+            var params = [],
+                name = b.toLowerCase();
+            c.replace(pathValues, function (a, b) {
+                b && params.push(+b);
+            });
+            if (name == "m" && params.length > 2) {
+                data.push([b].concat(params.splice(0, 2)));
+                name = "l";
+                b = b == "m" ? "l" : "L";
+            }
+            if (name == "r") {
+                data.push([b].concat(params));
+            } else while (params.length >= paramCounts[name]) {
+                data.push([b].concat(params.splice(0, paramCounts[name])));
+                if (!paramCounts[name]) {
+                    break;
+                }
+            }
+        });
+    }
+    data.toString = path2string;
+    pth.arr = pathClone(data);
+    return data;
+};
+var parseTransformString = Savage.parseTransformString = function (TString) {
     if (!TString) {
         return null;
     }
@@ -889,7 +980,7 @@ function parseTransformString(TString) {
     }
     data.toString = path2string;
     return data;
-}
+};
 function svgTransform2string(tstr) {
     var res = [];
     tstr = tstr.replace(/(?:^|\s)(\w+)\(([^)]+)\)/g, function (all, name, params) {
@@ -1086,7 +1177,7 @@ function ellipsePath(x, y, rx, ry, a) {
     res.toString = path2string;
     return res;
 }
-function unit2px(el) {
+function unit2px(el, name, value) {
     var defs = el.paper.defs,
         out = {},
         mgr = el.paper.measurer;
@@ -1115,28 +1206,57 @@ function unit2px(el) {
         $(mgr, {height: val});
         return mgr.getBBox().height;
     }
+    function set(nam, f) {
+        if (name == null) {
+            out[nam] = f(el.attr(nam));
+        } else if (nam == name) {
+            out = f(value == null ? el.attr(nam) : value);
+        }
+    }
     switch (el.type) {
         case "rect":
-            out.rx = getW(el.attr("rx"));
-            out.ry = getH(el.attr("ry"));
+            set("rx", getW);
+            set("ry", getH);
         case "image":
-            out.width = getW(el.attr("width"));
-            out.height = getH(el.attr("height"));
+            set("width", getW);
+            set("height", getH);
         case "text":
-            out.x = getW(el.attr("x"));
-            out.y = getH(el.attr("y"));
+            set("x", getW);
+            set("y", getH);
         break;
         case "circle":
-            out.cx = getW(el.attr("cx"));
-            out.cy = getH(el.attr("cy"));
-            out.r = getW(el.attr("r"));
+            set("cx", getW);
+            set("cy", getH);
+            set("r", getW);
         break;
         case "ellipse":
-            out.cx = getW(el.attr("cx"));
-            out.cy = getH(el.attr("cy"));
-            out.rx = getW(el.attr("rx"));
-            out.ry = getH(el.attr("ry"));
+            set("cx", getW);
+            set("cy", getH);
+            set("rx", getW);
+            set("ry", getH);
         break;
+        case "line":
+            set("x1", getW);
+            set("x2", getW);
+            set("y1", getH);
+            set("y2", getH);
+        break;
+        case "marker":
+            set("refX", getW);
+            set("markerWidth", getW);
+            set("refY", getH);
+            set("markerHeight", getH);
+        break;
+        case "radialGradient":
+            set("fx", getW);
+            set("fy", getH);
+        break;
+        case "tspan":
+            set("dx", getW);
+            set("dy", getH);
+        break;
+        default:
+            out = null;
     }
     return out;
 }
@@ -1223,7 +1343,7 @@ var pathDimensions = function (path) {
             return pathClone(pth.rel);
         }
         if (!is(pathArray, array) || !is(pathArray && pathArray[0], array)) { // rough assumption
-            pathArray = parsePathString(pathArray);
+            pathArray = Savage.parsePathString(pathArray);
         }
         var res = [],
             x = 0,
@@ -1302,7 +1422,7 @@ var pathDimensions = function (path) {
             return pathClone(pth.abs);
         }
         if (!is(pathArray, "array") || !is(pathArray && pathArray[0], "array")) { // rough assumption
-            pathArray = parsePathString(pathArray);
+            pathArray = Savage.parsePathString(pathArray);
         }
         if (!pathArray || !pathArray.length) {
             return [["M", 0, 0]];
@@ -1565,7 +1685,7 @@ var pathDimensions = function (path) {
             max: {x: mmax.apply(0, x), y: mmax.apply(0, y)}
         };
     }),
-    path2curve = cacher(function (path, path2) {
+    path2curve = Savage.path2curve = cacher(function (path, path2) {
         var pth = !path2 && paths(path);
         if (!path2 && pth.curve) {
             return pathClone(pth.curve);
@@ -1764,17 +1884,9 @@ function arrayFirstValue(arr) {
         }
         return box(_.bbox);
     };
-    function prop(name) {
-        return function () {
-            return this[name];
-        };
-    }
-    function always(x) {
-        return function () {
-            return x;
-        };
-    }
-    var propString = prop("string");
+    var propString = function () {
+        return this.local;
+    };
     elproto.transform = function (tstr) {
         var _ = this._;
         if (tstr == null) {
@@ -1864,6 +1976,9 @@ function arrayFirstValue(arr) {
         }
         return set;
     };
+    elproto.asPX = function (attr, value) {
+        return unit2px(this, attr, value);
+    };
     elproto.use = function () {
         var use,
             id = this.node.id;
@@ -1939,17 +2054,22 @@ function arrayFirstValue(arr) {
         return p;
     };
     // animation
-    function applyAttr(el, key) {
+    function applyAttr(el, key, f) {
         var at = {};
         return function (value) {
-            at[key] = value;
+            at[key] = f ? f(value) : value;
             el.attr(at);
         };
     }
     elproto.animate = function (attrs, ms, callback) {
-        var anims = [];
+        var anims = [], eq;
         for (var key in attrs) if (attrs[has](key)) {
-            anims.push(mina(+this.attr(key), +attrs[key], ms, applyAttr(this, key)));
+            if (this.equal) {
+                eq = this.equal(key, Str(attrs[key]));
+                anims.push(mina(eq.from, eq.to, ms, applyAttr(this, key, eq.f)));
+            } else {
+                anims.push(mina(+this.attr(key), +attrs[key], ms, applyAttr(this, key)));
+            }
         }
     };
 }(Element.prototype));
@@ -2436,6 +2556,17 @@ eve.on("savage.util.grad.parse", function parseGrad(string) {
     };
 });
 
+eve.on("savage.util.attr.d", function (value) {
+    if (is(value, "array") && is(value[0], "array")) {
+        value = path2string.call(value);
+    }
+    value = Str(value);
+    if (value.match(/[ruo]/i)) {
+        value = pathToAbsolute(value);
+    }
+    $(this.node, {d: value});
+    eve.stop();
+});
 eve.on("savage.util.attr.path", function (value) {
     this.attr({d: value});
     eve.stop();
@@ -2528,6 +2659,50 @@ eve.on("savage.util.getattr.transform", function () {
     eve.stop();
     return this.transform();
 })(-1);
+// Markers
+(function () {
+    function getter(end) {
+        return function () {
+            eve.stop();
+            var style = glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue("marker-" + end);
+            if (style == "none") {
+                return style;
+            } else {
+                return Savage(glob.doc.getElementById(style.match(reURLValue)[1]));
+            }
+        };
+    }
+    function setter(end) {
+        return function (value) {
+            eve.stop();
+            var name = "marker" + end.charAt(0).toUpperCase() + end.substring(1);
+            if (value == "" || !value) {
+                this.node.style[name] = "none";
+                return;
+            }
+            if (value.type == "marker") {
+                var id = value.node.id;
+                if (!id) {
+                    $(value.node, {id: value.id});
+                }
+                this.node.style[name] = "url(#" + id + ")";
+                return;
+            }
+        };
+    }
+    eve.on("savage.util.getattr.marker-end", getter("end"))(-1);
+    eve.on("savage.util.getattr.markerEnd", getter("end"))(-1);
+    eve.on("savage.util.getattr.marker-start", getter("start"))(-1);
+    eve.on("savage.util.getattr.markerStart", getter("start"))(-1);
+    eve.on("savage.util.getattr.marker-mid", getter("mid"))(-1);
+    eve.on("savage.util.getattr.markerMid", getter("mid"))(-1);
+    eve.on("savage.util.attr.marker-end", setter("end"))(-1);
+    eve.on("savage.util.attr.markerEnd", setter("end"))(-1);
+    eve.on("savage.util.attr.marker-start", setter("start"))(-1);
+    eve.on("savage.util.attr.markerStart", setter("start"))(-1);
+    eve.on("savage.util.attr.marker-mid", setter("mid"))(-1);
+    eve.on("savage.util.attr.markerMid", setter("mid"))(-1);
+}());
 eve.on("savage.util.getattr.r", function () {
     if (this.type == "rect" && $(this.node, "rx") == $(this.node, "ry")) {
         eve.stop();
