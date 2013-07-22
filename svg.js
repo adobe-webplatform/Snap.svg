@@ -908,57 +908,60 @@ function catmullRom2bezier(crp, z) {
 
     return d;
 }
-/*\
- * Savage.parsePathString
- [ method ]
- **
- * Utility method
- **
- * Parses given path string into an array of arrays of path segments.
- > Parameters
- - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
- = (array) array of segments.
-\*/
-Savage.parsePathString = function (pathString) {
-    if (!pathString) {
-        return null;
-    }
-    var pth = paths(pathString);
-    if (pth.arr) {
-        return pathClone(pth.arr);
-    }
-    
-    var paramCounts = {a: 7, c: 6, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, z: 0},
-        data = [];
-    if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
-        data = pathClone(pathString);
-    }
-    if (!data.length) {
-        Str(pathString).replace(pathCommand, function (a, b, c) {
-            var params = [],
-                name = b.toLowerCase();
-            c.replace(pathValues, function (a, b) {
-                b && params.push(+b);
-            });
-            if (name == "m" && params.length > 2) {
-                data.push([b].concat(params.splice(0, 2)));
-                name = "l";
-                b = b == "m" ? "l" : "L";
-            }
-            if (name == "r") {
-                data.push([b].concat(params));
-            } else while (params.length >= paramCounts[name]) {
-                data.push([b].concat(params.splice(0, paramCounts[name])));
-                if (!paramCounts[name]) {
-                    break;
+    /*\
+     * Savage.parsePathString
+     [ method ]
+     **
+     * Utility method
+     **
+     * Parses given path string into an array of arrays of path segments.
+     > Parameters
+     - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
+     = (array) array of segments.
+    \*/
+    Savage.parsePathString = function (pathString) {
+        if (!pathString) {
+            return null;
+        }
+        var pth = paths(pathString);
+        if (pth.arr) {
+            return pathClone(pth.arr);
+        }
+        
+        var paramCounts = {a: 7, c: 6, o: 2, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, u: 3, z: 0},
+            data = [];
+        if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
+            data = pathClone(pathString);
+        }
+        if (!data.length) {
+            Str(pathString).replace(pathCommand, function (a, b, c) {
+                var params = [],
+                    name = b.toLowerCase();
+                c.replace(pathValues, function (a, b) {
+                    b && params.push(+b);
+                });
+                if (name == "m" && params.length > 2) {
+                    data.push([b].concat(params.splice(0, 2)));
+                    name = "l";
+                    b = b == "m" ? "l" : "L";
                 }
-            }
-        });
-    }
-    data.toString = path2string;
-    pth.arr = pathClone(data);
-    return data;
-};
+                if (name == "o" && params.length == 1) {
+                    data.push([b, params[0]]);
+                }
+                if (name == "r") {
+                    data.push([b].concat(params));
+                } else while (params.length >= paramCounts[name]) {
+                    data.push([b].concat(params.splice(0, paramCounts[name])));
+                    if (!paramCounts[name]) {
+                        break;
+                    }
+                }
+            });
+        }
+        data.toString = path2string;
+        pth.arr = pathClone(data);
+        return data;
+    };
 var parseTransformString = Savage.parseTransformString = function (TString) {
     if (!TString) {
         return null;
@@ -1433,7 +1436,7 @@ var pathDimensions = function (path) {
             mx = 0,
             my = 0,
             start = 0,
-			pa0;
+            pa0;
         if (pathArray[0][0] == "M") {
             x = +pathArray[0][1];
             y = +pathArray[0][2];
@@ -1442,11 +1445,14 @@ var pathDimensions = function (path) {
             start++;
             res[0] = ["M", x, y];
         }
-        var crz = pathArray.length == 3 && pathArray[0][0] == "M" && pathArray[1][0].toUpperCase() == "R" && pathArray[2][0].toUpperCase() == "Z";
+        var crz = pathArray.length == 3 &&
+            pathArray[0][0] == "M" &&
+            pathArray[1][0].toUpperCase() == "R" &&
+            pathArray[2][0].toUpperCase() == "Z";
         for (var r, pa, i = start, ii = pathArray.length; i < ii; i++) {
             res.push(r = []);
             pa = pathArray[i];
-			pa0 = pa[0];
+            pa0 = pa[0];
             if (pa0 != pa0.toUpperCase()) {
                 r[0] = pa0.toUpperCase();
                 switch (r[0]) {
@@ -1474,14 +1480,17 @@ var pathDimensions = function (path) {
                         res.pop();
                         res = res.concat(catmullRom2bezier(dots, crz));
                         break;
-					case "O":
-						res.pop();
-						res = res.concat(ellipsePath(x, y, pa[1], pa[2]));
-						break;
-					case "U":
-						res.pop();
-						res = res.concat(ellipsePath(x, y, pa[1], pa[2], pa[3]));
-						break;
+                    case "O":
+                        res.pop();
+                        dots = ellipsePath(x, y, pa[1], pa[2]);
+                        dots.push(dots[0]);
+                        res = res.concat(dots);
+                        break;
+                    case "U":
+                        res.pop();
+                        res = res.concat(ellipsePath(x, y, pa[1], pa[2], pa[3]));
+                        r = ["U"].concat(res[res.length - 1].slice(-2));
+                        break;
                     case "M":
                         mx = +pa[1] + x;
                         my = +pa[2] + y;
@@ -1495,18 +1504,22 @@ var pathDimensions = function (path) {
                 res.pop();
                 res = res.concat(catmullRom2bezier(dots, crz));
                 r = ["R"].concat(pa.slice(-2));
-			} else if (pa0 == "O") {
-				res.pop();
-				res = res.concat(ellipsePath(x, y, pa[1], pa[2]));
-			} else if (pa0 == "U") {
-				res.pop();
-				res = res.concat(ellipsePath(x, y, pa[1], pa[2], pa[3]));
-			} else {
+            } else if (pa0 == "O") {
+                res.pop();
+                dots = ellipsePath(x, y, pa[1], pa[2]);
+                dots.push(dots[0]);
+                res = res.concat(dots);
+            } else if (pa0 == "U") {
+                res.pop();
+                res = res.concat(ellipsePath(x, y, pa[1], pa[2], pa[3]));
+                r = ["U"].concat(res[res.length - 1].slice(-2));
+            } else {
                 for (var k = 0, kk = pa.length; k < kk; k++) {
                     r[k] = pa[k];
                 }
             }
-			if (pa0 != "O" && pa0 != "U") {
+            pa0 = pa0.toUpperCase();
+            if (pa0 != "O") {
                 switch (r[0]) {
                     case "Z":
                         x = mx;
@@ -1525,7 +1538,7 @@ var pathDimensions = function (path) {
                         x = r[r.length - 2];
                         y = r[r.length - 1];
                 }
-			}
+            }
         }
         res.toString = path2string;
         pth.abs = pathClone(res);
@@ -2165,6 +2178,10 @@ function wrap(dom) {
     return new Element(dom);
 }
 (function (proto) {
+    proto.el = function (name) {
+        var el = make(name, this.node);
+        return el;
+    };
     proto.rect = function (x, y, w, h, rx, ry) {
         var el = make("rect", this.node);
         if (ry == null) {
@@ -2557,6 +2574,7 @@ eve.on("savage.util.grad.parse", function parseGrad(string) {
 });
 
 eve.on("savage.util.attr.d", function (value) {
+    eve.stop();
     if (is(value, "array") && is(value[0], "array")) {
         value = path2string.call(value);
     }
@@ -2565,12 +2583,11 @@ eve.on("savage.util.attr.d", function (value) {
         value = pathToAbsolute(value);
     }
     $(this.node, {d: value});
-    eve.stop();
-});
+})(-1);
 eve.on("savage.util.attr.path", function (value) {
-    this.attr({d: value});
     eve.stop();
-});
+    this.attr({d: value});
+})(-1);
 eve.on("savage.util.attr.viewBox", function (value) {
     var vb;
     if (is(value, "object") && "x" in value) {
@@ -2584,11 +2601,11 @@ eve.on("savage.util.attr.viewBox", function (value) {
         viewBox: vb
     });
     eve.stop();
-});
+})(-1);
 eve.on("savage.util.attr.transform", function (value) {
     this.transform(value);
     eve.stop();
-});
+})(-1);
 eve.on("savage.util.attr.r", function (value) {
     if (this.type == "rect") {
         eve.stop();
@@ -2597,7 +2614,7 @@ eve.on("savage.util.attr.r", function (value) {
             ry: value
         });
     }
-});
+})(-1);
 eve.on("savage.util.attr.text", function (value) {
     if (this.type == "text") {
         var i = 0,
@@ -2620,7 +2637,7 @@ eve.on("savage.util.attr.text", function (value) {
         node.appendChild(tuner(value));
     }
     eve.stop();
-});
+})(-1);
 // default
 var availableAttributes = {
     rect: {x: 0, y: 0, width: 0, height: 0, rx: 0, ry: 0, "class": 0},
@@ -2648,7 +2665,6 @@ eve.on("savage.util.attr", function (value) {
     var style = att.replace(/-(\w)/gi, function (all, letter) {
         return letter.toUpperCase();
     });
-    // var state = document.defaultView.getComputedStyle(this.node, null).getPropertyValue(style);
     if (availableAttributes[has](this.type) && availableAttributes[this.type][has](att)) {
         value == null ? this.node.removeAttribute(att) : this.node.setAttribute(att, value);
     } else {
