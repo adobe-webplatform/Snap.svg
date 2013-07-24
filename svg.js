@@ -15,6 +15,7 @@ var Savage = function (w, h) {
     h = h == null ? "100%" : h;
     return new Paper(w, h);
 };
+Savage._ = {};
 var glob = {
     win: window,
     doc: window.document
@@ -43,7 +44,6 @@ var has = "hasOwnProperty",
     whitespace = new RegExp("[" + spaces + "]", "g"),
     commaSpaces = new RegExp("[" + spaces + "]*,[" + spaces + "]*"),
     hsrg = {hs: 1, rg: 1},
-    p2s = /,?([a-z]),?/gi,
     pathCommand = new RegExp("([a-z])[" + spaces + ",]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[" + spaces + "]*,?[" + spaces + "]*)+)", "ig"),
     tCommand = new RegExp("([rstm])[" + spaces + ",]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[" + spaces + "]*,?[" + spaces + "]*)+)", "ig"),
     pathValues = new RegExp("(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[" + spaces + "]*,?[" + spaces + "]*", "ig"),
@@ -64,6 +64,7 @@ function $(el, attr) {
             return el.getAttribute(attr);
         }
         for (var key in attr) if (attr[has](key)) {
+            console.log(attr, key);
             var val = Str(attr[key]);
             if (val) {
                 if (key.substring(0, 6) == "xlink:") {
@@ -77,11 +78,11 @@ function $(el, attr) {
         }
     } else {
         el = glob.doc.createElementNS("http://www.w3.org/2000/svg", el);
-        el.style && (el.style.webkitTapHighlightColor = "rgba(0,0,0,0)");
+        // el.style && (el.style.webkitTapHighlightColor = "rgba(0,0,0,0)");
     }
     return el;
 }
-Savage.$ = $;
+Savage._.$ = $;
 function getAttrs(el) {
     var attrs = el.attributes,
         name,
@@ -102,13 +103,13 @@ function is(o, type) {
     if (type == "finite") {
         return !isnan[has](+o);
     }
-    if (type == "array" && o instanceof Array) {
+    if (type == "array" &&
+        (o instanceof Array || Array.isArray && Array.isArray(o))) {
         return true;
     }
     return  (type == "null" && o === null) ||
             (type == typeof o && o !== null) ||
             (type == "object" && o === Object(o)) ||
-            (type == "array" && Array.isArray && Array.isArray(o)) ||
             objectToString.call(o).slice(8, -1).toLowerCase() == type;
 }
 var preload = (function () {
@@ -139,6 +140,7 @@ function clone(obj) {
     }
     return res;
 }
+Savage._.clone = clone;
 function repush(array, item) {
     for (var i = 0, ii = array.length; i < ii; i++) if (array[i] === item) {
         return array.push(array.splice(i, 1)[0]);
@@ -161,6 +163,7 @@ function cacher(f, scope, postprocessor) {
     }
     return newf;
 }
+Savage._.cacher = cacher;
 function rad(deg) {
     return deg % 360 * PI / 180;
 }
@@ -833,81 +836,7 @@ Savage.rgb2hsl = function (r, g, b) {
     return {h: H, s: S, l: L, toString: hsltoString};
 };
 
-function box(x, y, width, height) {
-    if (y == null) {
-        y = x.y;
-        width = x.width;
-        height = x.height;
-        x = x.x;
-    }
-    return {
-        x: x,
-        y: y,
-        width: width,
-        w: width,
-        height: height,
-        h: height,
-        x2: x + width,
-        y2: y + height,
-        cx: x + width / 2,
-        cy: y + height / 2,
-        rx: width / 2,
-        ry: height / 2,
-        r1: math.min(width, height) / 2,
-        r2: math.max(width, height) / 2,
-        r: math.sqrt(width * width + height * height) / 2,
-        path: rectPath(x, y, width, height),
-        vb: [x, y, width, height].join(" ")
-    };
-}
 // Transformations
-var path2string = Savage.path2string = function () {
-    return this.join(",").replace(p2s, "$1");
-};
-function pathClone(pathArray) {
-    var res = clone(pathArray);
-    res.toString = path2string;
-    return res;
-}
-
-// http://schepers.cc/getting-to-the-point
-function catmullRom2bezier(crp, z) {
-    var d = [];
-    for (var i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
-        var p = [
-                    {x: +crp[i - 2], y: +crp[i - 1]},
-                    {x: +crp[i],     y: +crp[i + 1]},
-                    {x: +crp[i + 2], y: +crp[i + 3]},
-                    {x: +crp[i + 4], y: +crp[i + 5]}
-                ];
-        if (z) {
-            if (!i) {
-                p[0] = {x: +crp[iLen - 2], y: +crp[iLen - 1]};
-            } else if (iLen - 4 == i) {
-                p[3] = {x: +crp[0], y: +crp[1]};
-            } else if (iLen - 2 == i) {
-                p[2] = {x: +crp[0], y: +crp[1]};
-                p[3] = {x: +crp[2], y: +crp[3]};
-            }
-        } else {
-            if (iLen - 4 == i) {
-                p[3] = p[2];
-            } else if (!i) {
-                p[0] = {x: +crp[i], y: +crp[i + 1]};
-            }
-        }
-        d.push(["C",
-              (-p[0].x + 6 * p[1].x + p[2].x) / 6,
-              (-p[0].y + 6 * p[1].y + p[2].y) / 6,
-              (p[1].x + 6 * p[2].x - p[3].x) / 6,
-              (p[1].y + 6*p[2].y - p[3].y) / 6,
-              p[2].x,
-              p[2].y
-        ]);
-    }
-
-    return d;
-}
     /*\
      * Savage.parsePathString
      [ method ]
@@ -923,15 +852,15 @@ function catmullRom2bezier(crp, z) {
         if (!pathString) {
             return null;
         }
-        var pth = paths(pathString);
+        var pth = Savage.path(pathString);
         if (pth.arr) {
-            return pathClone(pth.arr);
+            return Savage.path.clone(pth.arr);
         }
         
         var paramCounts = {a: 7, c: 6, o: 2, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, u: 3, z: 0},
             data = [];
         if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
-            data = pathClone(pathString);
+            data = Savage.path.clone(pathString);
         }
         if (!data.length) {
             Str(pathString).replace(pathCommand, function (a, b, c) {
@@ -958,8 +887,8 @@ function catmullRom2bezier(crp, z) {
                 }
             });
         }
-        data.toString = path2string;
-        pth.arr = pathClone(data);
+        data.toString = Savage.path.toString;
+        pth.arr = Savage.path.clone(data);
         return data;
     };
 var parseTransformString = Savage.parseTransformString = function (TString) {
@@ -969,7 +898,7 @@ var parseTransformString = Savage.parseTransformString = function (TString) {
     var paramCounts = {r: 3, s: 4, t: 2, m: 6},
         data = [];
     if (is(TString, "array") && is(TString[0], "array")) { // rough assumption
-        data = pathClone(TString);
+        data = Savage.path.clone(TString);
     }
     if (!data.length) {
         Str(TString).replace(tCommand, function (a, b, c) {
@@ -981,7 +910,7 @@ var parseTransformString = Savage.parseTransformString = function (TString) {
             data.push([b].concat(params));
         });
     }
-    data.toString = path2string;
+    data.toString = Savage.path.toString;
     return data;
 };
 function svgTransform2string(tstr) {
@@ -1126,60 +1055,6 @@ function extractTransform(el, tstr) {
         _.dirtyT = 1;
     }
 }
-// Pathes
-var paths = function (ps) {
-    var p = paths.ps = paths.ps || {};
-    if (p[ps]) {
-        p[ps].sleep = 100;
-    } else {
-        p[ps] = {
-            sleep: 100
-        };
-    }
-    setTimeout(function () {
-        for (var key in p) if (p[has](key) && key != ps) {
-            p[key].sleep--;
-            !p[key].sleep && delete p[key];
-        }
-    });
-    return p[ps];
-};
-function rectPath(x, y, w, h, r) {
-    if (r) {
-        return [
-            ["M", x + r, y],
-            ["l", w - r * 2, 0],
-            ["a", r, r, 0, 0, 1, r, r],
-            ["l", 0, h - r * 2],
-            ["a", r, r, 0, 0, 1, -r, r],
-            ["l", r * 2 - w, 0],
-            ["a", r, r, 0, 0, 1, -r, -r],
-            ["l", 0, r * 2 - h],
-            ["a", r, r, 0, 0, 1, r, -r],
-            ["z"]
-        ];
-    }
-    var res = [["M", x, y], ["l", w, 0], ["l", 0, h], ["l", -w, 0], ["z"]];
-    res.toString = path2string;
-    return res;
-}
-function ellipsePath(x, y, rx, ry, a) {
-    if (a == null && ry == null) {
-        ry = rx;
-    }
-    if (a != null) {
-        var rad = Math.PI / 180,
-            x1 = x + rx * Math.cos(-ry * rad),
-            x2 = x + rx * Math.cos(-a * rad),
-            y1 = y + rx * Math.sin(-ry * rad),
-            y2 = y + rx * Math.sin(-a * rad),
-            res = [["M", x1, y1], ["A", rx, rx, 0, +(a - ry > 180), 0, x2, y2]];
-    } else {
-        res = [["M", x, y], ["m", 0, -ry], ["a", rx, ry, 0, 1, 1, 0, 2 * ry], ["a", rx, ry, 0, 1, 1, 0, -2 * ry], ["z"]];
-    }
-    res.toString = path2string;
-    return res;
-}
 function unit2px(el, name, value) {
     var defs = el.paper.defs,
         out = {},
@@ -1263,557 +1138,6 @@ function unit2px(el, name, value) {
     }
     return out;
 }
-var getPath = {
-    path: function (el) {
-        return el.attr("path");
-    },
-    circle: function (el) {
-        var attr = unit2px(el);
-        return ellipsePath(attr.cx, attr.cy, attr.r);
-    },
-    ellipse: function (el) {
-        var attr = unit2px(el);
-        return ellipsePath(attr.cx, attr.cy, attr.rx, attr.ry);
-    },
-    rect: function (el) {
-        var attr = unit2px(el);
-        return rectPath(attr.x, attr.y, attr.width, attr.height, attr.rx, attr.ry);
-    },
-    image: function (el) {
-        var attr = unit2px(el);
-        return rectPath(attr.x, attr.y, attr.width, attr.height);
-    },
-    text: function (el) {
-        var bbox = el.node.getBBox();
-        return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-    },
-    g: function (el) {
-        var bbox = el.node.getBBox();
-        return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-    },
-    symbol: function (el) {
-        var bbox = el.getBBox();
-        return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-    }
-};
-var pathDimensions = function (path) {
-    var pth = paths(path);
-    if (pth.bbox) {
-        return clone(pth.bbox);
-    }
-    if (!path) {
-        return {x: 0, y: 0, width: 0, height: 0, x2: 0, y2: 0};
-    }
-    path = path2curve(path);
-    var x = 0, 
-        y = 0,
-        X = [],
-        Y = [],
-        p;
-    for (var i = 0, ii = path.length; i < ii; i++) {
-        p = path[i];
-        if (p[0] == "M") {
-            x = p[1];
-            y = p[2];
-            X.push(x);
-            Y.push(y);
-        } else {
-            var dim = curveDim(x, y, p[1], p[2], p[3], p[4], p[5], p[6]);
-            X = X.concat(dim.min.x, dim.max.x);
-            Y = Y.concat(dim.min.y, dim.max.y);
-            x = p[5];
-            y = p[6];
-        }
-    }
-    var xmin = mmin.apply(0, X),
-        ymin = mmin.apply(0, Y),
-        xmax = mmax.apply(0, X),
-        ymax = mmax.apply(0, Y),
-        bb = {
-            x: xmin,
-            y: ymin,
-            x2: xmax,
-            y2: ymax,
-            width: xmax - xmin,
-            height: ymax - ymin
-        };
-    pth.bbox = clone(bb);
-    return bb;
-},
-    pathToRelative = function (pathArray) {
-        var pth = paths(pathArray);
-        if (pth.rel) {
-            return pathClone(pth.rel);
-        }
-        if (!is(pathArray, array) || !is(pathArray && pathArray[0], array)) { // rough assumption
-            pathArray = Savage.parsePathString(pathArray);
-        }
-        var res = [],
-            x = 0,
-            y = 0,
-            mx = 0,
-            my = 0,
-            start = 0;
-        if (pathArray[0][0] == "M") {
-            x = pathArray[0][1];
-            y = pathArray[0][2];
-            mx = x;
-            my = y;
-            start++;
-            res.push(["M", x, y]);
-        }
-        for (var i = start, ii = pathArray.length; i < ii; i++) {
-            var r = res[i] = [],
-                pa = pathArray[i];
-            if (pa[0] != lowerCase.call(pa[0])) {
-                r[0] = lowerCase.call(pa[0]);
-                switch (r[0]) {
-                    case "a":
-                        r[1] = pa[1];
-                        r[2] = pa[2];
-                        r[3] = pa[3];
-                        r[4] = pa[4];
-                        r[5] = pa[5];
-                        r[6] = +(pa[6] - x).toFixed(3);
-                        r[7] = +(pa[7] - y).toFixed(3);
-                        break;
-                    case "v":
-                        r[1] = +(pa[1] - y).toFixed(3);
-                        break;
-                    case "m":
-                        mx = pa[1];
-                        my = pa[2];
-                    default:
-                        for (var j = 1, jj = pa.length; j < jj; j++) {
-                            r[j] = +(pa[j] - ((j % 2) ? x : y)).toFixed(3);
-                        }
-                }
-            } else {
-                r = res[i] = [];
-                if (pa[0] == "m") {
-                    mx = pa[1] + x;
-                    my = pa[2] + y;
-                }
-                for (var k = 0, kk = pa.length; k < kk; k++) {
-                    res[i][k] = pa[k];
-                }
-            }
-            var len = res[i].length;
-            switch (res[i][0]) {
-                case "z":
-                    x = mx;
-                    y = my;
-                    break;
-                case "h":
-                    x += +res[i][len - 1];
-                    break;
-                case "v":
-                    y += +res[i][len - 1];
-                    break;
-                default:
-                    x += +res[i][len - 2];
-                    y += +res[i][len - 1];
-            }
-        }
-        res.toString = path2string;
-        pth.rel = pathClone(res);
-        return res;
-    },
-    pathToAbsolute = function (pathArray) {
-        var pth = paths(pathArray);
-        if (pth.abs) {
-            return pathClone(pth.abs);
-        }
-        if (!is(pathArray, "array") || !is(pathArray && pathArray[0], "array")) { // rough assumption
-            pathArray = Savage.parsePathString(pathArray);
-        }
-        if (!pathArray || !pathArray.length) {
-            return [["M", 0, 0]];
-        }
-        var res = [],
-            x = 0,
-            y = 0,
-            mx = 0,
-            my = 0,
-            start = 0,
-            pa0;
-        if (pathArray[0][0] == "M") {
-            x = +pathArray[0][1];
-            y = +pathArray[0][2];
-            mx = x;
-            my = y;
-            start++;
-            res[0] = ["M", x, y];
-        }
-        var crz = pathArray.length == 3 &&
-            pathArray[0][0] == "M" &&
-            pathArray[1][0].toUpperCase() == "R" &&
-            pathArray[2][0].toUpperCase() == "Z";
-        for (var r, pa, i = start, ii = pathArray.length; i < ii; i++) {
-            res.push(r = []);
-            pa = pathArray[i];
-            pa0 = pa[0];
-            if (pa0 != pa0.toUpperCase()) {
-                r[0] = pa0.toUpperCase();
-                switch (r[0]) {
-                    case "A":
-                        r[1] = pa[1];
-                        r[2] = pa[2];
-                        r[3] = pa[3];
-                        r[4] = pa[4];
-                        r[5] = pa[5];
-                        r[6] = +(pa[6] + x);
-                        r[7] = +(pa[7] + y);
-                        break;
-                    case "V":
-                        r[1] = +pa[1] + y;
-                        break;
-                    case "H":
-                        r[1] = +pa[1] + x;
-                        break;
-                    case "R":
-                        var dots = [x, y].concat(pa.slice(1));
-                        for (var j = 2, jj = dots.length; j < jj; j++) {
-                            dots[j] = +dots[j] + x;
-                            dots[++j] = +dots[j] + y;
-                        }
-                        res.pop();
-                        res = res.concat(catmullRom2bezier(dots, crz));
-                        break;
-                    case "O":
-                        res.pop();
-                        dots = ellipsePath(x, y, pa[1], pa[2]);
-                        dots.push(dots[0]);
-                        res = res.concat(dots);
-                        break;
-                    case "U":
-                        res.pop();
-                        res = res.concat(ellipsePath(x, y, pa[1], pa[2], pa[3]));
-                        r = ["U"].concat(res[res.length - 1].slice(-2));
-                        break;
-                    case "M":
-                        mx = +pa[1] + x;
-                        my = +pa[2] + y;
-                    default:
-                        for (j = 1, jj = pa.length; j < jj; j++) {
-                            r[j] = +pa[j] + ((j % 2) ? x : y);
-                        }
-                }
-            } else if (pa0 == "R") {
-                dots = [x, y].concat(pa.slice(1));
-                res.pop();
-                res = res.concat(catmullRom2bezier(dots, crz));
-                r = ["R"].concat(pa.slice(-2));
-            } else if (pa0 == "O") {
-                res.pop();
-                dots = ellipsePath(x, y, pa[1], pa[2]);
-                dots.push(dots[0]);
-                res = res.concat(dots);
-            } else if (pa0 == "U") {
-                res.pop();
-                res = res.concat(ellipsePath(x, y, pa[1], pa[2], pa[3]));
-                r = ["U"].concat(res[res.length - 1].slice(-2));
-            } else {
-                for (var k = 0, kk = pa.length; k < kk; k++) {
-                    r[k] = pa[k];
-                }
-            }
-            pa0 = pa0.toUpperCase();
-            if (pa0 != "O") {
-                switch (r[0]) {
-                    case "Z":
-                        x = mx;
-                        y = my;
-                        break;
-                    case "H":
-                        x = r[1];
-                        break;
-                    case "V":
-                        y = r[1];
-                        break;
-                    case "M":
-                        mx = r[r.length - 2];
-                        my = r[r.length - 1];
-                    default:
-                        x = r[r.length - 2];
-                        y = r[r.length - 1];
-                }
-            }
-        }
-        res.toString = path2string;
-        pth.abs = pathClone(res);
-        return res;
-    },
-    l2c = function (x1, y1, x2, y2) {
-        return [x1, y1, x2, y2, x2, y2];
-    },
-    q2c = function (x1, y1, ax, ay, x2, y2) {
-        var _13 = 1 / 3,
-            _23 = 2 / 3;
-        return [
-                _13 * x1 + _23 * ax,
-                _13 * y1 + _23 * ay,
-                _13 * x2 + _23 * ax,
-                _13 * y2 + _23 * ay,
-                x2,
-                y2
-            ];
-    },
-    a2c = function (x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
-        // for more information of where this math came from visit:
-        // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
-        var _120 = PI * 120 / 180,
-            rad = PI / 180 * (+angle || 0),
-            res = [],
-            xy,
-            rotate = cacher(function (x, y, rad) {
-                var X = x * math.cos(rad) - y * math.sin(rad),
-                    Y = x * math.sin(rad) + y * math.cos(rad);
-                return {x: X, y: Y};
-            });
-        if (!recursive) {
-            xy = rotate(x1, y1, -rad);
-            x1 = xy.x;
-            y1 = xy.y;
-            xy = rotate(x2, y2, -rad);
-            x2 = xy.x;
-            y2 = xy.y;
-            var cos = math.cos(PI / 180 * angle),
-                sin = math.sin(PI / 180 * angle),
-                x = (x1 - x2) / 2,
-                y = (y1 - y2) / 2;
-            var h = (x * x) / (rx * rx) + (y * y) / (ry * ry);
-            if (h > 1) {
-                h = math.sqrt(h);
-                rx = h * rx;
-                ry = h * ry;
-            }
-            var rx2 = rx * rx,
-                ry2 = ry * ry,
-                k = (large_arc_flag == sweep_flag ? -1 : 1) *
-                    math.sqrt(abs((rx2 * ry2 - rx2 * y * y - ry2 * x * x) / (rx2 * y * y + ry2 * x * x))),
-                cx = k * rx * y / ry + (x1 + x2) / 2,
-                cy = k * -ry * x / rx + (y1 + y2) / 2,
-                f1 = math.asin(((y1 - cy) / ry).toFixed(9)),
-                f2 = math.asin(((y2 - cy) / ry).toFixed(9));
-
-            f1 = x1 < cx ? PI - f1 : f1;
-            f2 = x2 < cx ? PI - f2 : f2;
-            f1 < 0 && (f1 = PI * 2 + f1);
-            f2 < 0 && (f2 = PI * 2 + f2);
-            if (sweep_flag && f1 > f2) {
-                f1 = f1 - PI * 2;
-            }
-            if (!sweep_flag && f2 > f1) {
-                f2 = f2 - PI * 2;
-            }
-        } else {
-            f1 = recursive[0];
-            f2 = recursive[1];
-            cx = recursive[2];
-            cy = recursive[3];
-        }
-        var df = f2 - f1;
-        if (abs(df) > _120) {
-            var f2old = f2,
-                x2old = x2,
-                y2old = y2;
-            f2 = f1 + _120 * (sweep_flag && f2 > f1 ? 1 : -1);
-            x2 = cx + rx * math.cos(f2);
-            y2 = cy + ry * math.sin(f2);
-            res = a2c(x2, y2, rx, ry, angle, 0, sweep_flag, x2old, y2old, [f2, f2old, cx, cy]);
-        }
-        df = f2 - f1;
-        var c1 = math.cos(f1),
-            s1 = math.sin(f1),
-            c2 = math.cos(f2),
-            s2 = math.sin(f2),
-            t = math.tan(df / 4),
-            hx = 4 / 3 * rx * t,
-            hy = 4 / 3 * ry * t,
-            m1 = [x1, y1],
-            m2 = [x1 + hx * s1, y1 - hy * c1],
-            m3 = [x2 + hx * s2, y2 - hy * c2],
-            m4 = [x2, y2];
-        m2[0] = 2 * m1[0] - m2[0];
-        m2[1] = 2 * m1[1] - m2[1];
-        if (recursive) {
-            return [m2, m3, m4].concat(res);
-        } else {
-            res = [m2, m3, m4].concat(res).join().split(",");
-            var newres = [];
-            for (var i = 0, ii = res.length; i < ii; i++) {
-                newres[i] = i % 2 ? rotate(res[i - 1], res[i], rad).y : rotate(res[i], res[i + 1], rad).x;
-            }
-            return newres;
-        }
-    },
-    findDotAtSegment = function (p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
-        var t1 = 1 - t;
-        return {
-            x: pow(t1, 3) * p1x + pow(t1, 2) * 3 * t * c1x + t1 * 3 * t * t * c2x + pow(t, 3) * p2x,
-            y: pow(t1, 3) * p1y + pow(t1, 2) * 3 * t * c1y + t1 * 3 * t * t * c2y + pow(t, 3) * p2y
-        };
-    },
-    curveDim = cacher(function (p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) {
-        var a = (c2x - 2 * c1x + p1x) - (p2x - 2 * c2x + c1x),
-            b = 2 * (c1x - p1x) - 2 * (c2x - c1x),
-            c = p1x - c1x,
-            t1 = (-b + math.sqrt(b * b - 4 * a * c)) / 2 / a,
-            t2 = (-b - math.sqrt(b * b - 4 * a * c)) / 2 / a,
-            y = [p1y, p2y],
-            x = [p1x, p2x],
-            dot;
-        abs(t1) > "1e12" && (t1 = .5);
-        abs(t2) > "1e12" && (t2 = .5);
-        if (t1 > 0 && t1 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t1);
-            x.push(dot.x);
-            y.push(dot.y);
-        }
-        if (t2 > 0 && t2 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t2);
-            x.push(dot.x);
-            y.push(dot.y);
-        }
-        a = (c2y - 2 * c1y + p1y) - (p2y - 2 * c2y + c1y);
-        b = 2 * (c1y - p1y) - 2 * (c2y - c1y);
-        c = p1y - c1y;
-        t1 = (-b + math.sqrt(b * b - 4 * a * c)) / 2 / a;
-        t2 = (-b - math.sqrt(b * b - 4 * a * c)) / 2 / a;
-        abs(t1) > "1e12" && (t1 = .5);
-        abs(t2) > "1e12" && (t2 = .5);
-        if (t1 > 0 && t1 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t1);
-            x.push(dot.x);
-            y.push(dot.y);
-        }
-        if (t2 > 0 && t2 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t2);
-            x.push(dot.x);
-            y.push(dot.y);
-        }
-        return {
-            min: {x: mmin.apply(0, x), y: mmin.apply(0, y)},
-            max: {x: mmax.apply(0, x), y: mmax.apply(0, y)}
-        };
-    }),
-    path2curve = Savage.path2curve = cacher(function (path, path2) {
-        var pth = !path2 && paths(path);
-        if (!path2 && pth.curve) {
-            return pathClone(pth.curve);
-        }
-        var p = pathToAbsolute(path),
-            p2 = path2 && pathToAbsolute(path2),
-            attrs = {x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null},
-            attrs2 = {x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null},
-            processPath = function (path, d) {
-                var nx, ny;
-                if (!path) {
-                    return ["C", d.x, d.y, d.x, d.y, d.x, d.y];
-                }
-                !(path[0] in {T:1, Q:1}) && (d.qx = d.qy = null);
-                switch (path[0]) {
-                    case "M":
-                        d.X = path[1];
-                        d.Y = path[2];
-                        break;
-                    case "A":
-                        path = ["C"].concat(a2c.apply(0, [d.x, d.y].concat(path.slice(1))));
-                        break;
-                    case "S":
-                        nx = d.x + (d.x - (d.bx || d.x));
-                        ny = d.y + (d.y - (d.by || d.y));
-                        path = ["C", nx, ny].concat(path.slice(1));
-                        break;
-                    case "T":
-                        d.qx = d.x + (d.x - (d.qx || d.x));
-                        d.qy = d.y + (d.y - (d.qy || d.y));
-                        path = ["C"].concat(q2c(d.x, d.y, d.qx, d.qy, path[1], path[2]));
-                        break;
-                    case "Q":
-                        d.qx = path[1];
-                        d.qy = path[2];
-                        path = ["C"].concat(q2c(d.x, d.y, path[1], path[2], path[3], path[4]));
-                        break;
-                    case "L":
-                        path = ["C"].concat(l2c(d.x, d.y, path[1], path[2]));
-                        break;
-                    case "H":
-                        path = ["C"].concat(l2c(d.x, d.y, path[1], d.y));
-                        break;
-                    case "V":
-                        path = ["C"].concat(l2c(d.x, d.y, d.x, path[1]));
-                        break;
-                    case "Z":
-                        path = ["C"].concat(l2c(d.x, d.y, d.X, d.Y));
-                        break;
-                }
-                return path;
-            },
-            fixArc = function (pp, i) {
-                if (pp[i].length > 7) {
-                    pp[i].shift();
-                    var pi = pp[i];
-                    while (pi.length) {
-                        pp.splice(i++, 0, ["C"].concat(pi.splice(0, 6)));
-                    }
-                    pp.splice(i, 1);
-                    ii = mmax(p.length, p2 && p2.length || 0);
-                }
-            },
-            fixM = function (path1, path2, a1, a2, i) {
-                if (path1 && path2 && path1[i][0] == "M" && path2[i][0] != "M") {
-                    path2.splice(i, 0, ["M", a2.x, a2.y]);
-                    a1.bx = 0;
-                    a1.by = 0;
-                    a1.x = path1[i][1];
-                    a1.y = path1[i][2];
-                    ii = mmax(p.length, p2 && p2.length || 0);
-                }
-            };
-        for (var i = 0, ii = mmax(p.length, p2 && p2.length || 0); i < ii; i++) {
-            p[i] = processPath(p[i], attrs);
-            fixArc(p, i);
-            p2 && (p2[i] = processPath(p2[i], attrs2));
-            p2 && fixArc(p2, i);
-            fixM(p, p2, attrs, attrs2, i);
-            fixM(p2, p, attrs2, attrs, i);
-            var seg = p[i],
-                seg2 = p2 && p2[i],
-                seglen = seg.length,
-                seg2len = p2 && seg2.length;
-            attrs.x = seg[seglen - 2];
-            attrs.y = seg[seglen - 1];
-            attrs.bx = toFloat(seg[seglen - 4]) || attrs.x;
-            attrs.by = toFloat(seg[seglen - 3]) || attrs.y;
-            attrs2.bx = p2 && (toFloat(seg2[seg2len - 4]) || attrs2.x);
-            attrs2.by = p2 && (toFloat(seg2[seg2len - 3]) || attrs2.y);
-            attrs2.x = p2 && seg2[seg2len - 2];
-            attrs2.y = p2 && seg2[seg2len - 1];
-        }
-        if (!p2) {
-            pth.curve = pathClone(p);
-        }
-        return p2 ? [p, p2] : p;
-    }, null, pathClone),
-    mapPath = function (path, matrix) {
-        if (!matrix) {
-            return path;
-        }
-        var x, y, i, j, ii, jj, pathi;
-        path = path2curve(path);
-        for (i = 0, ii = path.length; i < ii; i++) {
-            pathi = path[i];
-            for (j = 1, jj = pathi.length; j < jj; j += 2) {
-                x = matrix.x(pathi[j], pathi[j + 1]);
-                y = matrix.y(pathi[j], pathi[j + 1]);
-                pathi[j] = x;
-                pathi[j + 1] = y;
-            }
-        }
-        return path;
-    };
 
 Savage.select = function (query) {
     return new Element(glob.doc.querySelector(query));
@@ -1832,7 +1156,10 @@ function Element(el) {
         return hub[el.savage];
     }
     var id = this.id = ID(),
+        svg;
+    try {
         svg = el.ownerSVGElement;
+    } catch(e) {}
     this.node = el;
     if (svg) {
         this.paper = new Paper(svg);
@@ -1879,23 +1206,24 @@ function arrayFirstValue(arr) {
         var _ = this._;
         if (isWithoutTransform) {
             if (_.dirty || !_.bboxwt) {
-                this.realPath = getPath[this.type](this);
-                _.bboxwt = pathDimensions(this.realPath);
+                this.realPath = Savage.path.get[this.type](this);
+                _.bboxwt = Savage.path.getBBox(this.realPath);
                 _.bboxwt.toString = x_y_w_h;
                 _.dirty = 0;
             }
-            return box(_.bboxwt);
+            return Savage._.box(_.bboxwt);
         }
         if (_.dirty || _.dirtyT || !_.bbox) {
             if (_.dirty || !this.realPath) {
                 _.bboxwt = 0;
-                this.realPath = getPath[this.type](this);
+                this.realPath = Savage.path.get[this.type](this);
             }
-            _.bbox = pathDimensions(mapPath(this.realPath, this.matrix));
+            _.bbox = Savage.path.getBBox(Savage.path.map(this.realPath, this.matrix));
+            console.log(this.attr("path"), this.realPath, Savage.path.map(this.realPath, this.matrix), _.bbox);
             _.bbox.toString = x_y_w_h;
             _.dirty = _.dirtyT = 0;
         }
-        return box(_.bbox);
+        return Savage._.box(_.bbox);
     };
     var propString = function () {
         return this.local;
@@ -1947,35 +1275,42 @@ function arrayFirstValue(arr) {
         }
         el = wrap(el);
         this.node.appendChild(el.node);
+        el.paper = this.paper;
         return this;
     };
     elproto.prepend = function (el) {
         el = wrap(el);
         this.node.parentNode.insertBefore(el.node, this.node.firstChild);
+        el.paper = this.paper;
         return this;
     };
     elproto.before = function (el) {
         el = wrap(el);
         this.node.parentNode.insertBefore(el.node, this.node);
+        el.paper = this.paper;
         return this;
     };
     elproto.after = function (el) {
         el = wrap(el);
         this.node.parentNode.insertBefore(el.node, this.node.nextSibling);
+        el.paper = this.paper;
         return this;
     };
     elproto.insertBefore = function (el) {
         el = wrap(el);
         el.node.parentNode.insertBefore(this.node, el.node);
+        this.paper = el.paper;
         return this;
     };
     elproto.insertAfter = function (el) {
         el = wrap(el);
         el.node.parentNode.insertBefore(this.node, el.node.nextSibling);
+        this.paper = el.paper;
         return this;
     };
     elproto.remove = function () {
         this.node.parentNode.removeChild(this.node);
+        delete this.paper;
         this.removed = true;
     };
     elproto.select = function (query) {
@@ -2168,6 +1503,7 @@ function Paper(w, h) {
     for (var key in proto) if (proto[has](key)) {
         res[key] = proto[key];
     }
+    res.paper = res;
     res.defs = defs;
     return res;
 }
@@ -2417,12 +1753,12 @@ function wrap(dom) {
                     x2 = $(this.node, "x2") || 1,
                     y1 = $(this.node, "y1") || 0,
                     y2 = $(this.node, "y2") || 0;
-                return box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
+                return Savage._.box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
             } else {
                 var cx = this.node.cx || .5,
                     cy = this.node.cy || .5,
                     r = this.node.r || 0;
-                return box(cx - r, cy - r, r * 2, r * 2);
+                return Savage._.box(cx - r, cy - r, r * 2, r * 2);
             }
         }
         proto.gradientLinear = function (x1, y1, x2, y2) {
@@ -2576,11 +1912,11 @@ eve.on("savage.util.grad.parse", function parseGrad(string) {
 eve.on("savage.util.attr.d", function (value) {
     eve.stop();
     if (is(value, "array") && is(value[0], "array")) {
-        value = path2string.call(value);
+        value = Savage.path.toString.call(value);
     }
     value = Str(value);
     if (value.match(/[ruo]/i)) {
-        value = pathToAbsolute(value);
+        value = Savage.path.toAbsolute(value);
     }
     $(this.node, {d: value});
 })(-1);
@@ -2640,24 +1976,149 @@ eve.on("savage.util.attr.text", function (value) {
 })(-1);
 // default
 var availableAttributes = {
-    rect: {x: 0, y: 0, width: 0, height: 0, rx: 0, ry: 0, "class": 0},
-    circle: {cx: 0, cy: 0, r: 0, "class": 0},
-    ellipse: {cx: 0, cy: 0, rx: 0, ry: 0, "class": 0},
-    line: {x1: 0, y1: 0, x2: 0, y2: 0, "class": 0},
-    polyline: {points: "", "class": 0},
-    polygon: {points: "", "class": 0},
-    text: {x: 0, y: 0, dx: 0, dy: 0, rotate: 0, textLength: 0, lengthAdjust: 0, "class": 0},
-    tspan: {x: 0, y: 0, dx: 0, dy: 0, rotate: 0, textLength: 0, lengthAdjust: 0, "class": 0},
-    textPath: {"xlink:href": 0, startOffset: 0, method: 0, spacing: 0, "class": 0},
-    marker: {viewBox: 0, preserveAspectRatio: 0, refX: 0, refY: 0, markerUnits: 0, markerWidth: 0, markerHeight: 0, orient: 0, "class": 0},
-    linearGradient: {x1: 0, y1: 0, x2: 0, y2: 0, gradientUnits: 0, gradientTransform: 0, spreadMethod: 0, "xlink:href": 0, "class": 0},
-    radialGradient: {cx: 0, cy: 0, r: 0, fx: 0, fy: 0, gradientUnits: 0, gradientTransform: 0, spreadMethod: 0, "xlink:href": 0, "class": 0},
-    stop: {offset: 0, "class": 0},
-    pattern: {viewBox: 0, preserveAspectRatio: 0, x: 0, y: 0, width: 0, height: 0, patternUnits: 0, patternContentUnits: 0, patternTransform: 0, "xlink:href": 0, "class": 0},
-    clipPath: {transform: 0, clipPathUnits: 0, "class": 0},
-    mask: {x: 0, y: 0, width: 0, height: 0, maskUnits: 0, maskContentUnits: 0, "class": 0},
-    image: {preserveAspectRatio: 0, transform: 0, x: 0, y: 0, width: 0, height: 0, "xlink:href": 0, "class": 0},
-    path: {d: "", "class": 0}
+    rect: {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        rx: 0,
+        ry: 0,
+        "class": 0
+    },
+    circle: {
+        cx: 0,
+        cy: 0,
+        r: 0,
+        "class": 0
+    },
+    ellipse: {
+        cx: 0,
+        cy: 0,
+        rx: 0,
+        ry: 0,
+        "class": 0
+    },
+    line: {
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 0,
+        "class": 0
+    },
+    polyline: {
+        points: "",
+        "class": 0
+    },
+    polygon: {
+        points: "",
+        "class": 0
+    },
+    text: {
+        x: 0,
+        y: 0,
+        dx: 0,
+        dy: 0,
+        rotate: 0,
+        textLength: 0,
+        lengthAdjust: 0,
+        "class": 0
+    },
+    tspan: {
+        x: 0,
+        y: 0,
+        dx: 0,
+        dy: 0,
+        rotate: 0,
+        textLength: 0,
+        lengthAdjust: 0,
+        "class": 0
+    },
+    textPath: {
+        "xlink:href": 0,
+        startOffset: 0,
+        method: 0,
+        spacing: 0,
+        "class": 0
+    },
+    marker: {
+        viewBox: 0,
+        preserveAspectRatio: 0,
+        refX: 0,
+        refY: 0,
+        markerUnits: 0,
+        markerWidth: 0,
+        markerHeight: 0,
+        orient: 0,
+        "class": 0
+    },
+    linearGradient: {
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 0,
+        gradientUnits: 0,
+        gradientTransform: 0,
+        spreadMethod: 0,
+        "xlink:href": 0,
+        "class": 0
+    },
+    radialGradient: {
+        cx: 0,
+        cy: 0,
+        r: 0,
+        fx: 0,
+        fy: 0,
+        gradientUnits: 0,
+        gradientTransform: 0,
+        spreadMethod: 0,
+        "xlink:href": 0,
+        "class": 0
+    },
+    stop: {
+        offset: 0,
+        "class": 0
+    },
+    pattern: {
+        viewBox: 0,
+        preserveAspectRatio: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        patternUnits: 0,
+        patternContentUnits: 0,
+        patternTransform: 0,
+        "xlink:href": 0,
+        "class": 0
+    },
+    clipPath: {
+        transform: 0,
+        clipPathUnits: 0,
+        "class": 0
+    },
+    mask: {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        maskUnits: 0,
+        maskContentUnits: 0,
+        "class": 0
+    },
+    image: {
+        preserveAspectRatio: 0,
+        transform: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        "xlink:href": 0,
+        "class": 0
+    },
+    path: {
+        d: "",
+        "class": 0
+    }
 };
 eve.on("savage.util.attr", function (value) {
     var att = eve.nt();
@@ -2728,13 +2189,18 @@ eve.on("savage.util.getattr.r", function () {
 eve.on("savage.util.getattr.viewBox", function () {
     eve.stop();
     var vb = $(this.node, "viewBox").split(separator);
-    return box(+vb[0], +vb[1], +vb[2], +vb[3]);
+    return Savage._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
     // TODO: investigate why I need to z-index it
 })(-1);
 eve.on("savage.util.getattr.points", function () {
     var p = $(this.node, "points");
     eve.stop();
     return p.split(separator);
+});
+eve.on("savage.util.getattr.path", function () {
+    var p = $(this.node, "d");
+    eve.stop();
+    return p;
 });
 // default
 eve.on("savage.util.getattr", function () {
