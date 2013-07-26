@@ -1267,9 +1267,52 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     Savage.path.getBBox = pathBBox;
     // TODO add doc
     Savage.path.get = getPath;
+    /*\
+     * Savage.path.toRelative
+     [ method ]
+     **
+     * Utility method
+     **
+     * Converts path coordinates into relative values.
+     > Parameters
+     - path (string) path string
+     = (array) path string
+    \*/
     Savage.path.toRelative = pathToRelative;
+    /*\
+     * Savage.path.toAbsolute
+     [ method ]
+     **
+     * Utility method
+     **
+     * Converts path coordinates into absolute values.
+     > Parameters
+     - path (string) path string
+     = (array) path string
+    \*/
     Savage.path.toAbsolute = pathToAbsolute;
+    /*\
+     * Savage.path.toCubic
+     [ method ]
+     **
+     * Utility method
+     **
+     * Converts path to a new path where all segments are cubic bezier curves.
+     > Parameters
+     - pathString (string|array) path string or array of segments
+     = (array) array of segments.
+    \*/
     Savage.path.toCubic = path2curve;
+    /*\
+     * Savage.path.map
+     [ method ]
+     **
+     * Transform the path string with given matrix.
+     > Parameters
+     - path (string) path string
+     - matrix (object) see @Matrix
+     = (string) transformed path string
+    \*/
     Savage.path.map = mapPath;
     Savage.path.toString = toString;
     Savage.path.clone = pathClone;

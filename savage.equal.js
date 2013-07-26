@@ -75,7 +75,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             out += a + "]";
             b[i] = out;
         }
-        return Function("val", "return Savage.path2string.call([" + b + "]);");
+        return Function("val", "return Savage.path.toString.call([" + b + "])");
     }
     function path2array(path) {
         var out = [];
@@ -109,7 +109,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             return equaliseTransform(a.local, b);
         }
         if (name == "d" || name == "path") {
-            A = Savage.path2curve(a, b);
+            A = Savage.path.toCubic(a, b);
             return {
                 from: path2array(A[0]),
                 to: path2array(A[1]),
