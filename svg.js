@@ -1,5 +1,6 @@
 var $VG, Savage = $VG = (function () {
-var Savage = function (w, h) {
+Savage.version = "0.0.1";
+function Savage(w, h) {
     if (w) {
         if (w.tagName) {
             return new Element(w);
@@ -14,6 +15,9 @@ var Savage = function (w, h) {
     w = w == null ? "100%" : w;
     h = h == null ? "100%" : h;
     return new Paper(w, h);
+}
+Savage.toString = function () {
+    return "Savage v" + this.version;
 };
 Savage._ = {};
 var glob = {
@@ -64,7 +68,6 @@ function $(el, attr) {
             return el.getAttribute(attr);
         }
         for (var key in attr) if (attr[has](key)) {
-            console.log(attr, key);
             var val = Str(attr[key]);
             if (val) {
                 if (key.substring(0, 6) == "xlink:") {
@@ -177,9 +180,67 @@ function x_y_w_h() {
     return this.x + S + this.y + S + this.width + " \xd7 " + this.height;
 }
 
+/*\
+ * Raphael.rad
+ [ method ]
+ **
+ * Transform angle to radians
+ > Parameters
+ - deg (number) angle in degrees
+ = (number) angle in radians.
+\*/
 Savage.rad = rad;
+/*\
+ * Raphael.deg
+ [ method ]
+ **
+ * Transform angle to degrees
+ > Parameters
+ - deg (number) angle in radians
+ = (number) angle in degrees.
+\*/
 Savage.deg = deg;
+/*\
+ * Savage.is
+ [ method ]
+ **
+ * Handfull replacement for `typeof` operator.
+ > Parameters
+ - o (…) any object or primitive
+ - type (string) name of the type, i.e. “string”, “function”, “number”, etc.
+ = (boolean) is given value is of given type
+\*/
 Savage.is = is;
+/*\
+ * Savage.snapTo
+ [ method ]
+ **
+ * Snaps given value to given grid.
+ > Parameters
+ - values (array|number) given array of values or step of the grid
+ - value (number) value to adjust
+ - tolerance (number) #optional tolerance for snapping. Default is `10`.
+ = (number) adjusted value.
+\*/
+Savage.snapTo = function (values, value, tolerance) {
+    tolerance = is(tolerance, "finite") ? tolerance : 10;
+    if (is(values, "array")) {
+        var i = values.length;
+        while (i--) if (abs(values[i] - value) <= tolerance) {
+            return values[i];
+        }
+    } else {
+        values = +values;
+        var rem = value % values;
+        if (rem < tolerance) {
+            return value - rem;
+        }
+        if (rem > values - tolerance) {
+            return value - rem + values;
+        }
+    }
+    return value;
+};
 
 // MATRIX
 function Matrix(a, b, c, d, e, f) {
@@ -435,6 +496,24 @@ function Matrix(a, b, c, d, e, f) {
         }
     };
 })(Matrix.prototype);
+/*\
+ * Raphael.Matrix
+ [ method ]
+ **
+ * Utility method
+ **
+ * Returns matrix based on given parameters.
+ > Parameters
+ - a (number)
+ - b (number)
+ - c (number)
+ - d (number)
+ - e (number)
+ - f (number)
+ * or
+ - svgMatrix (SVGMatrix)
+ = (object) @Matrix
+\*/
 Savage.Matrix = Matrix;
 // Colour
 /*\
@@ -574,7 +653,11 @@ Savage.hsl = cacher(function (h, s, l) {
  - b (number) blue
  = (string) hex representation of the colour.
 \*/
-Savage.rgb = cacher(function (r, g, b) {
+Savage.rgb = cacher(function (r, g, b, o) {
+    if (is(o, "finite")) {
+        var round = math.round;
+        return "rgba(" + [round(r), round(g), round(b), +o.toFixed(2)] + ")";
+    }
     return "#" + (16777216 | b | (g << 8) | (r << 16)).toString(16).slice(1);
 });
 var toHex = function (color) {
@@ -891,6 +974,17 @@ Savage.rgb2hsl = function (r, g, b) {
         pth.arr = Savage.path.clone(data);
         return data;
     };
+    /*\
+     * Savage.parseTransformString
+     [ method ]
+     **
+     * Utility method
+     **
+     * Parses given path string into an array of transformations.
+     > Parameters
+     - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
+     = (array) array of transformations.
+    \*/
 var parseTransformString = Savage.parseTransformString = function (TString) {
     if (!TString) {
         return null;
@@ -1034,12 +1128,6 @@ function extractTransform(el, tstr) {
         }
     }
 
-    /*\
-     * Element.matrix
-     [ property (object) ]
-     **
-     * Keeps @Matrix object, which represents element transformation
-    \*/
     el.matrix = m;
 
     _.sx = sx;
@@ -1138,10 +1226,27 @@ function unit2px(el, name, value) {
     }
     return out;
 }
-
+/*\
+ * Savage.select
+ [ method ]
+ **
+ * Wraps DOM element specified by CSS selector as @Element
+ > Parameters
+ - query (string) CSS selector of the element
+ = (Element)
+\*/
 Savage.select = function (query) {
     return new Element(glob.doc.querySelector(query));
 };
+/*\
+ * Savage.selectAll
+ [ method ]
+ **
+ * Wraps DOM elements specified by CSS selector as set or array of @Element
+ > Parameters
+ - query (string) CSS selector of the element
+ = (Element)
+\*/
 Savage.selectAll = function (query) {
     var nodelist = glob.doc.querySelectorAll(query),
         set = (Savage.set || Array)();
@@ -1219,7 +1324,6 @@ function arrayFirstValue(arr) {
                 this.realPath = Savage.path.get[this.type](this);
             }
             _.bbox = Savage.path.getBBox(Savage.path.map(this.realPath, this.matrix));
-            console.log(this.attr("path"), this.realPath, Savage.path.map(this.realPath, this.matrix), _.bbox);
             _.bbox.toString = x_y_w_h;
             _.dirty = _.dirtyT = 0;
         }

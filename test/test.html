@@ -15,6 +15,7 @@
         <script src="../mina.js"></script>
         <script src="../elemental.js"></script>
         <script src="../svg.js"></script>
+        <script src="../savage.path.js"></script>
         <script src="../savage.set.js"></script>
     </head>
     <body>
@@ -341,6 +342,166 @@
                 expect(c.node.getAttribute("cy")).to.be("50");
                 expect(c.node.getAttribute("rx")).to.be("5%");
                 expect(c.node.getAttribute("ry")).to.be("6%");
+            });
+            it("path core attributes", function () {
+                var c = s.path("M10,10 110,10");
+                expect(c.node.getAttribute("d")).to.be("M10,10 110,10");
+                c.attr({d: "M10,10 210,10"});
+                expect(c.node.getAttribute("d")).to.be("M10,10 210,10");
+                c.attr({path: "M10,10 310,10"});
+                expect(c.node.getAttribute("d")).to.be("M10,10 310,10");
+            });
+            it("text core attributes", function () {
+                var c = s.text(10, 15, "testing");
+                expect(c.node.getAttribute("x")).to.be("10");
+                expect(c.node.getAttribute("y")).to.be("15");
+                expect(c.node.textContent).to.be("testing");
+                c.attr({
+                    x: 20,
+                    y: 25,
+                    text: "texting"
+                });
+                expect(c.node.getAttribute("x")).to.be("20");
+                expect(c.node.getAttribute("y")).to.be("25");
+                expect(c.node.textContent).to.be("texting");
+            });
+            it("line core attributes", function () {
+                var c = s.line(10, 15, 110, 17);
+                expect(c.node.getAttribute("x1")).to.be("10");
+                expect(c.node.getAttribute("y1")).to.be("15");
+                expect(c.node.getAttribute("x2")).to.be("110");
+                expect(c.node.getAttribute("y2")).to.be("17");
+                c.attr({
+                    x1: 20,
+                    y1: 25,
+                    x2: 220,
+                    y2: 27
+                });
+                expect(c.node.getAttribute("x1")).to.be("20");
+                expect(c.node.getAttribute("y1")).to.be("25");
+                expect(c.node.getAttribute("x2")).to.be("220");
+                expect(c.node.getAttribute("y2")).to.be("27");
+            });
+            it("polyline core attributes", function () {
+                var c = s.polyline(10, 15, 20, 25, 30, 35);
+                expect(c.node.getAttribute("points")).to.be("10,15,20,25,30,35");
+                c.attr({
+                    points: [20, 25, 30, 35, 40, 45]
+                });
+                expect(c.node.getAttribute("points")).to.be("20,25,30,35,40,45");
+            });
+            it("polygon core attributes", function () {
+                var c = s.polygon(10, 15, 20, 25, 30, 35);
+                expect(c.node.getAttribute("points")).to.be("10,15,20,25,30,35");
+                c.attr({
+                    points: [20, 25, 30, 35, 40, 45]
+                });
+                expect(c.node.getAttribute("points")).to.be("20,25,30,35,40,45");
+            });
+        });
+        describe("Path methods", function () {
+            it("Savage.path.getTotalLength", function () {
+                expect(+Savage.path.getTotalLength("M0,0 100,0").toFixed(2)).to.be(100);
+            });
+            it("Savage.path.getPointAtLength", function () {
+                expect(Savage.path.getPointAtLength("M0,0 100,0", 50)).to.eql({
+                    x: 50,
+                    y: 0,
+                    m: {
+                        x: 25,
+                        y: 0
+                    },
+                    n: {
+                        x: 75,
+                        y: 0
+                    },
+                    start: {
+                        x: 0,
+                        y: 0
+                    },
+                    end: {
+                        x: 100,
+                        y: 0
+                    },
+                    alpha: 180
+                });
+            });
+            it("Savage.path.getSubpath", function () {
+                expect(Savage.path.getSubpath("M0,0 100,0", 10, 90)).to.be("M9.995,0C29.153,0,70.839,0,90,0");
+                expect(Savage.path.getSubpath("M0,0 100,0", 0, 90)).to.be("M0,0C0,0,64.674,0,90,0");
+                expect(Savage.path.getSubpath("M0,0 100,0", 10, 120)).to.be("M10,0C35.326,0,100,0,100,0");
+            });
+            it("Savage.path.findDotsAtSegment", function () {
+                expect(Savage.path.findDotsAtSegment(0,0,0,0,100,0,100,0,.5)).to.eql({
+                    x: 50,
+                    y: 0,
+                    m: {
+                        x: 25,
+                        y: 0
+                    },
+                    n: {
+                        x: 75,
+                        y: 0
+                    },
+                    start: {
+                        x: 0,
+                        y: 0
+                    },
+                    end: {
+                        x: 100,
+                        y: 0
+                    },
+                    alpha: 180
+                });
+            });
+            it("Savage.path.bezierBBox", function () {
+                var bbox = Savage.path.bezierBBox(10, 10, 10, 20, 110, 0, 110, 10);
+                expect(bbox.cx).to.be(60);
+                expect(bbox.cy).to.be(10);
+                expect(bbox.x).to.be(10);
+                expect(bbox.w).to.be(100);
+                expect(bbox.width).to.be(100);
+                expect(bbox.x2).to.be(110);
+            });
+            it("Savage.path.isPointInsideBBox", function () {
+                expect(Savage.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 5, 5)).to.be(true);
+                expect(Savage.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 10, 5)).to.be(true);
+                expect(Savage.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 10, 10)).to.be(true);
+            });
+            it("Savage.path.isBBoxIntersect", function () {
+                expect(Savage.path.isBBoxIntersect({
+                        x: 0,
+                        y: 0,
+                        width: 10,
+                        height: 10
+                    }, {
+                        x: 5,
+                        y: 5,
+                        width: 15,
+                        height: 15
+                    })).to.be(true);
+                expect(Savage.path.isBBoxIntersect({
+                        x: 0,
+                        y: 0,
+                        width: 10,
+                        height: 10
+                    }, {
+                        x: 5,
+                        y: 5,
+                        width: 7,
+                        height: 7
+                    })).to.be(true);
+                expect(Savage.path.isBBoxIntersect({
+                        x: 0,
+                        y: 0,
+                        width: 10,
+                        height: 10
+                    }, {
+                        x: 15,
+                        y: 15,
+                        width: 10,
+                        height: 10
+                    })).to.be(false);
             });
         });
         </script>

@@ -6,6 +6,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         p2s = /,?([a-z]),?/gi,
         toFloat = parseFloat,
         math = Math,
+        PI = math.PI,
         mmin = math.min,
         mmax = math.max,
         pow = math.pow,
@@ -48,11 +49,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             y2: y + height,
             cx: x + width / 2,
             cy: y + height / 2,
-            rx: width / 2,
-            ry: height / 2,
             r1: math.min(width, height) / 2,
             r2: math.max(width, height) / 2,
-            r: math.sqrt(width * width + height * height) / 2,
+            r0: math.sqrt(width * width + height * height) / 2,
             path: rectPath(x, y, width, height),
             vb: [x, y, width, height].join(" ")
         };
@@ -74,6 +73,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         }
     }
     function getLengthFactory(istotal, subpath) {
+        function O(val) {
+            return +(+val).toFixed(3);
+        }
         return function (path, length, onlystart) {
             path = path2curve(path);
             var x, y, p, l, sp = "", subpaths = {}, point,
@@ -88,10 +90,25 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
                     if (len + l > length) {
                         if (subpath && !subpaths.start) {
                             point = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6], length - len);
-                            sp += ["C" + point.start.x, point.start.y, point.m.x, point.m.y, point.x, point.y];
+                            sp += [
+                                "C" + O(point.start.x),
+                                O(point.start.y),
+                                O(point.m.x),
+                                O(point.m.y),
+                                O(point.x),
+                                O(point.y)
+                            ];
                             if (onlystart) {return sp;}
                             subpaths.start = sp;
-                            sp = ["M" + point.x, point.y + "C" + point.n.x, point.n.y, point.end.x, point.end.y, p[5], p[6]].join();
+                            sp = [
+                                "M" + O(point.x),
+                                O(point.y) + "C" + O(point.n.x),
+                                O(point.n.y),
+                                O(point.end.x),
+                                O(point.end.y),
+                                O(p[5]),
+                                O(p[6])
+                            ].join();
                             len += l;
                             x = +p[5];
                             y = +p[6];
@@ -99,7 +116,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
                         }
                         if (!istotal && !subpath) {
                             point = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6], length - len);
-                            return {x: point.x, y: point.y, alpha: point.alpha};
+                            return point;
                         }
                     }
                     len += l;
@@ -109,8 +126,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
                 sp += p.shift() + p;
             }
             subpaths.end = sp;
-            point = istotal ? len : subpath ? subpaths : R.findDotsAtSegment(x, y, p[0], p[1], p[2], p[3], p[4], p[5], 1);
-            point.alpha && (point = {x: point.x, y: point.y, alpha: point.alpha});
+            point = istotal ? len : subpath ? subpaths : findDotsAtSegment(x, y, p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return point;
         };
     }
@@ -134,7 +150,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             cx = t1 * c2x + t * p2x,
             cy = t1 * c2y + t * p2y,
             alpha = (90 - math.atan2(mx - nx, my - ny) * 180 / PI);
-        (mx > nx || my < ny) && (alpha += 180);
+        // (mx > nx || my < ny) && (alpha += 180);
         return {
             x: x,
             y: y,
@@ -158,18 +174,22 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         );
     }
     function isPointInsideBBox(bbox, x, y) {
-        return x >= bbox.x && x <= bbox.x2 && y >= bbox.y && y <= bbox.y2;
+        return  x >= bbox.x &&
+                x <= bbox.x + bbox.width &&
+                y >= bbox.y &&
+                y <= bbox.y + bbox.height;
     }
     function isBBoxIntersect(bbox1, bbox2) {
-        var i = isPointInsideBBox;
-        return i(bbox2, bbox1.x, bbox1.y)
-            || i(bbox2, bbox1.x2, bbox1.y)
-            || i(bbox2, bbox1.x, bbox1.y2)
-            || i(bbox2, bbox1.x2, bbox1.y2)
-            || i(bbox1, bbox2.x, bbox2.y)
-            || i(bbox1, bbox2.x2, bbox2.y)
-            || i(bbox1, bbox2.x, bbox2.y2)
-            || i(bbox1, bbox2.x2, bbox2.y2)
+        bbox1 = box(bbox1);
+        bbox2 = box(bbox2);
+        return isPointInsideBBox(bbox2, bbox1.x, bbox1.y)
+            || isPointInsideBBox(bbox2, bbox1.x2, bbox1.y)
+            || isPointInsideBBox(bbox2, bbox1.x, bbox1.y2)
+            || isPointInsideBBox(bbox2, bbox1.x2, bbox1.y2)
+            || isPointInsideBBox(bbox1, bbox2.x, bbox2.y)
+            || isPointInsideBBox(bbox1, bbox2.x2, bbox2.y)
+            || isPointInsideBBox(bbox1, bbox2.x, bbox2.y2)
+            || isPointInsideBBox(bbox1, bbox2.x2, bbox2.y2)
             || (bbox1.x < bbox2.x2 && bbox1.x > bbox2.x
                 || bbox2.x < bbox1.x2 && bbox2.x > bbox1.x)
             && (bbox1.y < bbox2.y2 && bbox1.y > bbox2.y
@@ -1184,7 +1204,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Utility method
      **
-     * Returns `true` if given point is inside bounding boxes.
+     * Returns `true` if given point is inside bounding box.
      > Parameters
      - bbox (string) bounding box
      - x (string) x coordinate of the point
@@ -1265,7 +1285,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      o }
     \*/
     Savage.path.getBBox = pathBBox;
-    // TODO add doc
     Savage.path.get = getPath;
     /*\
      * Savage.path.toRelative

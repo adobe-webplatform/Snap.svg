@@ -99,8 +99,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             A = Savage.color(a);
             B = Savage.color(b);
             return {
-                from: [A.r, A.g, A.b],
-                to: [B.r, B.g, B.b],
+                from: [A.r, A.g, A.b, A.opacity],
+                to: [B.r, B.g, B.b, B.opacity],
                 f: getColour
             };
         }
