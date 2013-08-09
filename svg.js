@@ -3,13 +3,14 @@ Savage.version = "0.0.1";
 function Savage(w, h) {
     if (w) {
         if (w.tagName) {
-            return new Element(w);
+            return wrap(w);
         }
         if (w instanceof Element) {
             return w;
         }
         if (h == null) {
-            return new Element(glob.doc.querySelector(w));
+            w = glob.doc.querySelector(w);
+            return wrap(w);
         }
     }
     w = w == null ? "100%" : w;
@@ -1236,7 +1237,7 @@ function unit2px(el, name, value) {
  = (Element)
 \*/
 Savage.select = function (query) {
-    return new Element(glob.doc.querySelector(query));
+    return wrap(glob.doc.querySelector(query));
 };
 /*\
  * Savage.selectAll
@@ -1251,7 +1252,7 @@ Savage.selectAll = function (query) {
     var nodelist = glob.doc.querySelectorAll(query),
         set = (Savage.set || Array)();
     for (var i = 0; i < nodelist.length; i++) {
-        set.push(new Element(nodelist[i]));
+        set.push(wrap(nodelist[i]));
     }
     return set;
 };
@@ -1418,13 +1419,13 @@ function arrayFirstValue(arr) {
         this.removed = true;
     };
     elproto.select = function (query) {
-        return new Element(this.node.querySelector(query));
+        return wrap(this.node.querySelector(query));
     };
     elproto.selectAll = function (query) {
         var nodelist = this.node.querySelectorAll(query),
             set = (Savage.set || Array)();
         for (var i = 0; i < nodelist.length; i++) {
-            set.push(new Element(nodelist[i]));
+            set.push(wrap(nodelist[i]));
         }
         return set;
     };
@@ -1455,7 +1456,7 @@ function arrayFirstValue(arr) {
         var clone = this.node.cloneNode(true);
         // TODO replace with this.insertAfter()
         this.node.parentNode.insertBefore(clone, this.node);
-        return new Element(clone);
+        return wrap(clone);
     };
     elproto.pattern = function (x, y, width, height) {
         var p = make("pattern", this.paper.defs);
@@ -1514,13 +1515,12 @@ function arrayFirstValue(arr) {
         };
     }
     elproto.animate = function (attrs, ms, callback) {
-        var anims = [], eq;
         for (var key in attrs) if (attrs[has](key)) {
             if (this.equal) {
-                eq = this.equal(key, Str(attrs[key]));
-                anims.push(mina(eq.from, eq.to, ms, applyAttr(this, key, eq.f)));
+                var eq = this.equal(key, Str(attrs[key]));
+                return mina(eq.from, eq.to, ms, applyAttr(this, key, eq.f));
             } else {
-                anims.push(mina(+this.attr(key), +attrs[key], ms, applyAttr(this, key)));
+                return mina(+this.attr(key), +attrs[key], ms, applyAttr(this, key));
             }
         }
     };
@@ -1570,7 +1570,7 @@ Savage.fragment = function () {
 function make(name, parent) {
     var res = $(name);
     parent.appendChild(res);
-    var el = new Element(res);
+    var el = wrap(res);
     el.type = name;
     return el;
 }
@@ -1612,8 +1612,14 @@ function Paper(w, h) {
     return res;
 }
 function wrap(dom) {
+    if (!dom) {
+        return dom;
+    }
     if (dom instanceof Element || dom instanceof Fragment) {
         return dom;
+    }
+    if (dom.tagName == "svg") {
+        return new Paper(dom);
     }
     return new Element(dom);
 }

@@ -29,7 +29,7 @@ module.exports = function(grunt) {
                 src: [
                     "./eve/eve.js",
                     "mina.js",
-                    "elemental.js",
+                    "./third-party/elemental.js",
                     "svg.js",
                     "savage.path.js",
                     "savage.set.js",
@@ -40,12 +40,8 @@ module.exports = function(grunt) {
         }
     });
 
-
-    // These plugins provide necessary tasks.
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
 
-
-    // Default task.
     grunt.registerTask("default", ["concat", "uglify"]);
 };

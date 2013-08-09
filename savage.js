@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-08-05
+// build: 2013-08-09
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -907,13 +907,14 @@ Savage.version = "0.0.1";
 function Savage(w, h) {
     if (w) {
         if (w.tagName) {
-            return new Element(w);
+            return wrap(w);
         }
         if (w instanceof Element) {
             return w;
         }
         if (h == null) {
-            return new Element(glob.doc.querySelector(w));
+            w = glob.doc.querySelector(w);
+            return wrap(w);
         }
     }
     w = w == null ? "100%" : w;
@@ -2140,7 +2141,7 @@ function unit2px(el, name, value) {
  = (Element)
 \*/
 Savage.select = function (query) {
-    return new Element(glob.doc.querySelector(query));
+    return wrap(glob.doc.querySelector(query));
 };
 /*\
  * Savage.selectAll
@@ -2155,7 +2156,7 @@ Savage.selectAll = function (query) {
     var nodelist = glob.doc.querySelectorAll(query),
         set = (Savage.set || Array)();
     for (var i = 0; i < nodelist.length; i++) {
-        set.push(new Element(nodelist[i]));
+        set.push(wrap(nodelist[i]));
     }
     return set;
 };
@@ -2322,13 +2323,13 @@ function arrayFirstValue(arr) {
         this.removed = true;
     };
     elproto.select = function (query) {
-        return new Element(this.node.querySelector(query));
+        return wrap(this.node.querySelector(query));
     };
     elproto.selectAll = function (query) {
         var nodelist = this.node.querySelectorAll(query),
             set = (Savage.set || Array)();
         for (var i = 0; i < nodelist.length; i++) {
-            set.push(new Element(nodelist[i]));
+            set.push(wrap(nodelist[i]));
         }
         return set;
     };
@@ -2359,7 +2360,7 @@ function arrayFirstValue(arr) {
         var clone = this.node.cloneNode(true);
         // TODO replace with this.insertAfter()
         this.node.parentNode.insertBefore(clone, this.node);
-        return new Element(clone);
+        return wrap(clone);
     };
     elproto.pattern = function (x, y, width, height) {
         var p = make("pattern", this.paper.defs);
@@ -2418,13 +2419,12 @@ function arrayFirstValue(arr) {
         };
     }
     elproto.animate = function (attrs, ms, callback) {
-        var anims = [], eq;
         for (var key in attrs) if (attrs[has](key)) {
             if (this.equal) {
-                eq = this.equal(key, Str(attrs[key]));
-                anims.push(mina(eq.from, eq.to, ms, applyAttr(this, key, eq.f)));
+                var eq = this.equal(key, Str(attrs[key]));
+                return mina(eq.from, eq.to, ms, applyAttr(this, key, eq.f));
             } else {
-                anims.push(mina(+this.attr(key), +attrs[key], ms, applyAttr(this, key)));
+                return mina(+this.attr(key), +attrs[key], ms, applyAttr(this, key));
             }
         }
     };
@@ -2474,7 +2474,7 @@ Savage.fragment = function () {
 function make(name, parent) {
     var res = $(name);
     parent.appendChild(res);
-    var el = new Element(res);
+    var el = wrap(res);
     el.type = name;
     return el;
 }
@@ -2516,8 +2516,14 @@ function Paper(w, h) {
     return res;
 }
 function wrap(dom) {
+    if (!dom) {
+        return dom;
+    }
     if (dom instanceof Element || dom instanceof Fragment) {
         return dom;
+    }
+    if (dom.tagName == "svg") {
+        return new Paper(dom);
     }
     return new Element(dom);
 }
@@ -3437,7 +3443,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         z = z > 1 ? 1 : z < 0 ? 0 : z;
         var z2 = z / 2,
             n = 12,
-            Tvalues = [-0.1252,0.1252,-0.3678,0.3678,-0.5873,0.5873,-0.7699,0.7699,-0.9041,0.9041,-0.9816,0.9816],
+            Tvalues = [-.1252,.1252,-.3678,.3678,-.5873,.5873,-.7699,.7699,-.9041,.9041,-.9816,.9816],
             Cvalues = [0.2491,0.2491,0.2335,0.2335,0.2032,0.2032,0.1601,0.1601,0.1069,0.1069,0.0472,0.0472],
             sum = 0;
         for (var i = 0; i < n; i++) {
