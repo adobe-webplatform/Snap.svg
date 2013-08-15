@@ -34,7 +34,8 @@ module.exports = function(grunt) {
                     "savage.path.js",
                     "savage.set.js",
                     "savage.equal.js",
-                    "savage.mouse.js"
+                    "savage.mouse.js",
+                    "savage.filter.default.js"
                 ]
             }
         }

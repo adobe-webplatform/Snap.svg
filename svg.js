@@ -66,6 +66,9 @@ function $(el, attr) {
             el = $(el);
         }
         if (typeof attr == "string") {
+            if (attr.substring(0, 6) == "xlink:") {
+                return el.getAttributeNS(xlink, attr.substring(6));
+            }
             return el.getAttribute(attr);
         }
         for (var key in attr) if (attr[has](key)) {
@@ -87,6 +90,7 @@ function $(el, attr) {
     return el;
 }
 Savage._.$ = $;
+Savage._.id = ID;
 function getAttrs(el) {
     var attrs = el.attributes,
         name,
@@ -116,6 +120,52 @@ function is(o, type) {
             (type == "object" && o === Object(o)) ||
             objectToString.call(o).slice(8, -1).toLowerCase() == type;
 }
+/*\
+ * Savage.format
+ [ method ]
+ **
+ * Replaces construction of type “`{<name>}`” to the corresponding argument.
+ **
+ > Parameters
+ **
+ - token (string) string to format
+ - json (object) object which properties will be used as a replacement
+ = (string) formated string
+ > Usage
+ | // this will draw a rectangular shape equivalent to "M10,20h40v50h-40z"
+ | paper.path(Savage.format("M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z", {
+ |     x: 10,
+ |     y: 20,
+ |     dim: {
+ |         width: 40,
+ |         height: 50,
+ |         "negative width": -40
+ |     }
+ | }));
+\*/
+Savage.format = (function () {
+    var tokenRegex = /\{([^\}]+)\}/g,
+        objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g, // matches .xxxxx or ["xxxxx"] to run over object properties
+        replacer = function (all, key, obj) {
+            var res = obj;
+            key.replace(objNotationRegex, function (all, name, quote, quotedName, isFunc) {
+                name = name || quotedName;
+                if (res) {
+                    if (name in res) {
+                        res = res[name];
+                    }
+                    typeof res == "function" && isFunc && (res = res());
+                }
+            });
+            res = (res == null || res == obj ? all : res) + "";
+            return res;
+        };
+    return function (str, obj) {
+        return Str(str).replace(tokenRegex, function (all, key) {
+            return replacer(all, key, obj);
+        });
+    };
+})();
 var preload = (function () {
     function onerror() {
         this.parentNode.removeChild(this);
@@ -610,7 +660,7 @@ Savage.getRGB = cacher(function (colour) {
         }
         rgb = {r: red, g: green, b: blue, toString: rgbtoString};
         rgb.hex = "#" + (16777216 | blue | (green << 8) | (red << 16)).toString(16).slice(1);
-        is(opacity, "finite") && (rgb.opacity = opacity);
+        rgb.opacity = is(opacity, "finite") ? opacity : 1;
         return rgb;
     }
     return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
@@ -710,6 +760,7 @@ packageRGB = function (r, g, b, o) {
         r: r,
         g: g,
         b: b,
+        opacity: is(o, "finite") ? o : 1,
         hex: Savage.rgb(r, g, b),
         toString: rgbtoString
     };
@@ -744,12 +795,14 @@ Savage.color = function (clr) {
         clr.r = rgb.r;
         clr.g = rgb.g;
         clr.b = rgb.b;
+        clr.opacity = 1;
         clr.hex = rgb.hex;
     } else if (is(clr, "object") && "h" in clr && "s" in clr && "l" in clr) {
         rgb = Savage.hsl2rgb(clr);
         clr.r = rgb.r;
         clr.g = rgb.g;
         clr.b = rgb.b;
+        clr.opacity = 1;
         clr.hex = rgb.hex;
     } else {
         if (is(clr, "string")) {
@@ -1507,22 +1560,41 @@ function arrayFirstValue(arr) {
         return p;
     };
     // animation
-    function applyAttr(el, key, f) {
-        var at = {};
-        return function (value) {
-            at[key] = f ? f(value) : value;
-            el.attr(at);
+    function slice(from, to, f) {
+        return function (arr) {
+            var res = arr.slice(from, to);
+            if (res.length == 1) {
+                res = res[0];
+            }
+            return f ? f(res) : res;
         };
     }
     elproto.animate = function (attrs, ms, callback) {
+        var fkeys = [], tkeys = [], keys = {}, from, to, f, eq;
         for (var key in attrs) if (attrs[has](key)) {
             if (this.equal) {
-                var eq = this.equal(key, Str(attrs[key]));
-                return mina(eq.from, eq.to, ms, applyAttr(this, key, eq.f));
+                eq = this.equal(key, Str(attrs[key]));
+                from = eq.from;
+                to = eq.to;
+                f = eq.f;
             } else {
-                return mina(+this.attr(key), +attrs[key], ms, applyAttr(this, key));
+                from = +this.attr(key);
+                to = +attrs[key];
             }
+            var len = is(from, "array") ? from.length : 1;
+            keys[key] = slice(fkeys.length, fkeys.length + len, f);
+            fkeys = fkeys.concat(from);
+            tkeys = tkeys.concat(to);
         }
+        var now = mina.time(),
+            el = this;
+        return mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
+            var attr = {};
+            for (var key in keys) if (keys[has](key)) {
+                attr[key] = keys[key](val);
+            }
+            el.attr(attr);
+        });
     };
 }(Element.prototype));
 Savage.parse = function (svg) {
@@ -1530,9 +1602,12 @@ Savage.parse = function (svg) {
         pointer = f;
     eve.on("elemental.tag", function (data, extra, raw) {
         var tag = $(data);
-        $(tag, extra);
+        extra && $(tag, extra);
         pointer.appendChild(tag);
         pointer = tag;
+    });
+    eve.on("elemental.text", function (text) {
+        pointer.appendChild(document.createTextNode(text));
     });
     eve.on("elemental./tag", function () {
         pointer = pointer.parentNode;
@@ -1542,7 +1617,7 @@ Savage.parse = function (svg) {
         eve("savage.parsed", f);
     });
     elemental().parse(svg).end();
-    return f;
+    return new Fragment(f);
 };
 function Fragment(frag) {
     this.node = frag;
@@ -1561,7 +1636,7 @@ Savage.fragment = function () {
             f.appendChild(item);
         }
         if (typeof item == "string") {
-            f.appendChild(Savage.parse(item));
+            f.appendChild(Savage.parse(item).node);
         }
     }
     return new Fragment(f);

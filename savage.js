@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-08-09
+// build: 2013-08-15
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -444,110 +444,81 @@ window.mina = (function () {
     timer = function () {
         return +new Date;
     },
+    sta = function (val) {
+        var a = this;
+        if (val == null) {
+            return a.s;
+        }
+        var ds = a.s - val;
+        a.b += a.dur * ds;
+        a.B += a.dur * ds;
+        a.s = val;
+    },
+    speed = function (val) {
+        var a = this;
+        if (val == null) {
+            return a.spd;
+        }
+        a.spd = val;
+    },
+    duration = function (val) {
+        var a = this;
+        if (val == null) {
+            return a.dur;
+        }
+        a.s = a.s * val / a.dur;
+        a.dur = val;
+    },
     frame = function () {
-        var value, one;
-        for (var i = 0; i < animations.length; i++) {
+        for (var i = 0, ii = animations.length; i < ii; i++) {
             var a = animations[i],
-                gen = a.b + (a.gen() - a.b) * a["*"] + a["+"];
-            if (isArray(a.a)) {
-                value = [];
-                for (var j = 0, jj = a.a.length; j < jj; j++) {
-                    value[j] = a.dif[j](gen);
-                    one = a.A[j] - a.a[j];
-                    value[j] = one ?
-                        a.a[j] + a.easing((value[j] - a.a[j]) / one) * one :
-                        a.a[j];
+                b = a.get(),
+                res;
+            a.s = (b - a.b) / (a.dur / a.spd);
+            if (a.s >= 1) {
+                animations.splice(i, 1);
+                a.s = 1;
+            }
+            if (isArray(a.start)) {
+                res = [];
+                for (var j = 0, jj = a.start.length; j < jj; j++) {
+                    res[j] = a.start[j] + (a.end[j] - a.start[j]) * a.easing(a.s);
                 }
             } else {
-                value = a.dif(gen);
-                one = a.A - a.a;
-                value = a.a + a.easing((value - a.a) / one) * one;
+                res = a.start + (a.end - a.start) * a.easing(a.s);
             }
-            try {
-                if (a.stopper(gen)) {
-                    if (--a.iterations) {
-                        a["+"] += a.b - a.B; // -dur
-                    } else {
-                        animations.splice(i--, 1);
-                        a.framer(a.A);
-                        a.callback && a.callback();
-                    }
-                } else {
-                    a.framer(value);
-                }
-            } catch (e) {
-                console.error(e);
-                // swallow
-            }
+            a.set(res);
         }
         animations.length && requestAnimFrame(frame);
     },
-    setSpeed = function (speed) {
-        this["*"] = Math.abs(speed);
-        this.speed = speed;
-        if (speed < 0) {
-            var t = this.a;
-            this.a = this.A;
-            this.A = t;
-            this.dif = diff(this.a, this.b, this.A, this.B);
-            // TODO remove?
-            this.stopper = stopperEnd(this.b, this.B);
-        }
-    },
-    stopme = function () {
-        for (var i = 0, ii = animations.length; i < ii; i++) {
-            if (animations[i] == this) {
-                animations.splice(i, 1);
-                return;
-            }
-        }
-    },
-    queue = function (a, A, b, B, framer, callback, gen, stopper) {
+    mina = function (a, A, b, B, get, set, easing) {
         var anim = {
-            framer: framer,
-            callback: callback,
-            dif: diff(a, b, A, B),
-            easing: mina.linear,
-            "+": 0,
-            "*": 1,
-            gen: gen,
-            speed: 1,
-            iterations: 1,
-            stopper: stopper,
-            a: a,
+            start: a,
+            end: A,
             b: b,
-            A: A,
-            B: B,
-            setSpeed: setSpeed,
-            stop: stopme
+            s: 0,
+            dur: B - b,
+            spd: 1,
+            get: get,
+            set: set,
+            easing: easing || mina.linear,
+            status: sta,
+            speed: speed,
+            duration: duration
         };
         animations.push(anim);
         animations.length == 1 && requestAnimFrame(frame);
         return anim;
-    },
-    stopperEnd = function (a, A) {
-        return function (value) {
-            return a < A ? value >= A : value <= A;
-        };
-    },
-    stopperStart = function (a, A) {
-        return function (value) {
-            return a < A ? value <= a : value >= a;
-        };
-    },
-    mina = function (a, A, ms, frameHandler, callback) {
-        var b = timer(),
-            B = b + ms;
-        frameHandler(a);
-        return queue(a, A, b, B, frameHandler, callback, timer, stopperEnd(b, B));
     };
+    mina.time = timer;
+
     mina.linear = function (n) {
         return n;
     };
     mina.easeout = function (n) {
         return Math.pow(n, 1.7);
     };
-    mina.easein =  function (n) {
+    mina.easein = function (n) {
         return Math.pow(n, .48);
     };
     mina.easeinout = function (n) {
@@ -573,7 +544,8 @@ window.mina = (function () {
         if (n == !!n) {
             return n;
         }
-        return Math.pow(2, -10 * n) * Math.sin((n - .075) * (2 * Math.PI) / .3) + 1;
+        return Math.pow(2, -10 * n) * Math.sin((n - .075) *
+            (2 * Math.PI) / .3) + 1;
     };
     mina.bounce = function (n) {
         var s = 7.5625,
@@ -970,6 +942,9 @@ function $(el, attr) {
             el = $(el);
         }
         if (typeof attr == "string") {
+            if (attr.substring(0, 6) == "xlink:") {
+                return el.getAttributeNS(xlink, attr.substring(6));
+            }
             return el.getAttribute(attr);
         }
         for (var key in attr) if (attr[has](key)) {
@@ -991,6 +966,7 @@ function $(el, attr) {
     return el;
 }
 Savage._.$ = $;
+Savage._.id = ID;
 function getAttrs(el) {
     var attrs = el.attributes,
         name,
@@ -1020,6 +996,52 @@ function is(o, type) {
             (type == "object" && o === Object(o)) ||
             objectToString.call(o).slice(8, -1).toLowerCase() == type;
 }
+/*\
+ * Savage.format
+ [ method ]
+ **
+ * Replaces construction of type “`{<name>}`” to the corresponding argument.
+ **
+ > Parameters
+ **
+ - token (string) string to format
+ - json (object) object which properties will be used as a replacement
+ = (string) formated string
+ > Usage
+ | // this will draw a rectangular shape equivalent to "M10,20h40v50h-40z"
+ | paper.path(Savage.format("M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z", {
+ |     x: 10,
+ |     y: 20,
+ |     dim: {
+ |         width: 40,
+ |         height: 50,
+ |         "negative width": -40
+ |     }
+ | }));
+\*/
+Savage.format = (function () {
+    var tokenRegex = /\{([^\}]+)\}/g,
+        objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g, // matches .xxxxx or ["xxxxx"] to run over object properties
+        replacer = function (all, key, obj) {
+            var res = obj;
+            key.replace(objNotationRegex, function (all, name, quote, quotedName, isFunc) {
+                name = name || quotedName;
+                if (res) {
+                    if (name in res) {
+                        res = res[name];
+                    }
+                    typeof res == "function" && isFunc && (res = res());
+                }
+            });
+            res = (res == null || res == obj ? all : res) + "";
+            return res;
+        };
+    return function (str, obj) {
+        return Str(str).replace(tokenRegex, function (all, key) {
+            return replacer(all, key, obj);
+        });
+    };
+})();
 var preload = (function () {
     function onerror() {
         this.parentNode.removeChild(this);
@@ -1514,7 +1536,7 @@ Savage.getRGB = cacher(function (colour) {
         }
         rgb = {r: red, g: green, b: blue, toString: rgbtoString};
         rgb.hex = "#" + (16777216 | blue | (green << 8) | (red << 16)).toString(16).slice(1);
-        is(opacity, "finite") && (rgb.opacity = opacity);
+        rgb.opacity = is(opacity, "finite") ? opacity : 1;
         return rgb;
     }
     return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
@@ -1614,6 +1636,7 @@ packageRGB = function (r, g, b, o) {
         r: r,
         g: g,
         b: b,
+        opacity: is(o, "finite") ? o : 1,
         hex: Savage.rgb(r, g, b),
         toString: rgbtoString
     };
@@ -1648,12 +1671,14 @@ Savage.color = function (clr) {
         clr.r = rgb.r;
         clr.g = rgb.g;
         clr.b = rgb.b;
+        clr.opacity = 1;
         clr.hex = rgb.hex;
     } else if (is(clr, "object") && "h" in clr && "s" in clr && "l" in clr) {
         rgb = Savage.hsl2rgb(clr);
         clr.r = rgb.r;
         clr.g = rgb.g;
         clr.b = rgb.b;
+        clr.opacity = 1;
         clr.hex = rgb.hex;
     } else {
         if (is(clr, "string")) {
@@ -2411,22 +2436,41 @@ function arrayFirstValue(arr) {
         return p;
     };
     // animation
-    function applyAttr(el, key, f) {
-        var at = {};
-        return function (value) {
-            at[key] = f ? f(value) : value;
-            el.attr(at);
+    function slice(from, to, f) {
+        return function (arr) {
+            var res = arr.slice(from, to);
+            if (res.length == 1) {
+                res = res[0];
+            }
+            return f ? f(res) : res;
         };
     }
     elproto.animate = function (attrs, ms, callback) {
+        var fkeys = [], tkeys = [], keys = {}, from, to, f, eq;
         for (var key in attrs) if (attrs[has](key)) {
             if (this.equal) {
-                var eq = this.equal(key, Str(attrs[key]));
-                return mina(eq.from, eq.to, ms, applyAttr(this, key, eq.f));
+                eq = this.equal(key, Str(attrs[key]));
+                from = eq.from;
+                to = eq.to;
+                f = eq.f;
             } else {
-                return mina(+this.attr(key), +attrs[key], ms, applyAttr(this, key));
+                from = +this.attr(key);
+                to = +attrs[key];
             }
+            var len = is(from, "array") ? from.length : 1;
+            keys[key] = slice(fkeys.length, fkeys.length + len, f);
+            fkeys = fkeys.concat(from);
+            tkeys = tkeys.concat(to);
         }
+        var now = mina.time(),
+            el = this;
+        return mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
+            var attr = {};
+            for (var key in keys) if (keys[has](key)) {
+                attr[key] = keys[key](val);
+            }
+            el.attr(attr);
+        });
     };
 }(Element.prototype));
 Savage.parse = function (svg) {
@@ -2434,9 +2478,12 @@ Savage.parse = function (svg) {
         pointer = f;
     eve.on("elemental.tag", function (data, extra, raw) {
         var tag = $(data);
-        $(tag, extra);
+        extra && $(tag, extra);
         pointer.appendChild(tag);
         pointer = tag;
+    });
+    eve.on("elemental.text", function (text) {
+        pointer.appendChild(document.createTextNode(text));
     });
     eve.on("elemental./tag", function () {
         pointer = pointer.parentNode;
@@ -2446,7 +2493,7 @@ Savage.parse = function (svg) {
         eve("savage.parsed", f);
     });
     elemental().parse(svg).end();
-    return f;
+    return new Fragment(f);
 };
 function Fragment(frag) {
     this.node = frag;
@@ -2465,7 +2512,7 @@ Savage.fragment = function () {
             f.appendChild(item);
         }
         if (typeof item == "string") {
-            f.appendChild(Savage.parse(item));
+            f.appendChild(Savage.parse(item).node);
         }
     }
     return new Fragment(f);
@@ -3234,6 +3281,19 @@ Savage.plugin = function (f) {
 };
 return Savage;
 }());
+// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 Savage.plugin(function (Savage, Element, Paper, glob) {
     var elproto = Element.prototype,
         is = Savage.is,
@@ -4572,6 +4632,19 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     Savage.path.toString = toString;
     Savage.path.clone = pathClone;
 });
+// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 Savage.plugin(function (Savage, Element, Paper, glob) {
     var mmax = Math.max,
         mmin = Math.min;
@@ -4771,6 +4844,19 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         return set;
     };
 });
+// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 Savage.plugin(function (Savage, Element, Paper, glob) {
     var names = {},
         reUnit = /[a-z]+$/i,
@@ -4906,6 +4992,19 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         }
     };
 });
+// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 Savage.plugin(function (Savage, Element, Paper, glob) {
     var elproto = Element.prototype,
     has = "hasOwnProperty",
@@ -5444,5 +5543,108 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             eve.unbind("savage.drag.*." + this.id);
         }
         !draggable.length && Savage.unmousemove(dragMove).unmouseup(dragUp);
+    };
+});
+// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+Savage.plugin(function (Savage, Element, Paper, glob) {
+    var elproto = Element.prototype,
+        pproto = Paper.prototype,
+        rgurl = /^\s*url\((.+)\)/,
+        Str = String,
+        $ = Savage._.$;
+    Savage.filter = {};
+    pproto.filter = function (filstr) {
+        var f = Savage.parse(Str(filstr)),
+            id = Savage._.id(),
+            width = $(this.node, "width") || this.node.offsetWidth,
+            height = $(this.node, "height") || this.node.offsetHeight,
+            filter = $("filter");
+        $(filter, {
+            id: id,
+            filterUnits: "userSpaceOnUse",
+            x: 0,
+            y: 0,
+            width: width,
+            height: height
+        });
+        filter.appendChild(f.node);
+        this.defs.appendChild(filter);
+        return new Element(filter);
+    };
+    
+    eve.on("savage.util.getattr.filter", function () {
+        eve.stop();
+        var p = $(this.node, "filter");
+        if (p) {
+            var match = Str(p).match(rgurl);
+            return match && Savage.select(match[1]);
+        }
+    });
+    eve.on("savage.util.attr.filter", function (value) {
+        if (value instanceof Element && value.type == "filter") {
+            eve.stop();
+            var id = value.node.id;
+            if (!id) {
+                $(value.node, {id: value.id});
+                id = value.id;
+            }
+            $(this.node, {
+                filter: "url(#" + id + ")"
+            });
+        }
+        if (!value) {
+            eve.stop();
+            this.node.removeAttribute("filter");
+        }
+    });
+    
+    Savage.filter.blur = function (x, y) {
+        if (x == null) {
+            x = 2;
+        }
+        var def = y == null ? x : [x, y];
+        return Savage.format('\<feGaussianBlur stdDeviation="{def}"/>', {
+            def: def
+        });
+    };
+    Savage.filter.blur.toString = function () {
+        return this();
+    };
+    Savage.filter.shadow = function (dx, dy, blur, color) {
+        color = Savage.color(color || "#000");
+        if (blur == null) {
+            blur = 2;
+        }
+        if (dx == null) {
+            dx = 0;
+            dy = 4;
+        }
+        if (dy == null) {
+            dy = dx;
+        }
+        return Savage.format('<feColorMatrix type="matrix" in="SourceAlpha" result="colored" values="0 0 0 0 {r} 0 0 0 0 {g} 0 0 0 0 {b} 0 0 0 {o} 0"/><feGaussianBlur in="colored" stdDeviation="{blur}" result="blur"/><feOffset in="blur" dx="{dx}" dy="{dy}" result="offsetBlur"/><feMerge><feMergeNode in="offsetBlur"/><feMergeNode in="SourceGraphic"/></feMerge>', {
+            r: color.r,
+            g: color.g,
+            b: color.b,
+            o: color.opacity,
+            dx: dx,
+            dy: dy,
+            blur: blur
+        });
+    };
+    Savage.filter.shadow.toString = function () {
+        return this();
     };
 });
