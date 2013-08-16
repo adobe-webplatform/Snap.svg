@@ -27,7 +27,7 @@ module.exports = function(grunt) {
             target: {
                 dest: pkg.name.toLowerCase() + ".js",
                 src: [
-                    "./eve/eve.js",
+                    "./third-party/eve/eve.js",
                     "mina.js",
                     "./third-party/elemental.js",
                     "svg.js",
