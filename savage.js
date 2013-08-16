@@ -428,6 +428,11 @@ window.mina = (function () {
         return a instanceof Array ||
             Object.prototype.toString.call(a) == "[object Array]";
     },
+    idgen = 0,
+    idprefix = "M" + (+new Date).toString(36),
+    ID = function () {
+        return idprefix + (idgen++).toString(36);
+    },
     diff = function (a, b, A, B) {
         if (isArray(a)) {
             res = [];
@@ -482,17 +487,22 @@ window.mina = (function () {
             if (isArray(a.start)) {
                 res = [];
                 for (var j = 0, jj = a.start.length; j < jj; j++) {
-                    res[j] = a.start[j] + (a.end[j] - a.start[j]) * a.easing(a.s);
+                    res[j] = a.start[j] +
+                        (a.end[j] - a.start[j]) * a.easing(a.s);
                 }
             } else {
                 res = a.start + (a.end - a.start) * a.easing(a.s);
             }
             a.set(res);
+            if (a.s == 1 && typeof eve != "undefined") {
+                eve("mina.finish." + a.id, a);
+            }
         }
         animations.length && requestAnimFrame(frame);
     },
     mina = function (a, A, b, B, get, set, easing) {
         var anim = {
+            id: ID(),
             start: a,
             end: A,
             b: b,
@@ -2463,13 +2473,16 @@ function arrayFirstValue(arr) {
             tkeys = tkeys.concat(to);
         }
         var now = mina.time(),
-            el = this;
-        return mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
-            var attr = {};
-            for (var key in keys) if (keys[has](key)) {
-                attr[key] = keys[key](val);
-            }
-            el.attr(attr);
+            el = this,
+            anim = mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
+                var attr = {};
+                for (var key in keys) if (keys[has](key)) {
+                    attr[key] = keys[key](val);
+                }
+                el.attr(attr);
+            });
+        callback && eve.once("mina.finish." + anim.id, function () {
+            callback.call(el);
         });
     };
 }(Element.prototype));

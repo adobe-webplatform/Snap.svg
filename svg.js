@@ -1587,13 +1587,16 @@ function arrayFirstValue(arr) {
             tkeys = tkeys.concat(to);
         }
         var now = mina.time(),
-            el = this;
-        return mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
-            var attr = {};
-            for (var key in keys) if (keys[has](key)) {
-                attr[key] = keys[key](val);
-            }
-            el.attr(attr);
+            el = this,
+            anim = mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
+                var attr = {};
+                for (var key in keys) if (keys[has](key)) {
+                    attr[key] = keys[key](val);
+                }
+                el.attr(attr);
+            });
+        callback && eve.once("mina.finish." + anim.id, function () {
+            callback.call(el);
         });
     };
 }(Element.prototype));
