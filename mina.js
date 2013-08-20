@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-window.mina = (function () {
-    var animations = [],
+window.mina = (function (eve) {
+    var animations = {},
     requestAnimFrame = window.requestAnimationFrame       ||
                        window.webkitRequestAnimationFrame ||
                        window.mozRequestAnimationFrame    ||
@@ -71,15 +71,23 @@ window.mina = (function () {
         a.s = a.s * val / a.dur;
         a.dur = val;
     },
+    stopit = function () {
+        var a = this;
+        delete animations[a.id];
+        eve("mina.stop." + a.id, a);
+    },
     frame = function () {
-        for (var i = 0, ii = animations.length; i < ii; i++) {
+        var len = 0;
+        for (var i in animations) if (animations.hasOwnProperty(i)) {
             var a = animations[i],
                 b = a.get(),
                 res;
+            len++;
             a.s = (b - a.b) / (a.dur / a.spd);
             if (a.s >= 1) {
-                animations.splice(i, 1);
+                delete animations[i];
                 a.s = 1;
+                len--;
             }
             if (isArray(a.start)) {
                 res = [];
@@ -91,11 +99,11 @@ window.mina = (function () {
                 res = a.start + (a.end - a.start) * a.easing(a.s);
             }
             a.set(res);
-            if (a.s == 1 && typeof eve != "undefined") {
+            if (a.s == 1) {
                 eve("mina.finish." + a.id, a);
             }
         }
-        animations.length && requestAnimFrame(frame);
+        len && requestAnimFrame(frame);
     },
     mina = function (a, A, b, B, get, set, easing) {
         var anim = {
@@ -111,13 +119,24 @@ window.mina = (function () {
             easing: easing || mina.linear,
             status: sta,
             speed: speed,
-            duration: duration
+            duration: duration,
+            stop: stopit
         };
-        animations.push(anim);
-        animations.length == 1 && requestAnimFrame(frame);
+        animations[anim.id] = anim;
+        var len = 0, i;
+        for (i in animations) if (animations.hasOwnProperty(i)) {
+            len++;
+            if (len == 2) {
+                break;
+            }
+        }
+        len == 1 && requestAnimFrame(frame);
         return anim;
     };
     mina.time = timer;
+    mina.getById = function (id) {
+        return animations[anim.id] || null;
+    };
 
     mina.linear = function (n) {
         return n;
@@ -178,4 +197,4 @@ window.mina = (function () {
     };
     
     return mina;
-})();
+})(typeof eve == "undefined" ? function () {} : eve);

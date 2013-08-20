@@ -246,7 +246,7 @@ function x_y_w_h() {
 }
 
 /*\
- * Raphael.rad
+ * Savage.rad
  [ method ]
  **
  * Transform angle to radians
@@ -256,7 +256,7 @@ function x_y_w_h() {
 \*/
 Savage.rad = rad;
 /*\
- * Raphael.deg
+ * Savage.deg
  [ method ]
  **
  * Transform angle to degrees
@@ -562,7 +562,7 @@ function Matrix(a, b, c, d, e, f) {
     };
 })(Matrix.prototype);
 /*\
- * Raphael.Matrix
+ * Savage.Matrix
  [ method ]
  **
  * Utility method
@@ -988,71 +988,71 @@ Savage.rgb2hsl = function (r, g, b) {
 };
 
 // Transformations
-    /*\
-     * Savage.parsePathString
-     [ method ]
-     **
-     * Utility method
-     **
-     * Parses given path string into an array of arrays of path segments.
-     > Parameters
-     - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
-     = (array) array of segments.
-    \*/
-    Savage.parsePathString = function (pathString) {
-        if (!pathString) {
-            return null;
-        }
-        var pth = Savage.path(pathString);
-        if (pth.arr) {
-            return Savage.path.clone(pth.arr);
-        }
-        
-        var paramCounts = {a: 7, c: 6, o: 2, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, u: 3, z: 0},
-            data = [];
-        if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
-            data = Savage.path.clone(pathString);
-        }
-        if (!data.length) {
-            Str(pathString).replace(pathCommand, function (a, b, c) {
-                var params = [],
-                    name = b.toLowerCase();
-                c.replace(pathValues, function (a, b) {
-                    b && params.push(+b);
-                });
-                if (name == "m" && params.length > 2) {
-                    data.push([b].concat(params.splice(0, 2)));
-                    name = "l";
-                    b = b == "m" ? "l" : "L";
-                }
-                if (name == "o" && params.length == 1) {
-                    data.push([b, params[0]]);
-                }
-                if (name == "r") {
-                    data.push([b].concat(params));
-                } else while (params.length >= paramCounts[name]) {
-                    data.push([b].concat(params.splice(0, paramCounts[name])));
-                    if (!paramCounts[name]) {
-                        break;
-                    }
-                }
+/*\
+ * Savage.parsePathString
+ [ method ]
+ **
+ * Utility method
+ **
+ * Parses given path string into an array of arrays of path segments.
+ > Parameters
+ - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
+ = (array) array of segments.
+\*/
+Savage.parsePathString = function (pathString) {
+    if (!pathString) {
+        return null;
+    }
+    var pth = Savage.path(pathString);
+    if (pth.arr) {
+        return Savage.path.clone(pth.arr);
+    }
+    
+    var paramCounts = {a: 7, c: 6, o: 2, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, u: 3, z: 0},
+        data = [];
+    if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
+        data = Savage.path.clone(pathString);
+    }
+    if (!data.length) {
+        Str(pathString).replace(pathCommand, function (a, b, c) {
+            var params = [],
+                name = b.toLowerCase();
+            c.replace(pathValues, function (a, b) {
+                b && params.push(+b);
             });
-        }
-        data.toString = Savage.path.toString;
-        pth.arr = Savage.path.clone(data);
-        return data;
-    };
-    /*\
-     * Savage.parseTransformString
-     [ method ]
-     **
-     * Utility method
-     **
-     * Parses given path string into an array of transformations.
-     > Parameters
-     - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
-     = (array) array of transformations.
-    \*/
+            if (name == "m" && params.length > 2) {
+                data.push([b].concat(params.splice(0, 2)));
+                name = "l";
+                b = b == "m" ? "l" : "L";
+            }
+            if (name == "o" && params.length == 1) {
+                data.push([b, params[0]]);
+            }
+            if (name == "r") {
+                data.push([b].concat(params));
+            } else while (params.length >= paramCounts[name]) {
+                data.push([b].concat(params.splice(0, paramCounts[name])));
+                if (!paramCounts[name]) {
+                    break;
+                }
+            }
+        });
+    }
+    data.toString = Savage.path.toString;
+    pth.arr = Savage.path.clone(data);
+    return data;
+};
+/*\
+ * Savage.parseTransformString
+ [ method ]
+ **
+ * Utility method
+ **
+ * Parses given path string into an array of transformations.
+ > Parameters
+ - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
+ = (array) array of transformations.
+\*/
 var parseTransformString = Savage.parseTransformString = function (TString) {
     if (!TString) {
         return null;
@@ -1338,6 +1338,7 @@ function Element(el) {
         this.paper = new Paper(svg);
     }
     this.type = el.tagName;
+    this.anims = {};
     this._ = {
         transform: [],
         sx: 1,
@@ -1360,6 +1361,29 @@ function arrayFirstValue(arr) {
     }
 }
 (function (elproto) {
+    /*\
+     * Element.attr
+     [ method ]
+     **
+     * Gets or sets given attributes of the element
+     **
+     > Parameters
+     **
+     - params (object) key-value pairs of attributes you want to set
+     * or
+     - param (string) name of the attribute
+     = (Element)
+     * or
+     = (string) value of attribute
+     > Usage
+     | el.attr({
+     |     fill: "#fc0",
+     |     stroke: "#000",
+     |     strokeWidth: 2, // CamelCase...
+     |     "fill-opacity": 0.5 // or dash-separated names
+     | });
+     | console.log(el.attr("fill")); // “#fc0”
+    \*/
     elproto.attr = function (params) {
         var node = this.node;
         if (is(params, "string")) {
@@ -1372,6 +1396,31 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
+    /*\
+     * Element.getBBox
+     [ method ]
+     **
+     * Returns bounding box descriptor for the given element.
+     **
+     = (object) bounding box descriptor:
+     o {
+     o     cx: (number) x of the center,
+     o     cy: (number) x of the center,
+     o     h: (number) height,
+     o     height: (number) height,
+     o     path: (string) path command for the box,
+     o     r0: (number) radius of the circle that will enclose the box,
+     o     r1: (number) radius of the smallest circle that can be enclosed,
+     o     r2: (number) radius of the biggest circle that can be enclosed,
+     o     vb: (string) box as a viewbox command,
+     o     w: (number) width,
+     o     width: (number) width,
+     o     x2: (number) x of the right side,
+     o     x: (number) x of the left side,
+     o     y2: (number) y of the right side,
+     o     y: (number) y of the left side
+     o }
+    \*/
     elproto.getBBox = function (isWithoutTransform) {
         if (this.removed) {
             return {};
@@ -1400,6 +1449,28 @@ function arrayFirstValue(arr) {
     var propString = function () {
         return this.local;
     };
+    /*\
+     * Element.transform
+     [ method ]
+     **
+     * Gets or sets transformation of the element
+     **
+     > Parameters
+     **
+     - tstr (string) transform string in Savage or SVG format
+     = (Element)
+     * or
+     = (object) transformation descriptor:
+     o {
+     o     string (string) transform string,
+     o     globalMatrix (Matrix) matrix of all transformations applied to element or its parents,
+     o     localMatrix (Matrix) matrix of transformations applied only to the element,
+     o     diffMatrix (Matrix) matrix of difference between global and local transformations,
+     o     global (string) global transformation as string,
+     o     local (string) local transformation as string,
+     o     toString (function) returns `string` property
+     o }
+    \*/
     elproto.transform = function (tstr) {
         var _ = this._;
         if (tstr == null) {
@@ -1434,9 +1505,28 @@ function arrayFirstValue(arr) {
 
         return this;
     };
+    /*\
+     * Element.parent
+     [ method ]
+     **
+     * Returns parent of the element
+     **
+     = (Element) parent
+    \*/
     elproto.parent = function () {
-        return Savage(this.node.parentNode);
+        return wrap(this.node.parentNode);
     };
+    /*\
+     * Element.append
+     [ method ]
+     **
+     * Appends given element to current one.
+     **
+     > Parameters
+     **
+     - el (Element|Set) element to append
+     = (Element) parent
+    \*/
     elproto.append = function (el) {
         if (el.type == "set") {
             var it = this;
@@ -1450,44 +1540,128 @@ function arrayFirstValue(arr) {
         el.paper = this.paper;
         return this;
     };
+    /*\
+     * Element.prepend
+     [ method ]
+     **
+     * Prepends given element to current one.
+     **
+     > Parameters
+     **
+     - el (Element) element to prepend
+     = (Element) parent
+    \*/
     elproto.prepend = function (el) {
         el = wrap(el);
         this.node.parentNode.insertBefore(el.node, this.node.firstChild);
         el.paper = this.paper;
         return this;
     };
+    /*\
+     * Element.before
+     [ method ]
+     **
+     * Inserts given element before the current one.
+     **
+     > Parameters
+     **
+     - el (Element) element to insert
+     = (Element) parent
+    \*/
+    // TODO make it work for sets too
     elproto.before = function (el) {
         el = wrap(el);
         this.node.parentNode.insertBefore(el.node, this.node);
         el.paper = this.paper;
         return this;
     };
+    /*\
+     * Element.after
+     [ method ]
+     **
+     * Inserts given element after the current one.
+     **
+     > Parameters
+     **
+     - el (Element) element to insert
+     = (Element) parent
+    \*/
     elproto.after = function (el) {
         el = wrap(el);
         this.node.parentNode.insertBefore(el.node, this.node.nextSibling);
         el.paper = this.paper;
         return this;
     };
+    /*\
+     * Element.insertBefore
+     [ method ]
+     **
+     * Inserts the element after the given one.
+     **
+     > Parameters
+     **
+     - el (Element) element next to whom insert to
+     = (Element) parent
+    \*/
     elproto.insertBefore = function (el) {
         el = wrap(el);
         el.node.parentNode.insertBefore(this.node, el.node);
         this.paper = el.paper;
         return this;
     };
+    /*\
+     * Element.insertAfter
+     [ method ]
+     **
+     * Inserts the element after the given one.
+     **
+     > Parameters
+     **
+     - el (Element) element next to whom insert to
+     = (Element) parent
+    \*/
     elproto.insertAfter = function (el) {
         el = wrap(el);
         el.node.parentNode.insertBefore(this.node, el.node.nextSibling);
         this.paper = el.paper;
         return this;
     };
+    /*\
+     * Element.remove
+     [ method ]
+     **
+     * Removes element from the DOM
+    \*/
     elproto.remove = function () {
         this.node.parentNode.removeChild(this.node);
         delete this.paper;
         this.removed = true;
     };
+    /*\
+     * Element.select
+     [ method ]
+     **
+     * Applies CSS selector with the element as a parent and returns the result as an @Element.
+     **
+     > Parameters
+     **
+     - query (string) CSS selector
+     = (Element) result of query selection
+    \*/
     elproto.select = function (query) {
         return wrap(this.node.querySelector(query));
     };
+    /*\
+     * Element.selectAll
+     [ method ]
+     **
+     * Applies CSS selector with the element as a parent and returns the result as a set or array of elements.
+     **
+     > Parameters
+     **
+     - query (string) CSS selector
+     = (Set|array) result of query selection
+    \*/
     elproto.selectAll = function (query) {
         var nodelist = this.node.querySelectorAll(query),
             set = (Savage.set || Array)();
@@ -1496,9 +1670,32 @@ function arrayFirstValue(arr) {
         }
         return set;
     };
+    /*\
+     * Element.asPX
+     [ method ]
+     **
+     * Return given attribute of the element as a `px` value. (Not %, em, etc)
+     **
+     > Parameters
+     **
+     - attr (string) attribute name
+     - value (string) #optional attribute value
+     = (Element) result of query selection
+    \*/
     elproto.asPX = function (attr, value) {
+        if (value == null) {
+            value = this.attr(attr);
+        }
         return unit2px(this, attr, value);
     };
+    /*\
+     * Element.use
+     [ method ]
+     **
+     * Creates `<use>` element linked to the current element.
+     **
+     = (Element) `<use>` element
+    \*/
     elproto.use = function () {
         var use,
             id = this.node.id;
@@ -1519,12 +1716,44 @@ function arrayFirstValue(arr) {
         });
         return use;
     };
+    /*\
+     * Element.clone
+     [ method ]
+     **
+     * Creates `<use>` element linked to the current element.
+     **
+     = (Element) `<use>` element
+    \*/
     elproto.clone = function () {
-        var clone = this.node.cloneNode(true);
-        // TODO replace with this.insertAfter()
-        this.node.parentNode.insertBefore(clone, this.node);
-        return wrap(clone);
+        var clone = wrap(this.node.cloneNode(true));
+        clone.insertAfter(this);
+        return clone;
     };
+    /*\
+     * Element.pattern
+     [ method ]
+     **
+     * Creates `<pattern>` element from the current element.
+     **
+     > Parameters
+     **
+     * To create a pattern you have to specify the pattern rect:
+     - x (string|number)
+     - y (string|number)
+     - width (string|number)
+     - height (string|number)
+     = (Element) `<pattern>` element
+     * You can use pattern later on as an argument for `fill` attribute:
+     | var p = paper.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
+     |         fill: "none",
+     |         stroke: "#bada55",
+     |         strokeWidth: 5
+     |     }).pattern(0, 0, 10, 10),
+     |     c = paper.circle(200, 200, 100);
+     | c.attr({
+     |     fill: p
+     | });
+    \*/
     elproto.pattern = function (x, y, width, height) {
         var p = make("pattern", this.paper.defs);
         if (x == null) {
@@ -1548,6 +1777,25 @@ function arrayFirstValue(arr) {
         p.node.appendChild(this.node);
         return p;
     };
+    /*\
+     * Element.marker
+     [ method ]
+     **
+     * Creates `<marker>` element from the current element.
+     **
+     > Parameters
+     **
+     * To create a marker you have to specify the bounding rect and reference point:
+     - x (number)
+     - y (number)
+     - width (number)
+     - height (number)
+     - refX (number)
+     - refY (number)
+     = (Element) `<marker>` element
+     * You can use pattern later on as an argument for `marker-start` or `marker-end` attributes.
+    \*/
+    // TODO add usage for markers
     elproto.marker = function (x, y, width, height, refX, refY) {
         var p = make("marker", this.paper.defs);
         if (x == null) {
@@ -1557,8 +1805,8 @@ function arrayFirstValue(arr) {
             y = x.y;
             width = x.width;
             height = x.height;
-            refX = x.refX;
-            refY = x.refY;
+            refX = x.refX || x.cx;
+            refY = x.refY || x.cy;
             x = x.x;
         }
         $(p.node, {
@@ -1583,7 +1831,77 @@ function arrayFirstValue(arr) {
             return f ? f(res) : res;
         };
     }
-    elproto.animate = function (attrs, ms, callback) {
+    var Animation = function (attr, ms, easing, callback) {
+        if (typeof easing == "function") {
+            callback = easing;
+            easing = mina.linear;
+        }
+        this.attr = attr;
+        this.dur = ms;
+        easing && (this.easing = easing);
+        callback && (this.callback = callback);
+    };
+    /*\
+     * Savage.animation
+     [ method ]
+     **
+     * Creates animation object.
+     **
+     > Parameters
+     **
+     - attr (object) attributes of final destination
+     - ms (number) animation duration
+     - easing (function) #optional one of easing functions of @mina or custom one
+     - callback (function) #optional callback
+     = (object) animation object
+    \*/
+    Savage.animation = function (attr, ms, easing, callback) {
+        return new Animation(attr, ms, easing, callback);
+    };
+    /*\
+     * Savage.inAnim
+     [ method ]
+     **
+     * to be continued...
+     **
+     = (object) 
+    \*/
+    elproto.inAnim = function () {
+        var el = this,
+            res = [];
+        for (var id in el.anims) if (el.anims[has](id)) {
+            (function (a) {
+                res.push({
+                    anim: new Animation(a._attrs, a.dur, a.easing, a._callback),
+                    curStatus: a.status(),
+                    status: function (val) {
+                        return a.status(val);
+                    }
+                });
+            }(el.anims[id]));
+        }
+        return res;
+    };
+    Savage.animate = function (from, to, setter, ms, easing, callback) {
+        if (typeof easing == "function") {
+            callback = easing;
+            easing = mina.linear;
+        }
+        var now = mina.time(),
+            anim = mina(from, to, now, now + ms, mina.time, setter, easing);
+        callback && eve.once("mina.finish." + anim.id, callback);
+    };
+    elproto.animate = function (attrs, ms, easing, callback) {
+        if (typeof easing == "function") {
+            callback = easing;
+            easing = mina.linear;
+        }
+        if (attrs instanceof Animation) {
+            callback = attrs.callback;
+            easing = attrs.easing;
+            ms = easing.dur;
+            attrs = attrs.attr;
+        }
         var fkeys = [], tkeys = [], keys = {}, from, to, f, eq;
         for (var key in attrs) if (attrs[has](key)) {
             if (this.equal) {
@@ -1608,9 +1926,16 @@ function arrayFirstValue(arr) {
                     attr[key] = keys[key](val);
                 }
                 el.attr(attr);
-            });
-        callback && eve.once("mina.finish." + anim.id, function () {
-            callback.call(el);
+            }, easing);
+        el.anims[anim.id] = anim;
+        anim._attrs = attrs;
+        anim._callback = callback;
+        eve.once("mina.finish." + anim.id, function () {
+            delete el.anims[anim.id];
+            callback && callback.call(el);
+        });
+        eve.once("mina.stop." + anim.id, function () {
+            delete el.anims[anim.id];
         });
     };
 }(Element.prototype));
