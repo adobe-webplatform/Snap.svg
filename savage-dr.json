@@ -1,0 +1,24 @@
+{
+    "title": "Savage",
+    "output": "dist/reference.html",
+    "scripts": ["savage.js", "reference.js"],
+    "files": [{
+        "url": "svg.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/svg.js"
+    }, {
+        "url": "savage.equal.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/savage.equal.js"
+    }, {
+        "url": "savage.filter.default.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/savage.filter.default.js"
+    }, {
+        "url": "savage.mouse.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js"
+    }, {
+        "url": "savage.path.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js"
+    }, {
+        "url": "savage.set.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js"
+    }]
+}

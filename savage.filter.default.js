@@ -18,11 +18,28 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         Str = String,
         $ = Savage._.$;
     Savage.filter = {};
+    /*\
+     * Paper.filter
+     [ method ]
+     **
+     * Creates filter element
+     **
+     > Parameters
+     **
+     - filstr (string) SVG fragment of filter provided as a string.
+     = (object) @Element
+     * Note: It is recommended to use filters embedded into page inside empty SVG element.
+     > Usage
+     | var f = paper.filter('<feGaussianBlur stdDeviation="2"/>'),
+     |     c = paper.circle(10, 10, 10).attr({
+     |         filter: f
+     |     });
+    \*/
     pproto.filter = function (filstr) {
         var f = Savage.parse(Str(filstr)),
             id = Savage._.id(),
-            width = $(this.node, "width") || this.node.offsetWidth,
-            height = $(this.node, "height") || this.node.offsetHeight,
+            width = this.node.offsetWidth,
+            height = this.node.offsetHeight,
             filter = $("filter");
         $(filter, {
             id: id,
@@ -63,6 +80,23 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         }
     });
     
+    /*\
+     * Paper.filter.blur
+     [ method ]
+     **
+     * Returns string of the blur filter.
+     **
+     > Parameters
+     **
+     - x (number) amount of horisontal blur in px.
+     - y (number) #optional amount of vertical blur in px.
+     = (string) filter representation
+     > Usage
+     | var f = paper.filter(Savage.filter.blur(5, 10)),
+     |     c = paper.circle(10, 10, 10).attr({
+     |         filter: f
+     |     });
+    \*/
     Savage.filter.blur = function (x, y) {
         if (x == null) {
             x = 2;
@@ -75,6 +109,25 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     Savage.filter.blur.toString = function () {
         return this();
     };
+    /*\
+     * Paper.filter.blur
+     [ method ]
+     **
+     * Returns string of the blur filter.
+     **
+     > Parameters
+     **
+     - dx (number) horisontal shift of the shadow in px.
+     - dy (number) vertical shift of the shadow in px.
+     - blur (number) #optional amount of blur.
+     - color (string) #optional color of the shadow.
+     = (string) filter representation
+     > Usage
+     | var f = paper.filter(Savage.filter.shadow(5, 10)),
+     |     c = paper.circle(10, 10, 10).attr({
+     |         filter: f
+     |     });
+    \*/
     Savage.filter.shadow = function (dx, dy, blur, color) {
         color = Savage.color(color || "#000");
         if (blur == null) {

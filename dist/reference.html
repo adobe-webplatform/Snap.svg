@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<!-- Generated with Dr.js -->
+<html lang="en"><head><meta charset="utf-8"><title>Savage Reference</title>
+<link rel="stylesheet" href="dr.css" media="screen">
+<link rel="stylesheet" href="dr-print.css" media="print"></head>
+<body id="dr-js"><div id="dr"><ol class="dr-toc" id="dr-toc"><li class="dr-lvl0"><a href="#Element" class="{clas}"><span>Element</span></a></li><li class="dr-lvl1"><a href="#Element.after" class="dr-method"><span>Element.after()</span></a></li><li class="dr-lvl1"><a href="#Element.animate" class="dr-method"><span>Element.animate()</span></a></li><li class="dr-lvl1"><a href="#Element.append" class="dr-method"><span>Element.append()</span></a></li><li class="dr-lvl1"><a href="#Element.asPX" class="dr-method"><span>Element.asPX()</span></a></li><li class="dr-lvl1"><a href="#Element.attr" class="dr-method"><span>Element.attr()</span></a></li><li class="dr-lvl1"><a href="#Element.before" class="dr-method"><span>Element.before()</span></a></li><li class="dr-lvl1"><a href="#Element.click" class="dr-method"><span>Element.click()</span></a></li><li class="dr-lvl1"><a href="#Element.clone" class="dr-method"><span>Element.clone()</span></a></li><li class="dr-lvl1"><a href="#Element.data" class="dr-method"><span>Element.data()</span></a></li><li class="dr-lvl1"><a href="#Element.dblclick" class="dr-method"><span>Element.dblclick()</span></a></li><li class="dr-lvl1"><a href="#Element.drag" class="dr-method"><span>Element.drag()</span></a></li><li class="dr-lvl1"><a href="#Element.getBBox" class="dr-method"><span>Element.getBBox()</span></a></li><li class="dr-lvl1"><a href="#Element.getPointAtLength" class="dr-method"><span>Element.getPointAtLength()</span></a></li><li class="dr-lvl1"><a href="#Element.getSubpath" class="dr-method"><span>Element.getSubpath()</span></a></li><li class="dr-lvl1"><a href="#Element.getTotalLength" class="dr-method"><span>Element.getTotalLength()</span></a></li><li class="dr-lvl1"><a href="#Element.hover" class="dr-method"><span>Element.hover()</span></a></li><li class="dr-lvl1"><a href="#Element.inAnim" class="dr-method"><span>Element.inAnim()</span></a></li><li class="dr-lvl1"><a href="#Element.insertAfter" class="dr-method"><span>Element.insertAfter()</span></a></li><li class="dr-lvl1"><a href="#Element.insertBefore" class="dr-method"><span>Element.insertBefore()</span></a></li><li class="dr-lvl1"><a href="#Element.marker" class="dr-method"><span>Element.marker()</span></a></li><li class="dr-lvl1"><a href="#Element.mousedown" class="dr-method"><span>Element.mousedown()</span></a></li><li class="dr-lvl1"><a href="#Element.mousemove" class="dr-method"><span>Element.mousemove()</span></a></li><li class="dr-lvl1"><a href="#Element.mouseout" class="dr-method"><span>Element.mouseout()</span></a></li><li class="dr-lvl1"><a href="#Element.mouseover" class="dr-method"><span>Element.mouseover()</span></a></li><li class="dr-lvl1"><a href="#Element.mouseup" class="dr-method"><span>Element.mouseup()</span></a></li><li class="dr-lvl1"><a href="#Element.onDragOver" class="dr-method"><span>Element.onDragOver()</span></a></li><li class="dr-lvl1"><a href="#Element.parent" class="dr-method"><span>Element.parent()</span></a></li><li class="dr-lvl1"><a href="#Element.pattern" class="dr-method"><span>Element.pattern()</span></a></li><li class="dr-lvl1"><a href="#Element.prepend" class="dr-method"><span>Element.prepend()</span></a></li><li class="dr-lvl1"><a href="#Element.remove" class="dr-method"><span>Element.remove()</span></a></li><li class="dr-lvl1"><a href="#Element.removeData" class="dr-method"><span>Element.removeData()</span></a></li><li class="dr-lvl1"><a href="#Element.select" class="dr-method"><span>Element.select()</span></a></li><li class="dr-lvl1"><a href="#Element.selectAll" class="dr-method"><span>Element.selectAll()</span></a></li><li class="dr-lvl1"><a href="#Element.touchcancel" class="dr-method"><span>Element.touchcancel()</span></a></li><li class="dr-lvl1"><a href="#Element.touchend" class="dr-method"><span>Element.touchend()</span></a></li><li class="dr-lvl1"><a href="#Element.touchmove" class="dr-method"><span>Element.touchmove()</span></a></li><li class="dr-lvl1"><a href="#Element.touchstart" class="dr-method"><span>Element.touchstart()</span></a></li><li class="dr-lvl1"><a href="#Element.transform" class="dr-method"><span>Element.transform()</span></a></li><li class="dr-lvl1"><a href="#Element.unclick" class="dr-method"><span>Element.unclick()</span></a></li><li class="dr-lvl1"><a href="#Element.undblclick" class="dr-method"><span>Element.undblclick()</span></a></li><li class="dr-lvl1"><a href="#Element.undrag" class="dr-method"><span>Element.undrag()</span></a></li><li class="dr-lvl1"><a href="#Element.unhover" class="dr-method"><span>Element.unhover()</span></a></li><li class="dr-lvl1"><a href="#Element.unmousedown" class="dr-method"><span>Element.unmousedown()</span></a></li><li class="dr-lvl1"><a href="#Element.unmousemove" class="dr-method"><span>Element.unmousemove()</span></a></li><li class="dr-lvl1"><a href="#Element.unmouseout" class="dr-method"><span>Element.unmouseout()</span></a></li><li class="dr-lvl1"><a href="#Element.unmouseover" class="dr-method"><span>Element.unmouseover()</span></a></li><li class="dr-lvl1"><a href="#Element.unmouseup" class="dr-method"><span>Element.unmouseup()</span></a></li><li class="dr-lvl1"><a href="#Element.untouchcancel" class="dr-method"><span>Element.untouchcancel()</span></a></li><li class="dr-lvl1"><a href="#Element.untouchend" class="dr-method"><span>Element.untouchend()</span></a></li><li class="dr-lvl1"><a href="#Element.untouchmove" class="dr-method"><span>Element.untouchmove()</span></a></li><li class="dr-lvl1"><a href="#Element.untouchstart" class="dr-method"><span>Element.untouchstart()</span></a></li><li class="dr-lvl1"><a href="#Element.use" class="dr-method"><span>Element.use()</span></a></li><li class="dr-lvl0"><a href="#Fragment" class="{clas}"><span>Fragment</span></a></li><li class="dr-lvl1"><a href="#Fragment.select" class="dr-method"><span>Fragment.select()</span></a></li><li class="dr-lvl1"><a href="#Fragment.selectAll" class="dr-method"><span>Fragment.selectAll()</span></a></li><li class="dr-lvl0"><a href="#Matrix" class="{clas}"><span>Matrix</span></a></li><li class="dr-lvl1"><a href="#Matrix.add" class="dr-method"><span>Matrix.add()</span></a></li><li class="dr-lvl1"><a href="#Matrix.clone" class="dr-method"><span>Matrix.clone()</span></a></li><li class="dr-lvl1"><a href="#Matrix.invert" class="dr-method"><span>Matrix.invert()</span></a></li><li class="dr-lvl1"><a href="#Matrix.rotate" class="dr-method"><span>Matrix.rotate()</span></a></li><li class="dr-lvl1"><a href="#Matrix.scale" class="dr-method"><span>Matrix.scale()</span></a></li><li class="dr-lvl1"><a href="#Matrix.split" class="dr-method"><span>Matrix.split()</span></a></li><li class="dr-lvl1"><a href="#Matrix.toTransformString" class="dr-method"><span>Matrix.toTransformString()</span></a></li><li class="dr-lvl1"><a href="#Matrix.translate" class="dr-method"><span>Matrix.translate()</span></a></li><li class="dr-lvl1"><a href="#Matrix.x" class="dr-method"><span>Matrix.x()</span></a></li><li class="dr-lvl1"><a href="#Matrix.y" class="dr-method"><span>Matrix.y()</span></a></li><li class="dr-lvl0"><a href="#Paper" class="{clas}"><span>Paper</span></a></li><li class="dr-lvl1"><a href="#Paper.circle" class="dr-method"><span>Paper.circle()</span></a></li><li class="dr-lvl1"><a href="#Paper.el" class="dr-method"><span>Paper.el()</span></a></li><li class="dr-lvl1"><a href="#Paper.ellipse" class="dr-method"><span>Paper.ellipse()</span></a></li><li class="dr-lvl1"><a href="#Paper.filter" class="dr-method"><span>Paper.filter()</span></a></li><li class="dr-lvl2"><a href="#Paper.filter.blur" class="dr-method"><span>Paper.filter.blur()</span></a></li><li class="dr-lvl1"><a href="#Paper.g" class="dr-method"><span>Paper.g()</span></a></li><li class="dr-lvl1"><a href="#Paper.gradient" class="dr-method"><span>Paper.gradient()</span></a></li><li class="dr-lvl1"><a href="#Paper.group" class="dr-method"><span>Paper.group()</span></a></li><li class="dr-lvl1"><a href="#Paper.image" class="dr-method"><span>Paper.image()</span></a></li><li class="dr-lvl1"><a href="#Paper.line" class="dr-method"><span>Paper.line()</span></a></li><li class="dr-lvl1"><a href="#Paper.path" class="dr-method"><span>Paper.path()</span></a></li><li class="dr-lvl1"><a href="#Paper.polygon" class="dr-method"><span>Paper.polygon()</span></a></li><li class="dr-lvl1"><a href="#Paper.polyline" class="dr-method"><span>Paper.polyline()</span></a></li><li class="dr-lvl1"><a href="#Paper.rect" class="dr-method"><span>Paper.rect()</span></a></li><li class="dr-lvl1"><a href="#Paper.text" class="dr-method"><span>Paper.text()</span></a></li><li class="dr-lvl0"><a href="#Savage" class="dr-method"><span>Savage()</span></a></li><li class="dr-lvl1"><a href="#Savage.Matrix" class="dr-method"><span>Savage.Matrix()</span></a></li><li class="dr-lvl1"><a href="#Savage.animate" class="dr-method"><span>Savage.animate()</span></a></li><li class="dr-lvl1"><a href="#Savage.animation" class="dr-method"><span>Savage.animation()</span></a></li><li class="dr-lvl1"><a href="#Savage.color" class="dr-method"><span>Savage.color()</span></a></li><li class="dr-lvl1"><a href="#Savage.deg" class="dr-method"><span>Savage.deg()</span></a></li><li class="dr-lvl1"><a href="#Savage.findDotsAtSegment" class="dr-method"><span>Savage.findDotsAtSegment()</span></a></li><li class="dr-lvl1"><a href="#Savage.format" class="dr-method"><span>Savage.format()</span></a></li><li class="dr-lvl1"><a href="#Savage.fragment" class="dr-method"><span>Savage.fragment()</span></a></li><li class="dr-lvl1"><a href="#Savage.getRGB" class="dr-method"><span>Savage.getRGB()</span></a></li><li class="dr-lvl1"><a href="#Savage.hsb" class="dr-method"><span>Savage.hsb()</span></a></li><li class="dr-lvl1"><a href="#Savage.hsb2rgb" class="dr-method"><span>Savage.hsb2rgb()</span></a></li><li class="dr-lvl1"><a href="#Savage.hsl" class="dr-method"><span>Savage.hsl()</span></a></li><li class="dr-lvl1"><a href="#Savage.hsl2rgb" class="dr-method"><span>Savage.hsl2rgb()</span></a></li><li class="dr-lvl1"><a href="#Savage.is" class="dr-method"><span>Savage.is()</span></a></li><li class="dr-lvl1"><a href="#Savage.parse" class="dr-method"><span>Savage.parse()</span></a></li><li class="dr-lvl1"><a href="#Savage.parsePathString" class="dr-method"><span>Savage.parsePathString()</span></a></li><li class="dr-lvl1"><a href="#Savage.parseTransformString" class="dr-method"><span>Savage.parseTransformString()</span></a></li><li class="dr-lvl1"><a href="#Savage.path" class="{clas}"><span>Savage.path</span></a></li><li class="dr-lvl2"><a href="#Savage.path.bezierBBox" class="dr-method"><span>Savage.path.bezierBBox()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.getPointAtLength" class="dr-method"><span>Savage.path.getPointAtLength()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.getSubpath" class="dr-method"><span>Savage.path.getSubpath()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.getTotalLength" class="dr-method"><span>Savage.path.getTotalLength()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.intersection" class="dr-method"><span>Savage.path.intersection()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.isBBoxIntersect" class="dr-method"><span>Savage.path.isBBoxIntersect()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.isPointInside" class="dr-method"><span>Savage.path.isPointInside()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.isPointInsideBBox" class="dr-method"><span>Savage.path.isPointInsideBBox()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.map" class="dr-method"><span>Savage.path.map()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.toAbsolute" class="dr-method"><span>Savage.path.toAbsolute()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.toCubic" class="dr-method"><span>Savage.path.toCubic()</span></a></li><li class="dr-lvl2"><a href="#Savage.path.toRelative" class="dr-method"><span>Savage.path.toRelative()</span></a></li><li class="dr-lvl1"><a href="#Savage.pathBBox" class="dr-method"><span>Savage.pathBBox()</span></a></li><li class="dr-lvl1"><a href="#Savage.rad" class="dr-method"><span>Savage.rad()</span></a></li><li class="dr-lvl1"><a href="#Savage.rgb" class="dr-method"><span>Savage.rgb()</span></a></li><li class="dr-lvl1"><a href="#Savage.rgb2hsb" class="dr-method"><span>Savage.rgb2hsb()</span></a></li><li class="dr-lvl1"><a href="#Savage.rgb2hsl" class="dr-method"><span>Savage.rgb2hsl()</span></a></li><li class="dr-lvl1"><a href="#Savage.select" class="dr-method"><span>Savage.select()</span></a></li><li class="dr-lvl1"><a href="#Savage.selectAll" class="dr-method"><span>Savage.selectAll()</span></a></li><li class="dr-lvl1"><a href="#Savage.snapTo" class="dr-method"><span>Savage.snapTo()</span></a></li><li class="dr-lvl0"><a href="#Set" class="{clas}"><span>Set</span></a></li><li class="dr-lvl1"><a href="#Set.clear" class="dr-method"><span>Set.clear()</span></a></li><li class="dr-lvl1"><a href="#Set.exclude" class="dr-method"><span>Set.exclude()</span></a></li><li class="dr-lvl1"><a href="#Set.forEach" class="dr-method"><span>Set.forEach()</span></a></li><li class="dr-lvl1"><a href="#Set.pop" class="dr-method"><span>Set.pop()</span></a></li><li class="dr-lvl1"><a href="#Set.push" class="dr-method"><span>Set.push()</span></a></li><li class="dr-lvl1"><a href="#Set.splice" class="dr-method"><span>Set.splice()</span></a></li></ol><div class="dr-doc"><h1>Savage Reference</h1><div class="Element-section"><h2 id="Element" class="undefined"><i class="dr-trixie">&#160;</i>Element<a href="#Element" title="Link to this section" class="dr-hash">&#x2693;</a></h2>
+<div class="extra" id="Element-extra"></div></div><div class="Element-after-section"><h3 id="Element.after" class="dr-method"><i class="dr-trixie">&#160;</i>Element.after(el)<a href="#Element.after" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1605 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1605">&#x27ad;</a></h3>
+<div class="extra" id="Element.after-extra"></div></div><div class="dr-method"><p>Inserts given element after the current one.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">el</dt>
+<dd class="dr-type"><em class="dr-type-Element">Element</em></dd>
+<dd class="dr-description">element to insert</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">parent</span></p>
+</div><div class="Element-animate-section"><h3 id="Element.animate" class="dr-method"><i class="dr-trixie">&#160;</i>Element.animate(attrs, ms, [easing], [callback])<a href="#Element.animate" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1956 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1956">&#x27ad;</a></h3>
+<div class="extra" id="Element.animate-extra"></div></div><div class="dr-method"><p>Animate given attributes of the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">attrs</dt>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">key-value pairs of destination attributes</dd>
+<dt class="dr-param">ms</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">duration</dd>
+<dt class="dr-param optional">easing</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">easing function from <a href="#mina" class="dr-link">mina</a> or custom</dd>
+<dt class="dr-param optional">callback</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">the element</span></p>
+</div><div class="Element-append-section"><h3 id="Element.append" class="dr-method"><i class="dr-trixie">&#160;</i>Element.append(el)<a href="#Element.append" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1546 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1546">&#x27ad;</a></h3>
+<div class="extra" id="Element.append-extra"></div></div><div class="dr-method"><p>Appends given element to current one.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">el</dt>
+<dd class="dr-type"><em class="dr-type-Element">Element</em> <em class="dr-type-Set">Set</em></dd>
+<dd class="dr-description">element to append</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">parent</span></p>
+</div><div class="Element-asPX-section"><h3 id="Element.asPX" class="dr-method"><i class="dr-trixie">&#160;</i>Element.asPX(attr, [value])<a href="#Element.asPX" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1701 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1701">&#x27ad;</a></h3>
+<div class="extra" id="Element.asPX-extra"></div></div><div class="dr-method"><p>Return given attribute of the element as a <code>px</code> value. (Not %, em, etc)
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">attr</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">attribute name</dd>
+<dt class="dr-param optional">value</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">attribute value</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">result of query selection</span></p>
+</div><div class="Element-attr-section"><h3 id="Element.attr" class="dr-method"><i class="dr-trixie">&#160;</i>Element.attr(…)<a href="#Element.attr" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1403 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1403">&#x27ad;</a></h3>
+<div class="extra" id="Element.attr-extra"></div></div><div class="dr-method"><p>Gets or sets given attributes of the element
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">params</dt>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">key-value pairs of attributes you want to set</dd>
+</dl>
+<p>or
+</p>
+<dl class="dr-parameters"><dt class="dr-param">param</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">name of the attribute</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description"></span></p>
+<p>or
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">value of attribute</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>el.attr({
+    fill: <i>"#fc0"</i>,
+    stroke: <i>"#<span class="d">000</span>"</i>,
+    strokeWidth: <span class="d">2</span>, <span class="c">// CamelCase...</span>
+    <i>"fill-opacity"</i>: <span class="d">0.5</span> <span class="c">// or dash-separated names</span>
+});
+console.log(el.attr(<i>"fill"</i>)); <span class="c">// “#fc0”</span>
+</code></pre>
+</div><div class="Element-before-section"><h3 id="Element.before" class="dr-method"><i class="dr-trixie">&#160;</i>Element.before(el)<a href="#Element.before" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1587 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1587">&#x27ad;</a></h3>
+<div class="extra" id="Element.before-extra"></div></div><div class="dr-method"><p>Inserts given element before the current one.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">el</dt>
+<dd class="dr-type"><em class="dr-type-Element">Element</em></dd>
+<dd class="dr-description">element to insert</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">parent</span></p>
+</div><div class="Element-click-section"><h3 id="Element.click" class="dr-method"><i class="dr-trixie">&#160;</i>Element.click(handler)<a href="#Element.click" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 155 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L155">&#x27ad;</a></h3>
+<div class="extra" id="Element.click-extra"></div></div><div class="dr-method"><p>Adds event handler for click for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-clone-section"><h3 id="Element.clone" class="dr-method"><i class="dr-trixie">&#160;</i>Element.clone()<a href="#Element.clone" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1743 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1743">&#x27ad;</a></h3>
+<div class="extra" id="Element.clone-extra"></div></div><div class="dr-method"><p>Creates <code>&lt;use&gt;</code> element linked to the current element.
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description"><code>&lt;use&gt;</code> element</span></p>
+</div><div class="Element-data-section"><h3 id="Element.data" class="dr-method"><i class="dr-trixie">&#160;</i>Element.data(key, [value])<a href="#Element.data" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 404 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L404">&#x27ad;</a></h3>
+<div class="extra" id="Element.data-extra"></div></div><div class="dr-method"><p>Adds or retrieves given value asociated with given key.
+See also <a href="#Element.removeData" class="dr-link">Element.removeData</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">key</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">key to store data</dd>
+<dt class="dr-param optional">value</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-any">any</em></dd>
+<dd class="dr-description">value to store</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+<p>or, if value is not specified:
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-any">any</em> <span class="dr-description">value</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>for</b> (<b>var</b> i<span class="s"> = </span><span class="d">0</span>, i &lt; <span class="d">5</span>, i++) {
+    paper.circle(<span class="d">10</span><span class="s"> + </span><span class="d">15</span><span class="s"> * </span>i, <span class="d">10</span>, <span class="d">10</span>)
+         .attr({fill: <i>"#<span class="d">000</span>"</i>})
+         .data(<i>"i"</i>, i)
+         .click(<b>function</b> () {
+            alert(<b>this</b>.data(<i>"i"</i>));
+         });
+}
+</code></pre>
+</div><div class="Element-dblclick-section"><h3 id="Element.dblclick" class="dr-method"><i class="dr-trixie">&#160;</i>Element.dblclick(handler)<a href="#Element.dblclick" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 174 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L174">&#x27ad;</a></h3>
+<div class="extra" id="Element.dblclick-extra"></div></div><div class="dr-method"><p>Adds event handler for double click for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-drag-section"><h3 id="Element.drag" class="dr-method"><i class="dr-trixie">&#160;</i>Element.drag(onmove, onstart, onend, [mcontext], [scontext], [econtext])<a href="#Element.drag" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 497 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L497">&#x27ad;</a></h3>
+<div class="extra" id="Element.drag-extra"></div></div><div class="dr-method"><p>Adds event handlers for drag of the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">onmove</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for moving</dd>
+<dt class="dr-param">onstart</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for drag start</dd>
+<dt class="dr-param">onend</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for drag end</dd>
+<dt class="dr-param optional">mcontext</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">context for moving handler</dd>
+<dt class="dr-param optional">scontext</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">context for drag start handler</dd>
+<dt class="dr-param optional">econtext</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">context for drag end handler</dd>
+</dl>
+<p>Additionaly following <code>drag</code> events will be triggered: <code>drag.start.&lt;id&gt;</code> on start, 
+<code>drag.end.&lt;id&gt;</code> on end and <code>drag.move.&lt;id&gt;</code> on every move. When element will be dragged over another element 
+<code>drag.over.&lt;id&gt;</code> will be fired as well.
+</p>
+<p>Start event and start handler will be called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">x</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x position of the mouse</span>
+<li><span class="dr-json-key">y</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y position of the mouse</span>
+<li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p>Move event and move handler will be called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">dx</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">shift by x from the start point</span>
+<li><span class="dr-json-key">dy</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">shift by y from the start point</span>
+<li><span class="dr-json-key">x</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x position of the mouse</span>
+<li><span class="dr-json-key">y</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y position of the mouse</span>
+<li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p>End event and end handler will be called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-getBBox-section"><h3 id="Element.getBBox" class="dr-method"><i class="dr-trixie">&#160;</i>Element.getBBox()<a href="#Element.getBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1440 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1440">&#x27ad;</a></h3>
+<div class="extra" id="Element.getBBox-extra"></div></div><div class="dr-method"><p>Returns bounding box descriptor for the given element.
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">bounding box descriptor:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">cx:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x of the center,</span>
+<li><span class="dr-json-key">cy:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x of the center,</span>
+<li><span class="dr-json-key">h:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">height,</span>
+<li><span class="dr-json-key">height:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">height,</span>
+<li><span class="dr-json-key">path:</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">path command for the box,</span>
+<li><span class="dr-json-key">r0:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">radius of the circle that will enclose the box,</span>
+<li><span class="dr-json-key">r1:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">radius of the smallest circle that can be enclosed,</span>
+<li><span class="dr-json-key">r2:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">radius of the biggest circle that can be enclosed,</span>
+<li><span class="dr-json-key">vb:</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">box as a viewbox command,</span>
+<li><span class="dr-json-key">w:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">width,</span>
+<li><span class="dr-json-key">width:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">width,</span>
+<li><span class="dr-json-key">x2:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x of the right side,</span>
+<li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x of the left side,</span>
+<li><span class="dr-json-key">y2:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y of the right side,</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y of the left side</span>
+</ol></li><li>}</li></ol>
+</div><div class="Element-getPointAtLength-section"><h3 id="Element.getPointAtLength" class="dr-method"><i class="dr-trixie">&#160;</i>Element.getPointAtLength(length)<a href="#Element.getPointAtLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1122 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1122">&#x27ad;</a></h3>
+<div class="extra" id="Element.getPointAtLength-extra"></div></div><div class="dr-method"><p>Return coordinates of the point located at the given length on the given path. Only works for element of “path” type.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">length</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">representation of the point:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate</span>
+<li><span class="dr-json-key">alpha:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">angle of derivative</span>
+</ol></li><li>}</li></ol>
+</div><div class="Element-getSubpath-section"><h3 id="Element.getSubpath" class="dr-method"><i class="dr-trixie">&#160;</i>Element.getSubpath(from, to)<a href="#Element.getSubpath" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1138 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1138">&#x27ad;</a></h3>
+<div class="extra" id="Element.getSubpath-extra"></div></div><div class="dr-method"><p>Return subpath of a given element from given length to given length. Only works for element of “path” type.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">from</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">position of the start of the segment</dd>
+<dt class="dr-param">to</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">position of the end of the segment</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">pathstring for the segment</span></p>
+</div><div class="Element-getTotalLength-section"><h3 id="Element.getTotalLength" class="dr-method"><i class="dr-trixie">&#160;</i>Element.getTotalLength()<a href="#Element.getTotalLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1100 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1100">&#x27ad;</a></h3>
+<div class="extra" id="Element.getTotalLength-extra"></div></div><div class="dr-method"><p>Returns length of the path in pixels. Only works for element of “path” type.
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-number">number</em> <span class="dr-description">length.</span></p>
+</div><div class="Element-hover-section"><h3 id="Element.hover" class="dr-method"><i class="dr-trixie">&#160;</i>Element.hover(f_in, f_out, [icontext], [ocontext])<a href="#Element.hover" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 450 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L450">&#x27ad;</a></h3>
+<div class="extra" id="Element.hover-extra"></div></div><div class="dr-method"><p>Adds event handlers for hover for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">f_in</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for hover in</dd>
+<dt class="dr-param">f_out</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for hover out</dd>
+<dt class="dr-param optional">icontext</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">context for hover in handler</dd>
+<dt class="dr-param optional">ocontext</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">context for hover out handler</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-inAnim-section"><h3 id="Element.inAnim" class="dr-method"><i class="dr-trixie">&#160;</i>Element.inAnim()<a href="#Element.inAnim" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1891 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1891">&#x27ad;</a></h3>
+<div class="extra" id="Element.inAnim-extra"></div></div><div class="dr-method"><p>Returns an array of animations element currently in
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">in format</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">anim</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">animation object,</span>
+<li><span class="dr-json-key">curStatus</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">0..1 — status of the animation: 0 — just started, 1 — just finished,</span>
+<li><span class="dr-json-key">status</span><span class="dr-type"><em class="dr-type-function">function</em></span><span class="dr-json-description">gets or sets the status of the animation,</span>
+<li><span class="dr-json-key">stop</span><span class="dr-type"><em class="dr-type-function">function</em></span><span class="dr-json-description">stops the animation</span>
+</ol></li><li>}</li></ol>
+</div><div class="Element-insertAfter-section"><h3 id="Element.insertAfter" class="dr-method"><i class="dr-trixie">&#160;</i>Element.insertAfter(el)<a href="#Element.insertAfter" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1639 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1639">&#x27ad;</a></h3>
+<div class="extra" id="Element.insertAfter-extra"></div></div><div class="dr-method"><p>Inserts the element after the given one.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">el</dt>
+<dd class="dr-type"><em class="dr-type-Element">Element</em></dd>
+<dd class="dr-description">element next to whom insert to</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">parent</span></p>
+</div><div class="Element-insertBefore-section"><h3 id="Element.insertBefore" class="dr-method"><i class="dr-trixie">&#160;</i>Element.insertBefore(el)<a href="#Element.insertBefore" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1622 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1622">&#x27ad;</a></h3>
+<div class="extra" id="Element.insertBefore-extra"></div></div><div class="dr-method"><p>Inserts the element after the given one.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">el</dt>
+<dd class="dr-type"><em class="dr-type-Element">Element</em></dd>
+<dd class="dr-description">element next to whom insert to</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">parent</span></p>
+</div><div class="Element-marker-section"><h3 id="Element.marker" class="dr-method"><i class="dr-trixie">&#160;</i>Element.marker(x, y, width, height, refX, refY)<a href="#Element.marker" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1814 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1814">&#x27ad;</a></h3>
+<div class="extra" id="Element.marker-extra"></div></div><div class="dr-method"><p>Creates <code>&lt;marker&gt;</code> element from the current element.
+</p>
+<p class="header">Parameters
+<p>To create a marker you have to specify the bounding rect and reference point:
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">width</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">height</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">refX</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">refY</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description"><code>&lt;marker&gt;</code> element</span></p>
+<p>You can use pattern later on as an argument for <code>marker-start</code> or <code>marker-end</code> attributes.
+</p>
+</div><div class="Element-mousedown-section"><h3 id="Element.mousedown" class="dr-method"><i class="dr-trixie">&#160;</i>Element.mousedown(handler)<a href="#Element.mousedown" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 193 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L193">&#x27ad;</a></h3>
+<div class="extra" id="Element.mousedown-extra"></div></div><div class="dr-method"><p>Adds event handler for mousedown for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-mousemove-section"><h3 id="Element.mousemove" class="dr-method"><i class="dr-trixie">&#160;</i>Element.mousemove(handler)<a href="#Element.mousemove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 212 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L212">&#x27ad;</a></h3>
+<div class="extra" id="Element.mousemove-extra"></div></div><div class="dr-method"><p>Adds event handler for mousemove for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-mouseout-section"><h3 id="Element.mouseout" class="dr-method"><i class="dr-trixie">&#160;</i>Element.mouseout(handler)<a href="#Element.mouseout" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 231 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L231">&#x27ad;</a></h3>
+<div class="extra" id="Element.mouseout-extra"></div></div><div class="dr-method"><p>Adds event handler for mouseout for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-mouseover-section"><h3 id="Element.mouseover" class="dr-method"><i class="dr-trixie">&#160;</i>Element.mouseover(handler)<a href="#Element.mouseover" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 250 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L250">&#x27ad;</a></h3>
+<div class="extra" id="Element.mouseover-extra"></div></div><div class="dr-method"><p>Adds event handler for mouseover for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-mouseup-section"><h3 id="Element.mouseup" class="dr-method"><i class="dr-trixie">&#160;</i>Element.mouseup(handler)<a href="#Element.mouseup" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 269 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L269">&#x27ad;</a></h3>
+<div class="extra" id="Element.mouseup-extra"></div></div><div class="dr-method"><p>Adds event handler for mouseup for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-onDragOver-section"><h3 id="Element.onDragOver" class="dr-method"><i class="dr-trixie">&#160;</i>Element.onDragOver(f)<a href="#Element.onDragOver" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 535 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L535">&#x27ad;</a></h3>
+<div class="extra" id="Element.onDragOver-extra"></div></div><div class="dr-method"><p>Shortcut for assigning event handler for <code>drag.over.&lt;id&gt;</code> event, where id is id of the element (see <a href="#Element.id" class="dr-link">Element.id</a>).
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">f</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for event, first argument would be the element you are dragging over</dd>
+</dl>
+</div><div class="Element-parent-section"><h3 id="Element.parent" class="dr-method"><i class="dr-trixie">&#160;</i>Element.parent()<a href="#Element.parent" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1532 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1532">&#x27ad;</a></h3>
+<div class="extra" id="Element.parent-extra"></div></div><div class="dr-method"><p>Returns parent of the element
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">parent</span></p>
+</div><div class="Element-pattern-section"><h3 id="Element.pattern" class="dr-method"><i class="dr-trixie">&#160;</i>Element.pattern(x, y, width, height)<a href="#Element.pattern" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1773 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1773">&#x27ad;</a></h3>
+<div class="extra" id="Element.pattern-extra"></div></div><div class="dr-method"><p>Creates <code>&lt;pattern&gt;</code> element from the current element.
+</p>
+<p class="header">Parameters
+<p>To create a pattern you have to specify the pattern rect:
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em> <em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em> <em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">width</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em> <em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">height</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em> <em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description"><code>&lt;pattern&gt;</code> element</span></p>
+<p>You can use pattern later on as an argument for <code>fill</code> attribute:
+</p>
+<pre class="javascript code"><code><b>var</b> p<span class="s"> = </span>paper.path(<i>"M10-<span class="d">5</span>-<span class="d">10</span>,15M15,<span class="d">0</span>,<span class="d">0</span>,15M0-<span class="d">5</span>-<span class="d">20</span>,<span class="d">15</span>"</i>).attr({
+        fill: <i>"none"</i>,
+        stroke: <i>"#bada55"</i>,
+        strokeWidth: <span class="d">5</span>
+    }).pattern(<span class="d">0</span>, <span class="d">0</span>, <span class="d">10</span>, <span class="d">10</span>),
+    c<span class="s"> = </span>paper.circle(<span class="d">200</span>, <span class="d">200</span>, <span class="d">100</span>);
+c.attr({
+    fill: p
+});
+</code></pre>
+</div><div class="Element-prepend-section"><h3 id="Element.prepend" class="dr-method"><i class="dr-trixie">&#160;</i>Element.prepend(el)<a href="#Element.prepend" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1570 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1570">&#x27ad;</a></h3>
+<div class="extra" id="Element.prepend-extra"></div></div><div class="dr-method"><p>Prepends given element to current one.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">el</dt>
+<dd class="dr-type"><em class="dr-type-Element">Element</em></dd>
+<dd class="dr-description">element to prepend</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">parent</span></p>
+</div><div class="Element-remove-section"><h3 id="Element.remove" class="dr-method"><i class="dr-trixie">&#160;</i>Element.remove()<a href="#Element.remove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1651 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1651">&#x27ad;</a></h3>
+<div class="extra" id="Element.remove-extra"></div></div><div class="dr-method"><p>Removes element from the DOM
+</p>
+</div><div class="Element-removeData-section"><h3 id="Element.removeData" class="dr-method"><i class="dr-trixie">&#160;</i>Element.removeData([key])<a href="#Element.removeData" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 430 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L430">&#x27ad;</a></h3>
+<div class="extra" id="Element.removeData-extra"></div></div><div class="dr-method"><p>Removes value associated with an element by given key.
+If key is not provided, removes all the data of the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param optional">key</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">key</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-select-section"><h3 id="Element.select" class="dr-method"><i class="dr-trixie">&#160;</i>Element.select(query)<a href="#Element.select" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1667 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1667">&#x27ad;</a></h3>
+<div class="extra" id="Element.select-extra"></div></div><div class="dr-method"><p>Applies CSS selector with the element as a parent and returns the result as an <a href="#Element" class="dr-link">Element</a>.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">query</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">CSS selector</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">result of query selection</span></p>
+</div><div class="Element-selectAll-section"><h3 id="Element.selectAll" class="dr-method"><i class="dr-trixie">&#160;</i>Element.selectAll(query)<a href="#Element.selectAll" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1681 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1681">&#x27ad;</a></h3>
+<div class="extra" id="Element.selectAll-extra"></div></div><div class="dr-method"><p>Applies CSS selector with the element as a parent and returns the result as a set or array of elements.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">query</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">CSS selector</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Set">Set</em> <em class="dr-type-array">array</em> <span class="dr-description">result of query selection</span></p>
+</div><div class="Element-touchcancel-section"><h3 id="Element.touchcancel" class="dr-method"><i class="dr-trixie">&#160;</i>Element.touchcancel(handler)<a href="#Element.touchcancel" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 345 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L345">&#x27ad;</a></h3>
+<div class="extra" id="Element.touchcancel-extra"></div></div><div class="dr-method"><p>Adds event handler for touchcancel for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-touchend-section"><h3 id="Element.touchend" class="dr-method"><i class="dr-trixie">&#160;</i>Element.touchend(handler)<a href="#Element.touchend" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 326 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L326">&#x27ad;</a></h3>
+<div class="extra" id="Element.touchend-extra"></div></div><div class="dr-method"><p>Adds event handler for touchend for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-touchmove-section"><h3 id="Element.touchmove" class="dr-method"><i class="dr-trixie">&#160;</i>Element.touchmove(handler)<a href="#Element.touchmove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 307 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L307">&#x27ad;</a></h3>
+<div class="extra" id="Element.touchmove-extra"></div></div><div class="dr-method"><p>Adds event handler for touchmove for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-touchstart-section"><h3 id="Element.touchstart" class="dr-method"><i class="dr-trixie">&#160;</i>Element.touchstart(handler)<a href="#Element.touchstart" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 288 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L288">&#x27ad;</a></h3>
+<div class="extra" id="Element.touchstart-extra"></div></div><div class="dr-method"><p>Adds event handler for touchstart for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-transform-section"><h3 id="Element.transform" class="dr-method"><i class="dr-trixie">&#160;</i>Element.transform(tstr)<a href="#Element.transform" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1490 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1490">&#x27ad;</a></h3>
+<div class="extra" id="Element.transform-extra"></div></div><div class="dr-method"><p>Gets or sets transformation of the element
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">tstr</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">transform string in Savage or SVG format</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description"></span></p>
+<p>or
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">transformation descriptor:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">string</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">transform string,</span>
+<li><span class="dr-json-key">globalMatrix</span><span class="dr-type"><em class="dr-type-Matrix">Matrix</em></span><span class="dr-json-description">matrix of all transformations applied to element or its parents,</span>
+<li><span class="dr-json-key">localMatrix</span><span class="dr-type"><em class="dr-type-Matrix">Matrix</em></span><span class="dr-json-description">matrix of transformations applied only to the element,</span>
+<li><span class="dr-json-key">diffMatrix</span><span class="dr-type"><em class="dr-type-Matrix">Matrix</em></span><span class="dr-json-description">matrix of difference between global and local transformations,</span>
+<li><span class="dr-json-key">global</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">global transformation as string,</span>
+<li><span class="dr-json-key">local</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">local transformation as string,</span>
+<li><span class="dr-json-key">toString</span><span class="dr-type"><em class="dr-type-function">function</em></span><span class="dr-json-description">returns <code>string</code> property</span>
+</ol></li><li>}</li></ol>
+</div><div class="Element-unclick-section"><h3 id="Element.unclick" class="dr-method"><i class="dr-trixie">&#160;</i>Element.unclick(handler)<a href="#Element.unclick" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 164 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L164">&#x27ad;</a></h3>
+<div class="extra" id="Element.unclick-extra"></div></div><div class="dr-method"><p>Removes event handler for click for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-undblclick-section"><h3 id="Element.undblclick" class="dr-method"><i class="dr-trixie">&#160;</i>Element.undblclick(handler)<a href="#Element.undblclick" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 183 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L183">&#x27ad;</a></h3>
+<div class="extra" id="Element.undblclick-extra"></div></div><div class="dr-method"><p>Removes event handler for double click for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-undrag-section"><h3 id="Element.undrag" class="dr-method"><i class="dr-trixie">&#160;</i>Element.undrag()<a href="#Element.undrag" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 544 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L544">&#x27ad;</a></h3>
+<div class="extra" id="Element.undrag-extra"></div></div><div class="dr-method"><p>Removes all drag event handlers from given element.
+</p>
+</div><div class="Element-unhover-section"><h3 id="Element.unhover" class="dr-method"><i class="dr-trixie">&#160;</i>Element.unhover(f_in, f_out)<a href="#Element.unhover" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 463 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L463">&#x27ad;</a></h3>
+<div class="extra" id="Element.unhover-extra"></div></div><div class="dr-method"><p>Removes event handlers for hover for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">f_in</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for hover in</dd>
+<dt class="dr-param">f_out</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for hover out</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-unmousedown-section"><h3 id="Element.unmousedown" class="dr-method"><i class="dr-trixie">&#160;</i>Element.unmousedown(handler)<a href="#Element.unmousedown" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 202 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L202">&#x27ad;</a></h3>
+<div class="extra" id="Element.unmousedown-extra"></div></div><div class="dr-method"><p>Removes event handler for mousedown for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-unmousemove-section"><h3 id="Element.unmousemove" class="dr-method"><i class="dr-trixie">&#160;</i>Element.unmousemove(handler)<a href="#Element.unmousemove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 221 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L221">&#x27ad;</a></h3>
+<div class="extra" id="Element.unmousemove-extra"></div></div><div class="dr-method"><p>Removes event handler for mousemove for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-unmouseout-section"><h3 id="Element.unmouseout" class="dr-method"><i class="dr-trixie">&#160;</i>Element.unmouseout(handler)<a href="#Element.unmouseout" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 240 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L240">&#x27ad;</a></h3>
+<div class="extra" id="Element.unmouseout-extra"></div></div><div class="dr-method"><p>Removes event handler for mouseout for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-unmouseover-section"><h3 id="Element.unmouseover" class="dr-method"><i class="dr-trixie">&#160;</i>Element.unmouseover(handler)<a href="#Element.unmouseover" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 259 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L259">&#x27ad;</a></h3>
+<div class="extra" id="Element.unmouseover-extra"></div></div><div class="dr-method"><p>Removes event handler for mouseover for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-unmouseup-section"><h3 id="Element.unmouseup" class="dr-method"><i class="dr-trixie">&#160;</i>Element.unmouseup(handler)<a href="#Element.unmouseup" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 278 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L278">&#x27ad;</a></h3>
+<div class="extra" id="Element.unmouseup-extra"></div></div><div class="dr-method"><p>Removes event handler for mouseup for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-untouchcancel-section"><h3 id="Element.untouchcancel" class="dr-method"><i class="dr-trixie">&#160;</i>Element.untouchcancel(handler)<a href="#Element.untouchcancel" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 354 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L354">&#x27ad;</a></h3>
+<div class="extra" id="Element.untouchcancel-extra"></div></div><div class="dr-method"><p>Removes event handler for touchcancel for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-untouchend-section"><h3 id="Element.untouchend" class="dr-method"><i class="dr-trixie">&#160;</i>Element.untouchend(handler)<a href="#Element.untouchend" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 335 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L335">&#x27ad;</a></h3>
+<div class="extra" id="Element.untouchend-extra"></div></div><div class="dr-method"><p>Removes event handler for touchend for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-untouchmove-section"><h3 id="Element.untouchmove" class="dr-method"><i class="dr-trixie">&#160;</i>Element.untouchmove(handler)<a href="#Element.untouchmove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 316 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L316">&#x27ad;</a></h3>
+<div class="extra" id="Element.untouchmove-extra"></div></div><div class="dr-method"><p>Removes event handler for touchmove for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-untouchstart-section"><h3 id="Element.untouchstart" class="dr-method"><i class="dr-trixie">&#160;</i>Element.untouchstart(handler)<a href="#Element.untouchstart" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 297 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L297">&#x27ad;</a></h3>
+<div class="extra" id="Element.untouchstart-extra"></div></div><div class="dr-method"><p>Removes event handler for touchstart for the element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">handler</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">handler for the event</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="Element-use-section"><h3 id="Element.use" class="dr-method"><i class="dr-trixie">&#160;</i>Element.use()<a href="#Element.use" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1715 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1715">&#x27ad;</a></h3>
+<div class="extra" id="Element.use-extra"></div></div><div class="dr-method"><p>Creates <code>&lt;use&gt;</code> element linked to the current element.
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description"><code>&lt;use&gt;</code> element</span></p>
+</div><div class="Fragment-section"><h2 id="Fragment" class="undefined"><i class="dr-trixie">&#160;</i>Fragment<a href="#Fragment" title="Link to this section" class="dr-hash">&#x2693;</a></h2>
+<div class="extra" id="Fragment-extra"></div></div><div class="Fragment-select-section"><h3 id="Fragment.select" class="dr-method"><i class="dr-trixie">&#160;</i>Fragment.select()<a href="#Fragment.select" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2046 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2046">&#x27ad;</a></h3>
+<div class="extra" id="Fragment.select-extra"></div></div><div class="dr-method"><p>See <a href="#Element.select" class="dr-link">Element.select</a>
+</p>
+</div><div class="Fragment-selectAll-section"><h3 id="Fragment.selectAll" class="dr-method"><i class="dr-trixie">&#160;</i>Fragment.selectAll()<a href="#Fragment.selectAll" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2053 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2053">&#x27ad;</a></h3>
+<div class="extra" id="Fragment.selectAll-extra"></div></div><div class="dr-method"><p>See <a href="#Element.selectAll" class="dr-link">Element.selectAll</a>
+</p>
+</div><div class="Matrix-section"><h2 id="Matrix" class="undefined"><i class="dr-trixie">&#160;</i>Matrix<a href="#Matrix" title="Link to this section" class="dr-hash">&#x2693;</a></h2>
+<div class="extra" id="Matrix-extra"></div></div><div class="Matrix-add-section"><h3 id="Matrix.add" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.add(a, b, c, d, e, f, matrix)<a href="#Matrix.add" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 369 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L369">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.add-extra"></div></div><div class="dr-method"><p>Adds given matrix to existing one.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">a</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">b</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">c</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">d</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">e</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">f</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">matrix</dt>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description"><a href="#Matrix" class="dr-link">Matrix</a></dd>
+</dl>
+</div><div class="Matrix-clone-section"><h3 id="Matrix.clone" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.clone()<a href="#Matrix.clone" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 415 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L415">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.clone-extra"></div></div><div class="dr-method"><p>Returns copy of the matrix
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Matrix" class="dr-link">Matrix</a></span></p>
+</div><div class="Matrix-invert-section"><h3 id="Matrix.invert" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.invert()<a href="#Matrix.invert" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 403 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L403">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.invert-extra"></div></div><div class="dr-method"><p>Returns inverted version of the matrix
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Matrix" class="dr-link">Matrix</a></span></p>
+</div><div class="Matrix-rotate-section"><h3 id="Matrix.rotate" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.rotate(a, x, y)<a href="#Matrix.rotate" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 458 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L458">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.rotate-extra"></div></div><div class="dr-method"><p>Rotates the matrix
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">a</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+</div><div class="Matrix-scale-section"><h3 id="Matrix.scale" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.scale(x, [y], [cx], [cy])<a href="#Matrix.scale" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 441 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L441">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.scale-extra"></div></div><div class="dr-method"><p>Scales the matrix
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param optional">y</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param optional">cx</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param optional">cy</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+</div><div class="Matrix-split-section"><h3 id="Matrix.split" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.split()<a href="#Matrix.split" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 524 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L524">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.split-extra"></div></div><div class="dr-method"><p>Splits matrix into primitive transformations
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">in format:</span></p>
+<ol class="dr-json"><li><span class="dr-json-key">dx</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">translation by x</span>
+<li><span class="dr-json-key">dy</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">translation by y</span>
+<li><span class="dr-json-key">scalex</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">scale by x</span>
+<li><span class="dr-json-key">scaley</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">scale by y</span>
+<li><span class="dr-json-key">shear</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">shear</span>
+<li><span class="dr-json-key">rotate</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">rotation in deg</span>
+<li><span class="dr-json-key">isSimple</span><span class="dr-type"><em class="dr-type-boolean">boolean</em></span><span class="dr-json-description">could it be represented via simple transformations</span>
+</ol>
+</div><div class="Matrix-toTransformString-section"><h3 id="Matrix.toTransformString" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.toTransformString()<a href="#Matrix.toTransformString" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 566 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L566">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.toTransformString-extra"></div></div><div class="dr-method"><p>Return transform string that represents given matrix
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">transform string</span></p>
+</div><div class="Matrix-translate-section"><h3 id="Matrix.translate" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.translate(x, y)<a href="#Matrix.translate" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 427 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L427">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.translate-extra"></div></div><div class="dr-method"><p>Translate the matrix
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+</div><div class="Matrix-x-section"><h3 id="Matrix.x" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.x(x, y)<a href="#Matrix.x" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 477 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L477">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.x-extra"></div></div><div class="dr-method"><p>Return x coordinate for given point after transformation described by the matrix. See also <a href="#Matrix.y" class="dr-link">Matrix.y</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-number">number</em> <span class="dr-description">x</span></p>
+</div><div class="Matrix-y-section"><h3 id="Matrix.y" class="dr-method"><i class="dr-trixie">&#160;</i>Matrix.y(x, y)<a href="#Matrix.y" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 490 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L490">&#x27ad;</a></h3>
+<div class="extra" id="Matrix.y-extra"></div></div><div class="dr-method"><p>Return y coordinate for given point after transformation described by the matrix. See also <a href="#Matrix.x" class="dr-link">Matrix.x</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-number">number</em> <span class="dr-description">y</span></p>
+</div><div class="Paper-section"><h2 id="Paper" class="undefined"><i class="dr-trixie">&#160;</i>Paper<a href="#Paper" title="Link to this section" class="dr-hash">&#x2693;</a></h2>
+<div class="extra" id="Paper-extra"></div></div><div class="Paper-circle-section"><h3 id="Paper.circle" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.circle(x, y, r)<a href="#Paper.circle" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2220 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2220">&#x27ad;</a></h3>
+<div class="extra" id="Paper.circle-extra"></div></div><div class="dr-method"><p>Draws a circle.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the centre</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the centre</dd>
+<dt class="dr-param">r</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">radius</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “circle”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> c<span class="s"> = </span>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">40</span>);
+</code></pre>
+</div><div class="Paper-el-section"><h3 id="Paper.el" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.el(name)<a href="#Paper.el" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2156 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2156">&#x27ad;</a></h3>
+<div class="extra" id="Paper.el-extra"></div></div><div class="dr-method"><p>Creates element on paper with a given name and no attributes.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">name</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">element tag name</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description">the element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> c<span class="s"> = </span>paper.circle(<span class="d">10</span>, <span class="d">10</span>, <span class="d">10</span>); <span class="c">// is the same as...</span>
+<b>var</b> c<span class="s"> = </span>paper.el(<i>"circle"</i>).attr({
+    cx: <span class="d">10</span>,
+    cy: <span class="d">10</span>,
+    r: <span class="d">10</span>
+});
+</code></pre>
+</div><div class="Paper-ellipse-section"><h3 id="Paper.ellipse" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.ellipse(x, y, rx, ry)<a href="#Paper.ellipse" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2314 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2314">&#x27ad;</a></h3>
+<div class="extra" id="Paper.ellipse-extra"></div></div><div class="dr-method"><p>Draws an ellipse.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the centre</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the centre</dd>
+<dt class="dr-param">rx</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">horizontal radius</dd>
+<dt class="dr-param">ry</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">vertical radius</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “ellipse”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> c<span class="s"> = </span>paper.ellipse(<span class="d">50</span>, <span class="d">50</span>, <span class="d">40</span>, <span class="d">20</span>);
+</code></pre>
+</div><div class="Paper-filter-section"><h3 id="Paper.filter" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.filter(filstr)<a href="#Paper.filter" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 38 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.filter.default.js#L38">&#x27ad;</a></h3>
+<div class="extra" id="Paper.filter-extra"></div></div><div class="dr-method"><p>Creates filter element
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">filstr</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">SVG fragment of filter provided as a string.</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+<p>Note: It is recommended to use filters embedded into page inside empty SVG element.
+</p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> f<span class="s"> = </span>paper.filter(<i>'&lt;feGaussianBlur stdDeviation="<span class="d">2</span>"/>'</i>),
+    c<span class="s"> = </span>paper.circle(<span class="d">10</span>, <span class="d">10</span>, <span class="d">10</span>).attr({
+        filter: f
+    });
+</code></pre>
+</div><div class="Paper-filter-blur-section"><h4 id="Paper.filter.blur" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.filter.blur(dx, dy, [blur], [color])<a href="#Paper.filter.blur" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 131 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.filter.default.js#L131">&#x27ad;</a></h4>
+<div class="extra" id="Paper.filter.blur-extra"></div></div><div class="dr-method"><p>Returns string of the blur filter.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">amount of horisontal blur in px.</dd>
+<dt class="dr-param optional">y</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">amount of vertical blur in px.</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">filter representation</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> f<span class="s"> = </span>paper.filter(Savage.filter.blur(<span class="d">5</span>, <span class="d">10</span>)),
+    c<span class="s"> = </span>paper.circle(<span class="d">10</span>, <span class="d">10</span>, <span class="d">10</span>).attr({
+        filter: f
+    });
+</code></pre>
+</div><div class="dr-method"><p>Returns string of the blur filter.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">dx</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">horisontal shift of the shadow in px.</dd>
+<dt class="dr-param">dy</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">vertical shift of the shadow in px.</dd>
+<dt class="dr-param optional">blur</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">amount of blur.</dd>
+<dt class="dr-param optional">color</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">color of the shadow.</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">filter representation</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> f<span class="s"> = </span>paper.filter(Savage.filter.shadow(<span class="d">5</span>, <span class="d">10</span>)),
+    c<span class="s"> = </span>paper.circle(<span class="d">10</span>, <span class="d">10</span>, <span class="d">10</span>).attr({
+        filter: f
+    });
+</code></pre>
+</div><div class="Paper-g-section"><h3 id="Paper.g" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.g([varargs])<a href="#Paper.g" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2413 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2413">&#x27ad;</a></h3>
+<div class="extra" id="Paper.g-extra"></div></div><div class="dr-method"><p>Makes a group element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param optional">varargs</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-…">…</em></dd>
+<dd class="dr-description">elements</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “g”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> c1<span class="s"> = </span>paper.circle(),
+    c2<span class="s"> = </span>paper.rect(),
+    g<span class="s"> = </span>paper.g(c2, c1); <span class="c">// note that the order of elements will be different</span>
+</code></pre>
+<p>or
+</p>
+<pre class="javascript code"><code><b>var</b> c1<span class="s"> = </span>paper.circle(),
+    c2<span class="s"> = </span>paper.rect(),
+    g<span class="s"> = </span>paper.g();
+g.add(c2, c1);
+</code></pre>
+</div><div class="Paper-gradient-section"><h3 id="Paper.gradient" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.gradient(gradient)<a href="#Paper.gradient" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2576 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2576">&#x27ad;</a></h3>
+<div class="extra" id="Paper.gradient-extra"></div></div><div class="dr-method"><p>Creates a gradient element.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">gradient</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">gradient descriptor</dd>
+</dl>
+<p class="header">Gradient Descriptor
+<p>Gradient descriptor consists of <code>&lt;type&gt;(&lt;coords&gt;)&lt;colors&gt;</code>. Type
+could be linear or radial, which presented as letter “L” or “R”. Any
+type could be absolute or relative, absolute gradient take it coords
+relative to the SVG surface, while relative takes them relative to
+the bounding box of the element it applied to. For absolute
+coordinates you specify type as an upper case letter (“L” or “R”).
+For relative use low case letter (“l” or “r”). Coordinates specify
+vector of gradient for linear as x1, y1, x2, y2. For radial as cx,
+cy, r and optional fx, fy. Colors are list of dash separated colors.
+Optionally color could have offset after colon.
+</p>
+<p class="header">Example
+</p>
+<pre class="javascript code"><code><b>var</b> g<span class="s"> = </span>paper.gradient(<i>"l(<span class="d">0</span>, <span class="d">0</span>, <span class="d">1</span>, <span class="d">1</span>)#<span class="d">000</span>-#f00-#fff"</i>);
+</code></pre>
+<p>Linear gradient, relative from top-left corner to bottom-right
+corner, from black through red to white.
+</p>
+<pre class="javascript code"><code><b>var</b> g<span class="s"> = </span>paper.gradient(<i>"L(<span class="d">0</span>, <span class="d">0</span>, <span class="d">100</span>, <span class="d">100</span>)#<span class="d">000</span>-#f00:<span class="d">25</span>%-#fff"</i>);
+</code></pre>
+<p>Linear gradient, absolute from (0, 0) to (100, 100), from black
+through red at 25% to white.
+</p>
+<pre class="javascript code"><code><b>var</b> g<span class="s"> = </span>paper.gradient(<i>"r(<span class="d">0.5</span>, <span class="d">0.5</span>, <span class="d">0.5</span>)#<span class="d">000</span>-#fff"</i>);
+</code></pre>
+<p>Radial gradient, relative from the center of the element with radius
+0.5 of the width, from black to white.
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">40</span>).attr({
+    fill: g
+});
+</code></pre>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “gradient”</span></p>
+</div><div class="Paper-group-section"><h3 id="Paper.group" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.group()<a href="#Paper.group" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2419 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2419">&#x27ad;</a></h3>
+<div class="extra" id="Paper.group-extra"></div></div><div class="dr-method"><p>See <a href="#Paper.g" class="dr-link">Paper.g</a>
+</p>
+</div><div class="Paper-image-section"><h3 id="Paper.image" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.image(src, x, y, width, height)<a href="#Paper.image" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2269 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2269">&#x27ad;</a></h3>
+<div class="extra" id="Paper.image-extra"></div></div><div class="dr-method"><p>Embeds an image into the surface.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">src</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">URI of the source image</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate position</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate position</dd>
+<dt class="dr-param">width</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">width of the image</dd>
+<dt class="dr-param">height</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">height of the image</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Raphaël element object with type “image”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> c<span class="s"> = </span>paper.image(<i>"apple.png"</i>, <span class="d">10</span>, <span class="d">10</span>, <span class="d">80</span>, <span class="d">80</span>);
+</code></pre>
+</div><div class="dr-method"><p>Embeds an image into the surface.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">src</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">URI of the source image</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate position</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate position</dd>
+<dt class="dr-param">width</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">width of the image</dd>
+<dt class="dr-param">height</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">height of the image</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “image”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> c<span class="s"> = </span>paper.image(<i>"apple.png"</i>, <span class="d">10</span>, <span class="d">10</span>, <span class="d">80</span>, <span class="d">80</span>);
+</code></pre>
+</div><div class="Paper-line-section"><h3 id="Paper.line" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.line(x1, y1, x2, y2)<a href="#Paper.line" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2474 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2474">&#x27ad;</a></h3>
+<div class="extra" id="Paper.line-extra"></div></div><div class="dr-method"><p>Draws a line.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x1</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate position of the start</dd>
+<dt class="dr-param">y1</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate position of the start</dd>
+<dt class="dr-param">x2</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate position of the end</dd>
+<dt class="dr-param">y2</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate position of the end</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “line”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> t1<span class="s"> = </span>paper.line(<span class="d">50</span>, <span class="d">50</span>, <span class="d">100</span>, <span class="d">100</span>);
+</code></pre>
+</div><div class="Paper-path-section"><h3 id="Paper.path" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.path([pathString])<a href="#Paper.path" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2359 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2359">&#x27ad;</a></h3>
+<div class="extra" id="Paper.path-extra"></div></div><div class="dr-method"><p>Creates a path element by given path data string.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param optional">pathString</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">path string in SVG format.</dd>
+</dl>
+<p>Path string consists of one-letter commands, followed by comma seprarated arguments in numercal form. Example:
+</p>
+<pre class="javascript code"><code><i>"M10,20L30,<span class="d">40</span>"</i>
+</code></pre>
+<p>Here we can see two commands: “M”, with arguments <code>(10, 20)</code> and “L” with arguments <code>(30, 40)</code>. Upper case letter mean command is absolute, lower case—relative.
+</p>
+<p></p>
+<p>Here is short list of commands available, for more details see <a href="http://www.w3.org/TR/SVG/paths.html#PathData" title="Details of a path's data attribute's format are described in the SVG specification.">SVG path string format</a> or <a href="https://developer.mozilla.org/en/SVG/Tutorial/Paths">article about path strings at MDN</a>.</p>
+<table><thead><tr><th>Command</th><th>Name</th><th>Parameters</th></tr></thead><tbody>
+<tr><td>M</td><td>moveto</td><td>(x y)+</td></tr>
+<tr><td>Z</td><td>closepath</td><td>(none)</td></tr>
+<tr><td>L</td><td>lineto</td><td>(x y)+</td></tr>
+<tr><td>H</td><td>horizontal lineto</td><td>x+</td></tr>
+<tr><td>V</td><td>vertical lineto</td><td>y+</td></tr>
+<tr><td>C</td><td>curveto</td><td>(x1 y1 x2 y2 x y)+</td></tr>
+<tr><td>S</td><td>smooth curveto</td><td>(x2 y2 x y)+</td></tr>
+<tr><td>Q</td><td>quadratic Bézier curveto</td><td>(x1 y1 x y)+</td></tr>
+<tr><td>T</td><td>smooth quadratic Bézier curveto</td><td>(x y)+</td></tr>
+<tr><td>A</td><td>elliptical arc</td><td>(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+</td></tr>
+<tr><td>R</td><td><a href="http://en.wikipedia.org/wiki/Catmull–Rom_spline#Catmull.E2.80.93Rom_spline">Catmull-Rom curveto</a>*</td><td>x1 y1 (x y)+</td></tr></tbody></table>
+<p><li>“Catmull-Rom curveto” is a not standard SVG command and added to make life easier.</li>
+Note: there is a special case when path consist of just three commands: “M10,10R…z”. In this case path will smoothly connects to its beginning.
+</p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> c<span class="s"> = </span>paper.path(<i>"M10 10L90 <span class="d">90</span>"</i>);
+<span class="c">// draw a diagonal line:</span>
+<span class="c">// move to <span class="d">10</span>,<span class="d">10</span>, line to <span class="d">90</span>,<span class="d">90</span></span>
+</code></pre>
+</div><div class="Paper-polygon-section"><h3 id="Paper.polygon" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.polygon()<a href="#Paper.polygon" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2525 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2525">&#x27ad;</a></h3>
+<div class="extra" id="Paper.polygon-extra"></div></div><div class="dr-method"><p>Draws a polygon. See <a href="#Paper.polyline" class="dr-link">Paper.polyline</a>
+</p>
+</div><div class="Paper-polyline-section"><h3 id="Paper.polyline" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.polyline(…)<a href="#Paper.polyline" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2505 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2505">&#x27ad;</a></h3>
+<div class="extra" id="Paper.polyline-extra"></div></div><div class="dr-method"><p>Draws a polyline.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">points</dt>
+<dd class="dr-type"><em class="dr-type-array">array</em></dd>
+<dd class="dr-description">array of points</dd>
+</dl>
+<p>or
+</p>
+<dl class="dr-parameters"><dt class="dr-param">varargs</dt>
+<dd class="dr-type"><em class="dr-type-…">…</em></dd>
+<dd class="dr-description">points</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “text”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> p1<span class="s"> = </span>paper.polyline([<span class="d">10</span>, <span class="d">10</span>, <span class="d">100</span>, <span class="d">100</span>]);
+<b>var</b> p2<span class="s"> = </span>paper.polyline(<span class="d">10</span>, <span class="d">10</span>, <span class="d">100</span>, <span class="d">100</span>);
+</code></pre>
+</div><div class="Paper-rect-section"><h3 id="Paper.rect" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.rect(x, y, width, height, [rx], [ry])<a href="#Paper.rect" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2181 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2181">&#x27ad;</a></h3>
+<div class="extra" id="Paper.rect-extra"></div></div><div class="dr-method"><p></p>
+<p>Draws a rectangle.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the top left corner</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the top left corner</dd>
+<dt class="dr-param">width</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">width</dd>
+<dt class="dr-param">height</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">height</dd>
+<dt class="dr-param optional">rx</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">horisontal radius for rounded corners, default is 0</dd>
+<dt class="dr-param optional">ry</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">vertical radius for rounded corners, default is rx or 0</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “rect”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><span class="c">// regular rectangle</span>
+<b>var</b> c<span class="s"> = </span>paper.rect(<span class="d">10</span>, <span class="d">10</span>, <span class="d">50</span>, <span class="d">50</span>);
+<span class="c">// rectangle <b>with</b> rounded corners</span>
+<b>var</b> c<span class="s"> = </span>paper.rect(<span class="d">40</span>, <span class="d">40</span>, <span class="d">50</span>, <span class="d">50</span>, <span class="d">10</span>);
+</code></pre>
+</div><div class="Paper-text-section"><h3 id="Paper.text" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.text(x, y, text)<a href="#Paper.text" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2444 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2444">&#x27ad;</a></h3>
+<div class="extra" id="Paper.text-extra"></div></div><div class="dr-method"><p>Draws a text string.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate position</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate position</dd>
+<dt class="dr-param">text</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em> <em class="dr-type-array">array</em></dd>
+<dd class="dr-description">The text string to draw or array of &lt;tspan&gt;s</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element object with type “text”</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><b>var</b> t1<span class="s"> = </span>paper.text(<span class="d">50</span>, <span class="d">50</span>, <i>"Savage"</i>);
+<b>var</b> t2<span class="s"> = </span>paper.text(<span class="d">50</span>, <span class="d">50</span>, [<i>"S"</i>,<i>"a"</i>,<i>"v"</i>,<i>"a"</i>,<i>"g"</i>,<i>"e"</i>]);
+</code></pre>
+</div><div class="Savage-section"><h2 id="Savage" class="undefined"><i class="dr-trixie">&#160;</i>Savage<a href="#Savage" title="Link to this section" class="dr-hash">&#x2693;</a></h2>
+<div class="extra" id="Savage-extra"></div></div><div class="Savage-Matrix-section"><h3 id="Savage.Matrix" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.Matrix(…)<a href="#Savage.Matrix" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 598 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L598">&#x27ad;</a></h3>
+<div class="extra" id="Savage.Matrix-extra"></div></div><div class="dr-method"><p>Utility method
+Returns matrix based on given parameters.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">a</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">b</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">c</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">d</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">e</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+<dt class="dr-param">f</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p>or
+</p>
+<dl class="dr-parameters"><dt class="dr-param">svgMatrix</dt>
+<dd class="dr-type"><em class="dr-type-SVGMatrix">SVGMatrix</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Matrix" class="dr-link">Matrix</a></span></p>
+</div><div class="Savage-animate-section"><h3 id="Savage.animate" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.animate(from, to, setter, ms, [easing], [callback])<a href="#Savage.animate" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1933 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1933">&#x27ad;</a></h3>
+<div class="extra" id="Savage.animate-extra"></div></div><div class="dr-method"><p>Runs generic animation of one number into another with a caring function.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">from</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em> <em class="dr-type-array">array</em></dd>
+<dd class="dr-description">number or array of numbers</dd>
+<dt class="dr-param">to</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em> <em class="dr-type-array">array</em></dd>
+<dd class="dr-description">number or array of numbers</dd>
+<dt class="dr-param">setter</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">caring function that will take one number argument</dd>
+<dt class="dr-param">ms</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">duration</dd>
+<dt class="dr-param optional">easing</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">easing function from <a href="#mina" class="dr-link">mina</a> or custom</dd>
+<dt class="dr-param optional">callback</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">animation object in <a href="#mina" class="dr-link">mina</a> format</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">id</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">animation id, consider it read-only,</span>
+<li><span class="dr-json-key">duration</span><span class="dr-type"><em class="dr-type-function">function</em></span><span class="dr-json-description">gets or sets the duration of the animation,</span>
+<li><span class="dr-json-key">easing</span><span class="dr-type"><em class="dr-type-function">function</em></span><span class="dr-json-description">easing,</span>
+<li><span class="dr-json-key">speed</span><span class="dr-type"><em class="dr-type-function">function</em></span><span class="dr-json-description">gets or sets the speed of the animation,</span>
+<li><span class="dr-json-key">status</span><span class="dr-type"><em class="dr-type-function">function</em></span><span class="dr-json-description">gets or sets the status of the animation,</span>
+<li><span class="dr-json-key">stop</span><span class="dr-type"><em class="dr-type-function">function</em></span><span class="dr-json-description">stops the animation</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-animation-section"><h3 id="Savage.animation" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.animation(attr, ms, [easing], [callback])<a href="#Savage.animation" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1874 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1874">&#x27ad;</a></h3>
+<div class="extra" id="Savage.animation-extra"></div></div><div class="dr-method"><p>Creates animation object.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">attr</dt>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">attributes of final destination</dd>
+<dt class="dr-param">ms</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">animation duration</dd>
+<dt class="dr-param optional">easing</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">one of easing functions of <a href="#mina" class="dr-link">mina</a> or custom one</dd>
+<dt class="dr-param optional">callback</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">callback</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">animation object</span></p>
+</div><div class="Savage-color-section"><h3 id="Savage.color" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.color(clr)<a href="#Savage.color" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 821 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L821">&#x27ad;</a></h3>
+<div class="extra" id="Savage.color-extra"></div></div><div class="dr-method"><p>Parses the color string and returns object with all values for the given color.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">clr</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">color string in one of the supported formats (see <a href="#Savage.getRGB" class="dr-link">Savage.getRGB</a>)</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Combined RGB &amp; HSB object in format:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">r</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">red,</span>
+<li><span class="dr-json-key">g</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">green,</span>
+<li><span class="dr-json-key">b</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">blue,</span>
+<li><span class="dr-json-key">hex</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">color in HTML/CSS format: #••••••,</span>
+<li><span class="dr-json-key">error</span><span class="dr-type"><em class="dr-type-boolean">boolean</em></span><span class="dr-json-description"><code>true</code> if string cant be parsed,</span>
+<li><span class="dr-json-key">h</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">hue,</span>
+<li><span class="dr-json-key">s</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">saturation,</span>
+<li><span class="dr-json-key">v</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">value (brightness),</span>
+<li><span class="dr-json-key">l</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">lightness</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-deg-section"><h3 id="Savage.deg" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.deg(deg)<a href="#Savage.deg" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 283 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L283">&#x27ad;</a></h3>
+<div class="extra" id="Savage.deg-extra"></div></div><div class="dr-method"><p>Transform angle to degrees
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">deg</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle in radians</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-number">number</em> <span class="dr-description">angle in degrees.</span></p>
+</div><div class="Savage-findDotsAtSegment-section"><h3 id="Savage.findDotsAtSegment" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.findDotsAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t)<a href="#Savage.findDotsAtSegment" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1182 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1182">&#x27ad;</a></h3>
+<div class="extra" id="Savage.findDotsAtSegment-extra"></div></div><div class="dr-method"><p>Utility method
+Find dot coordinates on the given cubic bezier curve at the given t.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">p1x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the first point of the curve</dd>
+<dt class="dr-param">p1y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the first point of the curve</dd>
+<dt class="dr-param">c1x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the first anchor of the curve</dd>
+<dt class="dr-param">c1y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the first anchor of the curve</dd>
+<dt class="dr-param">c2x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the second anchor of the curve</dd>
+<dt class="dr-param">c2y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the second anchor of the curve</dd>
+<dt class="dr-param">p2x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the second point of the curve</dd>
+<dt class="dr-param">p2y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the second point of the curve</dd>
+<dt class="dr-param">t</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">position on the curve (0..1)</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">point information in format:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the point</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the point</span>
+<li>    m: {<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the left anchor</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the left anchor</span>
+</ol></li><li>    }</li><li>    n: {<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the right anchor</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the right anchor</span>
+</ol></li><li>    }</li><li>    start: {<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the start of the curve</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the start of the curve</span>
+</ol></li><li>    }</li><li>    end: {<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the end of the curve</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the end of the curve</span>
+</ol></li><li>    }</li><li><span class="dr-json-key">alpha:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">angle of the curve derivative at the point</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-format-section"><h3 id="Savage.format" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.format(token, json)<a href="#Savage.format" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 176 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L176">&#x27ad;</a></h3>
+<div class="extra" id="Savage.format-extra"></div></div><div class="dr-method"><p>Replaces construction of type “<code>{&lt;name&gt;}</code>” to the corresponding argument.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">token</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">string to format</dd>
+<dt class="dr-param">json</dt>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">object which properties will be used as a replacement</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">formated string</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code><span class="c">// <b>this</b> will draw a rectangular shape equivalent to <i>"M10,20h40v50h-40z"</i></span>
+paper.path(Savage.format(<i>"M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z"</i>, {
+    x: <span class="d">10</span>,
+    y: <span class="d">20</span>,
+    dim: {
+        width: <span class="d">40</span>,
+        height: <span class="d">50</span>,
+        <i>"negative width"</i>: -<span class="d">40</span>
+    }
+}));
+</code></pre>
+</div><div class="Savage-fragment-section"><h3 id="Savage.fragment" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.fragment(varargs)<a href="#Savage.fragment" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2064 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2064">&#x27ad;</a></h3>
+<div class="extra" id="Savage.fragment-extra"></div></div><div class="dr-method"><p>Creates DOM fragment from given list of elements or strings
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">varargs</dt>
+<dd class="dr-type"><em class="dr-type-…">…</em></dd>
+<dd class="dr-description">SVG string</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Fragment">Fragment</em> <span class="dr-description">the <a href="#Fragment" class="dr-link">Fragment</a></span></p>
+</div><div class="Savage-getRGB-section"><h3 id="Savage.getRGB" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.getRGB(colour)<a href="#Savage.getRGB" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 627 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L627">&#x27ad;</a></h3>
+<div class="extra" id="Savage.getRGB-extra"></div></div><div class="dr-method"><p>Parses colour string as RGB object
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">colour</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">colour string in one of formats:</dd>
+</dl>
+<ul>
+    <li>Colour name (“<code>red</code>”, “<code>green</code>”, “<code>cornflowerblue</code>”, etc)</li>
+    <li>#••• — shortened HTML colour: (“<code>#000</code>”, “<code>#fc0</code>”, etc)</li>
+    <li>#•••••• — full length HTML colour: (“<code>#000000</code>”, “<code>#bd2300</code>”)</li>
+    <li>rgb(•••, •••, •••) — red, green and blue channels values: (“<code>rgb(200,&nbsp;100,&nbsp;0)</code>”)</li>
+    <li>rgb(•••%, •••%, •••%) — same as above, but in %: (“<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>”)</li>
+    <li>hsb(•••, •••, •••) — hue, saturation and brightness values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;1)</code>”)</li>
+    <li>hsb(•••%, •••%, •••%) — same as above, but in %</li>
+    <li>hsl(•••, •••, •••) — same as hsb</li>
+    <li>hsl(•••%, •••%, •••%) — same as hsb</li>
+</ul>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">RGB object in format:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">r</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">red,</span>
+<li><span class="dr-json-key">g</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">green,</span>
+<li><span class="dr-json-key">b</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">blue</span>
+<li><span class="dr-json-key">hex</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">color in HTML/CSS format: #••••••,</span>
+<li><span class="dr-json-key">error</span><span class="dr-type"><em class="dr-type-boolean">boolean</em></span><span class="dr-json-description">true if string cant be parsed</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-hsb-section"><h3 id="Savage.hsb" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.hsb(h, s, b)<a href="#Savage.hsb" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 709 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L709">&#x27ad;</a></h3>
+<div class="extra" id="Savage.hsb-extra"></div></div><div class="dr-method"><p>Converts HSB values to hex representation of the colour.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">h</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">hue</dd>
+<dt class="dr-param">s</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">saturation</dd>
+<dt class="dr-param">b</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">value or brightness</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">hex representation of the colour.</span></p>
+</div><div class="Savage-hsb2rgb-section"><h3 id="Savage.hsb2rgb" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.hsb2rgb(h, s, v)<a href="#Savage.hsb2rgb" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 873 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L873">&#x27ad;</a></h3>
+<div class="extra" id="Savage.hsb2rgb-extra"></div></div><div class="dr-method"><p>Converts HSB values to RGB object.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">h</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">hue</dd>
+<dt class="dr-param">s</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">saturation</dd>
+<dt class="dr-param">v</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">value or brightness</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">RGB object in format:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">r</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">red,</span>
+<li><span class="dr-json-key">g</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">green,</span>
+<li><span class="dr-json-key">b</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">blue,</span>
+<li><span class="dr-json-key">hex</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">color in HTML/CSS format: #••••••</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-hsl-section"><h3 id="Savage.hsl" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.hsl(h, s, l)<a href="#Savage.hsl" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 723 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L723">&#x27ad;</a></h3>
+<div class="extra" id="Savage.hsl-extra"></div></div><div class="dr-method"><p>Converts HSL values to hex representation of the colour.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">h</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">hue</dd>
+<dt class="dr-param">s</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">saturation</dd>
+<dt class="dr-param">l</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">luminosity</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">hex representation of the colour.</span></p>
+</div><div class="Savage-hsl2rgb-section"><h3 id="Savage.hsl2rgb" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.hsl2rgb(h, s, l)<a href="#Savage.hsl2rgb" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 910 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L910">&#x27ad;</a></h3>
+<div class="extra" id="Savage.hsl2rgb-extra"></div></div><div class="dr-method"><p>Converts HSL values to RGB object.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">h</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">hue</dd>
+<dt class="dr-param">s</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">saturation</dd>
+<dt class="dr-param">l</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">luminosity</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">RGB object in format:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">r</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">red,</span>
+<li><span class="dr-json-key">g</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">green,</span>
+<li><span class="dr-json-key">b</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">blue,</span>
+<li><span class="dr-json-key">hex</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">color in HTML/CSS format: #••••••</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-is-section"><h3 id="Savage.is" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.is(o, type)<a href="#Savage.is" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 294 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L294">&#x27ad;</a></h3>
+<div class="extra" id="Savage.is-extra"></div></div><div class="dr-method"><p>Handfull replacement for <code>typeof</code> operator.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">o</dt>
+<dd class="dr-type"><em class="dr-type-…">…</em></dd>
+<dd class="dr-description">any object or primitive</dd>
+<dt class="dr-param">type</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">name of the type, i.e. “string”, “function”, “number”, etc.</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-boolean">boolean</em> <span class="dr-description">is given value is of given type</span></p>
+</div><div class="Savage-parse-section"><h3 id="Savage.parse" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.parse(svg)<a href="#Savage.parse" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2015 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L2015">&#x27ad;</a></h3>
+<div class="extra" id="Savage.parse-extra"></div></div><div class="dr-method"><p>Parses SVG fragment and converts it into <a href="#Fragment" class="dr-link">Fragment</a>.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">svg</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">SVG string</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Fragment">Fragment</em> <span class="dr-description">the fragment</span></p>
+</div><div class="Savage-parsePathString-section"><h3 id="Savage.parsePathString" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.parsePathString(pathString)<a href="#Savage.parsePathString" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1018 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1018">&#x27ad;</a></h3>
+<div class="extra" id="Savage.parsePathString-extra"></div></div><div class="dr-method"><p>Utility method
+Parses given path string into an array of arrays of path segments.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">pathString</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em> <em class="dr-type-array">array</em></dd>
+<dd class="dr-description">path string or array of segments (in the last case it will be returned straight away)</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-array">array</em> <span class="dr-description">array of segments.</span></p>
+</div><div class="Savage-parseTransformString-section"><h3 id="Savage.parseTransformString" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.parseTransformString(TString)<a href="#Savage.parseTransformString" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1072 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1072">&#x27ad;</a></h3>
+<div class="extra" id="Savage.parseTransformString-extra"></div></div><div class="dr-method"><p>Utility method
+Parses given path string into an array of transformations.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">TString</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em> <em class="dr-type-array">array</em></dd>
+<dd class="dr-description">transform string or array of transformations (in the last case it will be returned straight away)</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-array">array</em> <span class="dr-description">array of transformations.</span></p>
+</div><div class="Savage-path-section"><h3 id="Savage.path" class="undefined"><i class="dr-trixie">&#160;</i>Savage.path<a href="#Savage.path" title="Link to this section" class="dr-hash">&#x2693;</a></h3>
+<div class="extra" id="Savage.path-extra"></div></div><div class="Savage-path-bezierBBox-section"><h4 id="Savage.path.bezierBBox" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.bezierBBox(…)<a href="#Savage.path.bezierBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1213 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1213">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.bezierBBox-extra"></div></div><div class="dr-method"><p>Utility method
+Return bounding box of a given cubic bezier curve
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">p1x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the first point of the curve</dd>
+<dt class="dr-param">p1y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the first point of the curve</dd>
+<dt class="dr-param">c1x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the first anchor of the curve</dd>
+<dt class="dr-param">c1y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the first anchor of the curve</dd>
+<dt class="dr-param">c2x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the second anchor of the curve</dd>
+<dt class="dr-param">c2y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the second anchor of the curve</dd>
+<dt class="dr-param">p2x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the second point of the curve</dd>
+<dt class="dr-param">p2y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the second point of the curve</dd>
+</dl>
+<p>or
+</p>
+<dl class="dr-parameters"><dt class="dr-param">bez</dt>
+<dd class="dr-type"><em class="dr-type-array">array</em></dd>
+<dd class="dr-description">array of six points for bezier curve</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">point information in format:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li>    min: {<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the left point</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the top point</span>
+</ol></li><li>    }</li><li>    max: {<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the right point</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the bottom point</span>
+</ol></li><li>    }</li></ol></li><li>}</li></ol>
+</div><div class="Savage-path-getPointAtLength-section"><h4 id="Savage.path.getPointAtLength" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.getPointAtLength(path, length)<a href="#Savage.path.getPointAtLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1071 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1071">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.getPointAtLength-extra"></div></div><div class="dr-method"><p>Return coordinates of the point located at the given length on the given path.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">SVG path string</dd>
+<dt class="dr-param">length</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">&#160;</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">representation of the point:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate</span>
+<li><span class="dr-json-key">alpha:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">angle of derivative</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-path-getSubpath-section"><h4 id="Savage.path.getSubpath" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.getSubpath(path, from, to)<a href="#Savage.path.getSubpath" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1086 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1086">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.getSubpath-extra"></div></div><div class="dr-method"><p>Return subpath of a given path from given length to given length.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">SVG path string</dd>
+<dt class="dr-param">from</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">position of the start of the segment</dd>
+<dt class="dr-param">to</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">position of the end of the segment</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">pathstring for the segment</span></p>
+</div><div class="Savage-path-getTotalLength-section"><h4 id="Savage.path.getTotalLength" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.getTotalLength(path)<a href="#Savage.path.getTotalLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1052 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1052">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.getTotalLength-extra"></div></div><div class="dr-method"><p>Returns length of the given path in pixels.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">SVG path string.</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-number">number</em> <span class="dr-description">length.</span></p>
+</div><div class="Savage-path-intersection-section"><h4 id="Savage.path.intersection" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.intersection(path1, path2)<a href="#Savage.path.intersection" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1265 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1265">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.intersection-extra"></div></div><div class="dr-method"><p>Utility method
+Finds intersections of two paths
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path1</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">path string</dd>
+<dt class="dr-param">path2</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">path string</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-array">array</em> <span class="dr-description">dots of intersection</span></p>
+<ol class="dr-json"><li>[<li>    {<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the point</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the point</span>
+<li><span class="dr-json-key">t1:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">t value for segment of path1</span>
+<li><span class="dr-json-key">t2:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">t value for segment of path2</span>
+<li><span class="dr-json-key">segment1:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">order number for segment of path1</span>
+<li><span class="dr-json-key">segment2:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">order number for segment of path2</span>
+<li><span class="dr-json-key">bez1:</span><span class="dr-type"><em class="dr-type-array">array</em></span><span class="dr-json-description">eight coordinates representing beziér curve for the segment of path1</span>
+<li><span class="dr-json-key">bez2:</span><span class="dr-type"><em class="dr-type-array">array</em></span><span class="dr-json-description">eight coordinates representing beziér curve for the segment of path2</span>
+</ol></li><li>    }</li><li>]</ol>
+</div><div class="Savage-path-isBBoxIntersect-section"><h4 id="Savage.path.isBBoxIntersect" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.isBBoxIntersect(bbox1, bbox2)<a href="#Savage.path.isBBoxIntersect" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1240 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1240">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.isBBoxIntersect-extra"></div></div><div class="dr-method"><p>Utility method
+Returns <code>true</code> if two bounding boxes intersect
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">bbox1</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">first bounding box</dd>
+<dt class="dr-param">bbox2</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">second bounding box</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-boolean">boolean</em> <span class="dr-description"><code>true</code> if they intersect</span></p>
+</div><div class="Savage-path-isPointInside-section"><h4 id="Savage.path.isPointInside" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.isPointInside(path, x, y)<a href="#Savage.path.isPointInside" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1280 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1280">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.isPointInside-extra"></div></div><div class="dr-method"><p>Utility method
+Returns <code>true</code> if given point is inside a given closed path.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">path string</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x of the point</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y of the point</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-boolean">boolean</em> <span class="dr-description">true, if point is inside the path</span></p>
+</div><div class="Savage-path-isPointInsideBBox-section"><h4 id="Savage.path.isPointInsideBBox" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.isPointInsideBBox(bbox, x, y)<a href="#Savage.path.isPointInsideBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1227 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1227">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.isPointInsideBBox-extra"></div></div><div class="dr-method"><p>Utility method
+Returns <code>true</code> if given point is inside bounding box.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">bbox</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">bounding box</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">x coordinate of the point</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">y coordinate of the point</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-boolean">boolean</em> <span class="dr-description"><code>true</code> if point inside</span></p>
+</div><div class="Savage-path-map-section"><h4 id="Savage.path.map" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.map(path, matrix)<a href="#Savage.path.map" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1348 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1348">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.map-extra"></div></div><div class="dr-method"><p>Transform the path string with given matrix.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">path string</dd>
+<dt class="dr-param">matrix</dt>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">see <a href="#Matrix" class="dr-link">Matrix</a></dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">transformed path string</span></p>
+</div><div class="Savage-path-toAbsolute-section"><h4 id="Savage.path.toAbsolute" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.toAbsolute(path)<a href="#Savage.path.toAbsolute" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1325 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1325">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.toAbsolute-extra"></div></div><div class="dr-method"><p>Utility method
+Converts path coordinates into absolute values.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">path string</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-array">array</em> <span class="dr-description">path string</span></p>
+</div><div class="Savage-path-toCubic-section"><h4 id="Savage.path.toCubic" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.toCubic(pathString)<a href="#Savage.path.toCubic" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1337 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1337">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.toCubic-extra"></div></div><div class="dr-method"><p>Utility method
+Converts path to a new path where all segments are cubic bezier curves.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">pathString</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em> <em class="dr-type-array">array</em></dd>
+<dd class="dr-description">path string or array of segments</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-array">array</em> <span class="dr-description">array of segments.</span></p>
+</div><div class="Savage-path-toRelative-section"><h4 id="Savage.path.toRelative" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.path.toRelative(path)<a href="#Savage.path.toRelative" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1313 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1313">&#x27ad;</a></h4>
+<div class="extra" id="Savage.path.toRelative-extra"></div></div><div class="dr-method"><p>Utility method
+Converts path coordinates into relative values.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">path string</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-array">array</em> <span class="dr-description">path string</span></p>
+</div><div class="Savage-pathBBox-section"><h3 id="Savage.pathBBox" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.pathBBox(path)<a href="#Savage.pathBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1300 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L1300">&#x27ad;</a></h3>
+<div class="extra" id="Savage.pathBBox-extra"></div></div><div class="dr-method"><p>Utility method
+Return bounding box of a given path
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">path</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">path string</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">bounding box</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">x:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the left top point of the box</span>
+<li><span class="dr-json-key">y:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the left top point of the box</span>
+<li><span class="dr-json-key">x2:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x coordinate of the right bottom point of the box</span>
+<li><span class="dr-json-key">y2:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y coordinate of the right bottom point of the box</span>
+<li><span class="dr-json-key">width:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">width of the box</span>
+<li><span class="dr-json-key">height:</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">height of the box</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-rad-section"><h3 id="Savage.rad" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.rad(deg)<a href="#Savage.rad" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 273 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L273">&#x27ad;</a></h3>
+<div class="extra" id="Savage.rad-extra"></div></div><div class="dr-method"><p>Transform angle to radians
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">deg</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle in degrees</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-number">number</em> <span class="dr-description">angle in radians.</span></p>
+</div><div class="Savage-rgb-section"><h3 id="Savage.rgb" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.rgb(r, g, b)<a href="#Savage.rgb" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 737 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L737">&#x27ad;</a></h3>
+<div class="extra" id="Savage.rgb-extra"></div></div><div class="dr-method"><p>Converts RGB values to hex representation of the colour.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">r</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">red</dd>
+<dt class="dr-param">g</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">green</dd>
+<dt class="dr-param">b</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">blue</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-string">string</em> <span class="dr-description">hex representation of the colour.</span></p>
+</div><div class="Savage-rgb2hsb-section"><h3 id="Savage.rgb2hsb" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.rgb2hsb(r, g, b)<a href="#Savage.rgb2hsb" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 950 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L950">&#x27ad;</a></h3>
+<div class="extra" id="Savage.rgb2hsb-extra"></div></div><div class="dr-method"><p>Converts RGB values to HSB object.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">r</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">red</dd>
+<dt class="dr-param">g</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">green</dd>
+<dt class="dr-param">b</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">blue</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">HSB object in format:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">h</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">hue</span>
+<li><span class="dr-json-key">s</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">saturation</span>
+<li><span class="dr-json-key">b</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">brightness</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-rgb2hsl-section"><h3 id="Savage.rgb2hsl" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.rgb2hsl(r, g, b)<a href="#Savage.rgb2hsl" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 984 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L984">&#x27ad;</a></h3>
+<div class="extra" id="Savage.rgb2hsl-extra"></div></div><div class="dr-method"><p>Converts RGB values to HSL object.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">r</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">red</dd>
+<dt class="dr-param">g</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">green</dd>
+<dt class="dr-param">b</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">blue</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">HSL object in format:</span></p>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">h</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">hue</span>
+<li><span class="dr-json-key">s</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">saturation</span>
+<li><span class="dr-json-key">l</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">luminosity</span>
+</ol></li><li>}</li></ol>
+</div><div class="Savage-select-section"><h3 id="Savage.select" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.select(query)<a href="#Savage.select" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1322 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1322">&#x27ad;</a></h3>
+<div class="extra" id="Savage.select-extra"></div></div><div class="dr-method"><p>Wraps DOM element specified by CSS selector as <a href="#Element" class="dr-link">Element</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">query</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">CSS selector of the element</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description"></span></p>
+</div><div class="Savage-selectAll-section"><h3 id="Savage.selectAll" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.selectAll(query)<a href="#Savage.selectAll" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1334 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L1334">&#x27ad;</a></h3>
+<div class="extra" id="Savage.selectAll-extra"></div></div><div class="dr-method"><p>Wraps DOM elements specified by CSS selector as set or array of <a href="#Element" class="dr-link">Element</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">query</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">CSS selector of the element</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-Element">Element</em> <span class="dr-description"></span></p>
+</div><div class="Savage-snapTo-section"><h3 id="Savage.snapTo" class="dr-method"><i class="dr-trixie">&#160;</i>Savage.snapTo(values, value, [tolerance])<a href="#Savage.snapTo" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 306 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/svg.js#L306">&#x27ad;</a></h3>
+<div class="extra" id="Savage.snapTo-extra"></div></div><div class="dr-method"><p>Snaps given value to given grid.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">values</dt>
+<dd class="dr-type"><em class="dr-type-array">array</em> <em class="dr-type-number">number</em></dd>
+<dd class="dr-description">given array of values or step of the grid</dd>
+<dt class="dr-param">value</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">value to adjust</dd>
+<dt class="dr-param optional">tolerance</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">tolerance for snapping. Default is <code>10</code>.</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-number">number</em> <span class="dr-description">adjusted value.</span></p>
+</div><div class="Set-section"><h2 id="Set" class="undefined"><i class="dr-trixie">&#160;</i>Set<a href="#Set" title="Link to this section" class="dr-hash">&#x2693;</a></h2>
+<div class="extra" id="Set-extra"></div></div><div class="Set-clear-section"><h3 id="Set.clear" class="dr-method"><i class="dr-trixie">&#160;</i>Set.clear()<a href="#Set.clear" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 98 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L98">&#x27ad;</a></h3>
+<div class="extra" id="Set.clear-extra"></div></div><div class="dr-method"><p>Removeds all elements from the set
+</p>
+</div><div class="Set-exclude-section"><h3 id="Set.exclude" class="dr-method"><i class="dr-trixie">&#160;</i>Set.exclude(element)<a href="#Set.exclude" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 153 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L153">&#x27ad;</a></h3>
+<div class="extra" id="Set.exclude-extra"></div></div><div class="dr-method"><p>Removes given element from the set
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">element</dt>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">element to remove</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-boolean">boolean</em> <span class="dr-description"><code>true</code> if object was found &amp; removed from the set</span></p>
+</div><div class="Set-forEach-section"><h3 id="Set.forEach" class="dr-method"><i class="dr-trixie">&#160;</i>Set.forEach(callback, thisArg)<a href="#Set.forEach" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 78 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L78">&#x27ad;</a></h3>
+<div class="extra" id="Set.forEach-extra"></div></div><div class="dr-method"><p>Executes given function for each element in the set.
+</p>
+<p>If function returns <code>false</code> it will stop loop running.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">callback</dt>
+<dd class="dr-type"><em class="dr-type-function">function</em></dd>
+<dd class="dr-description">function to run</dd>
+<dt class="dr-param">thisArg</dt>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">context object for the callback</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Set object</span></p>
+</div><div class="Set-pop-section"><h3 id="Set.pop" class="dr-method"><i class="dr-trixie">&#160;</i>Set.pop()<a href="#Set.pop" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 60 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L60">&#x27ad;</a></h3>
+<div class="extra" id="Set.pop-extra"></div></div><div class="dr-method"><p>Removes last element and returns it.
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">element</span></p>
+</div><div class="Set-push-section"><h3 id="Set.push" class="dr-method"><i class="dr-trixie">&#160;</i>Set.push()<a href="#Set.push" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 40 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L40">&#x27ad;</a></h3>
+<div class="extra" id="Set.push-extra"></div></div><div class="dr-method"><p>Adds each argument to the current set.
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">original element</span></p>
+</div><div class="Set-splice-section"><h3 id="Set.splice" class="dr-method"><i class="dr-trixie">&#160;</i>Set.splice(index, count, [insertion…])<a href="#Set.splice" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 116 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/savage.mouse.js#L116">&#x27ad;</a></h3>
+<div class="extra" id="Set.splice-extra"></div></div><div class="dr-method"><p>Removes given element from the set
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">index</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">position of the deletion</dd>
+<dt class="dr-param">count</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">number of element to remove</dd>
+<dt class="dr-param optional">insertion…</dt>
+<dd class="dr-optional">optional</dd>
+<dd class="dr-type"><em class="dr-type-object">object</em></dd>
+<dd class="dr-description">elements to insert</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">set elements that were deleted</span></p>
+</div></div></div>
+<script src="savage.js"></script>
+<script src="reference.js"></script>
+<script>!function(e){if(e){var t=document.createElement("li"),n=function(e,t){var n=t.toUpperCase().split(""),r=n.shift(),i=RegExp("^["+r.toLowerCase()+r+"][a-z]*"+n.join("[a-z]*")+"[a-z]*$")
+return!!(e+"").match(i)},r=function(e,t){e+="",t+=""
+var r,i=0
+if(e==t)return 1
+if(!e||!t)return 0
+if(n(e,t))return.9
+i=0,r=e.toLowerCase()
+for(var a,o=0,l=t.length;l>o;o++)a=r.indexOf(t.charAt(o)),~a&&(r=r.substring(a+1),i+=1/(a+1))
+return i=Math.max(i/l-Math.abs(e.length-l)/e.length/2,0)}
+t.innerHTML='<input type="search" id="dr-filter" results="0">'
+for(var i=e.getElementsByTagName("span"),a=[],o=/[^\.\(]*(?=(\(\))?$)/,l=0,h=i.length;h>l;l++)a[l]={li:i[l].parentNode.parentNode,text:i[l].innerHTML.match(o)[0]}
+e.insertBefore(t,e.firstChild)
+var f=document.getElementById("dr-filter"),s=function(e,t){return t.weight-e.weight}
+f.style.width="100%",f.style.marginTop="10px",f.onclick=f.onchange=f.onkeydown=f.onkeyup=function(){var t=f.value,n=[]
+if(t.length>1){for(var i=0,o=a.length;o>i;i++)n[i]={li:a[i].li,weight:r(a[i].text,t)}
+n.sort(s)}else n=a
+for(i=0,o=n.length;o>i;i++)e.appendChild(n[i].li)}}}(document.getElementById("dr-toc"))</script>
+</body></html>

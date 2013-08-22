@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-08-20
+// build: 2013-08-22
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -545,8 +545,24 @@ window.mina = (function (eve) {
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var $VG, Savage = $VG = (function () {
+var Savage = (function () {
 Savage.version = "0.0.1";
+/*\
+ * Savage
+ [ method ]
+ **
+ * Creates drawing surface or wraps existing SVG element.
+ **
+ > Parameters
+ **
+ - width (number|string) width of surface
+ - height (number|string) height of surface
+ * or
+ - dom (SVGElement) element to be wrapped into Savage structure
+ * or
+ - query (string) CSS query selector
+ = (object) @Element
+\*/
 function Savage(w, h) {
     if (w) {
         if (w.tagName) {
@@ -2392,12 +2408,18 @@ function arrayFirstValue(arr) {
         return new Animation(attr, ms, easing, callback);
     };
     /*\
-     * Savage.inAnim
+     * Element.inAnim
      [ method ]
      **
-     * to be continued...
+     * Returns an array of animations element currently in
      **
-     = (object) 
+     = (object) in format
+     o {
+     o     anim (object) animation object,
+     o     curStatus (number) 0..1 — status of the animation: 0 — just started, 1 — just finished,
+     o     status (function) gets or sets the status of the animation,
+     o     stop (function) stops the animation
+     o }
     \*/
     elproto.inAnim = function () {
         var el = this,
@@ -2409,12 +2431,38 @@ function arrayFirstValue(arr) {
                     curStatus: a.status(),
                     status: function (val) {
                         return a.status(val);
+                    },
+                    stop: function () {
+                        a.stop();
                     }
                 });
             }(el.anims[id]));
         }
         return res;
     };
+    /*\
+     * Savage.animate
+     [ method ]
+     **
+     * Runs generic animation of one number into another with a caring function.
+     **
+     > Parameters
+     - from (number|array) number or array of numbers
+     - to (number|array) number or array of numbers
+     - setter (function) caring function that will take one number argument
+     - ms (number) duration
+     - easing (function) #optional easing function from @mina or custom
+     - callback (function) #optional 
+     = (object) animation object in @mina format
+     o {
+     o     id (string) animation id, consider it read-only,
+     o     duration (function) gets or sets the duration of the animation,
+     o     easing (function) easing,
+     o     speed (function) gets or sets the speed of the animation,
+     o     status (function) gets or sets the status of the animation,
+     o     stop (function) stops the animation
+     o }
+    \*/
     Savage.animate = function (from, to, setter, ms, easing, callback) {
         if (typeof easing == "function") {
             callback = easing;
@@ -2423,7 +2471,21 @@ function arrayFirstValue(arr) {
         var now = mina.time(),
             anim = mina(from, to, now, now + ms, mina.time, setter, easing);
         callback && eve.once("mina.finish." + anim.id, callback);
+        return anim;
     };
+    /*\
+     * Element.animate
+     [ method ]
+     **
+     * Animate given attributes of the element.
+     **
+     > Parameters
+     - attrs (object) key-value pairs of destination attributes
+     - ms (number) duration
+     - easing (function) #optional easing function from @mina or custom
+     - callback (function) #optional 
+     = (Element) the element
+    \*/
     elproto.animate = function (attrs, ms, easing, callback) {
         if (typeof easing == "function") {
             callback = easing;
@@ -2435,15 +2497,16 @@ function arrayFirstValue(arr) {
             ms = easing.dur;
             attrs = attrs.attr;
         }
-        var fkeys = [], tkeys = [], keys = {}, from, to, f, eq;
+        var fkeys = [], tkeys = [], keys = {}, from, to, f, eq,
+            el = this;
         for (var key in attrs) if (attrs[has](key)) {
-            if (this.equal) {
-                eq = this.equal(key, Str(attrs[key]));
+            if (el.equal) {
+                eq = el.equal(key, Str(attrs[key]));
                 from = eq.from;
                 to = eq.to;
                 f = eq.f;
             } else {
-                from = +this.attr(key);
+                from = +el.attr(key);
                 to = +attrs[key];
             }
             var len = is(from, "array") ? from.length : 1;
@@ -2452,7 +2515,6 @@ function arrayFirstValue(arr) {
             tkeys = tkeys.concat(to);
         }
         var now = mina.time(),
-            el = this,
             anim = mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
                 var attr = {};
                 for (var key in keys) if (keys[has](key)) {
@@ -2470,8 +2532,19 @@ function arrayFirstValue(arr) {
         eve.once("mina.stop." + anim.id, function () {
             delete el.anims[anim.id];
         });
+        return el;
     };
 }(Element.prototype));
+/*\
+ * Savage.parse
+ [ method ]
+ **
+ * Parses SVG fragment and converts it into @Fragment.
+ **
+ > Parameters
+ - svg (string) SVG string
+ = (Fragment) the fragment
+\*/
 Savage.parse = function (svg) {
     var f = document.createDocumentFragment(),
         pointer = f;
@@ -2497,8 +2570,30 @@ Savage.parse = function (svg) {
 function Fragment(frag) {
     this.node = frag;
 }
+/*\
+ * Fragment.select
+ [ method ]
+ **
+ * See @Element.select
+\*/
 Fragment.prototype.select = Element.prototype.select;
+/*\
+ * Fragment.selectAll
+ [ method ]
+ **
+ * See @Element.selectAll
+\*/
 Fragment.prototype.selectAll = Element.prototype.selectAll;
+/*\
+ * Savage.fragment
+ [ method ]
+ **
+ * Creates DOM fragment from given list of elements or strings
+ **
+ > Parameters
+ - varargs (…) SVG string
+ = (Fragment) the @Fragment
+\*/
 Savage.fragment = function () {
     var args = Array.prototype.slice.call(arguments, 0),
         f = document.createDocumentFragment();
@@ -2574,10 +2669,48 @@ function wrap(dom) {
     return new Element(dom);
 }
 (function (proto) {
+    /*\
+     * Paper.el
+     [ method ]
+     **
+     * Creates element on paper with a given name and no attributes.
+     **
+     > Parameters
+     - name (string) element tag name
+     = (Element) the element
+     > Usage
+     | var c = paper.circle(10, 10, 10); // is the same as...
+     | var c = paper.el("circle").attr({
+     |     cx: 10,
+     |     cy: 10,
+     |     r: 10
+     | });
+    \*/
     proto.el = function (name) {
-        var el = make(name, this.node);
-        return el;
+        return make(name, this.node);
     };
+    /*\
+     * Paper.rect
+     [ method ]
+     *
+     * Draws a rectangle.
+     **
+     > Parameters
+     **
+     - x (number) x coordinate of the top left corner
+     - y (number) y coordinate of the top left corner
+     - width (number) width
+     - height (number) height
+     - rx (number) #optional horisontal radius for rounded corners, default is 0
+     - ry (number) #optional vertical radius for rounded corners, default is rx or 0
+     = (object) Element object with type “rect”
+     **
+     > Usage
+     | // regular rectangle
+     | var c = paper.rect(10, 10, 50, 50);
+     | // rectangle with rounded corners
+     | var c = paper.rect(40, 40, 50, 50, 10);
+    \*/
     proto.rect = function (x, y, w, h, rx, ry) {
         var el = make("rect", this.node);
         if (ry == null) {
@@ -2601,6 +2734,22 @@ function wrap(dom) {
         }
         return el;
     };
+    /*\
+     * Paper.circle
+     [ method ]
+     **
+     * Draws a circle.
+     **
+     > Parameters
+     **
+     - x (number) x coordinate of the centre
+     - y (number) y coordinate of the centre
+     - r (number) radius
+     = (object) Element object with type “circle”
+     **
+     > Usage
+     | var c = paper.circle(50, 50, 40);
+    \*/
     proto.circle = function (cx, cy, r) {
         var el = make("circle", this.node);
         if (is(cx, "object") && "cx" in cx) {
@@ -2614,6 +2763,42 @@ function wrap(dom) {
         }
         return el;
     };
+    /*\
+     * Paper.image
+     [ method ]
+     **
+     * Embeds an image into the surface.
+     **
+     > Parameters
+     **
+     - src (string) URI of the source image
+     - x (number) x coordinate position
+     - y (number) y coordinate position
+     - width (number) width of the image
+     - height (number) height of the image
+     = (object) Raphaël element object with type “image”
+     **
+     > Usage
+     | var c = paper.image("apple.png", 10, 10, 80, 80);
+    \*/
+    /*\
+     * Paper.image
+     [ method ]
+     **
+     * Embeds an image into the surface.
+     **
+     > Parameters
+     **
+     - src (string) URI of the source image
+     - x (number) x coordinate position
+     - y (number) y coordinate position
+     - width (number) width of the image
+     - height (number) height of the image
+     = (object) Element object with type “image”
+     **
+     > Usage
+     | var c = paper.image("apple.png", 10, 10, 80, 80);
+    \*/
     proto.image = function (src, x, y, width, height) {
         var el = make("image", this.node);
         if (is(src, "object") && "src" in src) {
@@ -2642,10 +2827,23 @@ function wrap(dom) {
         }
         return el;
     };
-    proto.custom = function (name) {
-        var el = make(name, this.node);
-        return el;
-    };
+    /*\
+     * Paper.ellipse
+     [ method ]
+     **
+     * Draws an ellipse.
+     **
+     > Parameters
+     **
+     - x (number) x coordinate of the centre
+     - y (number) y coordinate of the centre
+     - rx (number) horizontal radius
+     - ry (number) vertical radius
+     = (object) Element object with type “ellipse”
+     **
+     > Usage
+     | var c = paper.ellipse(50, 50, 40, 20);
+    \*/
     proto.ellipse = function (cx, cy, rx, ry) {
         var el = make("ellipse", this.node);
         if (is(cx, "object") && "cx" in cx) {
@@ -2660,6 +2858,37 @@ function wrap(dom) {
         }
         return el;
     };
+    /*\
+     * Paper.path
+     [ method ]
+     **
+     * Creates a path element by given path data string.
+     > Parameters
+     - pathString (string) #optional path string in SVG format.
+     * Path string consists of one-letter commands, followed by comma seprarated arguments in numercal form. Example:
+     | "M10,20L30,40"
+     * Here we can see two commands: “M”, with arguments `(10, 20)` and “L” with arguments `(30, 40)`. Upper case letter mean command is absolute, lower case—relative.
+     *
+     # <p>Here is short list of commands available, for more details see <a href="http://www.w3.org/TR/SVG/paths.html#PathData" title="Details of a path's data attribute's format are described in the SVG specification.">SVG path string format</a> or <a href="https://developer.mozilla.org/en/SVG/Tutorial/Paths">article about path strings at MDN</a>.</p>
+     # <table><thead><tr><th>Command</th><th>Name</th><th>Parameters</th></tr></thead><tbody>
+     # <tr><td>M</td><td>moveto</td><td>(x y)+</td></tr>
+     # <tr><td>Z</td><td>closepath</td><td>(none)</td></tr>
+     # <tr><td>L</td><td>lineto</td><td>(x y)+</td></tr>
+     # <tr><td>H</td><td>horizontal lineto</td><td>x+</td></tr>
+     # <tr><td>V</td><td>vertical lineto</td><td>y+</td></tr>
+     # <tr><td>C</td><td>curveto</td><td>(x1 y1 x2 y2 x y)+</td></tr>
+     # <tr><td>S</td><td>smooth curveto</td><td>(x2 y2 x y)+</td></tr>
+     # <tr><td>Q</td><td>quadratic Bézier curveto</td><td>(x1 y1 x y)+</td></tr>
+     # <tr><td>T</td><td>smooth quadratic Bézier curveto</td><td>(x y)+</td></tr>
+     # <tr><td>A</td><td>elliptical arc</td><td>(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+</td></tr>
+     # <tr><td>R</td><td><a href="http://en.wikipedia.org/wiki/Catmull–Rom_spline#Catmull.E2.80.93Rom_spline">Catmull-Rom curveto</a>*</td><td>x1 y1 (x y)+</td></tr></tbody></table>
+     * * “Catmull-Rom curveto” is a not standard SVG command and added to make life easier.
+     * Note: there is a special case when path consist of just three commands: “M10,10R…z”. In this case path will smoothly connects to its beginning.
+     > Usage
+     | var c = paper.path("M10 10L90 90");
+     | // draw a diagonal line:
+     | // move to 10,10, line to 90,90
+    \*/
     proto.path = function (d) {
         var el = make("path", this.node);
         if (is(d, "object")) {
@@ -2693,6 +2922,33 @@ function wrap(dom) {
             this[j++] = hub[children[i].savage];
         }
     }
+    /*\
+     * Paper.g
+     [ method ]
+     **
+     * Makes a group element.
+     **
+     > Parameters
+     **
+     - varargs (…) #optional elements
+     = (object) Element object with type “g”
+     **
+     > Usage
+     | var c1 = paper.circle(),
+     |     c2 = paper.rect(),
+     |     g = paper.g(c2, c1); // note that the order of elements will be different
+     * or
+     | var c1 = paper.circle(),
+     |     c2 = paper.rect(),
+     |     g = paper.g();
+     | g.add(c2, c1);
+    \*/
+    /*\
+     * Paper.group
+     [ method ]
+     **
+     * See @Paper.g
+    \*/
     proto.group = proto.g = function () {
         var el = make("g", this.node);
         el.add = add2group;
@@ -2701,6 +2957,23 @@ function wrap(dom) {
         }
         return el;
     };
+    /*\
+     * Paper.text
+     [ method ]
+     **
+     * Draws a text string.
+     **
+     > Parameters
+     **
+     - x (number) x coordinate position
+     - y (number) y coordinate position
+     - text (string|array) The text string to draw or array of <tspan>s
+     = (object) Element object with type “text”
+     **
+     > Usage
+     | var t1 = paper.text(50, 50, "Savage");
+     | var t2 = paper.text(50, 50, ["S","a","v","a","g","e"]);
+    \*/
     proto.text = function (x, y, text) {
         var el = make("text", this.node);
         if (is(x, "object")) {
@@ -2714,6 +2987,23 @@ function wrap(dom) {
         }
         return el;
     };
+    /*\
+     * Paper.line
+     [ method ]
+     **
+     * Draws a line.
+     **
+     > Parameters
+     **
+     - x1 (number) x coordinate position of the start
+     - y1 (number) y coordinate position of the start
+     - x2 (number) x coordinate position of the end
+     - y2 (number) y coordinate position of the end
+     = (object) Element object with type “line”
+     **
+     > Usage
+     | var t1 = paper.line(50, 50, 100, 100);
+    \*/
     proto.line = function (x1, y1, x2, y2) {
         var el = make("line", this.node);
         if (is(x1, "object")) {
@@ -2728,6 +3018,23 @@ function wrap(dom) {
         }
         return el;
     };
+    /*\
+     * Paper.polyline
+     [ method ]
+     **
+     * Draws a polyline.
+     **
+     > Parameters
+     **
+     - points (array) array of points
+     * or
+     - varargs (…) points
+     = (object) Element object with type “text”
+     **
+     > Usage
+     | var p1 = paper.polyline([10, 10, 100, 100]);
+     | var p2 = paper.polyline(10, 10, 100, 100);
+    \*/
     proto.polyline = function (points) {
         if (arguments.length > 1) {
             points = Array.prototype.slice.call(arguments, 0);
@@ -2742,6 +3049,12 @@ function wrap(dom) {
         }
         return el;
     };
+    /*\
+     * Paper.polygon
+     [ method ]
+     **
+     * Draws a polygon. See @Paper.polyline
+    \*/
     proto.polygon = function (points) {
         if (arguments.length > 1) {
             points = Array.prototype.slice.call(arguments, 0);
@@ -2758,6 +3071,41 @@ function wrap(dom) {
     };
     // gradients
     (function () {
+        /*\
+         * Paper.gradient
+         [ method ]
+         **
+         * Creates a gradient element.
+         **
+         > Parameters
+         **
+         - gradient (string) gradient descriptor
+         > Gradient Descriptor
+         * Gradient descriptor consists of `<type>(<coords>)<colors>`. Type
+         * could be linear or radial, which presented as letter “L” or “R”. Any
+         * type could be absolute or relative, absolute gradient take it coords
+         * relative to the SVG surface, while relative takes them relative to
+         * the bounding box of the element it applied to. For absolute
+         * coordinates you specify type as an upper case letter (“L” or “R”).
+         * For relative use low case letter (“l” or “r”). Coordinates specify
+         * vector of gradient for linear as x1, y1, x2, y2. For radial as cx,
+         * cy, r and optional fx, fy. Colors are list of dash separated colors.
+         * Optionally color could have offset after colon.
+         > Example
+         | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
+         * Linear gradient, relative from top-left corner to bottom-right
+         * corner, from black through red to white.
+         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
+         * Linear gradient, absolute from (0, 0) to (100, 100), from black
+         * through red at 25% to white.
+         | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
+         * Radial gradient, relative from the center of the element with radius
+         * 0.5 of the width, from black to white.
+         | paper.circle(50, 50, 40).attr({
+         |     fill: g
+         | });
+         = (object) Element object with type “gradient”
+        \*/
         proto.gradient = function (str) {
             var grad = arrayFirstValue(eve("savage.util.grad.parse", null, str)),
                 el;
@@ -5564,11 +5912,28 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         Str = String,
         $ = Savage._.$;
     Savage.filter = {};
+    /*\
+     * Paper.filter
+     [ method ]
+     **
+     * Creates filter element
+     **
+     > Parameters
+     **
+     - filstr (string) SVG fragment of filter provided as a string.
+     = (object) @Element
+     * Note: It is recommended to use filters embedded into page inside empty SVG element.
+     > Usage
+     | var f = paper.filter('<feGaussianBlur stdDeviation="2"/>'),
+     |     c = paper.circle(10, 10, 10).attr({
+     |         filter: f
+     |     });
+    \*/
     pproto.filter = function (filstr) {
         var f = Savage.parse(Str(filstr)),
             id = Savage._.id(),
-            width = $(this.node, "width") || this.node.offsetWidth,
-            height = $(this.node, "height") || this.node.offsetHeight,
+            width = this.node.offsetWidth,
+            height = this.node.offsetHeight,
             filter = $("filter");
         $(filter, {
             id: id,
@@ -5609,6 +5974,23 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         }
     });
     
+    /*\
+     * Paper.filter.blur
+     [ method ]
+     **
+     * Returns string of the blur filter.
+     **
+     > Parameters
+     **
+     - x (number) amount of horisontal blur in px.
+     - y (number) #optional amount of vertical blur in px.
+     = (string) filter representation
+     > Usage
+     | var f = paper.filter(Savage.filter.blur(5, 10)),
+     |     c = paper.circle(10, 10, 10).attr({
+     |         filter: f
+     |     });
+    \*/
     Savage.filter.blur = function (x, y) {
         if (x == null) {
             x = 2;
@@ -5621,6 +6003,25 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     Savage.filter.blur.toString = function () {
         return this();
     };
+    /*\
+     * Paper.filter.blur
+     [ method ]
+     **
+     * Returns string of the blur filter.
+     **
+     > Parameters
+     **
+     - dx (number) horisontal shift of the shadow in px.
+     - dy (number) vertical shift of the shadow in px.
+     - blur (number) #optional amount of blur.
+     - color (string) #optional color of the shadow.
+     = (string) filter representation
+     > Usage
+     | var f = paper.filter(Savage.filter.shadow(5, 10)),
+     |     c = paper.circle(10, 10, 10).attr({
+     |         filter: f
+     |     });
+    \*/
     Savage.filter.shadow = function (dx, dy, blur, color) {
         color = Savage.color(color || "#000");
         if (blur == null) {
