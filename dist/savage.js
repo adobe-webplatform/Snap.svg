@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-08-22
+// build: 2013-08-23
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,7 +42,379 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-window.mina = (function (eve) {
+// ┌────────────────────────────────────────────────────────────┐ \\
+// │ Eve 0.4.2 - JavaScript Events Library                      │ \\
+// ├────────────────────────────────────────────────────────────┤ \\
+// │ Author Dmitry Baranovskiy (http://dmitry.baranovskiy.com/) │ \\
+// └────────────────────────────────────────────────────────────┘ \\
+
+(function (glob) {
+    var version = "0.4.2",
+        has = "hasOwnProperty",
+        separator = /[\.\/]/,
+        wildcard = "*",
+        fun = function () {},
+        numsort = function (a, b) {
+            return a - b;
+        },
+        current_event,
+        stop,
+        events = {n: {}},
+    /*\
+     * eve
+     [ method ]
+
+     * Fires event with given `name`, given scope and other parameters.
+
+     > Arguments
+
+     - name (string) name of the *event*, dot (`.`) or slash (`/`) separated
+     - scope (object) context for the event handlers
+     - varargs (...) the rest of arguments will be sent to event handlers
+
+     = (object) array of returned values from the listeners
+    \*/
+        eve = function (name, scope) {
+			name = String(name);
+            var e = events,
+                oldstop = stop,
+                args = Array.prototype.slice.call(arguments, 2),
+                listeners = eve.listeners(name),
+                z = 0,
+                f = false,
+                l,
+                indexed = [],
+                queue = {},
+                out = [],
+                ce = current_event,
+                errors = [];
+            current_event = name;
+            stop = 0;
+            for (var i = 0, ii = listeners.length; i < ii; i++) if ("zIndex" in listeners[i]) {
+                indexed.push(listeners[i].zIndex);
+                if (listeners[i].zIndex < 0) {
+                    queue[listeners[i].zIndex] = listeners[i];
+                }
+            }
+            indexed.sort(numsort);
+            while (indexed[z] < 0) {
+                l = queue[indexed[z++]];
+                out.push(l.apply(scope, args));
+                if (stop) {
+                    stop = oldstop;
+                    return out;
+                }
+            }
+            for (i = 0; i < ii; i++) {
+                l = listeners[i];
+                if ("zIndex" in l) {
+                    if (l.zIndex == indexed[z]) {
+                        out.push(l.apply(scope, args));
+                        if (stop) {
+                            break;
+                        }
+                        do {
+                            z++;
+                            l = queue[indexed[z]];
+                            l && out.push(l.apply(scope, args));
+                            if (stop) {
+                                break;
+                            }
+                        } while (l)
+                    } else {
+                        queue[l.zIndex] = l;
+                    }
+                } else {
+                    out.push(l.apply(scope, args));
+                    if (stop) {
+                        break;
+                    }
+                }
+            }
+            stop = oldstop;
+            current_event = ce;
+            return out.length ? out : null;
+        };
+		// Undocumented. Debug only.
+		eve._events = events;
+    /*\
+     * eve.listeners
+     [ method ]
+
+     * Internal method which gives you array of all event handlers that will be triggered by the given `name`.
+
+     > Arguments
+
+     - name (string) name of the event, dot (`.`) or slash (`/`) separated
+
+     = (array) array of event handlers
+    \*/
+    eve.listeners = function (name) {
+        var names = name.split(separator),
+            e = events,
+            item,
+            items,
+            k,
+            i,
+            ii,
+            j,
+            jj,
+            nes,
+            es = [e],
+            out = [];
+        for (i = 0, ii = names.length; i < ii; i++) {
+            nes = [];
+            for (j = 0, jj = es.length; j < jj; j++) {
+                e = es[j].n;
+                items = [e[names[i]], e[wildcard]];
+                k = 2;
+                while (k--) {
+                    item = items[k];
+                    if (item) {
+                        nes.push(item);
+                        out = out.concat(item.f || []);
+                    }
+                }
+            }
+            es = nes;
+        }
+        return out;
+    };
+    
+    /*\
+     * eve.on
+     [ method ]
+     **
+     * Binds given event handler with a given name. You can use wildcards “`*`” for the names:
+     | eve.on("*.under.*", f);
+     | eve("mouse.under.floor"); // triggers f
+     * Use @eve to trigger the listener.
+     **
+     > Arguments
+     **
+     - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     - f (function) event handler function
+     **
+     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
+     > Example:
+     | eve.on("mouse", eatIt)(2);
+     | eve.on("mouse", scream);
+     | eve.on("mouse", catchIt)(1);
+     * This will ensure that `catchIt()` function will be called before `eatIt()`.
+	 *
+     * If you want to put your handler before non-indexed handlers, specify a negative value.
+     * Note: I assume most of the time you don’t need to worry about z-index, but it’s nice to have this feature “just in case”.
+    \*/
+    eve.on = function (name, f) {
+		name = String(name);
+		if (typeof f != "function") {
+			return function () {};
+		}
+        var names = name.split(separator),
+            e = events;
+        for (var i = 0, ii = names.length; i < ii; i++) {
+            e = e.n;
+            e = e.hasOwnProperty(names[i]) && e[names[i]] || (e[names[i]] = {n: {}});
+        }
+        e.f = e.f || [];
+        for (i = 0, ii = e.f.length; i < ii; i++) if (e.f[i] == f) {
+            return fun;
+        }
+        e.f.push(f);
+        return function (zIndex) {
+            if (+zIndex == +zIndex) {
+                f.zIndex = +zIndex;
+            }
+        };
+    };
+    /*\
+     * eve.f
+     [ method ]
+     **
+     * Returns function that will fire given event with optional arguments.
+	 * Arguments that will be passed to the result function will be also
+	 * concated to the list of final arguments.
+ 	 | el.onclick = eve.f("click", 1, 2);
+ 	 | eve.on("click", function (a, b, c) {
+ 	 |     console.log(a, b, c); // 1, 2, [event object]
+ 	 | });
+     > Arguments
+	 - event (string) event name
+	 - varargs (…) and any other arguments
+	 = (function) possible event handler function
+    \*/
+	eve.f = function (event) {
+		var attrs = [].slice.call(arguments, 1);
+		return function () {
+			eve.apply(null, [event, null].concat(attrs).concat([].slice.call(arguments, 0)));
+		};
+	};
+    /*\
+     * eve.stop
+     [ method ]
+     **
+     * Is used inside an event handler to stop the event, preventing any subsequent listeners from firing.
+    \*/
+    eve.stop = function () {
+        stop = 1;
+    };
+    /*\
+     * eve.nt
+     [ method ]
+     **
+     * Could be used inside event handler to figure out actual name of the event.
+     **
+     > Arguments
+     **
+     - subname (string) #optional subname of the event
+     **
+     = (string) name of the event, if `subname` is not specified
+     * or
+     = (boolean) `true`, if current event’s name contains `subname`
+    \*/
+    eve.nt = function (subname) {
+        if (subname) {
+            return new RegExp("(?:\\.|\\/|^)" + subname + "(?:\\.|\\/|$)").test(current_event);
+        }
+        return current_event;
+    };
+    /*\
+     * eve.nts
+     [ method ]
+     **
+     * Could be used inside event handler to figure out actual name of the event.
+     **
+     **
+     = (array) names of the event
+    \*/
+    eve.nts = function () {
+        return current_event.split(separator);
+    };
+    /*\
+     * eve.off
+     [ method ]
+     **
+     * Removes given function from the list of event listeners assigned to given name.
+	 * If no arguments specified all the events will be cleared.
+     **
+     > Arguments
+     **
+     - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     - f (function) event handler function
+    \*/
+    /*\
+     * eve.unbind
+     [ method ]
+     **
+     * See @eve.off
+    \*/
+    eve.off = eve.unbind = function (name, f) {
+		if (!name) {
+		    eve._events = events = {n: {}};
+			return;
+		}
+        var names = name.split(separator),
+            e,
+            key,
+            splice,
+            i, ii, j, jj,
+            cur = [events];
+        for (i = 0, ii = names.length; i < ii; i++) {
+            for (j = 0; j < cur.length; j += splice.length - 2) {
+                splice = [j, 1];
+                e = cur[j].n;
+                if (names[i] != wildcard) {
+                    if (e[names[i]]) {
+                        splice.push(e[names[i]]);
+                    }
+                } else {
+                    for (key in e) if (e[has](key)) {
+                        splice.push(e[key]);
+                    }
+                }
+                cur.splice.apply(cur, splice);
+            }
+        }
+        for (i = 0, ii = cur.length; i < ii; i++) {
+            e = cur[i];
+            while (e.n) {
+                if (f) {
+                    if (e.f) {
+                        for (j = 0, jj = e.f.length; j < jj; j++) if (e.f[j] == f) {
+                            e.f.splice(j, 1);
+                            break;
+                        }
+                        !e.f.length && delete e.f;
+                    }
+                    for (key in e.n) if (e.n[has](key) && e.n[key].f) {
+                        var funcs = e.n[key].f;
+                        for (j = 0, jj = funcs.length; j < jj; j++) if (funcs[j] == f) {
+                            funcs.splice(j, 1);
+                            break;
+                        }
+                        !funcs.length && delete e.n[key].f;
+                    }
+                } else {
+                    delete e.f;
+                    for (key in e.n) if (e.n[has](key) && e.n[key].f) {
+                        delete e.n[key].f;
+                    }
+                }
+                e = e.n;
+            }
+        }
+    };
+    /*\
+     * eve.once
+     [ method ]
+     **
+     * Binds given event handler with a given name to only run once then unbind itself.
+     | eve.once("login", f);
+     | eve("login"); // triggers f
+     | eve("login"); // no listeners
+     * Use @eve to trigger the listener.
+     **
+     > Arguments
+     **
+     - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     - f (function) event handler function
+     **
+     = (function) same return function as @eve.on
+    \*/
+    eve.once = function (name, f) {
+        var f2 = function () {
+            eve.unbind(name, f2);
+            return f.apply(this, arguments);
+        };
+        return eve.on(name, f2);
+    };
+    /*\
+     * eve.version
+     [ property (string) ]
+     **
+     * Current version of the library.
+    \*/
+    eve.version = version;
+    eve.toString = function () {
+        return "You are running Eve " + version;
+    };
+    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define != "undefined" ? (define("eve", [], function() { return eve; })) : (glob.eve = eve));
+})(this);
+
+// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+var mina = (function (eve) {
     var animations = {},
     requestAnimFrame = window.requestAnimationFrame       ||
                        window.webkitRequestAnimationFrame ||
@@ -136,6 +508,39 @@ window.mina = (function (eve) {
         }
         len && requestAnimFrame(frame);
     },
+    /*\
+     * mina
+     [ method ]
+     **
+     * Generic animation of numbers.
+     **
+     > Parameters
+     **
+     - a (number) start “slave” number
+     - A (number) end “slave” number
+     - b (number) start “master” number (start time in gereal case)
+     - B (number) end “master” number (end time in gereal case)
+     - get (function) getter of “master” number (see @mina.time)
+     - set (function) setter of “slave” number
+     - easing (function) #optional easing function, default is @mina.linear
+     = (object) animation descriptor
+     o {
+     o         id (string) animation id,
+     o         start (number) start “slave” number,
+     o         end (number) end “slave” number,
+     o         b (number) start “master” number,
+     o         s (number) animation status (0..1),
+     o         dur (number) animation duration,
+     o         spd (number) animation speed,
+     o         get (function) getter of “master” number (see @mina.time),
+     o         set (function) setter of “slave” number,
+     o         easing (function) easing function, default is @mina.linear,
+     o         status (function) status getter/setter,
+     o         speed (function) speed getter/setter,
+     o         duration (function) duration getter/setter,
+     o         stop (function) animation stopper
+     o }
+    \*/
     mina = function (a, A, b, B, get, set, easing) {
         var anim = {
             id: ID(),
@@ -164,20 +569,74 @@ window.mina = (function (eve) {
         len == 1 && requestAnimFrame(frame);
         return anim;
     };
+    /*\
+     * mina.time
+     [ method ]
+     **
+     * Returns current time. Equal to
+     | function () {
+     |     return (new Date).getTime();
+     | }
+    \*/
     mina.time = timer;
+    /*\
+     * mina.getById
+     [ method ]
+     **
+     * Returns animation by it’s id.
+     > Parameters
+     - id (string) animation’s id
+     = (object) See @mina
+    \*/
     mina.getById = function (id) {
         return animations[anim.id] || null;
     };
 
+    /*\
+     * mina.linear
+     [ method ]
+     **
+     * Default linear easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.linear = function (n) {
         return n;
     };
+    /*\
+     * mina.easeout
+     [ method ]
+     **
+     * Easeout easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.easeout = function (n) {
         return Math.pow(n, 1.7);
     };
+    /*\
+     * mina.easein
+     [ method ]
+     **
+     * Easein easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.easein = function (n) {
         return Math.pow(n, .48);
     };
+    /*\
+     * mina.easeinout
+     [ method ]
+     **
+     * Easeinout easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.easeinout = function (n) {
         var q = .48 - n / 1.04,
             Q = Math.sqrt(.1734 + q * q),
@@ -188,15 +647,42 @@ window.mina = (function (eve) {
             t = X + Y + .5;
         return (1 - t) * 3 * t * t + t * t * t;
     };
+    /*\
+     * mina.backin
+     [ method ]
+     **
+     * Backin easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.backin = function (n) {
         var s = 1.70158;
         return n * n * ((s + 1) * n - s);
     };
+    /*\
+     * mina.backout
+     [ method ]
+     **
+     * Backout easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.backout = function (n) {
         n = n - 1;
         var s = 1.70158;
         return n * n * ((s + 1) * n + s) + 1;
     };
+    /*\
+     * mina.elastic
+     [ method ]
+     **
+     * Elastic easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.elastic = function (n) {
         if (n == !!n) {
             return n;
@@ -204,6 +690,15 @@ window.mina = (function (eve) {
         return Math.pow(2, -10 * n) * Math.sin((n - .075) *
             (2 * Math.PI) / .3) + 1;
     };
+    /*\
+     * mina.bounce
+     [ method ]
+     **
+     * Bounce easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.bounce = function (n) {
         var s = 7.5625,
             p = 2.75,
@@ -226,7 +721,7 @@ window.mina = (function (eve) {
         }
         return l;
     };
-    
+
     return mina;
 })(typeof eve == "undefined" ? function () {} : eve);
 /*

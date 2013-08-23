@@ -9,6 +9,9 @@
         "url": "savage.equal.js",
         "link": "https://github.com/adobe-webplatform/savage/blob/master/savage.equal.js"
     }, {
+        "url": "mina.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/mina.js"
+    }, {
         "url": "savage.filter.default.js",
         "link": "https://github.com/adobe-webplatform/savage/blob/master/savage.filter.default.js"
     }, {

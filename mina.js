@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-window.mina = (function (eve) {
+var mina = (function (eve) {
     var animations = {},
     requestAnimFrame = window.requestAnimationFrame       ||
                        window.webkitRequestAnimationFrame ||
@@ -105,6 +105,39 @@ window.mina = (function (eve) {
         }
         len && requestAnimFrame(frame);
     },
+    /*\
+     * mina
+     [ method ]
+     **
+     * Generic animation of numbers.
+     **
+     > Parameters
+     **
+     - a (number) start “slave” number
+     - A (number) end “slave” number
+     - b (number) start “master” number (start time in gereal case)
+     - B (number) end “master” number (end time in gereal case)
+     - get (function) getter of “master” number (see @mina.time)
+     - set (function) setter of “slave” number
+     - easing (function) #optional easing function, default is @mina.linear
+     = (object) animation descriptor
+     o {
+     o         id (string) animation id,
+     o         start (number) start “slave” number,
+     o         end (number) end “slave” number,
+     o         b (number) start “master” number,
+     o         s (number) animation status (0..1),
+     o         dur (number) animation duration,
+     o         spd (number) animation speed,
+     o         get (function) getter of “master” number (see @mina.time),
+     o         set (function) setter of “slave” number,
+     o         easing (function) easing function, default is @mina.linear,
+     o         status (function) status getter/setter,
+     o         speed (function) speed getter/setter,
+     o         duration (function) duration getter/setter,
+     o         stop (function) animation stopper
+     o }
+    \*/
     mina = function (a, A, b, B, get, set, easing) {
         var anim = {
             id: ID(),
@@ -133,20 +166,74 @@ window.mina = (function (eve) {
         len == 1 && requestAnimFrame(frame);
         return anim;
     };
+    /*\
+     * mina.time
+     [ method ]
+     **
+     * Returns current time. Equal to
+     | function () {
+     |     return (new Date).getTime();
+     | }
+    \*/
     mina.time = timer;
+    /*\
+     * mina.getById
+     [ method ]
+     **
+     * Returns animation by it’s id.
+     > Parameters
+     - id (string) animation’s id
+     = (object) See @mina
+    \*/
     mina.getById = function (id) {
         return animations[anim.id] || null;
     };
 
+    /*\
+     * mina.linear
+     [ method ]
+     **
+     * Default linear easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.linear = function (n) {
         return n;
     };
+    /*\
+     * mina.easeout
+     [ method ]
+     **
+     * Easeout easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.easeout = function (n) {
         return Math.pow(n, 1.7);
     };
+    /*\
+     * mina.easein
+     [ method ]
+     **
+     * Easein easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.easein = function (n) {
         return Math.pow(n, .48);
     };
+    /*\
+     * mina.easeinout
+     [ method ]
+     **
+     * Easeinout easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.easeinout = function (n) {
         var q = .48 - n / 1.04,
             Q = Math.sqrt(.1734 + q * q),
@@ -157,15 +244,42 @@ window.mina = (function (eve) {
             t = X + Y + .5;
         return (1 - t) * 3 * t * t + t * t * t;
     };
+    /*\
+     * mina.backin
+     [ method ]
+     **
+     * Backin easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.backin = function (n) {
         var s = 1.70158;
         return n * n * ((s + 1) * n - s);
     };
+    /*\
+     * mina.backout
+     [ method ]
+     **
+     * Backout easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.backout = function (n) {
         n = n - 1;
         var s = 1.70158;
         return n * n * ((s + 1) * n + s) + 1;
     };
+    /*\
+     * mina.elastic
+     [ method ]
+     **
+     * Elastic easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.elastic = function (n) {
         if (n == !!n) {
             return n;
@@ -173,6 +287,15 @@ window.mina = (function (eve) {
         return Math.pow(2, -10 * n) * Math.sin((n - .075) *
             (2 * Math.PI) / .3) + 1;
     };
+    /*\
+     * mina.bounce
+     [ method ]
+     **
+     * Bounce easing.
+     > Parameters
+     - n (number) input 0..1
+     = (number) output 0..1
+    \*/
     mina.bounce = function (n) {
         var s = 7.5625,
             p = 2.75,
@@ -195,6 +318,6 @@ window.mina = (function (eve) {
         }
         return l;
     };
-    
+
     return mina;
 })(typeof eve == "undefined" ? function () {} : eve);
