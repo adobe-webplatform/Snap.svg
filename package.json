@@ -2,17 +2,17 @@
   "name": "Savage",
   "version": "0.0.1",
   "description": "JavaScript Vector Library",
-  "main": "savage.js",
+  "main": "./dist/savage.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/DmitryBaranovskiy/raphael.git"
+    "url": "git://github.com/adobe-webplatform/savage.git"
   },
   "author": "Dmitry Baranovskiy",
-  "license": "MIT",
+  "license": "Apache License v2",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-concat": "~0.3.0",
-    "eslint-grunt": "0.0.4"
+    "dr.js": "*"
   }
 }
