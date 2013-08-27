@@ -28,14 +28,14 @@ module.exports = function(grunt) {
                 dest: "dist/" + pkg.name.toLowerCase() + ".js",
                 src: [
                     "./third-party/eve/eve.js",
-                    "mina.js",
+                    "./src/mina.js",
                     "./third-party/elemental.js",
-                    "svg.js",
-                    "savage.path.js",
-                    "savage.set.js",
-                    "savage.equal.js",
-                    "savage.mouse.js",
-                    "savage.filter.default.js"
+                    "./src/svg.js",
+                    "./src/path.js",
+                    "./src/set.js",
+                    "./src/equal.js",
+                    "./src/mouse.js",
+                    "./src/filter.js"
                 ]
             }
         }
