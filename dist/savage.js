@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-08-23
+// build: 2013-08-29
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2571,7 +2571,13 @@ function arrayFirstValue(arr) {
      - el (Element|Set) element to append
      = (Element) parent
     \*/
-    elproto.append = function (el) {
+    /*\
+     * Element.add
+     [ method ]
+     **
+     * See @Element.append.
+    \*/
+    elproto.append = elproto.add = function (el) {
         if (el.type == "set") {
             var it = this;
             el.forEach(function (el) {
@@ -2969,6 +2975,21 @@ function arrayFirstValue(arr) {
         return anim;
     };
     /*\
+     * Element.stop
+     [ method ]
+     **
+     * Stops all the animations of the current element.
+     **
+     = (Element) the element
+    \*/
+    elproto.stop = function () {
+        var anims = this.inAnim();
+        for (var i = 0, ii = anims.length; i < ii; i++) {
+            anims[i].stop();
+        }
+        return this;
+    };
+    /*\
      * Element.animate
      [ method ]
      **
@@ -3147,7 +3168,7 @@ function Paper(w, h) {
     for (var key in proto) if (proto[has](key)) {
         res[key] = proto[key];
     }
-    res.paper = res;
+    res.paper = res.root = res;
     res.defs = defs;
     return res;
 }
@@ -3447,6 +3468,9 @@ function wrap(dom) {
     proto.group = proto.g = function () {
         var el = make("g", this.node);
         el.add = add2group;
+        for (var method in proto) if (proto[has](method)) {
+            el[method] = proto[method];
+        }
         if (arguments.length) {
             add2group.call(el, Array.prototype.slice.call(arguments, 0));
         }
@@ -3701,6 +3725,64 @@ function wrap(dom) {
         };
     }());
 }(Paper.prototype));
+
+// simple ajax
+/*\
+ * Savage.ajax
+ [ method ]
+ **
+ * Simple implementation of Ajax.
+ **
+ > Parameters
+ **
+ - url (string) URL
+ - postData (object|string) data for post request
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+ * or
+ - url (string) URL
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+ = (XMLHttpRequest) XMLHttpRequest (just in case)
+\*/
+Savage.ajax = function (url, postData, callback, scope){
+    var req = new XMLHttpRequest,
+        id = ID();
+    if (req) {
+        if (is(postData, "function")) {
+            scope = callback;
+            callback = postData;
+            postData = null;
+        } else if (is(postData, "object")) {
+            var pd = [];
+            for (var key in postData) if (postData.hasOwnProperty(key)) {
+                pd.push(encodeURIComponent(key) + "=" + encodeURIComponent(postData[key]));
+            }
+            postData = pd.join("&");
+        }
+        req.open((postData ? "POST" : "GET"), url, true);
+        req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        if (postData) {
+            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        }
+        if (callback) {
+            eve.once("savage.ajax." + id + ".0", callback);
+            eve.once("savage.ajax." + id + ".200", callback);
+            eve.once("savage.ajax." + id + ".304", callback);
+        }
+        req.onreadystatechange = function() {
+            if (req.readyState != 4) return;
+            eve("savage.ajax." + id + "." + req.status, scope, req);
+        };
+        if (req.readyState == 4) {
+            return req;
+        }
+        req.send(postData);
+        return req;
+    }
+};
+
+
 // Attributes event handlers
 eve.on("savage.util.attr.mask", function (value) {
     if (value instanceof Element || value instanceof Fragment) {
@@ -4021,7 +4103,239 @@ var availableAttributes = {
     path: {
         d: "",
         "class": 0
+    },
+    feDistantLight: {
+        azimuth: 0,
+        elevation: 0
+    },
+    fePointLight: {
+        x: 0,
+        y: 0,
+        z: 0
+    },
+    feSpotLight: {
+        x: 0,
+        y: 0,
+        z: 0,
+        pointsAtX: 0,
+        pointsAtY: 0,
+        pointsAtZ: 0,
+        specularExponent: 0,
+        limitingConeAngle: 0
+    },
+    feBlend: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        in2: 0,
+        mode: 0
+    },
+    feColorMatrix: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        type: 0,
+        values: 0
+    },
+    feComponentTransfer: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0
+    },
+    feComposite: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        in2: 0,
+        operator: 0,
+        k1: 0,
+        k2: 0,
+        k3: 0,
+        k4: 0
+    },
+    feConvolveMatrix: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        order: 0,
+        kernelMatrix: 0,
+        divisor: 0,
+        bias: 0,
+        targetX: 0,
+        targetY: 0,
+        edgeMode: 0,
+        kernelUnitLength: 0,
+        preserveAlpha: 0
+    },
+    feDiffuseLighting: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        surfaceScale: 0,
+        diffuseConstant: 0,
+        kernelUnitLength: 0
+    },
+    feDisplacementMap: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        in2: 0,
+        scale: 0,
+        xChannelSelector: 0,
+        yChannelSelector: 0
+    },
+    feFlood: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "flood-color": 0,
+        "flood-opacity": 0
+    },
+    feGaussianBlur: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        stdDeviation: 0
+    },
+    feImage : {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        externalResourcesRequired: 0,
+        preserveAspectRatio: 0,
+        "xlink:href": 0
+    },
+    feMerge: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0
+    },
+    feMergeNode: {
+        "in": 0
+    },
+    feMorphology: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        operator: 0,
+        radius: 0
+    },
+    feOffset: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        dx: 0,
+        dy: 0
+    },
+    feSpecularLighting: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        surfaceScale: 0,
+        specularConstant: 0,
+        specularExponent: 0,
+        kernelUnitLength: 0
+    },
+    feTile: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0
+    },
+    feTurbulence: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        baseFrequency: 0,
+        numOctaves: 0,
+        seed: 0,
+        stitchTiles: 0,
+        type: 0
     }
+};
+availableAttributes.feFuncR = availableAttributes.feFuncG = availableAttributes.feFuncB = availableAttributes.feFuncA = {
+    type: 0,
+    tableValues: 0,
+    slope: 0,
+    intercept: 0,
+    amplitude: 0,
+    exponent: 0,
+    offset: 0
 };
 eve.on("savage.util.attr", function (value) {
     var att = eve.nt();

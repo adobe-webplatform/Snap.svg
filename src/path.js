@@ -1043,8 +1043,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Returns length of the given path in pixels.
      **
-     > Parameters
-     **
      - path (string) SVG path string.
      **
      = (number) length.
@@ -1055,8 +1053,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Return coordinates of the point located at the given length on the given path.
-     **
-     > Parameters
      **
      - path (string) SVG path string
      - length (number)
@@ -1074,8 +1070,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Return subpath of a given path from given length to given length.
-     **
-     > Parameters
      **
      - path (string) SVG path string
      - from (number) position of the start of the segment
@@ -1108,8 +1102,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Return coordinates of the point located at the given length on the given path. Only works for element of “path” type.
      **
-     > Parameters
-     **
      - length (number)
      **
      = (object) representation of the point:
@@ -1128,8 +1120,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Return subpath of a given element from given length to given length. Only works for element of “path” type.
      **
-     > Parameters
-     **
      - from (number) position of the start of the segment
      - to (number) position of the end of the segment
      **
@@ -1146,7 +1136,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Find dot coordinates on the given cubic bezier curve at the given t.
-     > Parameters
      - p1x (number) x of the first point of the curve
      - p1y (number) y of the first point of the curve
      - c1x (number) x of the first anchor of the curve
@@ -1187,7 +1176,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Return bounding box of a given cubic bezier curve
-     > Parameters
      - p1x (number) x of the first point of the curve
      - p1y (number) y of the first point of the curve
      - c1x (number) x of the first anchor of the curve
@@ -1218,7 +1206,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Returns `true` if given point is inside bounding box.
-     > Parameters
      - bbox (string) bounding box
      - x (string) x coordinate of the point
      - y (string) y coordinate of the point
@@ -1232,7 +1219,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Returns `true` if two bounding boxes intersect
-     > Parameters
      - bbox1 (string) first bounding box
      - bbox2 (string) second bounding box
      = (boolean) `true` if they intersect
@@ -1245,7 +1231,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Finds intersections of two paths
-     > Parameters
      - path1 (string) path string
      - path2 (string) path string
      = (array) dots of intersection
@@ -1271,7 +1256,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Returns `true` if given point is inside a given closed path.
-     > Parameters
      - path (string) path string
      - x (number) x of the point
      - y (number) y of the point
@@ -1285,7 +1269,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Return bounding box of a given path
-     > Parameters
      - path (string) path string
      = (object) bounding box
      o {
@@ -1306,7 +1289,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Converts path coordinates into relative values.
-     > Parameters
      - path (string) path string
      = (array) path string
     \*/
@@ -1318,7 +1300,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Converts path coordinates into absolute values.
-     > Parameters
      - path (string) path string
      = (array) path string
     \*/
@@ -1330,7 +1311,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Converts path to a new path where all segments are cubic bezier curves.
-     > Parameters
      - pathString (string|array) path string or array of segments
      = (array) array of segments.
     \*/
@@ -1340,7 +1320,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Transform the path string with given matrix.
-     > Parameters
      - path (string) path string
      - matrix (object) see @Matrix
      = (string) transformed path string

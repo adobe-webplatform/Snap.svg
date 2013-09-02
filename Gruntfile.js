@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         // Metadata.
         pkg: pkg,
-        banner: grunt.file.read("copy.js")
+        banner: grunt.file.read("./src/copy.js")
             .replace(/@VERSION/, pkg.version)
             .replace(/@DATE/, grunt.template.today("yyyy-mm-dd")) + "\n",
         // Task configuration.

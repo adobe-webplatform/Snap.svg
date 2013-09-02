@@ -24,8 +24,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Creates filter element
      **
-     > Parameters
-     **
      - filstr (string) SVG fragment of filter provided as a string.
      = (object) @Element
      * Note: It is recommended to use filters embedded into page inside empty SVG element.
@@ -74,7 +72,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
                 filter: "url(#" + id + ")"
             });
         }
-        if (!value) {
+        if (!value || value == "none") {
             eve.stop();
             this.node.removeAttribute("filter");
         }
@@ -85,8 +83,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Returns string of the blur filter.
-     **
-     > Parameters
      **
      - x (number) amount of horisontal blur in px.
      - y (number) #optional amount of vertical blur in px.
@@ -115,8 +111,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Returns string of the blur filter.
      **
-     > Parameters
-     **
      - dx (number) horisontal shift of the shadow in px.
      - dy (number) vertical shift of the shadow in px.
      - blur (number) #optional amount of blur.
@@ -131,11 +125,11 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     Savage.filter.shadow = function (dx, dy, blur, color) {
         color = Savage.color(color || "#000");
         if (blur == null) {
-            blur = 2;
+            blur = 4;
         }
         if (dx == null) {
             dx = 0;
-            dy = 4;
+            dy = 2;
         }
         if (dy == null) {
             dy = dx;

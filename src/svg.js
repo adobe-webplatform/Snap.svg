@@ -20,8 +20,6 @@ Savage.version = "0.0.1";
  **
  * Creates drawing surface or wraps existing SVG element.
  **
- > Parameters
- **
  - width (number|string) width of surface
  - height (number|string) height of surface
  * or
@@ -156,8 +154,6 @@ function is(o, type) {
  **
  * Replaces construction of type “`{<name>}`” to the corresponding argument.
  **
- > Parameters
- **
  - token (string) string to format
  - json (object) object which properties will be used as a replacement
  = (string) formated string
@@ -266,7 +262,6 @@ function x_y_w_h() {
  [ method ]
  **
  * Transform angle to radians
- > Parameters
  - deg (number) angle in degrees
  = (number) angle in radians.
 \*/
@@ -276,7 +271,6 @@ Savage.rad = rad;
  [ method ]
  **
  * Transform angle to degrees
- > Parameters
  - deg (number) angle in radians
  = (number) angle in degrees.
 \*/
@@ -286,7 +280,6 @@ Savage.deg = deg;
  [ method ]
  **
  * Handfull replacement for `typeof` operator.
- > Parameters
  - o (…) any object or primitive
  - type (string) name of the type, i.e. “string”, “function”, “number”, etc.
  = (boolean) is given value is of given type
@@ -297,7 +290,6 @@ Savage.is = is;
  [ method ]
  **
  * Snaps given value to given grid.
- > Parameters
  - values (array|number) given array of values or step of the grid
  - value (number) value to adjust
  - tolerance (number) #optional tolerance for snapping. Default is `10`.
@@ -356,7 +348,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Adds given matrix to existing one.
-     > Parameters
      - a (number)
      - b (number)
      - c (number)
@@ -420,7 +411,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Translate the matrix
-     > Parameters
      - x (number)
      - y (number)
     \*/
@@ -432,7 +422,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Scales the matrix
-     > Parameters
      - x (number)
      - y (number) #optional
      - cx (number) #optional
@@ -450,7 +439,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Rotates the matrix
-     > Parameters
      - a (number)
      - x (number)
      - y (number)
@@ -469,7 +457,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Return x coordinate for given point after transformation described by the matrix. See also @Matrix.y
-     > Parameters
      - x (number)
      - y (number)
      = (number) x
@@ -482,7 +469,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Return y coordinate for given point after transformation described by the matrix. See also @Matrix.x
-     > Parameters
      - x (number)
      - y (number)
      = (number) y
@@ -584,7 +570,6 @@ function Matrix(a, b, c, d, e, f) {
  * Utility method
  **
  * Returns matrix based on given parameters.
- > Parameters
  - a (number)
  - b (number)
  - c (number)
@@ -602,7 +587,6 @@ Savage.Matrix = Matrix;
  [ method ]
  **
  * Parses colour string as RGB object
- > Parameters
  - colour (string) colour string in one of formats:
  # <ul>
  #     <li>Colour name (“<code>red</code>”, “<code>green</code>”, “<code>cornflowerblue</code>”, etc)</li>
@@ -700,7 +684,6 @@ Savage.getRGB = cacher(function (colour) {
  [ method ]
  **
  * Converts HSB values to hex representation of the colour.
- > Parameters
  - h (number) hue
  - s (number) saturation
  - b (number) value or brightness
@@ -714,7 +697,6 @@ Savage.hsb = cacher(function (h, s, b) {
  [ method ]
  **
  * Converts HSL values to hex representation of the colour.
- > Parameters
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
@@ -728,7 +710,6 @@ Savage.hsl = cacher(function (h, s, l) {
  [ method ]
  **
  * Converts RGB values to hex representation of the colour.
- > Parameters
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -803,7 +784,6 @@ packageRGB = function (r, g, b, o) {
  [ method ]
  **
  * Parses the color string and returns object with all values for the given color.
- > Parameters
  - clr (string) color string in one of the supported formats (see @Savage.getRGB)
  = (object) Combined RGB & HSB object in format:
  o {
@@ -858,7 +838,6 @@ Savage.color = function (clr) {
  [ method ]
  **
  * Converts HSB values to RGB object.
- > Parameters
  - h (number) hue
  - s (number) saturation
  - v (number) value or brightness
@@ -895,7 +874,6 @@ Savage.hsb2rgb = function (h, s, v, o) {
  [ method ]
  **
  * Converts HSL values to RGB object.
- > Parameters
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
@@ -936,7 +914,6 @@ Savage.hsl2rgb = function (h, s, l, o) {
  [ method ]
  **
  * Converts RGB values to HSB object.
- > Parameters
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -970,7 +947,6 @@ Savage.rgb2hsb = function (r, g, b) {
  [ method ]
  **
  * Converts RGB values to HSL object.
- > Parameters
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -1011,7 +987,6 @@ Savage.rgb2hsl = function (r, g, b) {
  * Utility method
  **
  * Parses given path string into an array of arrays of path segments.
- > Parameters
  - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
  = (array) array of segments.
 \*/
@@ -1065,7 +1040,6 @@ Savage.parsePathString = function (pathString) {
  * Utility method
  **
  * Parses given path string into an array of transformations.
- > Parameters
  - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
  = (array) array of transformations.
 \*/
@@ -1315,7 +1289,6 @@ function unit2px(el, name, value) {
  [ method ]
  **
  * Wraps DOM element specified by CSS selector as @Element
- > Parameters
  - query (string) CSS selector of the element
  = (Element)
 \*/
@@ -1327,7 +1300,6 @@ Savage.select = function (query) {
  [ method ]
  **
  * Wraps DOM elements specified by CSS selector as set or array of @Element
- > Parameters
  - query (string) CSS selector of the element
  = (Element)
 \*/
@@ -1382,8 +1354,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Gets or sets given attributes of the element
-     **
-     > Parameters
      **
      - params (object) key-value pairs of attributes you want to set
      * or
@@ -1471,8 +1441,6 @@ function arrayFirstValue(arr) {
      **
      * Gets or sets transformation of the element
      **
-     > Parameters
-     **
      - tstr (string) transform string in Savage or SVG format
      = (Element)
      * or
@@ -1538,12 +1506,16 @@ function arrayFirstValue(arr) {
      **
      * Appends given element to current one.
      **
-     > Parameters
-     **
      - el (Element|Set) element to append
      = (Element) parent
     \*/
-    elproto.append = function (el) {
+    /*\
+     * Element.add
+     [ method ]
+     **
+     * See @Element.append.
+    \*/
+    elproto.append = elproto.add = function (el) {
         if (el.type == "set") {
             var it = this;
             el.forEach(function (el) {
@@ -1562,8 +1534,6 @@ function arrayFirstValue(arr) {
      **
      * Prepends given element to current one.
      **
-     > Parameters
-     **
      - el (Element) element to prepend
      = (Element) parent
     \*/
@@ -1578,8 +1548,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Inserts given element before the current one.
-     **
-     > Parameters
      **
      - el (Element) element to insert
      = (Element) parent
@@ -1597,8 +1565,6 @@ function arrayFirstValue(arr) {
      **
      * Inserts given element after the current one.
      **
-     > Parameters
-     **
      - el (Element) element to insert
      = (Element) parent
     \*/
@@ -1614,8 +1580,6 @@ function arrayFirstValue(arr) {
      **
      * Inserts the element after the given one.
      **
-     > Parameters
-     **
      - el (Element) element next to whom insert to
      = (Element) parent
     \*/
@@ -1630,8 +1594,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Inserts the element after the given one.
-     **
-     > Parameters
      **
      - el (Element) element next to whom insert to
      = (Element) parent
@@ -1659,8 +1621,6 @@ function arrayFirstValue(arr) {
      **
      * Applies CSS selector with the element as a parent and returns the result as an @Element.
      **
-     > Parameters
-     **
      - query (string) CSS selector
      = (Element) result of query selection
     \*/
@@ -1672,8 +1632,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Applies CSS selector with the element as a parent and returns the result as a set or array of elements.
-     **
-     > Parameters
      **
      - query (string) CSS selector
      = (Set|array) result of query selection
@@ -1691,8 +1649,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Return given attribute of the element as a `px` value. (Not %, em, etc)
-     **
-     > Parameters
      **
      - attr (string) attribute name
      - value (string) #optional attribute value
@@ -1751,8 +1707,6 @@ function arrayFirstValue(arr) {
      **
      * Creates `<pattern>` element from the current element.
      **
-     > Parameters
-     **
      * To create a pattern you have to specify the pattern rect:
      - x (string|number)
      - y (string|number)
@@ -1798,8 +1752,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Creates `<marker>` element from the current element.
-     **
-     > Parameters
      **
      * To create a marker you have to specify the bounding rect and reference point:
      - x (number)
@@ -1863,8 +1815,6 @@ function arrayFirstValue(arr) {
      **
      * Creates animation object.
      **
-     > Parameters
-     **
      - attr (object) attributes of final destination
      - ms (number) animation duration
      - easing (function) #optional one of easing functions of @mina or custom one
@@ -1913,7 +1863,6 @@ function arrayFirstValue(arr) {
      **
      * Runs generic animation of one number into another with a caring function.
      **
-     > Parameters
      - from (number|array) number or array of numbers
      - to (number|array) number or array of numbers
      - setter (function) caring function that will take one number argument
@@ -1941,12 +1890,26 @@ function arrayFirstValue(arr) {
         return anim;
     };
     /*\
+     * Element.stop
+     [ method ]
+     **
+     * Stops all the animations of the current element.
+     **
+     = (Element) the element
+    \*/
+    elproto.stop = function () {
+        var anims = this.inAnim();
+        for (var i = 0, ii = anims.length; i < ii; i++) {
+            anims[i].stop();
+        }
+        return this;
+    };
+    /*\
      * Element.animate
      [ method ]
      **
      * Animate given attributes of the element.
      **
-     > Parameters
      - attrs (object) key-value pairs of destination attributes
      - ms (number) duration
      - easing (function) #optional easing function from @mina or custom
@@ -2008,7 +1971,6 @@ function arrayFirstValue(arr) {
  **
  * Parses SVG fragment and converts it into @Fragment.
  **
- > Parameters
  - svg (string) SVG string
  = (Fragment) the fragment
 \*/
@@ -2057,7 +2019,6 @@ Fragment.prototype.selectAll = Element.prototype.selectAll;
  **
  * Creates DOM fragment from given list of elements or strings
  **
- > Parameters
  - varargs (…) SVG string
  = (Fragment) the @Fragment
 \*/
@@ -2119,7 +2080,7 @@ function Paper(w, h) {
     for (var key in proto) if (proto[has](key)) {
         res[key] = proto[key];
     }
-    res.paper = res;
+    res.paper = res.root = res;
     res.defs = defs;
     return res;
 }
@@ -2142,7 +2103,6 @@ function wrap(dom) {
      **
      * Creates element on paper with a given name and no attributes.
      **
-     > Parameters
      - name (string) element tag name
      = (Element) the element
      > Usage
@@ -2161,8 +2121,6 @@ function wrap(dom) {
      [ method ]
      *
      * Draws a rectangle.
-     **
-     > Parameters
      **
      - x (number) x coordinate of the top left corner
      - y (number) y coordinate of the top left corner
@@ -2207,8 +2165,6 @@ function wrap(dom) {
      **
      * Draws a circle.
      **
-     > Parameters
-     **
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - r (number) radius
@@ -2236,8 +2192,6 @@ function wrap(dom) {
      **
      * Embeds an image into the surface.
      **
-     > Parameters
-     **
      - src (string) URI of the source image
      - x (number) x coordinate position
      - y (number) y coordinate position
@@ -2253,8 +2207,6 @@ function wrap(dom) {
      [ method ]
      **
      * Embeds an image into the surface.
-     **
-     > Parameters
      **
      - src (string) URI of the source image
      - x (number) x coordinate position
@@ -2300,8 +2252,6 @@ function wrap(dom) {
      **
      * Draws an ellipse.
      **
-     > Parameters
-     **
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - rx (number) horizontal radius
@@ -2330,7 +2280,6 @@ function wrap(dom) {
      [ method ]
      **
      * Creates a path element by given path data string.
-     > Parameters
      - pathString (string) #optional path string in SVG format.
      * Path string consists of one-letter commands, followed by comma seprarated arguments in numercal form. Example:
      | "M10,20L30,40"
@@ -2395,8 +2344,6 @@ function wrap(dom) {
      **
      * Makes a group element.
      **
-     > Parameters
-     **
      - varargs (…) #optional elements
      = (object) Element object with type “g”
      **
@@ -2419,6 +2366,9 @@ function wrap(dom) {
     proto.group = proto.g = function () {
         var el = make("g", this.node);
         el.add = add2group;
+        for (var method in proto) if (proto[has](method)) {
+            el[method] = proto[method];
+        }
         if (arguments.length) {
             add2group.call(el, Array.prototype.slice.call(arguments, 0));
         }
@@ -2429,8 +2379,6 @@ function wrap(dom) {
      [ method ]
      **
      * Draws a text string.
-     **
-     > Parameters
      **
      - x (number) x coordinate position
      - y (number) y coordinate position
@@ -2460,8 +2408,6 @@ function wrap(dom) {
      **
      * Draws a line.
      **
-     > Parameters
-     **
      - x1 (number) x coordinate position of the start
      - y1 (number) y coordinate position of the start
      - x2 (number) x coordinate position of the end
@@ -2490,8 +2436,6 @@ function wrap(dom) {
      [ method ]
      **
      * Draws a polyline.
-     **
-     > Parameters
      **
      - points (array) array of points
      * or
@@ -2543,8 +2487,6 @@ function wrap(dom) {
          [ method ]
          **
          * Creates a gradient element.
-         **
-         > Parameters
          **
          - gradient (string) gradient descriptor
          > Gradient Descriptor
@@ -2673,6 +2615,62 @@ function wrap(dom) {
         };
     }());
 }(Paper.prototype));
+
+// simple ajax
+/*\
+ * Savage.ajax
+ [ method ]
+ **
+ * Simple implementation of Ajax.
+ **
+ - url (string) URL
+ - postData (object|string) data for post request
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+ * or
+ - url (string) URL
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+ = (XMLHttpRequest) XMLHttpRequest (just in case)
+\*/
+Savage.ajax = function (url, postData, callback, scope){
+    var req = new XMLHttpRequest,
+        id = ID();
+    if (req) {
+        if (is(postData, "function")) {
+            scope = callback;
+            callback = postData;
+            postData = null;
+        } else if (is(postData, "object")) {
+            var pd = [];
+            for (var key in postData) if (postData.hasOwnProperty(key)) {
+                pd.push(encodeURIComponent(key) + "=" + encodeURIComponent(postData[key]));
+            }
+            postData = pd.join("&");
+        }
+        req.open((postData ? "POST" : "GET"), url, true);
+        req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        if (postData) {
+            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        }
+        if (callback) {
+            eve.once("savage.ajax." + id + ".0", callback);
+            eve.once("savage.ajax." + id + ".200", callback);
+            eve.once("savage.ajax." + id + ".304", callback);
+        }
+        req.onreadystatechange = function() {
+            if (req.readyState != 4) return;
+            eve("savage.ajax." + id + "." + req.status, scope, req);
+        };
+        if (req.readyState == 4) {
+            return req;
+        }
+        req.send(postData);
+        return req;
+    }
+};
+
+
 // Attributes event handlers
 eve.on("savage.util.attr.mask", function (value) {
     if (value instanceof Element || value instanceof Fragment) {
@@ -2993,7 +2991,239 @@ var availableAttributes = {
     path: {
         d: "",
         "class": 0
+    },
+    feDistantLight: {
+        azimuth: 0,
+        elevation: 0
+    },
+    fePointLight: {
+        x: 0,
+        y: 0,
+        z: 0
+    },
+    feSpotLight: {
+        x: 0,
+        y: 0,
+        z: 0,
+        pointsAtX: 0,
+        pointsAtY: 0,
+        pointsAtZ: 0,
+        specularExponent: 0,
+        limitingConeAngle: 0
+    },
+    feBlend: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        in2: 0,
+        mode: 0
+    },
+    feColorMatrix: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        type: 0,
+        values: 0
+    },
+    feComponentTransfer: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0
+    },
+    feComposite: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        in2: 0,
+        operator: 0,
+        k1: 0,
+        k2: 0,
+        k3: 0,
+        k4: 0
+    },
+    feConvolveMatrix: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        order: 0,
+        kernelMatrix: 0,
+        divisor: 0,
+        bias: 0,
+        targetX: 0,
+        targetY: 0,
+        edgeMode: 0,
+        kernelUnitLength: 0,
+        preserveAlpha: 0
+    },
+    feDiffuseLighting: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        surfaceScale: 0,
+        diffuseConstant: 0,
+        kernelUnitLength: 0
+    },
+    feDisplacementMap: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        in2: 0,
+        scale: 0,
+        xChannelSelector: 0,
+        yChannelSelector: 0
+    },
+    feFlood: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "flood-color": 0,
+        "flood-opacity": 0
+    },
+    feGaussianBlur: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        stdDeviation: 0
+    },
+    feImage : {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        externalResourcesRequired: 0,
+        preserveAspectRatio: 0,
+        "xlink:href": 0
+    },
+    feMerge: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0
+    },
+    feMergeNode: {
+        "in": 0
+    },
+    feMorphology: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        operator: 0,
+        radius: 0
+    },
+    feOffset: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        dx: 0,
+        dy: 0
+    },
+    feSpecularLighting: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0,
+        surfaceScale: 0,
+        specularConstant: 0,
+        specularExponent: 0,
+        kernelUnitLength: 0
+    },
+    feTile: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        "in": 0
+    },
+    feTurbulence: {
+        height: 0,
+        result: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        "class": 0,
+        style: 0,
+        baseFrequency: 0,
+        numOctaves: 0,
+        seed: 0,
+        stitchTiles: 0,
+        type: 0
     }
+};
+availableAttributes.feFuncR = availableAttributes.feFuncG = availableAttributes.feFuncB = availableAttributes.feFuncA = {
+    type: 0,
+    tableValues: 0,
+    slope: 0,
+    intercept: 0,
+    amplitude: 0,
+    exponent: 0,
+    offset: 0
 };
 eve.on("savage.util.attr", function (value) {
     var att = eve.nt();

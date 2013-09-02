@@ -69,8 +69,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      *
      * If function returns `false` it will stop loop running.
      **
-     > Parameters
-     **
      - callback (function) function to run
      - thisArg (object) context object for the callback
      = (object) Set object
@@ -105,8 +103,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes given element from the set
-     **
-     > Parameters
      **
      - index (number) position of the deletion
      - count (number) number of element to remove
@@ -144,8 +140,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes given element from the set
-     **
-     > Parameters
      **
      - element (object) element to remove
      = (boolean) `true` if object was found & removed from the set

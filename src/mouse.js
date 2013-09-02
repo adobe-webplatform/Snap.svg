@@ -148,7 +148,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for click for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -157,7 +156,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for click for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -167,7 +165,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for double click for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -176,7 +173,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for double click for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -186,7 +182,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mousedown for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -195,7 +190,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mousedown for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -205,7 +199,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mousemove for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -214,7 +207,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mousemove for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -224,7 +216,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mouseout for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -233,7 +224,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mouseout for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -243,7 +233,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mouseover for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -252,7 +241,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mouseover for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -262,7 +250,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mouseup for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -271,7 +258,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mouseup for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -281,7 +267,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for touchstart for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -290,7 +275,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for touchstart for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -300,7 +284,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for touchmove for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -309,7 +292,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for touchmove for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -319,7 +301,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for touchend for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -328,7 +309,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for touchend for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -338,7 +318,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for touchcancel for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -347,7 +326,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for touchcancel for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -385,7 +363,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Adds or retrieves given value asociated with given key.
      ** 
      * See also @Element.removeData
-     > Parameters
      - key (string) key to store data
      - value (any) #optional value to store
      = (object) @Element
@@ -423,7 +400,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Removes value associated with an element by given key.
      * If key is not provided, removes all the data of the element.
-     > Parameters
      - key (string) #optional key
      = (object) @Element
     \*/
@@ -440,7 +416,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handlers for hover for the element.
-     > Parameters
      - f_in (function) handler for hover in
      - f_out (function) handler for hover out
      - icontext (object) #optional context for hover in handler
@@ -455,7 +430,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handlers for hover for the element.
-     > Parameters
      - f_in (function) handler for hover in
      - f_out (function) handler for hover out
      = (object) @Element
@@ -469,7 +443,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handlers for drag of the element.
-     > Parameters
      - onmove (function) handler for moving
      - onstart (function) handler for drag start
      - onend (function) handler for drag end
@@ -529,7 +502,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Shortcut for assigning event handler for `drag.over.<id>` event, where id is id of the element (see @Element.id).
-     > Parameters
      - f (function) handler for event, first argument would be the element you are dragging over
     \*/
     elproto.onDragOver = function (f) {

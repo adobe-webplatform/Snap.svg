@@ -111,8 +111,6 @@ var mina = (function (eve) {
      **
      * Generic animation of numbers.
      **
-     > Parameters
-     **
      - a (number) start “slave” number
      - A (number) end “slave” number
      - b (number) start “master” number (start time in gereal case)
@@ -181,7 +179,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Returns animation by it’s id.
-     > Parameters
      - id (string) animation’s id
      = (object) See @mina
     \*/
@@ -194,7 +191,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Default linear easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -206,7 +202,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Easeout easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -218,7 +213,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Easein easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -230,7 +224,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Easeinout easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -249,7 +242,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Backin easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -262,7 +254,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Backout easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -276,7 +267,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Elastic easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -292,7 +282,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Bounce easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
