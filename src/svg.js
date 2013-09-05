@@ -1312,6 +1312,28 @@ Savage.selectAll = function (query) {
     return set;
 };
 
+function add2group(list) {
+    if (!is(list, "array")) {
+        list = Array.prototype.slice.call(arguments, 0);
+    }
+    var i = 0,
+        j = 0,
+        node = this.node;
+    while (this[i]) delete this[i++];
+    for (i = 0; i < list.length; i++) {
+        if (list[i].type == "set") {
+            list[i].forEach(function (el) {
+                node.appendChild(el.node);
+            });
+        } else {
+            node.appendChild(list[i].node);
+        }
+    }
+    var children = node.childNodes;
+    for (i = 0; i < children.length; i++) if (children[i].savage) {
+        this[j++] = hub[children[i].savage];
+    }
+}
 function Element(el) {
     if (el.savage in hub) {
         return hub[el.savage];
@@ -1338,6 +1360,12 @@ function Element(el) {
     };
     el.savage = id;
     hub[id] = this;
+    if (this.type == "g") {
+        this.add = add2group;
+        for (var method in Paper.prototype) if (Paper.prototype[has](method)) {
+            this[method] = Paper.prototype[method];
+        }
+    }
 }
 function arrayFirstValue(arr) {
     var res;
@@ -2316,28 +2344,6 @@ function wrap(dom) {
         }
         return el;
     };
-    function add2group(list) {
-        if (!is(list, "array")) {
-            list = Array.prototype.slice.call(arguments, 0);
-        }
-        var i = 0,
-            j = 0,
-            node = this.node;
-        while (this[i]) delete this[i++];
-        for (i = 0; i < list.length; i++) {
-            if (list[i].type == "set") {
-                list[i].forEach(function (el) {
-                    node.appendChild(el.node);
-                });
-            } else {
-                node.appendChild(list[i].node);
-            }
-        }
-        var children = node.childNodes;
-        for (i = 0; i < children.length; i++) if (children[i].savage) {
-            this[j++] = hub[children[i].savage];
-        }
-    }
     /*\
      * Paper.g
      [ method ]

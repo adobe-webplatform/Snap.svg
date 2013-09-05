@@ -90,6 +90,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             return +(+val).toFixed(3);
         }
         return function (path, length, onlystart) {
+            if (path instanceof Element) {
+                path = path.attr("d");
+            }
             path = path2curve(path);
             var x, y, p, l, sp = "", subpaths = {}, point,
                 len = 0;
@@ -1126,7 +1129,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      = (string) pathstring for the segment
     \*/
     elproto.getSubpath = function (from, to) {
-        return getSubpath(this.attr("d"), from, to);
+        return Savage.path.getSubpath(this.attr("d"), from, to);
     };
     Savage._.box = box;
     /*\
