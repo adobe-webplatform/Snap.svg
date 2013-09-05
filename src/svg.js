@@ -2392,7 +2392,7 @@ function wrap(dom) {
     proto.text = function (x, y, text) {
         var el = make("text", this.node);
         if (is(x, "object")) {
-            le.attr(x);
+            el.attr(x);
         } else if (x != null) {
             el.attr({
                 x: x,
@@ -2613,6 +2613,25 @@ function wrap(dom) {
             }
             return el;
         };
+        /*\
+         * Paper.toString
+         [ method ]
+         **
+         * Returns SVG code of the @Paper.
+         = (string) SVG code of the @Paper.
+        \*/
+        proto.toString = function () {
+            var f = glob.doc.createDocumentFragment(),
+                d = glob.doc.createElement("div"),
+                svg = this.node.cloneNode(true),
+                res;
+            f.appendChild(d);
+            d.appendChild(svg);
+            $(svg, {xmlns: "http://www.w3.org/2000/svg"});
+            res = d.innerHTML;
+            f.removeChild(f.firstChild);
+            return res;
+        };
     }());
 }(Paper.prototype));
 
@@ -2669,7 +2688,22 @@ Savage.ajax = function (url, postData, callback, scope){
         return req;
     }
 };
-
+/*\
+ * Savage.load
+ [ method ]
+ **
+ * Loads external SVG file as a @Fragment. For more advanced AJAX see @Savage.ajax.
+ **
+ - url (string) URL
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+\*/
+Savage.load = function (url, callback, scope) {
+    Savage.ajax(url, function (req) {
+        var f = Savage.parse(req.responseText);
+        scope ? callback.call(scope, f) : callback(f);
+    });
+};
 
 // Attributes event handlers
 eve.on("savage.util.attr.mask", function (value) {
@@ -2792,6 +2826,15 @@ eve.on("savage.util.attr.d", function (value) {
         value = Savage.path.toAbsolute(value);
     }
     $(this.node, {d: value});
+})(-1);
+eve.on("savage.util.attr.#text", function (value) {
+    eve.stop();
+    value = Str(value);
+    var txt = glob.doc.createTextNode(value);
+    while (this.node.firstChild) {
+        this.node.removeChild(this.node.firstChild);
+    }
+    this.node.appendChild(txt);
 })(-1);
 eve.on("savage.util.attr.path", function (value) {
     eve.stop();
@@ -3290,6 +3333,9 @@ eve.on("savage.util.getattr.r", function () {
         eve.stop();
         return $(this.node, "rx");
     }
+})(-1);
+eve.on("savage.util.getattr.#text", function () {
+    return this.node.textContent;
 })(-1);
 eve.on("savage.util.getattr.viewBox", function () {
     eve.stop();

@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-08-29
+// build: 2013-09-05
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -514,8 +514,6 @@ var mina = (function (eve) {
      **
      * Generic animation of numbers.
      **
-     > Parameters
-     **
      - a (number) start “slave” number
      - A (number) end “slave” number
      - b (number) start “master” number (start time in gereal case)
@@ -584,7 +582,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Returns animation by it’s id.
-     > Parameters
      - id (string) animation’s id
      = (object) See @mina
     \*/
@@ -597,7 +594,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Default linear easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -609,7 +605,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Easeout easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -621,7 +616,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Easein easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -633,7 +627,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Easeinout easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -652,7 +645,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Backin easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -665,7 +657,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Backout easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -679,7 +670,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Elastic easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -695,7 +685,6 @@ var mina = (function (eve) {
      [ method ]
      **
      * Bounce easing.
-     > Parameters
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -1048,8 +1037,6 @@ Savage.version = "0.0.1";
  **
  * Creates drawing surface or wraps existing SVG element.
  **
- > Parameters
- **
  - width (number|string) width of surface
  - height (number|string) height of surface
  * or
@@ -1184,8 +1171,6 @@ function is(o, type) {
  **
  * Replaces construction of type “`{<name>}`” to the corresponding argument.
  **
- > Parameters
- **
  - token (string) string to format
  - json (object) object which properties will be used as a replacement
  = (string) formated string
@@ -1294,7 +1279,6 @@ function x_y_w_h() {
  [ method ]
  **
  * Transform angle to radians
- > Parameters
  - deg (number) angle in degrees
  = (number) angle in radians.
 \*/
@@ -1304,7 +1288,6 @@ Savage.rad = rad;
  [ method ]
  **
  * Transform angle to degrees
- > Parameters
  - deg (number) angle in radians
  = (number) angle in degrees.
 \*/
@@ -1314,7 +1297,6 @@ Savage.deg = deg;
  [ method ]
  **
  * Handfull replacement for `typeof` operator.
- > Parameters
  - o (…) any object or primitive
  - type (string) name of the type, i.e. “string”, “function”, “number”, etc.
  = (boolean) is given value is of given type
@@ -1325,7 +1307,6 @@ Savage.is = is;
  [ method ]
  **
  * Snaps given value to given grid.
- > Parameters
  - values (array|number) given array of values or step of the grid
  - value (number) value to adjust
  - tolerance (number) #optional tolerance for snapping. Default is `10`.
@@ -1384,7 +1365,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Adds given matrix to existing one.
-     > Parameters
      - a (number)
      - b (number)
      - c (number)
@@ -1448,7 +1428,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Translate the matrix
-     > Parameters
      - x (number)
      - y (number)
     \*/
@@ -1460,7 +1439,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Scales the matrix
-     > Parameters
      - x (number)
      - y (number) #optional
      - cx (number) #optional
@@ -1478,7 +1456,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Rotates the matrix
-     > Parameters
      - a (number)
      - x (number)
      - y (number)
@@ -1497,7 +1474,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Return x coordinate for given point after transformation described by the matrix. See also @Matrix.y
-     > Parameters
      - x (number)
      - y (number)
      = (number) x
@@ -1510,7 +1486,6 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Return y coordinate for given point after transformation described by the matrix. See also @Matrix.x
-     > Parameters
      - x (number)
      - y (number)
      = (number) y
@@ -1612,7 +1587,6 @@ function Matrix(a, b, c, d, e, f) {
  * Utility method
  **
  * Returns matrix based on given parameters.
- > Parameters
  - a (number)
  - b (number)
  - c (number)
@@ -1630,7 +1604,6 @@ Savage.Matrix = Matrix;
  [ method ]
  **
  * Parses colour string as RGB object
- > Parameters
  - colour (string) colour string in one of formats:
  # <ul>
  #     <li>Colour name (“<code>red</code>”, “<code>green</code>”, “<code>cornflowerblue</code>”, etc)</li>
@@ -1728,7 +1701,6 @@ Savage.getRGB = cacher(function (colour) {
  [ method ]
  **
  * Converts HSB values to hex representation of the colour.
- > Parameters
  - h (number) hue
  - s (number) saturation
  - b (number) value or brightness
@@ -1742,7 +1714,6 @@ Savage.hsb = cacher(function (h, s, b) {
  [ method ]
  **
  * Converts HSL values to hex representation of the colour.
- > Parameters
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
@@ -1756,7 +1727,6 @@ Savage.hsl = cacher(function (h, s, l) {
  [ method ]
  **
  * Converts RGB values to hex representation of the colour.
- > Parameters
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -1831,7 +1801,6 @@ packageRGB = function (r, g, b, o) {
  [ method ]
  **
  * Parses the color string and returns object with all values for the given color.
- > Parameters
  - clr (string) color string in one of the supported formats (see @Savage.getRGB)
  = (object) Combined RGB & HSB object in format:
  o {
@@ -1886,7 +1855,6 @@ Savage.color = function (clr) {
  [ method ]
  **
  * Converts HSB values to RGB object.
- > Parameters
  - h (number) hue
  - s (number) saturation
  - v (number) value or brightness
@@ -1923,7 +1891,6 @@ Savage.hsb2rgb = function (h, s, v, o) {
  [ method ]
  **
  * Converts HSL values to RGB object.
- > Parameters
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
@@ -1964,7 +1931,6 @@ Savage.hsl2rgb = function (h, s, l, o) {
  [ method ]
  **
  * Converts RGB values to HSB object.
- > Parameters
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -1998,7 +1964,6 @@ Savage.rgb2hsb = function (r, g, b) {
  [ method ]
  **
  * Converts RGB values to HSL object.
- > Parameters
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -2039,7 +2004,6 @@ Savage.rgb2hsl = function (r, g, b) {
  * Utility method
  **
  * Parses given path string into an array of arrays of path segments.
- > Parameters
  - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
  = (array) array of segments.
 \*/
@@ -2093,7 +2057,6 @@ Savage.parsePathString = function (pathString) {
  * Utility method
  **
  * Parses given path string into an array of transformations.
- > Parameters
  - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
  = (array) array of transformations.
 \*/
@@ -2343,7 +2306,6 @@ function unit2px(el, name, value) {
  [ method ]
  **
  * Wraps DOM element specified by CSS selector as @Element
- > Parameters
  - query (string) CSS selector of the element
  = (Element)
 \*/
@@ -2355,7 +2317,6 @@ Savage.select = function (query) {
  [ method ]
  **
  * Wraps DOM elements specified by CSS selector as set or array of @Element
- > Parameters
  - query (string) CSS selector of the element
  = (Element)
 \*/
@@ -2410,8 +2371,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Gets or sets given attributes of the element
-     **
-     > Parameters
      **
      - params (object) key-value pairs of attributes you want to set
      * or
@@ -2499,8 +2458,6 @@ function arrayFirstValue(arr) {
      **
      * Gets or sets transformation of the element
      **
-     > Parameters
-     **
      - tstr (string) transform string in Savage or SVG format
      = (Element)
      * or
@@ -2566,8 +2523,6 @@ function arrayFirstValue(arr) {
      **
      * Appends given element to current one.
      **
-     > Parameters
-     **
      - el (Element|Set) element to append
      = (Element) parent
     \*/
@@ -2596,8 +2551,6 @@ function arrayFirstValue(arr) {
      **
      * Prepends given element to current one.
      **
-     > Parameters
-     **
      - el (Element) element to prepend
      = (Element) parent
     \*/
@@ -2612,8 +2565,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Inserts given element before the current one.
-     **
-     > Parameters
      **
      - el (Element) element to insert
      = (Element) parent
@@ -2631,8 +2582,6 @@ function arrayFirstValue(arr) {
      **
      * Inserts given element after the current one.
      **
-     > Parameters
-     **
      - el (Element) element to insert
      = (Element) parent
     \*/
@@ -2648,8 +2597,6 @@ function arrayFirstValue(arr) {
      **
      * Inserts the element after the given one.
      **
-     > Parameters
-     **
      - el (Element) element next to whom insert to
      = (Element) parent
     \*/
@@ -2664,8 +2611,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Inserts the element after the given one.
-     **
-     > Parameters
      **
      - el (Element) element next to whom insert to
      = (Element) parent
@@ -2693,8 +2638,6 @@ function arrayFirstValue(arr) {
      **
      * Applies CSS selector with the element as a parent and returns the result as an @Element.
      **
-     > Parameters
-     **
      - query (string) CSS selector
      = (Element) result of query selection
     \*/
@@ -2706,8 +2649,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Applies CSS selector with the element as a parent and returns the result as a set or array of elements.
-     **
-     > Parameters
      **
      - query (string) CSS selector
      = (Set|array) result of query selection
@@ -2725,8 +2666,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Return given attribute of the element as a `px` value. (Not %, em, etc)
-     **
-     > Parameters
      **
      - attr (string) attribute name
      - value (string) #optional attribute value
@@ -2785,8 +2724,6 @@ function arrayFirstValue(arr) {
      **
      * Creates `<pattern>` element from the current element.
      **
-     > Parameters
-     **
      * To create a pattern you have to specify the pattern rect:
      - x (string|number)
      - y (string|number)
@@ -2832,8 +2769,6 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Creates `<marker>` element from the current element.
-     **
-     > Parameters
      **
      * To create a marker you have to specify the bounding rect and reference point:
      - x (number)
@@ -2897,8 +2832,6 @@ function arrayFirstValue(arr) {
      **
      * Creates animation object.
      **
-     > Parameters
-     **
      - attr (object) attributes of final destination
      - ms (number) animation duration
      - easing (function) #optional one of easing functions of @mina or custom one
@@ -2947,7 +2880,6 @@ function arrayFirstValue(arr) {
      **
      * Runs generic animation of one number into another with a caring function.
      **
-     > Parameters
      - from (number|array) number or array of numbers
      - to (number|array) number or array of numbers
      - setter (function) caring function that will take one number argument
@@ -2995,7 +2927,6 @@ function arrayFirstValue(arr) {
      **
      * Animate given attributes of the element.
      **
-     > Parameters
      - attrs (object) key-value pairs of destination attributes
      - ms (number) duration
      - easing (function) #optional easing function from @mina or custom
@@ -3057,7 +2988,6 @@ function arrayFirstValue(arr) {
  **
  * Parses SVG fragment and converts it into @Fragment.
  **
- > Parameters
  - svg (string) SVG string
  = (Fragment) the fragment
 \*/
@@ -3106,7 +3036,6 @@ Fragment.prototype.selectAll = Element.prototype.selectAll;
  **
  * Creates DOM fragment from given list of elements or strings
  **
- > Parameters
  - varargs (…) SVG string
  = (Fragment) the @Fragment
 \*/
@@ -3191,7 +3120,6 @@ function wrap(dom) {
      **
      * Creates element on paper with a given name and no attributes.
      **
-     > Parameters
      - name (string) element tag name
      = (Element) the element
      > Usage
@@ -3210,8 +3138,6 @@ function wrap(dom) {
      [ method ]
      *
      * Draws a rectangle.
-     **
-     > Parameters
      **
      - x (number) x coordinate of the top left corner
      - y (number) y coordinate of the top left corner
@@ -3256,8 +3182,6 @@ function wrap(dom) {
      **
      * Draws a circle.
      **
-     > Parameters
-     **
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - r (number) radius
@@ -3285,8 +3209,6 @@ function wrap(dom) {
      **
      * Embeds an image into the surface.
      **
-     > Parameters
-     **
      - src (string) URI of the source image
      - x (number) x coordinate position
      - y (number) y coordinate position
@@ -3302,8 +3224,6 @@ function wrap(dom) {
      [ method ]
      **
      * Embeds an image into the surface.
-     **
-     > Parameters
      **
      - src (string) URI of the source image
      - x (number) x coordinate position
@@ -3349,8 +3269,6 @@ function wrap(dom) {
      **
      * Draws an ellipse.
      **
-     > Parameters
-     **
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - rx (number) horizontal radius
@@ -3379,7 +3297,6 @@ function wrap(dom) {
      [ method ]
      **
      * Creates a path element by given path data string.
-     > Parameters
      - pathString (string) #optional path string in SVG format.
      * Path string consists of one-letter commands, followed by comma seprarated arguments in numercal form. Example:
      | "M10,20L30,40"
@@ -3444,8 +3361,6 @@ function wrap(dom) {
      **
      * Makes a group element.
      **
-     > Parameters
-     **
      - varargs (…) #optional elements
      = (object) Element object with type “g”
      **
@@ -3482,8 +3397,6 @@ function wrap(dom) {
      **
      * Draws a text string.
      **
-     > Parameters
-     **
      - x (number) x coordinate position
      - y (number) y coordinate position
      - text (string|array) The text string to draw or array of <tspan>s
@@ -3496,7 +3409,7 @@ function wrap(dom) {
     proto.text = function (x, y, text) {
         var el = make("text", this.node);
         if (is(x, "object")) {
-            le.attr(x);
+            el.attr(x);
         } else if (x != null) {
             el.attr({
                 x: x,
@@ -3511,8 +3424,6 @@ function wrap(dom) {
      [ method ]
      **
      * Draws a line.
-     **
-     > Parameters
      **
      - x1 (number) x coordinate position of the start
      - y1 (number) y coordinate position of the start
@@ -3542,8 +3453,6 @@ function wrap(dom) {
      [ method ]
      **
      * Draws a polyline.
-     **
-     > Parameters
      **
      - points (array) array of points
      * or
@@ -3595,8 +3504,6 @@ function wrap(dom) {
          [ method ]
          **
          * Creates a gradient element.
-         **
-         > Parameters
          **
          - gradient (string) gradient descriptor
          > Gradient Descriptor
@@ -3723,6 +3630,25 @@ function wrap(dom) {
             }
             return el;
         };
+        /*\
+         * Paper.toString
+         [ method ]
+         **
+         * Returns SVG code of the @Paper.
+         = (string) SVG code of the @Paper.
+        \*/
+        proto.toString = function () {
+            var f = glob.doc.createDocumentFragment(),
+                d = glob.doc.createElement("div"),
+                svg = this.node.cloneNode(true),
+                res;
+            f.appendChild(d);
+            d.appendChild(svg);
+            $(svg, {xmlns: "http://www.w3.org/2000/svg"});
+            res = d.innerHTML;
+            f.removeChild(f.firstChild);
+            return res;
+        };
     }());
 }(Paper.prototype));
 
@@ -3732,8 +3658,6 @@ function wrap(dom) {
  [ method ]
  **
  * Simple implementation of Ajax.
- **
- > Parameters
  **
  - url (string) URL
  - postData (object|string) data for post request
@@ -3781,7 +3705,22 @@ Savage.ajax = function (url, postData, callback, scope){
         return req;
     }
 };
-
+/*\
+ * Savage.load
+ [ method ]
+ **
+ * Loads external SVG file as a @Fragment. For more advanced AJAX see @Savage.ajax.
+ **
+ - url (string) URL
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+\*/
+Savage.load = function (url, callback, scope) {
+    Savage.ajax(url, function (req) {
+        var f = Savage.parse(req.responseText);
+        scope ? callback.call(scope, f) : callback(f);
+    });
+};
 
 // Attributes event handlers
 eve.on("savage.util.attr.mask", function (value) {
@@ -3904,6 +3843,15 @@ eve.on("savage.util.attr.d", function (value) {
         value = Savage.path.toAbsolute(value);
     }
     $(this.node, {d: value});
+})(-1);
+eve.on("savage.util.attr.#text", function (value) {
+    eve.stop();
+    value = Str(value);
+    var txt = glob.doc.createTextNode(value);
+    while (this.node.firstChild) {
+        this.node.removeChild(this.node.firstChild);
+    }
+    this.node.appendChild(txt);
 })(-1);
 eve.on("savage.util.attr.path", function (value) {
     eve.stop();
@@ -4402,6 +4350,9 @@ eve.on("savage.util.getattr.r", function () {
         eve.stop();
         return $(this.node, "rx");
     }
+})(-1);
+eve.on("savage.util.getattr.#text", function () {
+    return this.node.textContent;
 })(-1);
 eve.on("savage.util.getattr.viewBox", function () {
     eve.stop();
@@ -5482,8 +5433,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Returns length of the given path in pixels.
      **
-     > Parameters
-     **
      - path (string) SVG path string.
      **
      = (number) length.
@@ -5494,8 +5443,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Return coordinates of the point located at the given length on the given path.
-     **
-     > Parameters
      **
      - path (string) SVG path string
      - length (number)
@@ -5513,8 +5460,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Return subpath of a given path from given length to given length.
-     **
-     > Parameters
      **
      - path (string) SVG path string
      - from (number) position of the start of the segment
@@ -5547,8 +5492,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Return coordinates of the point located at the given length on the given path. Only works for element of “path” type.
      **
-     > Parameters
-     **
      - length (number)
      **
      = (object) representation of the point:
@@ -5567,8 +5510,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Return subpath of a given element from given length to given length. Only works for element of “path” type.
      **
-     > Parameters
-     **
      - from (number) position of the start of the segment
      - to (number) position of the end of the segment
      **
@@ -5585,7 +5526,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Find dot coordinates on the given cubic bezier curve at the given t.
-     > Parameters
      - p1x (number) x of the first point of the curve
      - p1y (number) y of the first point of the curve
      - c1x (number) x of the first anchor of the curve
@@ -5626,7 +5566,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Return bounding box of a given cubic bezier curve
-     > Parameters
      - p1x (number) x of the first point of the curve
      - p1y (number) y of the first point of the curve
      - c1x (number) x of the first anchor of the curve
@@ -5657,7 +5596,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Returns `true` if given point is inside bounding box.
-     > Parameters
      - bbox (string) bounding box
      - x (string) x coordinate of the point
      - y (string) y coordinate of the point
@@ -5671,7 +5609,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Returns `true` if two bounding boxes intersect
-     > Parameters
      - bbox1 (string) first bounding box
      - bbox2 (string) second bounding box
      = (boolean) `true` if they intersect
@@ -5684,7 +5621,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Finds intersections of two paths
-     > Parameters
      - path1 (string) path string
      - path2 (string) path string
      = (array) dots of intersection
@@ -5710,7 +5646,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Returns `true` if given point is inside a given closed path.
-     > Parameters
      - path (string) path string
      - x (number) x of the point
      - y (number) y of the point
@@ -5724,7 +5659,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Return bounding box of a given path
-     > Parameters
      - path (string) path string
      = (object) bounding box
      o {
@@ -5745,7 +5679,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Converts path coordinates into relative values.
-     > Parameters
      - path (string) path string
      = (array) path string
     \*/
@@ -5757,7 +5690,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Converts path coordinates into absolute values.
-     > Parameters
      - path (string) path string
      = (array) path string
     \*/
@@ -5769,7 +5701,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Utility method
      **
      * Converts path to a new path where all segments are cubic bezier curves.
-     > Parameters
      - pathString (string|array) path string or array of segments
      = (array) array of segments.
     \*/
@@ -5779,7 +5710,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Transform the path string with given matrix.
-     > Parameters
      - path (string) path string
      - matrix (object) see @Matrix
      = (string) transformed path string
@@ -5859,8 +5789,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      *
      * If function returns `false` it will stop loop running.
      **
-     > Parameters
-     **
      - callback (function) function to run
      - thisArg (object) context object for the callback
      = (object) Set object
@@ -5895,8 +5823,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes given element from the set
-     **
-     > Parameters
      **
      - index (number) position of the deletion
      - count (number) number of element to remove
@@ -5934,8 +5860,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes given element from the set
-     **
-     > Parameters
      **
      - element (object) element to remove
      = (boolean) `true` if object was found & removed from the set
@@ -6298,7 +6222,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for click for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6307,7 +6230,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for click for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6317,7 +6239,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for double click for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6326,7 +6247,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for double click for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6336,7 +6256,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mousedown for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6345,7 +6264,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mousedown for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6355,7 +6273,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mousemove for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6364,7 +6281,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mousemove for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6374,7 +6290,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mouseout for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6383,7 +6298,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mouseout for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6393,7 +6307,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mouseover for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6402,7 +6315,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mouseover for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6412,7 +6324,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for mouseup for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6421,7 +6332,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for mouseup for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6431,7 +6341,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for touchstart for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6440,7 +6349,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for touchstart for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6450,7 +6358,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for touchmove for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6459,7 +6366,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for touchmove for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6469,7 +6375,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for touchend for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6478,7 +6383,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for touchend for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6488,7 +6392,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handler for touchcancel for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6497,7 +6400,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handler for touchcancel for the element.
-     > Parameters
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -6535,7 +6437,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      * Adds or retrieves given value asociated with given key.
      ** 
      * See also @Element.removeData
-     > Parameters
      - key (string) key to store data
      - value (any) #optional value to store
      = (object) @Element
@@ -6573,7 +6474,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Removes value associated with an element by given key.
      * If key is not provided, removes all the data of the element.
-     > Parameters
      - key (string) #optional key
      = (object) @Element
     \*/
@@ -6590,7 +6490,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handlers for hover for the element.
-     > Parameters
      - f_in (function) handler for hover in
      - f_out (function) handler for hover out
      - icontext (object) #optional context for hover in handler
@@ -6605,7 +6504,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Removes event handlers for hover for the element.
-     > Parameters
      - f_in (function) handler for hover in
      - f_out (function) handler for hover out
      = (object) @Element
@@ -6619,7 +6517,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Adds event handlers for drag of the element.
-     > Parameters
      - onmove (function) handler for moving
      - onstart (function) handler for drag start
      - onend (function) handler for drag end
@@ -6679,7 +6576,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Shortcut for assigning event handler for `drag.over.<id>` event, where id is id of the element (see @Element.id).
-     > Parameters
      - f (function) handler for event, first argument would be the element you are dragging over
     \*/
     elproto.onDragOver = function (f) {
@@ -6726,8 +6622,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Creates filter element
-     **
-     > Parameters
      **
      - filstr (string) SVG fragment of filter provided as a string.
      = (object) @Element
@@ -6777,7 +6671,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
                 filter: "url(#" + id + ")"
             });
         }
-        if (!value) {
+        if (!value || value == "none") {
             eve.stop();
             this.node.removeAttribute("filter");
         }
@@ -6788,8 +6682,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      [ method ]
      **
      * Returns string of the blur filter.
-     **
-     > Parameters
      **
      - x (number) amount of horisontal blur in px.
      - y (number) #optional amount of vertical blur in px.
@@ -6818,8 +6710,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      * Returns string of the blur filter.
      **
-     > Parameters
-     **
      - dx (number) horisontal shift of the shadow in px.
      - dy (number) vertical shift of the shadow in px.
      - blur (number) #optional amount of blur.
@@ -6834,11 +6724,11 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     Savage.filter.shadow = function (dx, dy, blur, color) {
         color = Savage.color(color || "#000");
         if (blur == null) {
-            blur = 2;
+            blur = 4;
         }
         if (dx == null) {
             dx = 0;
-            dy = 4;
+            dy = 2;
         }
         if (dy == null) {
             dy = dx;
