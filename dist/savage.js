@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-05
+// build: 2013-09-06
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -3989,6 +3989,15 @@ var availableAttributes = {
         markerHeight: 0,
         orient: 0,
         "class": 0
+    },
+    use: {
+        "class": 0,
+        externalResourcesRequired: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        "xlink:href": 0
     },
     linearGradient: {
         x1: 0,

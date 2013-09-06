@@ -2973,6 +2973,15 @@ var availableAttributes = {
         orient: 0,
         "class": 0
     },
+    use: {
+        "class": 0,
+        externalResourcesRequired: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        "xlink:href": 0
+    },
     linearGradient: {
         x1: 0,
         y1: 0,
