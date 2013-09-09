@@ -4,7 +4,7 @@ Savage uses the following third party libraries that may have licenses
 differing from that of Savage itself. You can find the libraries and their
 respective licenses below.
 
- - eve ./third-party/eve
+ - eve ./node_modules/eve
 
     https://github.com/adobe-webplatform/eve/
 
@@ -22,7 +22,7 @@ respective licenses below.
     See the License for the specific language governing permissions and
     limitations under the License.
 
- - Mocha ./third-party/mocha
+ - Mocha ./node_modules/mocha
 
     https://github.com/visionmedia/mocha/
     
@@ -49,7 +49,7 @@ respective licenses below.
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
- - Expect ./third-party/expect
+ - Expect ./node_modules/expect.js
 
     https://github.com/LearnBoost/expect.js
 
@@ -76,7 +76,7 @@ respective licenses below.
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
- - Elemental ./third-party/elemental.js
+ - Elemental ./node_modules/elemental.js
 
     https://github.com/DmitryBaranovskiy/elemental
 
@@ -103,7 +103,7 @@ respective licenses below.
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
- - Grunt ./package.json (installed via NPM)
+ - Grunt ./node_modules/grunt
 
     http://gruntjs.com
 
