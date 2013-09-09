@@ -122,13 +122,7 @@ describe("Element methods", function () {
         var r = circle.attr("r");
         expect(r).to.be("30");
     });
-    it("Element.attr - set string", function() {
-        var circle = s.circle(10, 20, 30);
-        circle.attr("r", 40);
-        var r = circle.node.getAttribute("r");
-        expect(r).to.be("40");
-    });
-    it("Element.attr - set object", function() {
+    it("Element.attr - set", function() {
         var circle = s.circle(10, 20, 30);
         circle.attr({
             cx: 1,
