@@ -13,6 +13,10 @@
     "grunt": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-concat": "~0.3.0",
+    "mocha": "*",
+    "expect.js": "*",
+    "eve": "*",
+    "elemental.js": "*",
     "dr.js": "*"
   }
 }

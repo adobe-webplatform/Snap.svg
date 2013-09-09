@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-06
+// build: 2013-09-09
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -714,9 +714,9 @@ var mina = (function (eve) {
     return mina;
 })(typeof eve == "undefined" ? function () {} : eve);
 /*
- * Elemental 0.2.1 - Simple JavaScript Tag Parser
+ * Elemental 0.2.2 - Simple JavaScript Tag Parser
  *
- * Copyright (c) 2010 Dmitry Baranovskiy (http://dmitry.baranovskiy.com/)
+ * Copyright (c) 2010 - 2013 Dmitry Baranovskiy (http://dmitry.baranovskiy.com/)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
  
@@ -1011,7 +1011,7 @@ var mina = (function (eve) {
         out.end = end;
         return out;
     }
-    elemental.version = "0.2.1";
+    elemental.version = "0.2.2";
 
     (typeof exports == "undefined" ? this : exports).elemental = elemental;
 })();
@@ -6063,7 +6063,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
             // TODO: b could be an SVG transform string or matrix
-            return equaliseTransform(a.local, b);
+            return equaliseTransform(a, b);
         }
         if (name == "d" || name == "path") {
             A = Savage.path.toCubic(a, b);

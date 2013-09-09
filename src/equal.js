@@ -119,7 +119,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
             // TODO: b could be an SVG transform string or matrix
-            return equaliseTransform(a.local, b);
+            return equaliseTransform(a, b);
         }
         if (name == "d" || name == "path") {
             A = Savage.path.toCubic(a, b);

@@ -27,9 +27,9 @@ module.exports = function(grunt) {
             target: {
                 dest: "dist/" + pkg.name.toLowerCase() + ".js",
                 src: [
-                    "./third-party/eve/eve.js",
+                    "./node_modules/eve/eve.js",
                     "./src/mina.js",
-                    "./third-party/elemental.js",
+                    "./node_modules/elemental.js/elemental.js",
                     "./src/svg.js",
                     "./src/path.js",
                     "./src/set.js",
