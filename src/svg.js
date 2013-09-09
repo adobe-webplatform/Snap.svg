@@ -1400,6 +1400,9 @@ function arrayFirstValue(arr) {
     \*/
     elproto.attr = function (params) {
         var node = this.node;
+        if (!params) {
+            return this;
+        }
         if (is(params, "string")) {
             return arrayFirstValue(eve("savage.util.getattr." + params, this));
         }
@@ -2131,7 +2134,8 @@ function wrap(dom) {
      **
      * Creates element on paper with a given name and no attributes.
      **
-     - name (string) element tag name
+     - name (string) tag name
+     - attr (object) attributes
      = (Element) the element
      > Usage
      | var c = paper.circle(10, 10, 10); // is the same as...
@@ -2141,8 +2145,8 @@ function wrap(dom) {
      |     r: 10
      | });
     \*/
-    proto.el = function (name) {
-        return make(name, this.node);
+    proto.el = function (name, attr) {
+        return make(name, this.node).attr(attr);
     };
     /*\
      * Paper.rect
@@ -2369,14 +2373,16 @@ function wrap(dom) {
      **
      * See @Paper.g
     \*/
-    proto.group = proto.g = function () {
+    proto.group = proto.g = function (first) {
         var el = make("g", this.node);
         el.add = add2group;
         for (var method in proto) if (proto[has](method)) {
             el[method] = proto[method];
         }
-        if (arguments.length) {
-            add2group.call(el, Array.prototype.slice.call(arguments, 0));
+        if (arguments.length == 1 && first && !first.type) {
+            el.attr(first);
+        } else if (arguments.length) {
+            el.add(Array.prototype.slice.call(arguments, 0));
         }
         return el;
     };
