@@ -3020,7 +3020,7 @@ function arrayFirstValue(arr) {
  = (Fragment) the fragment
 \*/
 Savage.parse = function (svg) {
-    var f = document.createDocumentFragment(),
+    var f = glob.doc.createDocumentFragment(),
         pointer = f;
     eve.on("elemental.tag", function (data, extra, raw) {
         var tag = $(data);
@@ -3029,7 +3029,7 @@ Savage.parse = function (svg) {
         pointer = tag;
     });
     eve.on("elemental.text", function (text) {
-        pointer.appendChild(document.createTextNode(text));
+        pointer.appendChild(glob.doc.createTextNode(text));
     });
     eve.on("elemental./tag", function () {
         pointer = pointer.parentNode;
@@ -3069,7 +3069,7 @@ Fragment.prototype.selectAll = Element.prototype.selectAll;
 \*/
 Savage.fragment = function () {
     var args = Array.prototype.slice.call(arguments, 0),
-        f = document.createDocumentFragment();
+        f = glob.doc.createDocumentFragment();
     for (var i = 0, ii = args.length; i < ii; i++) {
         var item = args[i];
         if (item.node && item.node.nodeType) {
@@ -3893,23 +3893,26 @@ eve.on("savage.util.attr.r", function (value) {
 eve.on("savage.util.attr.text", function (value) {
     if (this.type == "text") {
         var i = 0,
-            node = this.node;
-        var tuner = function (chunk) {
-            var out = $("tspan");
-            if (is(chunk, "array")) {
-                for (var i = 0; i < chunk.length; i++) {
-                    out.appendChild(tuner(chunk[i]));
+            node = this.node,
+            tuner = function (chunk) {
+                var out = $("tspan");
+                if (is(chunk, "array")) {
+                    for (var i = 0; i < chunk.length; i++) {
+                        out.appendChild(tuner(chunk[i]));
+                    }
+                } else {
+                    out.appendChild(glob.doc.createTextNode(chunk));
                 }
-            } else {
-                out.appendChild(glob.doc.createTextNode(chunk));
-            }
-            out.normalize && out.normalize();
-            return out;
-        };
+                out.normalize && out.normalize();
+                return out;
+            };
         while (node.firstChild) {
             node.removeChild(node.firstChild);
         }
-        node.appendChild(tuner(value));
+        var tuned = tuner(value);
+        while (tuned.firstChild) {
+            node.appendChild(tuned.firstChild);
+        }
     }
     eve.stop();
 })(-1);
@@ -4364,6 +4367,31 @@ eve.on("savage.util.getattr.r", function () {
     if (this.type == "rect" && $(this.node, "rx") == $(this.node, "ry")) {
         eve.stop();
         return $(this.node, "rx");
+    }
+})(-1);
+function textExtract(node) {
+    var out = [];
+    var children = node.childNodes;
+    for (var i = 0, ii = children.length; i < ii; i++) {
+        var chi = children[i];
+        if (chi.nodeType == 3) {
+            out.push(chi.nodeValue);
+        }
+        if (chi.tagName == "tspan") {
+            if (chi.childNodes.length == 1 && chi.firstChild.nodeType == 3) {
+                out.push(chi.firstChild.nodeValue);
+            } else {
+                out.push(textExtract(chi));
+            }
+        }
+    }
+    return out;
+}
+eve.on("savage.util.getattr.text", function () {
+    if (this.type == "text" || this.type == "tspan") {
+        eve.stop();
+        var out = textExtract(this.node);
+        return out.length == 1 ? out[0] : out;
     }
 })(-1);
 eve.on("savage.util.getattr.#text", function () {
