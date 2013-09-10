@@ -2665,11 +2665,13 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Removes element from the DOM
+     = (Element) removed element
     \*/
     elproto.remove = function () {
         this.node.parentNode.removeChild(this.node);
         delete this.paper;
         this.removed = true;
+        return this;
     };
     /*\
      * Element.select
@@ -6739,7 +6741,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     });
     
     /*\
-     * Paper.filter.blur
+     * Savage.filter.blur
      [ method ]
      **
      * Returns string of the blur filter.
@@ -6766,10 +6768,10 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         return this();
     };
     /*\
-     * Paper.filter.blur
+     * Savage.filter.shadow
      [ method ]
      **
-     * Returns string of the blur filter.
+     * Returns string of the shadow filter.
      **
      - dx (number) horisontal shift of the shadow in px.
      - dy (number) vertical shift of the shadow in px.
@@ -6777,13 +6779,13 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - color (string) #optional color of the shadow.
      = (string) filter representation
      > Usage
-     | var f = paper.filter(Savage.filter.shadow(5, 10)),
+     | var f = paper.filter(Savage.filter.shadow(0, 2, 3)),
      |     c = paper.circle(10, 10, 10).attr({
      |         filter: f
      |     });
     \*/
     Savage.filter.shadow = function (dx, dy, blur, color) {
-        color = Savage.color(color || "#000");
+        color = color || "#000";
         if (blur == null) {
             blur = 4;
         }
@@ -6794,17 +6796,169 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         if (dy == null) {
             dy = dx;
         }
-        return Savage.format('<feColorMatrix type="matrix" in="SourceAlpha" result="colored" values="0 0 0 0 {r} 0 0 0 0 {g} 0 0 0 0 {b} 0 0 0 {o} 0"/><feGaussianBlur in="colored" stdDeviation="{blur}" result="blur"/><feOffset in="blur" dx="{dx}" dy="{dy}" result="offsetBlur"/><feMerge><feMergeNode in="offsetBlur"/><feMergeNode in="SourceGraphic"/></feMerge>', {
-            r: color.r,
-            g: color.g,
-            b: color.b,
-            o: color.opacity,
+        return Savage.format('<feGaussianBlur in="SourceAlpha" stdDeviation="{blur}"/><feOffset dx="{dx}" dy="{dy}" result="offsetblur"/><feFlood flood-color="{color}"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>', {
+            color: color,
             dx: dx,
             dy: dy,
             blur: blur
         });
     };
     Savage.filter.shadow.toString = function () {
+        return this();
+    };
+    /*\
+     * Savage.filter.grayscale
+     [ method ]
+     **
+     * Returns string of the grayscale filter.
+     **
+     - amount (number) amount of filter (`0..1`).
+     = (string) filter representation
+    \*/
+    Savage.filter.grayscale = function (amount) {
+        if (amount == null) {
+            amount = 1;
+        }
+        return Savage.format('<feColorMatrix type="matrix" values="{a} {b} {c} 0 0 {d} {e} {f} 0 0 {g} {b} {h} 0 0 0 0 0 1 0"/>', {
+            a: 0.2126 + 0.7874 * (1 - amount),
+            b: 0.7152 - 0.7152 * (1 - amount),
+            c: 0.0722 - 0.0722 * (1 - amount),
+            d: 0.2126 - 0.2126 * (1 - amount),
+            e: 0.7152 + 0.2848 * (1 - amount),
+            f: 0.0722 - 0.0722 * (1 - amount),
+            g: 0.2126 - 0.2126 * (1 - amount),
+            h: 0.0722 + 0.9278 * (1 - amount)
+        });
+    };
+    Savage.filter.grayscale.toString = function () {
+        return this();
+    };
+    /*\
+     * Savage.filter.sepia
+     [ method ]
+     **
+     * Returns string of the sepia filter.
+     **
+     - amount (number) amount of filter (`0..1`).
+     = (string) filter representation
+    \*/
+    Savage.filter.sepia = function (amount) {
+        if (amount == null) {
+            amount = 1;
+        }
+        return Savage.format('<feColorMatrix type="matrix" values="{a} {b} {c} 0 0 {d} {e} {f} 0 0 {g} {h} {i} 0 0 0 0 0 1 0"/>', {
+            a: 0.393 + 0.607 * (1 - amount),
+            b: 0.769 - 0.769 * (1 - amount),
+            c: 0.189 - 0.189 * (1 - amount),
+            d: 0.349 - 0.349 * (1 - amount),
+            e: 0.686 + 0.314 * (1 - amount),
+            f: 0.168 - 0.168 * (1 - amount),
+            g: 0.272 - 0.272 * (1 - amount),
+            h: 0.534 - 0.534 * (1 - amount),
+            i: 0.131 + 0.869 * (1 - amount)
+        });
+    };
+    Savage.filter.sepia.toString = function () {
+        return this();
+    };
+    /*\
+     * Savage.filter.saturate
+     [ method ]
+     **
+     * Returns string of the saturate filter.
+     **
+     - amount (number) amount of filter (`0..1`).
+     = (string) filter representation
+    \*/
+    Savage.filter.saturate = function (amount) {
+        if (amount == null) {
+            amount = 1;
+        }
+        return Savage.format('<feColorMatrix type="saturate" values="{amount}"/>', {
+            amount: 1 - amount
+        });
+    };
+    Savage.filter.saturate.toString = function () {
+        return this();
+    };
+    /*\
+     * Savage.filter.hueRotate
+     [ method ]
+     **
+     * Returns string of the hue-rotate filter.
+     **
+     - angle (number) angle of rotation.
+     = (string) filter representation
+    \*/
+    Savage.filter.hueRotate = function (angle) {
+        angle = angle || 0;
+        return Savage.format('<feColorMatrix type="hueRotate" values="{angle}"/>', {
+            angle: angle
+        });
+    };
+    Savage.filter.hueRotate.toString = function () {
+        return this();
+    };
+    /*\
+     * Savage.filter.invert
+     [ method ]
+     **
+     * Returns string of the invert filter.
+     **
+     - amount (number) amount of filter (`0..1`).
+     = (string) filter representation
+    \*/
+    Savage.filter.invert = function (amount) {
+        if (amount == null) {
+            amount = 1;
+        }
+        return Savage.format('<feComponentTransfer><feFuncR type="table" tableValues="{amount} {amount2}"/><feFuncG type="table" tableValues="{amount} {amount2}"/><feFuncB type="table" tableValues="{amount} {amount2}"/></feComponentTransfer>', {
+            amount: amount,
+            amount2: 1 - amount
+        });
+    };
+    Savage.filter.invert.toString = function () {
+        return this();
+    };
+    /*\
+     * Savage.filter.brightness
+     [ method ]
+     **
+     * Returns string of the brightness filter.
+     **
+     - amount (number) amount of filter (`0..1`).
+     = (string) filter representation
+    \*/
+    Savage.filter.brightness = function (amount) {
+        if (amount == null) {
+            amount = 1;
+        }
+        return Savage.format('<feComponentTransfer><feFuncR type="linear" slope="{amount}"/><feFuncG type="linear" slope="{amount}"/><feFuncB type="linear" slope="{amount}"/></feComponentTransfer>', {
+            amount: amount
+        });
+    };
+    Savage.filter.brightness.toString = function () {
+        return this();
+    };
+    /*\
+     * Savage.filter.contrast
+     [ method ]
+     **
+     * Returns string of the contrast filter.
+     **
+     - amount (number) amount of filter (`0..1`).
+     = (string) filter representation
+    \*/
+    Savage.filter.contrast = function (amount) {
+        if (amount == null) {
+            amount = 1;
+        }
+        return Savage.format('<feComponentTransfer><feFuncR type="linear" slope="{amount}" intercept="{amount2}"/><feFuncG type="linear" slope="{amount}" intercept="{amount2}"/><feFuncB type="linear" slope="{amount}" intercept="{amount2}"/></feComponentTransfer>', {
+            amount: amount,
+            amount2: .5 - amount / 2
+        });
+    };
+    Savage.filter.contrast.toString = function () {
         return this();
     };
 });
