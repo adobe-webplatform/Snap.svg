@@ -123,8 +123,6 @@ describe("Element methods", function () {
         Element.removeData()
         Element.asPX()
         Element.getBBox()
-        
-        // TODO:
         Element.getPointAtLength()
         Element.getSubpath()
         Element.getTotalLength()
@@ -336,7 +334,7 @@ describe("Element methods", function () {
             done();
         }, 50);
     });
-    it("Element.stop", function() {
+    it("Element.stop", function(done) {
         var circle = s.circle(10, 20, 30);
         circle.animate({r: 50}, 100);
         setTimeout(function() {
@@ -348,6 +346,7 @@ describe("Element methods", function () {
             var r = circle.attr("r");
             expect(r).to.be.lessThan(50);
             expect(result).to.be(circle);
+            done();
         }, 50);
     });
     it("Element.marker", function() {
@@ -384,4 +383,231 @@ describe("Element methods", function () {
         var use = circle.use();
         expect(use.node.nodeName).to.be('use');
     });
+    
+        
+    /*
+        Event binding & unbinding: 
+        
+            Element.click()
+            Element.dblclick()
+            Element.mousedown()
+            Element.mousemove()
+            Element.mouseout()
+            Element.mouseover()
+            Element.mouseup()
+            Element.touchcancel()
+            Element.touchend()
+            Element.touchmove()
+            Element.touchstart()
+            Element.unclick()
+            Element.undblclick()
+            Element.unmousedown()
+            Element.unmousemove()
+            Element.unmouseout()
+            Element.unmouseover()
+            Element.unmouseup()
+            Element.untouchcancel()
+            Element.untouchend()
+            Element.untouchmove()
+            Element.untouchstart()
+
+            Element.drag()
+            Element.undrag()
+            Element.hover()
+            Element.unhover()
+            
+            TODO:
+            Element.onDragOver()
+    */
+      
+    // Helper function to simulate event triggering
+    var triggerEvent = function(savageEl, eventType) {
+        var event = document.createEvent("HTMLEvents");
+        event.initEvent(eventType, true, true);
+        savageEl.node.dispatchEvent(event);
+    };
+    
+    // Generate tests for all standard DOM events
+    (function() {
+        var elementEvents = [
+            "click",
+            "dblclick",
+            "mousedown",
+            "mousemove",
+            "mouseout",
+            "mouseover",
+            "mouseup",
+            "touchcancel",
+            "touchend",
+            "touchmove",
+            "touchstart"
+        ];
+        
+        var makeEventTest = function(eventName) {
+            return function() {
+                // Add event, trigger event, remove event, trigger again
+                var circle = s.circle(10, 20, 30);
+                var n = 0;
+                var fn = function() {
+                    n++;
+                };
+                var result1 = circle[eventName](fn);
+                expect(n).to.be(0);
+                triggerEvent(circle, eventName);
+                expect(n).to.be(1);
+                var result2 = circle["un" + eventName](fn);
+                triggerEvent(circle, eventName);
+                expect(n).to.be(1);
+                expect(result1).to.be(circle);
+                expect(result2).to.be(circle);
+            };
+        }
+        
+        for (var i = 0; i < elementEvents.length; i++) {
+            var eventName = elementEvents[i];
+            var testName = "Element." + eventName + ", Element.un" + eventName;
+            var testFunc = makeEventTest(eventName);
+            it(testName, testFunc);
+        }
+    }());
+    it("Element.drag, Element.undrag - no contexts", function() {
+        var circle = s.circle(10, 20, 30);
+        var moved = 0;
+        var started = 0;
+        var ended = 0;
+        var result1 = circle.drag(function(dx, dy, x, y, event) {
+            moved++;
+            expect(dx).to.be.a('number');
+            expect(dy).to.be.a('number');
+            expect(x).to.be.a('number');
+            expect(y).to.be.a('number');
+            expect(event).to.be.an('object');
+        }, function(x, y, event) {
+            started++;
+            expect(x).to.be.a('number');
+            expect(y).to.be.a('number');
+            expect(event).to.be.an('object');
+        }, function(event) {
+            ended++;
+            expect(event).to.be.an('object');
+        });
+        
+        expect(started).to.be(0);
+        triggerEvent(circle, 'mousedown');
+        expect(started).to.be(1);
+        expect(moved).to.be(0);
+        triggerEvent(circle, 'mousemove');
+        expect(moved).to.be(1);
+        expect(ended).to.be(0);
+        triggerEvent(circle, 'mouseup');
+        expect(ended).to.be(1);
+        expect(result1).to.be(circle);
+        
+        var result2 = circle.undrag();
+        triggerEvent(circle, 'mousedown');
+        expect(started).to.be(1);
+        triggerEvent(circle, 'mousemove');
+        expect(moved).to.be(1);
+        triggerEvent(circle, 'mouseup');
+        expect(ended).to.be(1);
+        // expect(result2).to.be(circle); // TODO: Make undrag return element
+    });
+    it("Element.drag - with contexts", function() {
+        var circle = s.circle(10, 20, 30);
+        var moved = 0;
+        var started = 0;
+        var ended = 0;
+        var result = circle.drag(function(dx, dy, x, y, event) {
+            moved++;
+            expect(dx).to.be.a('number');
+            expect(dy).to.be.a('number');
+            expect(x).to.be.a('number');
+            expect(y).to.be.a('number');
+            expect(event).to.be.an('object');
+            expect(this.moveContext).to.be(true);
+        }, function(x, y, event) {
+            started++;
+            expect(x).to.be.a('number');
+            expect(y).to.be.a('number');
+            expect(event).to.be.an('object');
+            expect(this.startContext).to.be(true);
+        }, function(event) {
+            ended++;
+            expect(event).to.be.an('object');
+            expect(this.endContext).to.be(true);
+        }, {moveContext: true}, {startContext: true}, {endContext: true});
+        
+        expect(started).to.be(0);
+        triggerEvent(circle, 'mousedown');
+        expect(started).to.be(1);
+        expect(moved).to.be(0);
+        triggerEvent(circle, 'mousemove');
+        expect(moved).to.be(1);
+        expect(ended).to.be(0);
+        triggerEvent(circle, 'mouseup');
+        expect(ended).to.be(1);
+        expect(result).to.be(circle);
+        
+        var result2 = circle.undrag();
+        triggerEvent(circle, 'mousedown');
+        expect(started).to.be(1);
+        triggerEvent(circle, 'mousemove');
+        expect(moved).to.be(1);
+        triggerEvent(circle, 'mouseup');
+        expect(ended).to.be(1);
+        // expect(result2).to.be(circle); // TODO: Make undrag return element
+    });
+    it("Element.hover, Element.unhover - no contexts", function() {
+        var circle = s.circle(10, 20, 30);
+        var eventIn = 0;
+        var eventOut = 0;
+        var result1 = circle.hover(function() {
+            eventIn++;
+        }, function() {
+            eventOut++;
+        });
+        
+        expect(eventIn).to.be(0);
+        triggerEvent(circle, 'mouseover');
+        expect(eventIn).to.be(1);
+        expect(eventOut).to.be(0);
+        triggerEvent(circle, 'mouseout');
+        expect(eventOut).to.be(1);
+        expect(result1).to.be(circle);
+        
+        var result2 = circle.unhover();
+        triggerEvent(circle, 'mouseover');
+        expect(eventIn).to.be(1);
+        triggerEvent(circle, 'mouseout');
+        expect(eventOut).to.be(1);
+        // expect(result2).to.be(circle); // TODO: Make unhover return element
+    });
+    it("Element.hover, Element.unhover - with contexts", function() {
+        var circle = s.circle(10, 20, 30);
+        var eventIn = 0;
+        var eventOut = 0;
+        var result1 = circle.hover(function() {
+            eventIn++;
+            expect(this.inContext).to.be(true);
+        }, function() {
+            eventOut++;
+            expect(this.outContext).to.be(true);
+        }, {inContext: true}, {outContext: true});
+        
+        expect(eventIn).to.be(0);
+        triggerEvent(circle, 'mouseover');
+        expect(eventIn).to.be(1);
+        expect(eventOut).to.be(0);
+        triggerEvent(circle, 'mouseout');
+        expect(eventOut).to.be(1);
+        expect(result1).to.be(circle);
+        
+        var result2 = circle.unhover();
+        triggerEvent(circle, 'mouseover');
+        expect(eventIn).to.be(1);
+        triggerEvent(circle, 'mouseout');
+        expect(eventOut).to.be(1);
+        // expect(result2).to.be(circle); // TODO: Make unhover return element
+    });
+    
 });
