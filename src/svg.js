@@ -1724,9 +1724,9 @@ function arrayFirstValue(arr) {
      * Element.clone
      [ method ]
      **
-     * Creates `<use>` element linked to the current element.
+     * Creates clone of the element and inserts it after the element.
      **
-     = (Element) `<use>` element
+     = (Element) the clone
     \*/
     elproto.clone = function () {
         var clone = wrap(this.node.cloneNode(true));
