@@ -21,74 +21,85 @@ describe("Element methods", function () {
     */
     it("Element.add (for Element)", function () {
         var rect = s.rect(10, 20, 30, 40);
-        s.add(rect);
+        var result = s.add(rect);
         expect(rect.node.parentNode).to.be(s.node);
         expect(s.node.lastChild).to.be(rect.node);
+        expect(result).to.be(s);
     });
     it("Element.add (for Set)", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
         var set = Savage.set(rect1, rect2);
-        s.add(set);
+        var result = s.add(set);
         expect(rect1.node.parentNode).to.be(s.node);
         expect(rect2.node.parentNode).to.be(s.node);
+        expect(result).to.be(s);
     });
     it("Element.append (for Element)", function () {
         var rect = s.rect(10, 20, 30, 40);
-        s.append(rect);
+        var result = s.append(rect);
         expect(rect.node.parentNode).to.be(s.node);
         expect(s.node.lastChild).to.be(rect.node);
+        expect(result).to.be(s);
     });
     it("Element.append (for Set)", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
         var set = Savage.set(rect1, rect2);
-        s.append(set);
+        var result = s.append(set);
         expect(rect1.node.parentNode).to.be(s.node);
         expect(rect2.node.parentNode).to.be(s.node);
+        expect(result).to.be(s);
     });
     it("Element.after", function() {
         var circle = s.circle(10, 20, 30);
         var rect = s.rect(10, 20, 30, 40);
-        circle.after(rect);
+        var result = circle.after(rect);
         expect(circle.node.nextSibling).to.be(rect.node);
+        expect(result).to.be(circle);
     });
     it("Element.prepend", function() {
         var rect = s.rect(10, 20, 30, 40);
         var circle = s.circle(10, 20, 30);
         var group = s.group();
         s.append(group);
-        group.prepend(rect);
+        var result = group.prepend(rect);
         expect(group.node.firstChild).to.be(rect.node);
-        group.prepend(circle);
+        expect(result).to.be(group);
+        result = group.prepend(circle);
         expect(group.node.firstChild).to.be(circle.node);
+        expect(result).to.be(group);
     });
     it("Element.insertAfter", function() {
         var circle = s.circle(10, 20, 30);
         var rect = s.rect(10, 20, 30, 40);
-        rect.insertAfter(circle);
+        var result = rect.insertAfter(circle);
         expect(circle.node.nextSibling).to.be(rect.node);
+        expect(result).to.be(rect);
     });
     it("Element.before", function() {
         var circle = s.circle(10, 20, 30);
         var rect = s.rect(10, 20, 30, 40);
-        circle.before(rect);
+        var result = circle.before(rect);
         expect(circle.node.previousSibling).to.be(rect.node);
+        expect(result).to.be(circle);
     });
     it("Element.insertBefore", function() {
         var circle = s.circle(10, 20, 30);
         var rect = s.rect(10, 20, 30, 40);
-        rect.insertBefore(circle);
+        var result = rect.insertBefore(circle);
         expect(circle.node.previousSibling).to.be(rect.node);
+        expect(result).to.be(rect);
     });
     it("Element.clone", function() {
         var circle = s.circle(10, 20, 30);
         s.append(circle);
         var clone = circle.clone();
         expect(circle.node).not.to.be(clone.node);
-        expect(circle.node.getAttribute("cx")).to.be("10");
-        expect(circle.node.getAttribute("cy")).to.be("20");
-        expect(circle.node.getAttribute("r")).to.be("30");
+        // NOTE: These assume a cloneNode copy, not a <use> element
+        expect(clone.node.getAttribute("cx")).to.be("10");
+        expect(clone.node.getAttribute("cy")).to.be("20");
+        expect(clone.node.getAttribute("r")).to.be("30");
     });
     it("Element.parent", function() {
         var circle = s.circle(10, 20, 30);
@@ -99,8 +110,10 @@ describe("Element methods", function () {
     it("Element.remove", function() {
         var rect = s.rect(10, 20, 30, 40);
         expect(rect.node.parentNode).to.be(s.node);
-        rect.remove();
+        var result = rect.remove();
         expect(rect.node.parentNode).to.be(null);
+        // NOTE: docs say it does not return anything, but perhaps it should?
+        // expect(result).to.be(rect);
     });
     
     /*
