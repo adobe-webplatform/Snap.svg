@@ -1648,11 +1648,13 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Removes element from the DOM
+     = (Element) removed element
     \*/
     elproto.remove = function () {
         this.node.parentNode.removeChild(this.node);
         delete this.paper;
         this.removed = true;
+        return this;
     };
     /*\
      * Element.select
