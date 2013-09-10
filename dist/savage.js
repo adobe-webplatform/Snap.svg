@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-09
+// build: 2013-09-10
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2587,7 +2587,7 @@ function arrayFirstValue(arr) {
     \*/
     elproto.prepend = function (el) {
         el = wrap(el);
-        this.node.parentNode.insertBefore(el.node, this.node.firstChild);
+        this.node.insertBefore(el.node, this.node.firstChild);
         el.paper = this.paper;
         return this;
     };
@@ -3011,6 +3011,62 @@ function arrayFirstValue(arr) {
             delete el.anims[anim.id];
         });
         return el;
+    };
+    var eldata = {};
+    /*\
+     * Element.data
+     [ method ]
+     **
+     * Adds or retrieves given value asociated with given key.
+     ** 
+     * See also @Element.removeData
+     - key (string) key to store data
+     - value (any) #optional value to store
+     = (object) @Element
+     * or, if value is not specified:
+     = (any) value
+     > Usage
+     | for (var i = 0, i < 5, i++) {
+     |     paper.circle(10 + 15 * i, 10, 10)
+     |          .attr({fill: "#000"})
+     |          .data("i", i)
+     |          .click(function () {
+     |             alert(this.data("i"));
+     |          });
+     | }
+    \*/
+    elproto.data = function (key, value) {
+        var data = eldata[this.id] = eldata[this.id] || {};
+        if (arguments.length == 1) {
+            if (Savage.is(key, "object")) {
+                for (var i in key) if (key[has](i)) {
+                    this.data(i, key[i]);
+                }
+                return this;
+            }
+            eve("savage.data.get." + this.id, this, data[key], key);
+            return data[key];
+        }
+        data[key] = value;
+        eve("savage.data.set." + this.id, this, value, key);
+        return this;
+    };
+    /*\
+     * Element.removeData
+     [ method ]
+     **
+     * Removes value associated with an element by given key.
+     * If key is not provided, removes all the data of the element.
+     - key (string) #optional key
+     = (object) @Element
+    \*/
+    elproto.removeData = function (key) {
+        if (key == null) {
+            eldata[this.id] = {};
+        } else {
+            eldata[this.id] && delete eldata[this.id][key];
+        }
+        return this;
     };
 }(Element.prototype));
 /*\
@@ -6481,62 +6537,6 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             };
         })(events[i]);
     }
-    
-    /*\
-     * Element.data
-     [ method ]
-     **
-     * Adds or retrieves given value asociated with given key.
-     ** 
-     * See also @Element.removeData
-     - key (string) key to store data
-     - value (any) #optional value to store
-     = (object) @Element
-     * or, if value is not specified:
-     = (any) value
-     > Usage
-     | for (var i = 0, i < 5, i++) {
-     |     paper.circle(10 + 15 * i, 10, 10)
-     |          .attr({fill: "#000"})
-     |          .data("i", i)
-     |          .click(function () {
-     |             alert(this.data("i"));
-     |          });
-     | }
-    \*/
-    elproto.data = function (key, value) {
-        var data = eldata[this.id] = eldata[this.id] || {};
-        if (arguments.length == 1) {
-            if (Savage.is(key, "object")) {
-                for (var i in key) if (key[has](i)) {
-                    this.data(i, key[i]);
-                }
-                return this;
-            }
-            eve("savage.data.get." + this.id, this, data[key], key);
-            return data[key];
-        }
-        data[key] = value;
-        eve("savage.data.set." + this.id, this, value, key);
-        return this;
-    };
-    /*\
-     * Element.removeData
-     [ method ]
-     **
-     * Removes value associated with an element by given key.
-     * If key is not provided, removes all the data of the element.
-     - key (string) #optional key
-     = (object) @Element
-    \*/
-    elproto.removeData = function (key) {
-        if (key == null) {
-            eldata[this.id] = {};
-        } else {
-            eldata[this.id] && delete eldata[this.id][key];
-        }
-        return this;
-    };
     /*\
      * Element.hover
      [ method ]
