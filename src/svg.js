@@ -1399,20 +1399,27 @@ function arrayFirstValue(arr) {
      | });
      | console.log(el.attr("fill")); // “#fc0”
     \*/
-    elproto.attr = function (params) {
-        var node = this.node;
+    elproto.attr = function (params, value) {
+        var el = this,
+            node = el.node;
         if (!params) {
-            return this;
+            return el;
         }
         if (is(params, "string")) {
-            return arrayFirstValue(eve("savage.util.getattr." + params, this));
+            if (arguments.length > 1) {
+                var json = {};
+                json[params] = value;
+                params = json;
+            } else {
+                return arrayFirstValue(eve("savage.util.getattr."+params, el));
+            }
         }
         for (var att in params) {
             if (params[has](att)) {
-                eve("savage.util.attr." + att, this, params[att]);
+                eve("savage.util.attr." + att, el, params[att]);
             }
         }
-        return this;
+        return el;
     };
     /*\
      * Element.getBBox
