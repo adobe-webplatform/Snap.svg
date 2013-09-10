@@ -2218,6 +2218,7 @@ function extractTransform(el, tstr) {
         _.dirtyT = 1;
     }
 }
+Savage._unit2px = unit2px;
 function unit2px(el, name, value) {
     var defs = el.paper.defs,
         out = {},
@@ -4985,7 +4986,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         res.toString = toString;
         return res;
     }
-    var getPath = {
+    var unit2px = Savage._unit2px,
+        getPath = {
         path: function (el) {
             return el.attr("path");
         },

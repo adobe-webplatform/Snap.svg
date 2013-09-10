@@ -490,7 +490,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         res.toString = toString;
         return res;
     }
-    var getPath = {
+    var unit2px = Savage._unit2px,
+        getPath = {
         path: function (el) {
             return el.attr("path");
         },

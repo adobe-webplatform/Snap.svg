@@ -153,8 +153,8 @@ describe("Element methods", function () {
         var data = circle.data("my-object");
         expect(data).to.be(myObject);
         circle.removeData("my-object");
-        var data = circle.data("my-object");
-        expect(data).to.be(null);
+        data = circle.data("my-object");
+        expect(data).to.be(undefined);
     });
     it("Element.asPX - from %", function() {
         s.attr({width: "200"}); // NOTE: This is only working with "200" as string, fails as number
@@ -171,18 +171,15 @@ describe("Element methods", function () {
         var rect = s.rect(10, 20, 30, 40);
         var bbox = rect.getBBox();
         
-        expect(bbox).to.eql({
-            x: 10,
-            y: 20,
-            w: 30,
-            width: 30,
-            h: 40,
-            height: 40,
-            
-            x2: 25,
-            cy: 40,
-            x2: (100 - 40),
-            y2: (100 - 60)
-        });
+        expect(bbox.x).to.eql(10);
+        expect(bbox.y).to.eql(20);
+        expect(bbox.w).to.eql(30);
+        expect(bbox.width).to.eql(30);
+        expect(bbox.h).to.eql(40);
+        expect(bbox.height).to.eql(40);
+        expect(bbox.x2).to.eql(10 + 30);
+        expect(bbox.cx).to.eql(10 + 30 / 2);
+        expect(bbox.cy).to.eql(20 + 40 / 2);
+        expect(bbox.y2).to.eql(20 + 40);
     });
 });
