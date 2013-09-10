@@ -195,4 +195,193 @@ describe("Element methods", function () {
         expect(bbox.cy).to.eql(20 + 40 / 2);
         expect(bbox.y2).to.eql(20 + 40);
     });
+    
+    it("Element.getPointAtLength", function() {
+        var path = s.path("M0,0 100,0");
+        expect(path.getPointAtLength(50)).to.eql({
+            x: 50,
+            y: 0,
+            m: {
+                x: 25,
+                y: 0
+            },
+            n: {
+                x: 75,
+                y: 0
+            },
+            start: {
+                x: 0,
+                y: 0
+            },
+            end: {
+                x: 100,
+                y: 0
+            },
+            alpha: 180
+        }); 
+    });
+    it("Element.getSubpath", function() {
+        var path = s.path("M0,0 100,0");
+        expect(path.getSubpath(10, 90)).to.be("M9.995,0C29.153,0,70.839,0,90,0");
+    });
+    it("Element.getTotalLength", function() {
+        var path = s.path("M0,0 100,0");
+        expect(+path.getTotalLength("M0,0 100,0").toFixed(2)).to.be(100);
+    });
+    
+    /*
+        Misc: 
+        
+        Element.select()
+        Element.selectAll()
+        Element.animate()
+        Element.inAnim()
+        Element.stop()
+        Element.marker()
+        Element.pattern()
+        Element.use()
+        Element.transform()
+        
+    */
+    
+    it("Element.select", function() {
+        var group1 = s.group();
+        var group2 = s.group();
+        var group3 = s.group();
+        var circle1 = s.circle(10, 20, 30).attr({
+            'class': 'circle-one'
+        });
+        var circle2 = s.circle(5, 10, 25).attr({
+            'class': 'circle-two'
+        });
+        group1.add(group2);
+        group2.add(group3);
+        group2.add(circle1);
+        group3.add(circle2);
+        var c1 = group1.select('.circle-one');
+        expect(circle1).to.be(c1);
+        var c2 = group1.select('.circle-two');
+        expect(circle2).to.be(c2);
+    });
+    it("Element.selectAll", function() {
+        var group1 = s.group();
+        var group2 = s.group();
+        var group3 = s.group();
+        var circle1 = s.circle(10, 20, 30).attr({
+            'class': 'circle-one'
+        });
+        var circle2 = s.circle(5, 10, 25).attr({
+            'class': 'circle-two'
+        });
+        group1.add(group2);
+        group2.add(group3);
+        group2.add(circle1);
+        group3.add(circle2);
+        var circles = group1.selectAll('circle');
+        expect(circles.length).to.be(2);
+        expect(circles).to.contain(circle1);
+        expect(circles).to.contain(circle2);
+    });
+    it("Element.animate", function(done) {
+        var circle = s.circle(10, 20, 30);
+        var result = circle.animate({r: 50}, 10);
+        setTimeout(function() {
+            var r = circle.attr("r");
+            expect(r).to.be("50");
+            done();
+        }, 50);
+        expect(result).to.be(circle);
+    });    
+    it("Element.animate - with callback", function(done) {
+        var circle = s.circle(10, 20, 30);
+        var result = circle.animate({r: 50}, 10, function() {
+            var r = circle.attr("r");
+            expect(r).to.be("50");
+            done();
+        });
+        expect(result).to.be(circle);
+    });
+    it("Element.animate - with easing", function(done) {
+        var circle = s.circle(10, 20, 30);
+        var result = circle.animate({r: 50}, 10, mina.easein);
+        setTimeout(function() {
+            var r = circle.attr("r");
+            expect(r).to.be("50");
+            done();
+        }, 50);
+        expect(result).to.be(circle);
+    });
+    it("Element.animate - with callback & easing", function(done) {
+        var circle = s.circle(10, 20, 30);
+        var result = circle.animate({r: 50}, 10, mina.easeout, function() {
+            var r = circle.attr("r");
+            expect(r).to.be("50");
+            done();
+        });
+        expect(result).to.be(circle);
+    });
+    it("Element.inAnim", function(done) {
+        var circle = s.circle(10, 20, 30);
+        circle.animate({r: 50}, 100);
+        circle.animate({cx: 100}, 100);
+        setTimeout(function() {
+            var inAnimArr = circle.inAnim();
+            expect(inAnimArr).to.be.an('array');
+            expect(inAnimArr.length).to.be(2);
+            expect(inAnimArr[0].anim).to.be.an('object');
+            expect(inAnimArr[0].curStatus).to.be.a('number');
+            expect(inAnimArr[0].curStatus).to.be.within(0.01, 0.99);
+            expect(inAnimArr[0].status).to.be.a('function');
+            expect(inAnimArr[0].stop).to.be.a('function');
+            done();
+        }, 50);
+    });
+    it("Element.stop", function() {
+        var circle = s.circle(10, 20, 30);
+        circle.animate({r: 50}, 100);
+        setTimeout(function() {
+            var inAnimArr = circle.inAnim();
+            expect(inAnimArr.length).to.be(1);
+            var result = circle.stop();
+            inAnimArr = circle.inAnim();
+            expect(inAnimArr.length).to.be(0);
+            var r = circle.attr("r");
+            expect(r).to.be.lessThan(50);
+            expect(result).to.be(circle);
+        }, 50);
+    });
+    it("Element.marker", function() {
+        var line = s.line(0, 0, 10, 10);
+        var marker = line.marker(0, 0, 5, 5, 0, 0);
+        expect(marker.node.nodeName).to.be('marker');
+    });
+    it("Element.pattern", function() {
+        var circle = s.circle(10, 20, 30);
+        var pattern = circle.pattern(0, 0, 50, 50);
+        expect(pattern.node.nodeName).to.be('pattern');
+    });
+    it("Element.transform", function() {
+        var circle = s.circle(10, 20, 30);
+        var result = circle.transform("translate(10,10)");
+        var matrix = {
+            a: 1, b: 0, c: 0, d: 1, e: 10, f: 10
+        };
+        var transform = circle.transform();
+        expect(transform.string).to.be.a('string');
+        expect(transform.global).to.be.a('string');
+        expect(transform.globalMatrix).to.be.an('object');
+        expect(transform.globalMatrix).to.eql(matrix);
+        expect(transform.local).to.be.a('string');
+        expect(transform.localMatrix).to.be.an('object');
+        expect(transform.localMatrix).to.eql(matrix);
+        circle.transform("rotate(90)");
+        transform = circle.transform();
+        expect(transform.local).to.be("r90,0,0");
+        expect(result).to.be(circle);
+    });
+    it("Element.use", function() {
+        var circle = s.circle(10, 20, 30);
+        var use = circle.use();
+        expect(use.node.nodeName).to.be('use');
+    });
 });
