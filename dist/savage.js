@@ -3090,7 +3090,7 @@ function arrayFirstValue(arr) {
      = (Element) the element
     \*/
     elproto.animate = function (attrs, ms, easing, callback) {
-        if (typeof easing == "function") {
+        if (typeof easing == "function" && !easing.length) {
             callback = easing;
             easing = mina.linear;
         }
@@ -3193,28 +3193,49 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
-    elproto.toString = function () {
-        var res = "<" + this.type,
-            attr = this.node.attributes,
-            chld = this.node.childNodes;
-        for (var i = 0, ii = attr.length; i < ii; i++) {
-            res += " " + attr[i].name + '="' + attr[i].value.replace(/"/g, '\\"') + '"';
-        }
-        if (chld.length) {
-            res += ">";
-            for (i = 0, ii = chld.length; i < ii; i++) {
-                if (chld[i].nodeType == 3) {
-                    res += chld[i].nodeValue;
-                } else if (chld[i].nodeType == 1) {
-                    res += wrap(chld[i]).toString();
+    /*\
+     * Element.toString
+     [ method ]
+     **
+     * Returns SVG code of the element. Equivalent to `outerHTML` in HTML context.
+     = (string) SVG code of the element.
+    \*/
+    elproto.toString = toString(1);
+    /*\
+     * Element.innerSVG
+     [ method ]
+     **
+     * Returns SVG code of the element. Equivalent to `innerHTML` in HTML context.
+     = (string) SVG code of the element.
+    \*/
+    elproto.innerSVG = toString();
+    function toString(type) {
+        return function () {
+            var res = type ? "<" + this.type : "",
+                attr = this.node.attributes,
+                chld = this.node.childNodes;
+            if (type) {
+                for (var i = 0, ii = attr.length; i < ii; i++) {
+                    res += " " + attr[i].name + '="' +
+                            attr[i].value.replace(/"/g, '\\"') + '"';
                 }
             }
-            res += "</" + this.type + ">";
-        } else {
-            res += "/>";
-        }
-        return res;
-    };
+            if (chld.length) {
+                type && (res += ">");
+                for (i = 0, ii = chld.length; i < ii; i++) {
+                    if (chld[i].nodeType == 3) {
+                        res += chld[i].nodeValue;
+                    } else if (chld[i].nodeType == 1) {
+                        res += wrap(chld[i]).toString();
+                    }
+                }
+                type && (res += "</" + this.type + ">");
+            } else {
+                type && (res += "/>");
+            }
+            return res;
+        };
+    }
 }(Element.prototype));
 /*\
  * Savage.parse

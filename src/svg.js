@@ -2024,7 +2024,7 @@ function arrayFirstValue(arr) {
      = (Element) the element
     \*/
     elproto.animate = function (attrs, ms, easing, callback) {
-        if (typeof easing == "function") {
+        if (typeof easing == "function" && !easing.length) {
             callback = easing;
             easing = mina.linear;
         }
