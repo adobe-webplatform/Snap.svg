@@ -1682,6 +1682,9 @@ Savage.getRGB = cacher(function (colour) {
         return {r: -1, g: -1, b: -1, hex: "none", toString: rgbtoString};
     }
     !(hsrg[has](colour.toLowerCase().substring(0, 2)) || colour.charAt() == "#") && (colour = toHex(colour));
+    if (!colour) {
+        return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
+    }
     var res,
         red,
         green,
@@ -1789,12 +1792,16 @@ Savage.rgb = cacher(function (r, g, b, o) {
     return "#" + (16777216 | b | (g << 8) | (r << 16)).toString(16).slice(1);
 });
 var toHex = function (color) {
-    var i = glob.doc.getElementsByTagName("head")[0];
+    var i = glob.doc.getElementsByTagName("head")[0],
+        red = "rgb(255, 0, 0)";
     toHex = cacher(function (color) {
-        i.style.color = "inherit";
+        if (color.toLowerCase() == "red") {
+            return red;
+        }
+        i.style.color = red;
         i.style.color = color;
         var out = glob.doc.defaultView.getComputedStyle(i, E).getPropertyValue("color");
-        return out == "inherit" ? null : out;
+        return out == red ? null : out;
     });
     return toHex(color);
 },
@@ -1884,7 +1891,7 @@ Savage.color = function (clr) {
         if (is(clr, "string")) {
             clr = Savage.getRGB(clr);
         }
-        if (is(clr, "object") && "r" in clr && "g" in clr && "b" in clr) {
+        if (is(clr, "object") && "r" in clr && "g" in clr && "b" in clr && !("error" in clr)) {
             rgb = Savage.rgb2hsl(clr);
             clr.h = rgb.h;
             clr.s = rgb.s;
@@ -1894,6 +1901,7 @@ Savage.color = function (clr) {
         } else {
             clr = {hex: "none"};
             clr.r = clr.g = clr.b = clr.h = clr.s = clr.v = clr.l = -1;
+            clr.error = 1;
         }
     }
     clr.toString = rgbtoString;
@@ -3771,6 +3779,9 @@ function wrap(dom) {
         proto.gradient = function (str) {
             var grad = arrayFirstValue(eve("savage.util.grad.parse", null, str)),
                 el;
+            if (!grad) {
+                return null;
+            }
             if (grad.type.toLowerCase() == "l") {
                 el = this.gradientLinear.apply(this, grad.params);
             } else {
@@ -4012,25 +4023,32 @@ eve.on("savage.util.attr.fill", function (value) {
         this.paper.defs.appendChild(value);
         value = wrap(value);
     }
-    if (value instanceof Element &&
-        (value.type == "radialGradient" || value.type == "linearGradient" ||
-         value.type == "pattern")) {
+    if (value instanceof Element) {
+        if (value.type == "radialGradient" || value.type == "linearGradient" ||
+            value.type == "pattern") {
             if (!value.node.id) {
                 $(value.node, {
                     id: value.id
                 });
             }
             var fill = "url(#" + value.node.id + ")";
+        } else {
+            fill = value.attr("fill");
+        }
     } else {
         fill = Savage.color(value);
         if (fill.error) {
             var grad = this.paper.gradient(value);
-            if (!grad.node.id) {
-                $(grad.node, {
-                    id: grad.id
-                });
+            if (grad) {
+                if (!grad.node.id) {
+                    $(grad.node, {
+                        id: grad.id
+                    });
+                }
+                fill = "url(#" + grad.node.id + ")";
+            } else {
+                fill = value;
             }
-            fill = "url(#" + grad.node.id + ")";
         } else {
             fill = Str(fill);
         }
@@ -4041,8 +4059,11 @@ eve.on("savage.util.attr.fill", function (value) {
 var gradrg = /^([lr])(?:\(([^)]*)\))?(.*)$/i;
 eve.on("savage.util.grad.parse", function parseGrad(string) {
     string = Str(string);
-    var tokens = string.match(gradrg),
-        type = tokens[1],
+    var tokens = string.match(gradrg);
+    if (!tokens) {
+        return null;
+    }
+    var type = tokens[1],
         params = tokens[2],
         stops = tokens[3];
     params = params.split(/\s*,\s*/).map(function (el) {
