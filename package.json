@@ -16,7 +16,7 @@
     "mocha": "*",
     "expect.js": "*",
     "eve": "*",
-    "elemental.js": "*",
+    "elemental.js": "~0.2.4",
     "dr.js": "*"
   }
 }

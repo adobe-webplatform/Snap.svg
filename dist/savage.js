@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-10
+// build: 2013-09-11
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -714,7 +714,7 @@ var mina = (function (eve) {
     return mina;
 })(typeof eve == "undefined" ? function () {} : eve);
 /*
- * Elemental 0.2.2 - Simple JavaScript Tag Parser
+ * Elemental 0.2.4 - Simple JavaScript Tag Parser
  *
  * Copyright (c) 2010 - 2013 Dmitry Baranovskiy (http://dmitry.baranovskiy.com/)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
@@ -751,7 +751,7 @@ var mina = (function (eve) {
 
     function event(name, data, extra) {
         if (typeof eve == "function") {
-            eve("elemental." + name + "." + data, null, data, extra || "", this.raw);
+            eve("elemental." + name + (data ? "." + data : ""), null, data, extra || "", this.raw);
         }
         var a = this.events && this.events[name],
             i = a && a.length;
@@ -763,15 +763,40 @@ var mina = (function (eve) {
 
     function end() {
         step.call(this, "eof");
-        // this._beforeEnd && this._beforeEnd();
-        // this.raw && this.event("text", this.raw);
-        // this.mode = "text";
-        // this.textchunk = "";
-        // delete this._beforeEnd;
         this.event("eof");
     }
 
-    var whitespace = /[\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000]/,
+    var entities = {
+            "lt": 60,
+            "lt;": 60,
+            "AMP;": 38,
+            "AMP": 38,
+            "GT;": 62,
+            "GT": 62,
+            "QUOT;": 34,
+            "QUOT": 34,
+            "apos;": 39,
+            "bull;": 8226,
+            "bullet;": 8226,
+            "copy;": 169,
+            "copy": 169,
+            "deg;": 176,
+            "deg": 176
+        },
+        whitespace = /[\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000]/,
+        notEntity = /[#\da-z]/i,
+        entity2text = function (entity) {
+            var code;
+            if (entity.charAt() == "#") {
+                if (entity.charAt(1).toLowerCase() == "x") {
+                    code = parseInt(entity.substring(2), 16);
+                } else {
+                    code = parseInt(entity.substring(1), 10);
+                }
+            }
+            code = entities[entity];
+            return code ? String.fromCharCode(code) : ("&" + entity);
+        },
         fireAttrEvent = function () {
             for (var key in this.attr) if (this.attr.hasOwnProperty(key)) {
                 this.event("attr", key, {
@@ -794,9 +819,24 @@ var mina = (function (eve) {
                         this.raw += c;
                         this.textchunk = "";
                     break;
+                    case "&":
+                        this.mode = "entity";
+                        this.entity = "";
+                    break;
                     default:
                         this.textchunk += c;
                     break;
+                }
+            },
+            entity: function (c, n, p) {
+                if (whitespace.test(c)) {
+                    this.textchunk += entity2text(this.entity);
+                    this.mode = "text";
+                } else if (c == ";") {
+                    this.textchunk += entity2text(this.entity + c);
+                    this.mode = "text";
+                } else {
+                    this.entity += c;
                 }
             },
             special: function (c, n, p) {
@@ -836,12 +876,12 @@ var mina = (function (eve) {
             "comment start": function (c, n, p) {
                 if (n == ">" || c == "eof") {
                     this.event("comment", "");
-                    this.mode = "comment instant end";
+                    this.mode = "skip";
                 } else {
                     this.mode = "comment";
                 }
             },
-            "comment instant end": function (c, n, p) {
+            "skip": function (c, n, p) {
                 this.mode = "text";
             },
             comment: function (c, n, p) {
@@ -926,6 +966,12 @@ var mina = (function (eve) {
                         this.event("tag", this.nodename);
                         this.mode = "text";
                     break;
+                    case "/":
+                        this.raw += n;
+                        this.event("tag", this.nodename);
+                        this.event("/tag", this.nodename);
+                        this.mode = "skip";
+                    break;
                     default:
                         this.nodename += c;
                     break;
@@ -997,7 +1043,7 @@ var mina = (function (eve) {
         act[this.mode].call(this, c, n, p);
     }
 
-    function elemental(type) {
+    function elemental(type, ent) {
         var out = function (s) {
             out.parse(s);
         };
@@ -1009,9 +1055,12 @@ var mina = (function (eve) {
         out.on = on;
         out.event = event;
         out.end = end;
+        if (ent) {
+            entities = ent;
+        }
         return out;
     }
-    elemental.version = "0.2.2";
+    elemental.version = "0.2.4";
 
     (typeof exports == "undefined" ? this : exports).elemental = elemental;
 })();
@@ -2754,8 +2803,74 @@ function arrayFirstValue(arr) {
      **
      = (Element) the clone
     \*/
+    function fixids(el) {
+        var els = el.selectAll("*"),
+            it,
+            url = /^\s*url\(("|'|)(.*)\1\)\s*$/,
+            ids = [],
+            uses = {};
+        function urltest(it, name) {
+            var val = $(it.node, name);
+            val = val && val.match(url);
+            val = val && val[2];
+            if (val && val.charAt() == "#") {
+                val = val.substring(1);
+            } else {
+                return;
+            }
+            if (val) {
+                uses[val] = (uses[val] || []).concat(function (id) {
+                    var attr = {};
+                    attr[name] = "url(#" + id + ")";
+                    $(it.node, attr);
+                });
+            }
+        }
+        function linktest(it) {
+            var val = $(it.node, "xlink:href");
+            if (val && val.charAt() == "#") {
+                val = val.substring(1);
+            } else {
+                return;
+            }
+            if (val) {
+                uses[val] = (uses[val] || []).concat(function (id) {
+                    it.attr("xlink:href", "#" + id);
+                });
+            }
+        }
+        for (var i = 0, ii = els.length; i < ii; i++) {
+            it = els[i];
+            urltest(it, "fill");
+            urltest(it, "stroke");
+            urltest(it, "filter");
+            urltest(it, "mask");
+            urltest(it, "clip-path");
+            linktest(it);
+            var oldid = $(it.node, "id");
+            if (oldid) {
+                $(it.node, {id: it.id});
+                ids.push({
+                    old: oldid,
+                    id: it.id
+                });
+            }
+        }
+        for (i = 0, ii = ids.length; i < ii; i++) {
+            var fs = uses[ids[i].old];
+            if (fs) {
+                for (var j = 0, jj = fs.length; j < jj; j++) {
+                    fs[j](ids[i].id);
+                }
+            }
+        }
+    }
     elproto.clone = function () {
         var clone = wrap(this.node.cloneNode(true));
+        if ($(clone.node, "id")) {
+            $(clone.node, {id: clone.id});
+        }
+        fixids(clone);
         clone.insertAfter(this);
         return clone;
     };
@@ -3077,6 +3192,28 @@ function arrayFirstValue(arr) {
             eldata[this.id] && delete eldata[this.id][key];
         }
         return this;
+    };
+    elproto.toString = function () {
+        var res = "<" + this.type,
+            attr = this.node.attributes,
+            chld = this.node.childNodes;
+        for (var i = 0, ii = attr.length; i < ii; i++) {
+            res += " " + attr[i].name + '="' + attr[i].value.replace(/"/g, '\\"') + '"';
+        }
+        if (chld.length) {
+            res += ">";
+            for (i = 0, ii = chld.length; i < ii; i++) {
+                if (chld[i].nodeType == 3) {
+                    res += chld[i].nodeValue;
+                } else if (chld[i].nodeType == 1) {
+                    res += wrap(chld[i]).toString();
+                }
+            }
+            res += "</" + this.type + ">";
+        } else {
+            res += "/>";
+        }
+        return res;
     };
 }(Element.prototype));
 /*\
