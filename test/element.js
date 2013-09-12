@@ -112,8 +112,7 @@ describe("Element methods", function () {
         expect(rect.node.parentNode).to.be(s.node);
         var result = rect.remove();
         expect(rect.node.parentNode).to.be(null);
-        // NOTE: docs say it does not return anything, but perhaps it should?
-        // expect(result).to.be(rect);
+        expect(result).to.be(rect);
     });
     
     /*
@@ -126,6 +125,8 @@ describe("Element methods", function () {
         Element.getPointAtLength()
         Element.getSubpath()
         Element.getTotalLength()
+        Element.innerSVG()
+        Element.toString()
     */
     
     it("Element.attr - get", function() {
@@ -146,6 +147,11 @@ describe("Element methods", function () {
         expect(cx).to.be("1");
         expect(cy).to.be("2");
         expect(r).to.be("3");
+    });
+    it("Element.attr - set on group", function() {
+        var group = s.group();
+        group.attr({'class': 'myclass'});
+        expect(group.node.getAttribute('class')).to.be('myclass');
     });
     it("Element.data", function() {
         var circle = s.circle(10, 20, 30);
@@ -225,6 +231,40 @@ describe("Element methods", function () {
     it("Element.getTotalLength", function() {
         var path = s.path("M0,0 100,0");
         expect(+path.getTotalLength("M0,0 100,0").toFixed(2)).to.be(100);
+    });
+    it("Element.innerSVG", function() {
+        var group1 = s.group().attr({
+            'class': 'group-one'
+        });
+        var group2 = s.group().attr({
+            'class': 'group-two'
+        });
+        
+        var group3 = s.group().attr({
+            'class': 'group-three'
+        });
+        
+        var circle1 = s.circle(10, 20, 30).attr({
+            'class': 'circle-one'
+        });
+        var circle2 = s.circle(5, 10, 25).attr({
+            'class': 'circle-two'
+        });
+        group1.add(group2);
+        group2.add(group3);
+        group2.add(circle1);
+        group3.add(circle2);
+        var innerSVG = group1.innerSVG();
+        expect(innerSVG).to.match(/<g .*?class="group-two".*?>\w*<g .*?class="group-three".*?>\w*<circle .*?class="circle-two".*?>\w*<circle .*?class="circle-one".*?>/);
+    });
+    it("Element.toString", function() {
+        var group1 = s.group();
+        var circle1 = s.circle(10, 20, 30).attr({
+            'class': 'circle-one'
+        });
+        group1.add(circle1);
+        var str = group1.toString();
+        expect(str).to.match(/<g.*?>\w*<circle .*?class="circle-one".*?>\w*<\/g>/);
     });
     
     /*
@@ -413,11 +453,9 @@ describe("Element methods", function () {
 
             Element.drag()
             Element.undrag()
+            Element.onDragOver()
             Element.hover()
             Element.unhover()
-            
-            TODO:
-            Element.onDragOver()
     */
       
     // Helper function to simulate event triggering
@@ -557,6 +595,24 @@ describe("Element methods", function () {
         expect(ended).to.be(1);
         // expect(result2).to.be(circle); // TODO: Make undrag return element
     });
+    
+    
+    it("Element.onDragOver", function() {
+        var rect1 = s.rect(0, 0, 10, 10);
+        var rect2 = s.rect(0, 0, 10, 10);
+        var draggedOver = 0;
+        rect1.drag(function() {}, function() {}, function() {});
+        rect2.onDragOver = function() {
+            draggedOver++;
+        };
+        expect(draggedOver).to.be(0);
+        triggerEvent(rect1, 'mousedown');
+        triggerEvent(rect1, 'mousemove');
+        triggerEvent(rect1, 'mouseup');
+        expect(draggedOver).to.be(1);
+    });
+    
+    
     it("Element.hover, Element.unhover - no contexts", function() {
         var circle = s.circle(10, 20, 30);
         var eventIn = 0;
