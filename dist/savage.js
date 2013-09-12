@@ -1119,6 +1119,7 @@ var glob = {
     win: window,
     doc: window.document
 };
+Savage._.glob = glob;
 var has = "hasOwnProperty",
     Str = String,
     toFloat = parseFloat,
@@ -6493,6 +6494,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             }
             var node = dragi.el.node,
                 o,
+                glob = Savage._.glob,
                 next = node.nextSibling,
                 parent = node.parentNode,
                 display = node.style.display;
@@ -6717,10 +6719,12 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
                 }
                 return this;
             };
-            Savage["un" + eventName] = elproto["un" + eventName] = function (fn) {
+            Savage["un" + eventName] =
+            elproto["un" + eventName] = function (fn) {
                 var events = this.events || [],
                     l = events.length;
-                while (l--) if (events[l].name == eventName && events[l].f == fn) {
+                while (l--) if (events[l].name == eventName &&
+                               (events[l].f == fn || !fn)) {
                     events[l].unbind();
                     events.splice(l, 1);
                     !events.length && delete this.events;
@@ -6816,16 +6820,16 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         this.mousedown(start);
         return this;
     };
-    /*\
+    /*
      * Element.onDragOver
      [ method ]
      **
      * Shortcut for assigning event handler for `drag.over.<id>` event, where id is id of the element (see @Element.id).
      - f (function) handler for event, first argument would be the element you are dragging over
     \*/
-    elproto.onDragOver = function (f) {
-        f ? eve.on("savage.drag.over." + this.id, f) : eve.unbind("savage.drag.over." + this.id);
-    };
+    // elproto.onDragOver = function (f) {
+    //     f ? eve.on("savage.drag.over." + this.id, f) : eve.unbind("savage.drag.over." + this.id);
+    // };
     /*\
      * Element.undrag
      [ method ]
@@ -6840,6 +6844,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             eve.unbind("savage.drag.*." + this.id);
         }
         !draggable.length && Savage.unmousemove(dragMove).unmouseup(dragUp);
+        return this;
     };
 });
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.

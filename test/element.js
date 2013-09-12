@@ -499,7 +499,7 @@ describe("Element methods", function () {
                 expect(result1).to.be(circle);
                 expect(result2).to.be(circle);
             };
-        }
+        };
         
         for (var i = 0; i < elementEvents.length; i++) {
             var eventName = elementEvents[i];
@@ -597,22 +597,6 @@ describe("Element methods", function () {
     });
     
     
-    it("Element.onDragOver", function() {
-        var rect1 = s.rect(0, 0, 10, 10);
-        var rect2 = s.rect(0, 0, 10, 10);
-        var draggedOver = 0;
-        rect1.drag(function() {}, function() {}, function() {});
-        rect2.onDragOver = function() {
-            draggedOver++;
-        };
-        expect(draggedOver).to.be(0);
-        triggerEvent(rect1, 'mousedown');
-        triggerEvent(rect1, 'mousemove');
-        triggerEvent(rect1, 'mouseup');
-        expect(draggedOver).to.be(1);
-    });
-    
-    
     it("Element.hover, Element.unhover - no contexts", function() {
         var circle = s.circle(10, 20, 30);
         var eventIn = 0;
@@ -636,7 +620,7 @@ describe("Element methods", function () {
         expect(eventIn).to.be(1);
         triggerEvent(circle, 'mouseout');
         expect(eventOut).to.be(1);
-        // expect(result2).to.be(circle); // TODO: Make unhover return element
+        expect(result2).to.be(circle);
     });
     it("Element.hover, Element.unhover - with contexts", function() {
         var circle = s.circle(10, 20, 30);
@@ -663,7 +647,7 @@ describe("Element methods", function () {
         expect(eventIn).to.be(1);
         triggerEvent(circle, 'mouseout');
         expect(eventOut).to.be(1);
-        // expect(result2).to.be(circle); // TODO: Make unhover return element
+        expect(result2).to.be(circle);
     });
     
 });

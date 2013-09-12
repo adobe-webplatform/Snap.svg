@@ -53,6 +53,7 @@ var glob = {
     win: window,
     doc: window.document
 };
+Savage._.glob = glob;
 var has = "hasOwnProperty",
     Str = String,
     toFloat = parseFloat,
