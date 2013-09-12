@@ -3255,6 +3255,9 @@ var availableAttributes = {
         d: "",
         "class": 0
     },
+    g: {
+        "class": 0
+    },
     feDistantLight: {
         azimuth: 0,
         elevation: 0
