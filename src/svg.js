@@ -1508,7 +1508,7 @@ function arrayFirstValue(arr) {
             var global = new Matrix(this.node.getCTM()),
                 local = extractTransform(this);
             return {
-                string: _.transform || "",
+                string: Str(_.transform) || "",
                 globalMatrix: global,
                 localMatrix: local,
                 diffMatrix: global.clone().add(local.invert()),

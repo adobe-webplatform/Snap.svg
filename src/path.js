@@ -750,7 +750,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             rad = PI / 180 * (+angle || 0),
             res = [],
             xy,
-            rotate = cacher(function (x, y, rad) {
+            rotate = Savage._.cacher(function (x, y, rad) {
                 var X = x * math.cos(rad) - y * math.sin(rad),
                     Y = x * math.sin(rad) + y * math.cos(rad);
                 return {x: X, y: Y};
