@@ -1134,7 +1134,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     };
     Savage._.box = box;
     /*\
-     * Savage.findDotsAtSegment
+     * Savage.path.findDotsAtSegment
      [ method ]
      **
      * Utility method
