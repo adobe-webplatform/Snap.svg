@@ -115,7 +115,7 @@ describe("Savage methods", function () {
     });
    it("Savage.animate - arrays, easing", function(done) {
         var n1, n2;
-        var minaObj = Savage.animate([5, 10], [10, 20], function(nArr) { n1 = nArr[0], n2 = nArr[1]; }, 50, mina.easeinout);
+        var minaObj = Savage.animate([5, 10], [10, 20], function(nArr) { n1 = nArr[0]; n2 = nArr[1]; }, 50, mina.easeinout);
         setTimeout(function() {
             expect(n1).to.be(10);
             expect(n2).to.be(20);
@@ -125,7 +125,7 @@ describe("Savage methods", function () {
     });
     it("Savage.animate - arrays, easing & callback", function(done) {
         var n1, n2;
-        var minaObj = Savage.animate([5, 10], [10, 20], function(nArr) { n1 = nArr[0], n2 = nArr[1] }, 50, mina.backin, function() {
+        var minaObj = Savage.animate([5, 10], [10, 20], function(nArr) { n1 = nArr[0]; n2 = nArr[1]; }, 50, mina.backin, function() {
             expect(n1).to.be(10);
             expect(n2).to.be(20);
             done();
@@ -166,7 +166,7 @@ describe("Savage methods", function () {
     it("Savage.deg", function() {
         expect(Savage.deg(Math.PI)).to.be(180);
         expect(Savage.deg(Math.PI / 2)).to.be(90);
-        expect(Savage.deg(Math.PI / 4)).to.be(45)
+        expect(Savage.deg(Math.PI / 4)).to.be(45);
         expect(Savage.deg(Math.PI * 2)).to.be(0);
     });
     it("Savage.rad", function() {
@@ -213,21 +213,23 @@ describe("Savage methods", function () {
         expect(Savage.is(123, "number")).to.be.ok();
         expect(Savage.is({}, "object")).to.be.ok();
         expect(Savage.is([], "array")).to.be.ok();
+        expect(Savage.is([], "object")).to.be.ok();
         expect(Savage.is(null, "null")).to.be.ok();
         expect(Savage.is(false, "boolean")).to.be.ok();
         expect(Savage.is(undef, "undefined")).to.be.ok();
         expect(Savage.is(function(){}, "function")).to.be.ok();
+        expect(Savage.is(function(){}, "object")).to.be.ok();
     });
     it("Savage.load - with context", function(done) {
         Savage.load('./res/external-svg.svg', function(fragment) {
-            expect(fragment.node.firstElementChild.nodeName).to.be('svg');
+            expect(fragment.node.querySelector("svg")).to.not.be(null);
             expect(this.myContext).to.be(true);
             done();
         }, {myContext: true});
     });
     it("Savage.load - without context", function(done) {
         Savage.load('./res/external-svg.svg', function(fragment) {
-            expect(fragment.node.firstElementChild.nodeName).to.be('svg');
+            expect(fragment.node.querySelector("svg")).to.not.be(null);
             done();
         });
     });

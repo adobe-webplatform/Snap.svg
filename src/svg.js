@@ -1916,7 +1916,7 @@ function arrayFirstValue(arr) {
         };
     }
     var Animation = function (attr, ms, easing, callback) {
-        if (typeof easing == "function") {
+        if (typeof easing == "function" && !easing.length) {
             callback = easing;
             easing = mina.linear;
         }
@@ -1996,7 +1996,7 @@ function arrayFirstValue(arr) {
      o }
     \*/
     Savage.animate = function (from, to, setter, ms, easing, callback) {
-        if (typeof easing == "function") {
+        if (typeof easing == "function" && !easing.length) {
             callback = easing;
             easing = mina.linear;
         }
@@ -2948,49 +2948,55 @@ eve.on("savage.util.attr.mask", function (value) {
         });
     }
 }));
-eve.on("savage.util.attr.fill", function (value) {
-    eve.stop();
-    if (value instanceof Fragment && value.node.childNodes.length == 1 &&
-        (value.node.firstChild.tagName == "radialGradient" ||
-        value.node.firstChild.tagName == "linearGradient" ||
-        value.node.firstChild.tagName == "pattern")) {
-        value = value.node.firstChild;
-        this.paper.defs.appendChild(value);
-        value = wrap(value);
-    }
-    if (value instanceof Element) {
-        if (value.type == "radialGradient" || value.type == "linearGradient" ||
-            value.type == "pattern") {
-            if (!value.node.id) {
-                $(value.node, {
-                    id: value.id
-                });
-            }
-            var fill = "url(#" + value.node.id + ")";
-        } else {
-            fill = value.attr("fill");
+function fillStroke(name) {
+    return function (value) {
+        eve.stop();
+        if (value instanceof Fragment && value.node.childNodes.length == 1 &&
+            (value.node.firstChild.tagName == "radialGradient" ||
+            value.node.firstChild.tagName == "linearGradient" ||
+            value.node.firstChild.tagName == "pattern")) {
+            value = value.node.firstChild;
+            this.paper.defs.appendChild(value);
+            value = wrap(value);
         }
-    } else {
-        fill = Savage.color(value);
-        if (fill.error) {
-            var grad = this.paper.gradient(value);
-            if (grad) {
-                if (!grad.node.id) {
-                    $(grad.node, {
-                        id: grad.id
+        if (value instanceof Element) {
+            if (value.type == "radialGradient" || value.type == "linearGradient"
+               || value.type == "pattern") {
+                if (!value.node.id) {
+                    $(value.node, {
+                        id: value.id
                     });
                 }
-                fill = "url(#" + grad.node.id + ")";
+                var fill = "url(#" + value.node.id + ")";
             } else {
-                fill = value;
+                fill = value.attr(name);
             }
         } else {
-            fill = Str(fill);
+            fill = Savage.color(value);
+            if (fill.error) {
+                var grad = this.paper.gradient(value);
+                if (grad) {
+                    if (!grad.node.id) {
+                        $(grad.node, {
+                            id: grad.id
+                        });
+                    }
+                    fill = "url(#" + grad.node.id + ")";
+                } else {
+                    fill = value;
+                }
+            } else {
+                fill = Str(fill);
+            }
         }
-    }
-    $(this.node, {fill: fill});
-    this.node.style.fill = E;
-});
+        var attrs = {};
+        attrs[name] = fill;
+        $(this.node, attrs);
+        this.node.style[name] = E;
+    };
+}
+eve.on("savage.util.attr.fill", fillStroke("fill"));
+eve.on("savage.util.attr.stroke", fillStroke("stroke"));
 var gradrg = /^([lr])(?:\(([^)]*)\))?(.*)$/i;
 eve.on("savage.util.grad.parse", function parseGrad(string) {
     string = Str(string);

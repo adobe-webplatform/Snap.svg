@@ -228,6 +228,12 @@ var mina = (function (eve) {
      = (number) output 0..1
     \*/
     mina.easeinout = function (n) {
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 0) {
+            return 0;
+        }
         var q = .48 - n / 1.04,
             Q = Math.sqrt(.1734 + q * q),
             x = Q - q,
@@ -246,6 +252,9 @@ var mina = (function (eve) {
      = (number) output 0..1
     \*/
     mina.backin = function (n) {
+        if (n == 1) {
+            return 1;
+        }
         var s = 1.70158;
         return n * n * ((s + 1) * n - s);
     };
@@ -258,6 +267,9 @@ var mina = (function (eve) {
      = (number) output 0..1
     \*/
     mina.backout = function (n) {
+        if (n == 0) {
+            return 0;
+        }
         n = n - 1;
         var s = 1.70158;
         return n * n * ((s + 1) * n + s) + 1;

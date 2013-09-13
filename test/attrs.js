@@ -37,7 +37,7 @@ describe("Attributes", function () {
         var o = {};
         return function () {
             function val() {
-                return Savage.color(r.node.style[key]).hex;
+                return Savage.color(r.node.getAttribute(key)).hex;
             }
             o[key] = "#fc0";
             r.attr(o);
