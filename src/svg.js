@@ -69,7 +69,7 @@ var has = "hasOwnProperty",
     S = " ",
     objectToString = Object.prototype.toString,
     ISURL = /^url\(['"]?([^\)]+?)['"]?\)$/i,
-    colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?)%?\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?)%?\s*\))\s*$/i,
+    colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\))\s*$/i,
     isnan = {"NaN": 1, "Infinity": 1, "-Infinity": 1},
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
     reURLValue = /^url\(#?([^)]+)\)$/,
@@ -594,12 +594,19 @@ Savage.Matrix = Matrix;
  #     <li>#••• — shortened HTML colour: (“<code>#000</code>”, “<code>#fc0</code>”, etc)</li>
  #     <li>#•••••• — full length HTML colour: (“<code>#000000</code>”, “<code>#bd2300</code>”)</li>
  #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (“<code>rgb(200,&nbsp;100,&nbsp;0)</code>”)</li>
+ #     <li>rgba(•••, •••, •••, •••) — also with opacity</li>
  #     <li>rgb(•••%, •••%, •••%) — same as above, but in %: (“<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>”)</li>
+ #     <li>rgba(•••%, •••%, •••%, •••%) — also with opacity</li>
  #     <li>hsb(•••, •••, •••) — hue, saturation and brightness values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;1)</code>”)</li>
+ #     <li>hsba(•••, •••, •••, •••) — also with opacity</li>
  #     <li>hsb(•••%, •••%, •••%) — same as above, but in %</li>
- #     <li>hsl(•••, •••, •••) — same as hsb</li>
- #     <li>hsl(•••%, •••%, •••%) — same as hsb</li>
+ #     <li>hsba(•••%, •••%, •••%, •••%) — also with opacity</li>
+ #     <li>hsl(•••, •••, •••) — hue, saturation and luminosity values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;0.5)</code>”)</li>
+ #     <li>hsla(•••, •••, •••, •••) — also with opacity</li>
+ #     <li>hsl(•••%, •••%, •••%) — same as above, but in %</li>
+ #     <li>hsla(•••%, •••%, •••%, •••%) — also with opacity</li>
  # </ul>
+ * Note that `%` can be used any time: `rgb(20%, 255, 50%)`.
  = (object) RGB object in format:
  o {
  o     r (number) red,
@@ -653,11 +660,11 @@ Savage.getRGB = cacher(function (colour) {
         if (rgb[5]) {
             values = rgb[5].split(commaSpaces);
             red = toFloat(values[0]);
-            values[0].slice(-1) == "%" && (red *= 2.55);
+            values[0].slice(-1) == "%" && (red /= 100);
             green = toFloat(values[1]);
-            values[1].slice(-1) == "%" && (green *= 2.55);
+            values[1].slice(-1) == "%" && (green /= 100);
             blue = toFloat(values[2]);
-            values[2].slice(-1) == "%" && (blue *= 2.55);
+            values[2].slice(-1) == "%" && (blue /= 100);
             (values[0].slice(-3) == "deg" || values[0].slice(-1) == "\xb0") && (red /= 360);
             rgb[1].toLowerCase().slice(0, 4) == "hsba" && (opacity = toFloat(values[3]));
             values[3] && values[3].slice(-1) == "%" && (opacity /= 100);
@@ -666,16 +673,20 @@ Savage.getRGB = cacher(function (colour) {
         if (rgb[6]) {
             values = rgb[6].split(commaSpaces);
             red = toFloat(values[0]);
-            values[0].slice(-1) == "%" && (red *= 2.55);
+            values[0].slice(-1) == "%" && (red /= 100);
             green = toFloat(values[1]);
-            values[1].slice(-1) == "%" && (green *= 2.55);
+            values[1].slice(-1) == "%" && (green /= 100);
             blue = toFloat(values[2]);
-            values[2].slice(-1) == "%" && (blue *= 2.55);
+            values[2].slice(-1) == "%" && (blue /= 100);
             (values[0].slice(-3) == "deg" || values[0].slice(-1) == "\xb0") && (red /= 360);
             rgb[1].toLowerCase().slice(0, 4) == "hsla" && (opacity = toFloat(values[3]));
             values[3] && values[3].slice(-1) == "%" && (opacity /= 100);
             return Savage.hsl2rgb(red, green, blue, opacity);
         }
+        red = mmin(math.round(red), 255);
+        green = mmin(math.round(green), 255);
+        blue = mmin(math.round(blue), 255);
+        opacity = mmin(mmax(opacity, 0), 1);
         rgb = {r: red, g: green, b: blue, toString: rgbtoString};
         rgb.hex = "#" + (16777216 | blue | (green << 8) | (red << 16)).toString(16).slice(1);
         rgb.opacity = is(opacity, "finite") ? opacity : 1;

@@ -393,9 +393,9 @@ describe("Savage methods", function () {
         expect(Savage.snapTo(grid, 199, 1)).to.be(200);
         expect(Savage.snapTo(grid, 299, 100)).to.be(200);
     });
-    it("Savage.pathBBox", function() {
+    it("Savage.path.getBBox", function() {
         // same as 10,20,30,40 rect
-        var bbox = Savage.pathBBox("M10,20h30v40h-30z");
+        var bbox = Savage.path.getBBox("M10,20h30v40h-30z");
         expect(bbox.x).to.eql(10);
         expect(bbox.y).to.eql(20);
         expect(bbox.width).to.eql(30);

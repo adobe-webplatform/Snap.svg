@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-13
+// build: 2013-09-16
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1147,7 +1147,7 @@ var has = "hasOwnProperty",
     S = " ",
     objectToString = Object.prototype.toString,
     ISURL = /^url\(['"]?([^\)]+?)['"]?\)$/i,
-    colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?)%?\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?)%?\s*\))\s*$/i,
+    colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\))\s*$/i,
     isnan = {"NaN": 1, "Infinity": 1, "-Infinity": 1},
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
     reURLValue = /^url\(#?([^)]+)\)$/,
@@ -1731,11 +1731,11 @@ Savage.getRGB = cacher(function (colour) {
         if (rgb[5]) {
             values = rgb[5].split(commaSpaces);
             red = toFloat(values[0]);
-            values[0].slice(-1) == "%" && (red *= 2.55);
+            values[0].slice(-1) == "%" && (red /= 100);
             green = toFloat(values[1]);
-            values[1].slice(-1) == "%" && (green *= 2.55);
+            values[1].slice(-1) == "%" && (green /= 100);
             blue = toFloat(values[2]);
-            values[2].slice(-1) == "%" && (blue *= 2.55);
+            values[2].slice(-1) == "%" && (blue /= 100);
             (values[0].slice(-3) == "deg" || values[0].slice(-1) == "\xb0") && (red /= 360);
             rgb[1].toLowerCase().slice(0, 4) == "hsba" && (opacity = toFloat(values[3]));
             values[3] && values[3].slice(-1) == "%" && (opacity /= 100);
@@ -1744,16 +1744,20 @@ Savage.getRGB = cacher(function (colour) {
         if (rgb[6]) {
             values = rgb[6].split(commaSpaces);
             red = toFloat(values[0]);
-            values[0].slice(-1) == "%" && (red *= 2.55);
+            values[0].slice(-1) == "%" && (red /= 100);
             green = toFloat(values[1]);
-            values[1].slice(-1) == "%" && (green *= 2.55);
+            values[1].slice(-1) == "%" && (green /= 100);
             blue = toFloat(values[2]);
-            values[2].slice(-1) == "%" && (blue *= 2.55);
+            values[2].slice(-1) == "%" && (blue /= 100);
             (values[0].slice(-3) == "deg" || values[0].slice(-1) == "\xb0") && (red /= 360);
             rgb[1].toLowerCase().slice(0, 4) == "hsla" && (opacity = toFloat(values[3]));
             values[3] && values[3].slice(-1) == "%" && (opacity /= 100);
             return Savage.hsl2rgb(red, green, blue, opacity);
         }
+        red = mmin(math.round(red), 255);
+        green = mmin(math.round(green), 255);
+        blue = mmin(math.round(blue), 255);
+        opacity = mmin(mmax(opacity, 0), 1);
         rgb = {r: red, g: green, b: blue, toString: rgbtoString};
         rgb.hex = "#" + (16777216 | blue | (green << 8) | (red << 16)).toString(16).slice(1);
         rgb.opacity = is(opacity, "finite") ? opacity : 1;
@@ -5840,7 +5844,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     };
     Savage._.box = box;
     /*\
-     * Savage.findDotsAtSegment
+     * Savage.path.findDotsAtSegment
      [ method ]
      **
      * Utility method
@@ -5973,7 +5977,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     \*/
     Savage.path.isPointInside = isPointInsidePath;
     /*\
-     * Savage.pathBBox
+     * Savage.path.getBBox
      [ method ]
      **
      * Utility method

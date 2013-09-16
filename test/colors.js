@@ -24,7 +24,7 @@ describe("Colours", function () {
         expect(c.l).to.be(.5);
     });
     it("parses HSL - %", function () {
-        var c = Savage.color("hsl(48%, 100%, 50%)");
+        var c = Savage.color("hsl(13.33%, 100%, 50%)");
         expect(c.hex).to.be("#ffcc00");
         expect(c.h.toFixed(3)).to.be("0.133");
         expect(c.s).to.be(1);
@@ -38,7 +38,7 @@ describe("Colours", function () {
         expect(c.v).to.be(1);
     });
     it("parses HSB - %", function () {
-        var c = Savage.color("hsb(48%, 100%, 100%)");
+        var c = Savage.color("hsb(13.33%, 100%, 100%)");
         expect(c.hex).to.be("#ffcc00");
         expect(c.h.toFixed(3)).to.be("0.133");
         expect(c.s).to.be(1);
@@ -91,9 +91,9 @@ describe("Colours", function () {
         expectRGB("rgb(255, 204, 0)");
         expectRGB("rgb(100%, 80%, 0%)");
         expectRGB("hsb(0.1333, 1, 1)");
-        expectRGB("hsb(48%, 100%, 100%)");
+        expectRGB("hsb(13.33%, 100%, 100%)");
         expectRGB("hsl(0.1333, 1, .5)");
-        expectRGB("hsl(48%, 100%, 50%)");
+        expectRGB("hsl(13.33%, 100%, 50%)");
         expectRGB("rgba(255, 204, 0, .75)");
         expectRGB("hsla(0.1333, 1, .5, .5)");
         expectRGB("hsba(0.1333, 1, 1, .5)");
@@ -104,15 +104,15 @@ describe("Colours", function () {
         expect(c.b).to.be(255);
         expect(c.error).to.not.be(true);
         c = Savage.getRGB("foobar");
-        expect(c.error).to.be(true);
+        expect(!!c.error).to.be(true);
         c = Savage.getRGB("#zzz");
-        expect(c.error).to.be(true);
+        expect(!!c.error).to.be(true);
         c = Savage.getRGB("rgb(255)");
-        expect(c.error).to.be(true);
+        expect(!!c.error).to.be(true);
         c = Savage.getRGB("hsl(0, 0, 0");
-        expect(c.error).to.be(true);
+        expect(!!c.error).to.be(true);
         c = Savage.getRGB("rab(0, 0, 0)");
-        expect(c.error).to.be(true);
+        expect(!!c.error).to.be(true);
     });
     it("creates hsb", function() {
         var str = Savage.hsb(0.13333, 1, 1);
