@@ -243,4 +243,164 @@ describe("Savage methods", function () {
         var rectWidth = frag.select('rect').attr('width');
         expect(rectWidth).to.be("10");
     });
+    it("Savage.parsePathString - string", function() {
+        var pathArrs = Savage.parsePathString(
+            "M1 2" +
+            "m3 4" +
+            "L 5, 6" +
+            "l 7, 8" +
+            "H 9" +
+            "h 10" +
+            "V 11" +
+            "v 12" +
+            "C 13 14, 15 16, 17 18" +
+            "c 19 20, 21 22, 23 24" +
+            "S 25 26, 27 28" +
+            "s 29 30, 31 32" +
+            "Q 33 34, 35 36" +
+            "q 37 38, 39 40" +
+            "T 41 42" +
+            "t 43 44" +
+            "A 45 46 47 0 1 48 49" +
+            "a 50 51 52 1 0 53 54" +
+            "Z");
+        expect(pathArrs[0]).to.eql(["M", 1, 2]);
+        expect(pathArrs[1]).to.eql(["m", 3, 4]);
+        expect(pathArrs[2]).to.eql(["L", 5, 6]);
+        expect(pathArrs[3]).to.eql(["l", 7, 8]);
+        expect(pathArrs[4]).to.eql(["H", 9]);
+        expect(pathArrs[5]).to.eql(["h", 10]);
+        expect(pathArrs[6]).to.eql(["V", 11]);
+        expect(pathArrs[7]).to.eql(["v", 12]);
+        expect(pathArrs[8]).to.eql(["C", 13, 14, 15, 16, 17, 18]);
+        expect(pathArrs[9]).to.eql(["c", 19, 20, 21, 22, 23, 24]);
+        expect(pathArrs[10]).to.eql(["S", 25, 26, 27, 28]);
+        expect(pathArrs[11]).to.eql(["s", 29, 30, 31, 32]);
+        expect(pathArrs[12]).to.eql(["Q", 33, 34, 35, 36]);
+        expect(pathArrs[13]).to.eql(["q", 37, 38, 39, 40]);
+        expect(pathArrs[14]).to.eql(["T", 41, 42]);
+        expect(pathArrs[15]).to.eql(["t", 43, 44]);
+        expect(pathArrs[16]).to.eql(["A", 45, 46, 47, 0, 1, 48, 49]);
+        expect(pathArrs[17]).to.eql(["a", 50, 51, 52, 1, 0, 53, 54]);
+        expect(pathArrs[18]).to.eql(["Z"]);
+    });
+    it("Savage.parsePathString - array", function() {
+        var pathArrs = Savage.parsePathString(["M1 2"]);
+        expect(pathArrs[0]).to.eql(["M", 1, 2]);
+    });
+    /*
+    // TODO: Find out how parseTransformString should work 
+    it("Savage.parseTransformString - string", function() {
+        var transformArrs = Savage.parseTransformString(
+            "matrix(1, 2, 3, 4, 5, 6) " +
+            "translate(7) " +
+            "translate(8 9) " +
+            "scale(10) " +
+            "scale(11, 12) " +
+            "rotate(13) " +
+            "rotate(14 15 16) " +
+            "skewX(17) " +
+            "skewY(18) "
+        );
+        expect(transformArrs[0]).to.eql(["matrix", 1, 2, 3, 4, 5, 6]);
+    });
+    */
+    it("Savage.select", function() {
+        var s = Savage(10, 10);
+        var group1 = s.group();
+        var group2 = s.group();
+        var group3 = s.group();
+        var circle1 = s.circle(10, 20, 30).attr({
+            'class': 'circle-one'
+        });
+        var circle2 = s.circle(5, 10, 25).attr({
+            'class': 'circle-two'
+        });
+        group1.add(group2);
+        group2.add(group3);
+        group2.add(circle1);
+        group3.add(circle2);
+        var c1 = Savage.select('.circle-one');
+        expect(circle1).to.be(c1);
+        var c2 = Savage.select('.circle-two');
+        expect(circle2).to.be(c2);
+        s.remove();
+    });
+    it("Savage.selectAll", function() {
+        var s = Savage(10, 10);
+        var group1 = s.group();
+        var group2 = s.group();
+        var group3 = s.group();
+        var circle1 = s.circle(10, 20, 30).attr({
+            'class': 'circle-one'
+        });
+        var circle2 = s.circle(5, 10, 25).attr({
+            'class': 'circle-two'
+        });
+        group1.add(group2);
+        group2.add(group3);
+        group2.add(circle1);
+        group3.add(circle2);
+        var circles = Savage.selectAll('circle');
+        expect(circles.length).to.be(2);
+        expect(circles).to.contain(circle1);
+        expect(circles).to.contain(circle2);
+        s.remove();
+    });
+    it("Savage.snapTo - number, no tolerance", function() {
+        expect(Savage.snapTo(100, -5)).to.be(0);
+        expect(Savage.snapTo(100, 0.0001)).to.be(0);
+        expect(Savage.snapTo(100, 9)).to.be(0);
+        expect(Savage.snapTo(100, 50)).to.be(50);
+        expect(Savage.snapTo(100, 75)).to.be(75);
+        expect(Savage.snapTo(100, 90)).to.be(90);
+        expect(Savage.snapTo(100, 91)).to.be(100);
+        expect(Savage.snapTo(100, 95)).to.be(100);
+        expect(Savage.snapTo(100, 1204)).to.be(1200);
+    });
+    it("Savage.snapTo - array, no tolerance", function() {
+        var grid = [0, 55, 200];
+        expect(Savage.snapTo(grid, -5)).to.be(0);
+        expect(Savage.snapTo(grid, 0.0001)).to.be(0);
+        expect(Savage.snapTo(grid, 9)).to.be(0);
+        expect(Savage.snapTo(grid, 50)).to.be(55);
+        expect(Savage.snapTo(grid, 75)).to.be(75);
+        expect(Savage.snapTo(grid, 90)).to.be(90);
+        expect(Savage.snapTo(grid, 91)).to.be(91);
+        expect(Savage.snapTo(grid, 195)).to.be(200);
+        expect(Savage.snapTo(grid, 1204)).to.be(1204);
+    });
+    it("Savage.snapTo - number, with tolerance", function() {
+        expect(Savage.snapTo(100, 95, 0)).to.be(95);
+        expect(Savage.snapTo(100, 95, 5)).to.be(95);
+        expect(Savage.snapTo(100, 95, 6)).to.be(100);
+        expect(Savage.snapTo(100, 105, 6)).to.be(100);
+        expect(Savage.snapTo(100, 105, 5)).to.be(105);
+        expect(Savage.snapTo(100, 105, 0)).to.be(105);
+        // expect(Savage.snapTo(10, 19, 50)).to.be(20); // TODO: Find out what tolerance > grid should do
+    });
+    it("Savage.snapTo - array, with tolerance", function() {
+        var grid = [0, 55, 200];
+        expect(Savage.snapTo(grid, -5, 20)).to.be(0);
+        expect(Savage.snapTo(grid, -5, 3)).to.be(-5);
+        expect(Savage.snapTo(grid, 0.0001, 0.00001)).to.be(0.0001);
+        expect(Savage.snapTo(grid, 0.0001, 1)).to.be(0);
+        expect(Savage.snapTo(grid, 9, 9)).to.be(0);
+        expect(Savage.snapTo(grid, 9, 10.5)).to.be(0);
+        expect(Savage.snapTo(grid, 50, 6)).to.be(55);
+        expect(Savage.snapTo(grid, 50, 1)).to.be(50);
+        expect(Savage.snapTo(grid, 201, 0.5)).to.be(201);
+        expect(Savage.snapTo(grid, 199, 1)).to.be(200);
+        expect(Savage.snapTo(grid, 299, 100)).to.be(200);
+    });
+    it("Savage.pathBBox", function() {
+        // same as 10,20,30,40 rect
+        var bbox = Savage.pathBBox("M10,20h30v40h-30z");
+        expect(bbox.x).to.eql(10);
+        expect(bbox.y).to.eql(20);
+        expect(bbox.width).to.eql(30);
+        expect(bbox.height).to.eql(40);
+        expect(bbox.x2).to.eql(10 + 30);
+        expect(bbox.y2).to.eql(20 + 40);
+    });
 });
