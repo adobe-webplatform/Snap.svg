@@ -1267,7 +1267,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     \*/
     Savage.path.isPointInside = isPointInsidePath;
     /*\
-     * Savage.pathBBox
+     * Savage.path.getBBox
      [ method ]
      **
      * Utility method
