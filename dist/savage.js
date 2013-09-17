@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-16
+// build: 2013-09-17
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1672,12 +1672,19 @@ Savage.Matrix = Matrix;
  #     <li>#••• — shortened HTML colour: (“<code>#000</code>”, “<code>#fc0</code>”, etc)</li>
  #     <li>#•••••• — full length HTML colour: (“<code>#000000</code>”, “<code>#bd2300</code>”)</li>
  #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (“<code>rgb(200,&nbsp;100,&nbsp;0)</code>”)</li>
+ #     <li>rgba(•••, •••, •••, •••) — also with opacity</li>
  #     <li>rgb(•••%, •••%, •••%) — same as above, but in %: (“<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>”)</li>
+ #     <li>rgba(•••%, •••%, •••%, •••%) — also with opacity</li>
  #     <li>hsb(•••, •••, •••) — hue, saturation and brightness values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;1)</code>”)</li>
+ #     <li>hsba(•••, •••, •••, •••) — also with opacity</li>
  #     <li>hsb(•••%, •••%, •••%) — same as above, but in %</li>
- #     <li>hsl(•••, •••, •••) — same as hsb</li>
- #     <li>hsl(•••%, •••%, •••%) — same as hsb</li>
+ #     <li>hsba(•••%, •••%, •••%, •••%) — also with opacity</li>
+ #     <li>hsl(•••, •••, •••) — hue, saturation and luminosity values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;0.5)</code>”)</li>
+ #     <li>hsla(•••, •••, •••, •••) — also with opacity</li>
+ #     <li>hsl(•••%, •••%, •••%) — same as above, but in %</li>
+ #     <li>hsla(•••%, •••%, •••%, •••%) — also with opacity</li>
  # </ul>
+ * Note that `%` can be used any time: `rgb(20%, 255, 50%)`.
  = (object) RGB object in format:
  o {
  o     r (number) red,
@@ -3605,7 +3612,7 @@ function wrap(dom) {
     \*/
     proto.path = function (d) {
         var el = make("path", this.node);
-        if (is(d, "object")) {
+        if (is(d, "object") && !is(d, "array")) {
             el.attr(d);
         } else if (d) {
             el.attr({

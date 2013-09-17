@@ -2534,7 +2534,7 @@ function wrap(dom) {
     \*/
     proto.path = function (d) {
         var el = make("path", this.node);
-        if (is(d, "object")) {
+        if (is(d, "object") && !is(d, "array")) {
             el.attr(d);
         } else if (d) {
             el.attr({
