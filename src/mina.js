@@ -76,6 +76,23 @@ var mina = (function (eve) {
         delete animations[a.id];
         eve("mina.stop." + a.id, a);
     },
+    pause = function () {
+        var a = this;
+        if (a.pdif) {
+            return;
+        }
+        delete animations[a.id];
+        a.pdif = a.get() - a.b;
+    },
+    resume = function () {
+        var a = this;
+        if (!a.pdif) {
+            return;
+        }
+        a.b = a.get() - a.pdif;
+        delete a.pdif;
+        animations[a.id] = a;
+    },
     frame = function () {
         var len = 0;
         for (var i in animations) if (animations.hasOwnProperty(i)) {
@@ -151,7 +168,9 @@ var mina = (function (eve) {
             status: sta,
             speed: speed,
             duration: duration,
-            stop: stopit
+            stop: stopit,
+            pause: pause,
+            resume: resume
         };
         animations[anim.id] = anim;
         var len = 0, i;
@@ -183,7 +202,7 @@ var mina = (function (eve) {
      = (object) See @mina
     \*/
     mina.getById = function (id) {
-        return animations[anim.id] || null;
+        return animations[id] || null;
     };
 
     /*\
