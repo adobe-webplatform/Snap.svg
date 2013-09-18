@@ -89,7 +89,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         function O(val) {
             return +(+val).toFixed(3);
         }
-        return function (path, length, onlystart) {
+        return Savage._.cacher(function (path, length, onlystart) {
             if (path instanceof Element) {
                 path = path.attr("d");
             }
@@ -144,7 +144,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             subpaths.end = sp;
             point = istotal ? len : subpath ? subpaths : findDotsAtSegment(x, y, p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return point;
-        };
+        }, null, Savage._.clone);
     }
     var getTotalLength = getLengthFactory(1),
         getPointAtLength = getLengthFactory(),
@@ -525,7 +525,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         }
     };
     function pathToRelative(pathArray) {
-        var pth = paths(pathArray);
+        var pth = paths(pathArray),
+            lowerCase = String.prototype.toLowerCase;
         if (pth.rel) {
             return pathClone(pth.rel);
         }
