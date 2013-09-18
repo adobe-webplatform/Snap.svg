@@ -259,7 +259,6 @@ describe("Path methods", function () {
                     "M80 80 A 10 10 0 0 0 120 80";
         var matrix = new Savage.Matrix(1, 0, 0, 1, 1000, 0);
         var transformedPath = Savage.path.map(absPath, matrix);
-        console.log('transformedPath', transformedPath);
         
         var i = 0;
         var checkNext = function(arr) {
