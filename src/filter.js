@@ -127,6 +127,10 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         if (blur == null) {
             blur = 4;
         }
+        if (typeof blur == "string") {
+            color = blur;
+            blur = 4;
+        }
         if (dx == null) {
             dx = 0;
             dy = 2;
@@ -134,6 +138,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         if (dy == null) {
             dy = dx;
         }
+        color = Savage.color(color);
         return Savage.format('<feGaussianBlur in="SourceAlpha" stdDeviation="{blur}"/><feOffset dx="{dx}" dy="{dy}" result="offsetblur"/><feFlood flood-color="{color}"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>', {
             color: color,
             dx: dx,
