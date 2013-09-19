@@ -75,7 +75,7 @@ describe("Set methods", function () {
         var rect2 = s.rect(10, 20, 30, 40);
         var rect3 = s.rect(10, 20, 30, 40);
         var rect4 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2, rect3);
+        var set = Savage.set(rect1, rect2, rect3, rect4);
         var removedSet = set.splice(1, 2);
         expect(set.length).to.be(2);
         expect(set[0]).to.be(rect1);
@@ -83,7 +83,7 @@ describe("Set methods", function () {
         expect(removedSet.length).to.be(2);
         expect(removedSet[0]).to.be(rect2);
         expect(removedSet[1]).to.be(rect3);
-        emptySet = set.splice(0, 0);
+        var emptySet = set.splice(0, 0);
         expect(set.length).to.be(2);
         expect(emptySet.length).to.be(0);
     });
