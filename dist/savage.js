@@ -28,7 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-17
+// build: 2013-09-19
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -479,6 +479,23 @@ var mina = (function (eve) {
         delete animations[a.id];
         eve("mina.stop." + a.id, a);
     },
+    pause = function () {
+        var a = this;
+        if (a.pdif) {
+            return;
+        }
+        delete animations[a.id];
+        a.pdif = a.get() - a.b;
+    },
+    resume = function () {
+        var a = this;
+        if (!a.pdif) {
+            return;
+        }
+        a.b = a.get() - a.pdif;
+        delete a.pdif;
+        animations[a.id] = a;
+    },
     frame = function () {
         var len = 0;
         for (var i in animations) if (animations.hasOwnProperty(i)) {
@@ -554,7 +571,9 @@ var mina = (function (eve) {
             status: sta,
             speed: speed,
             duration: duration,
-            stop: stopit
+            stop: stopit,
+            pause: pause,
+            resume: resume
         };
         animations[anim.id] = anim;
         var len = 0, i;
@@ -586,7 +605,7 @@ var mina = (function (eve) {
      = (object) See @mina
     \*/
     mina.getById = function (id) {
-        return animations[anim.id] || null;
+        return animations[id] || null;
     };
 
     /*\
@@ -1323,6 +1342,18 @@ function cacher(f, scope, postprocessor) {
     return newf;
 }
 Savage._.cacher = cacher;
+function angle(x1, y1, x2, y2, x3, y3) {
+    if (x3 == null) {
+        var x = x1 - x2,
+            y = y1 - y2;
+        if (!x && !y) {
+            return 0;
+        }
+        return (180 + math.atan2(-y, -x) * 180 / PI + 360) % 360;
+    } else {
+        return angle(x1, y1, x3, y3) - angle(x2, y2, x3, y3);
+    }
+}
 function rad(deg) {
     return deg % 360 * PI / 180;
 }
@@ -1354,6 +1385,21 @@ Savage.rad = rad;
  = (number) angle in degrees.
 \*/
 Savage.deg = deg;
+/*\
+ * Savage.angle
+ [ method ]
+ **
+ * Returns angle between two or three points.
+ > Parameters
+ - x1 (number) x coord of first point
+ - y1 (number) y coord of first point
+ - x2 (number) x coord of second point
+ - y2 (number) y coord of second point
+ - x3 (number) #optional x coord of third point
+ - y3 (number) #optional y coord of third point
+ = (number) angle in degrees.
+\*/
+Savage.angle = angle;
 /*\
  * Savage.is
  [ method ]
@@ -1433,7 +1479,7 @@ function Matrix(a, b, c, d, e, f) {
      - d (number)
      - e (number)
      - f (number)
-     or
+     * or
      - matrix (object) @Matrix
     \*/
     matrixproto.add = function (a, b, c, d, e, f) {
@@ -2300,13 +2346,29 @@ function extractTransform(el, tstr) {
     }
 }
 Savage._unit2px = unit2px;
+function getSomeDefs(el) {
+    if (Savage._.someDefs) {
+        return Savage._.someDefs;
+    }
+    var p = el.paper ||
+            (el.node.parentNode && Savage(el.node.parentNode)) ||
+            Savage.select("svg") ||
+            Savage(0, 0),
+        defs = p.select("defs").node;
+    if (!defs) {
+        defs = make("defs", p.node).node;
+    }
+    Savage._.someDefs = defs;
+    return defs;
+}
+Savage._.getSomeDefs = getSomeDefs;
 function unit2px(el, name, value) {
-    var defs = el.paper.defs,
+    var defs = getSomeDefs(el),
         out = {},
-        mgr = el.paper.measurer;
+        mgr = defs.querySelector(".svg---mgr");
     if (!mgr) {
-        el.paper.measurer = mgr = $("rect");
-        $(mgr, {width: 10, height: 10});
+        mgr = $("rect");
+        $(mgr, {width: 10, height: 10, "class": "svg---mgr"});
         defs.appendChild(mgr);
     }
     function getW(val) {
@@ -2545,25 +2607,29 @@ function arrayFirstValue(arr) {
      o }
     \*/
     elproto.getBBox = function (isWithoutTransform) {
-        if (this.removed) {
+        var el = this;
+        if (el.type == "use") {
+            el = el.original;
+        }
+        if (el.removed) {
             return {};
         }
-        var _ = this._;
+        var _ = el._;
         if (isWithoutTransform) {
             if (_.dirty || !_.bboxwt) {
-                this.realPath = Savage.path.get[this.type](this);
-                _.bboxwt = Savage.path.getBBox(this.realPath);
+                el.realPath = Savage.path.get[el.type](el);
+                _.bboxwt = Savage.path.getBBox(el.realPath);
                 _.bboxwt.toString = x_y_w_h;
                 _.dirty = 0;
             }
             return Savage._.box(_.bboxwt);
         }
         if (_.dirty || _.dirtyT || !_.bbox) {
-            if (_.dirty || !this.realPath) {
+            if (_.dirty || !el.realPath) {
                 _.bboxwt = 0;
-                this.realPath = Savage.path.get[this.type](this);
+                el.realPath = Savage.path.get[el.type](el);
             }
-            _.bbox = Savage.path.getBBox(Savage.path.map(this.realPath, this.matrix));
+            _.bbox = Savage.path.getBBox(Savage.path.map(el.realPath, el.matrix));
             _.bbox.toString = x_y_w_h;
             _.dirty = _.dirtyT = 0;
         }
@@ -2749,7 +2815,7 @@ function arrayFirstValue(arr) {
      = (Element) removed element
     \*/
     elproto.remove = function () {
-        this.node.parentNode.removeChild(this.node);
+        this.node.parentNode && this.node.parentNode.removeChild(this.node);
         delete this.paper;
         this.removed = true;
         return this;
@@ -2825,6 +2891,7 @@ function arrayFirstValue(arr) {
         $(use.node, {
             "xlink:href": "#" + id
         });
+        use.original = this;
         return use;
     };
     /*\
@@ -2907,6 +2974,19 @@ function arrayFirstValue(arr) {
         return clone;
     };
     /*\
+     * Element.toDefs
+     [ method ]
+     **
+     * Moves element to the relative `<defs>` section.
+     **
+     = (Element) the clone
+    \*/
+    elproto.toDefs = function () {
+        var defs = getSomeDefs(this);
+        defs.appendChild(this.node);
+        return this;
+    };
+    /*\
      * Element.pattern
      [ method ]
      **
@@ -2930,7 +3010,7 @@ function arrayFirstValue(arr) {
      | });
     \*/
     elproto.pattern = function (x, y, width, height) {
-        var p = make("pattern", this.paper.defs);
+        var p = make("pattern", getSomeDefs(this));
         if (x == null) {
             x = this.getBBox();
         }
@@ -2970,7 +3050,7 @@ function arrayFirstValue(arr) {
     \*/
     // TODO add usage for markers
     elproto.marker = function (x, y, width, height, refX, refY) {
-        var p = make("marker", this.paper.defs);
+        var p = make("marker", getSomeDefs(this));
         if (x == null) {
             x = this.getBBox();
         }
@@ -3363,6 +3443,20 @@ function Paper(w, h) {
         res = new Element(w);
         desc = w.getElementsByTagName("desc")[0];
         defs = w.getElementsByTagName("defs")[0];
+        if (!desc) {
+            desc = $("desc");
+            desc.appendChild(glob.doc.createTextNode("Created with Savage"));
+            res.node.appendChild(desc);
+        }
+        if (!defs) {
+            defs = $("defs");
+            res.node.appendChild(defs);
+        }
+        res.defs = defs;
+        for (var key in proto) if (proto[has](key)) {
+            res[key] = proto[key];
+        }
+        res.paper = res.root = res;
     } else {
         res = make("svg", glob.doc.body);
         $(res.node, {
@@ -3372,20 +3466,6 @@ function Paper(w, h) {
             xmlns: "http://www.w3.org/2000/svg"
         });
     }
-    if (!desc) {
-        desc = $("desc");
-        desc.appendChild(glob.doc.createTextNode("Created with Savage"));
-        res.node.appendChild(desc);
-    }
-    if (!defs) {
-        defs = $("defs");
-        res.node.appendChild(defs);
-    }
-    for (var key in proto) if (proto[has](key)) {
-        res[key] = proto[key];
-    }
-    res.paper = res.root = res;
-    res.defs = defs;
     return res;
 }
 function wrap(dom) {
@@ -3400,6 +3480,115 @@ function wrap(dom) {
     }
     return new Element(dom);
 }
+// gradients’ helpers
+function Gstops() {
+    return this.selectAll("stop");
+}
+function GaddStop(color, offset) {
+    var stop = $("stop"),
+        attr = {
+            offset: +offset + "%"
+        };
+    color = Savage.color(color);
+    attr["stop-color"] = color.hex;
+    if (color.opacity < 1) {
+        attr["stop-opacity"] = color.opacity;
+    }
+    $(stop, attr);
+    this.node.appendChild(stop);
+    return this;
+}
+function GgetBBox() {
+    if (this.type == "linearGradient") {
+        var x1 = $(this.node, "x1") || 0,
+            x2 = $(this.node, "x2") || 1,
+            y1 = $(this.node, "y1") || 0,
+            y2 = $(this.node, "y2") || 0;
+        return Savage._.box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
+    } else {
+        var cx = this.node.cx || .5,
+            cy = this.node.cy || .5,
+            r = this.node.r || 0;
+        return Savage._.box(cx - r, cy - r, r * 2, r * 2);
+    }
+}
+function gradient(defs, str) {
+    var grad = arrayFirstValue(eve("savage.util.grad.parse", null, str)),
+        el;
+    if (!grad) {
+        return null;
+    }
+    grad.params.unshift(defs);
+    if (grad.type.toLowerCase() == "l") {
+        el = gradientLinear.apply(0, grad.params);
+    } else {
+        el = gradientRadial.apply(0, grad.params);
+    }
+    if (grad.type != grad.type.toLowerCase()) {
+        $(el.node, {
+            gradientUnits: "userSpaceOnUse"
+        });
+    }
+    var stops = grad.stops,
+        len = stops.length,
+        start = 0,
+        j = 0;
+    function seed(i, end) {
+        var step = (end - start) / (i - j);
+        for (var k = j; k < i; k++) {
+            stops[k].offset = +(+start + step * (k - j)).toFixed(2);
+        }
+        j = i;
+        start = end;
+    }
+    len--;
+    for (var i = 0; i < len; i++) if ("offset" in stops[i]) {
+        seed(i, stops[i].offset);
+    }
+    stops[len].offset = stops[len].offset || 100;
+    seed(len, stops[len].offset);
+    for (i = 0; i <= len; i++) {
+        var stop = stops[i];
+        el.addStop(stop.color, stop.offset);
+    }
+    return el;
+}
+function gradientLinear(defs, x1, y1, x2, y2) {
+    var el = make("linearGradient", defs);
+    el.stops = Gstops;
+    el.addStop = GaddStop;
+    el.getBBox = GgetBBox;
+    if (x1 != null) {
+        $(el.node, {
+            x1: x1,
+            y1: y1,
+            x2: x2,
+            y2: y2
+        });
+    }
+    return el;
+}
+function gradientRadial(defs, cx, cy, r, fx, fy) {
+    var el = make("radialGradient", defs);
+    el.stops = Gstops;
+    el.addStop = GaddStop;
+    el.getBBox = GgetBBox;
+    if (cx != null) {
+        $(el.node, {
+            cx: cx,
+            cy: cy,
+            r: r
+        });
+    }
+    if (fx != null && fy != null) {
+        $(el.node, {
+            fx: fx,
+            fy: fy
+        });
+    }
+    return el;
+}
+// Paper prototype methods
 (function (proto) {
     /*\
      * Paper.el
@@ -3801,105 +3990,13 @@ function wrap(dom) {
          = (object) Element object with type “gradient”
         \*/
         proto.gradient = function (str) {
-            var grad = arrayFirstValue(eve("savage.util.grad.parse", null, str)),
-                el;
-            if (!grad) {
-                return null;
-            }
-            if (grad.type.toLowerCase() == "l") {
-                el = this.gradientLinear.apply(this, grad.params);
-            } else {
-                el = this.gradientRadial.apply(this, grad.params);
-            }
-            if (grad.type != grad.type.toLowerCase()) {
-                $(el.node, {
-                    gradientUnits: "userSpaceOnUse"
-                });
-            }
-            var stops = grad.stops,
-                len = stops.length,
-                start = 0,
-                j = 0;
-            function seed(i, end) {
-                var step = (end - start) / (i - j);
-                for (var k = j; k < i; k++) {
-                    stops[k].offset = +(+start + step * (k - j)).toFixed(2);
-                }
-                j = i;
-                start = end;
-            }
-            len--;
-            for (var i = 0; i < len; i++) if ("offset" in stops[i]) {
-                seed(i, stops[i].offset);
-            }
-            stops[len].offset = stops[len].offset || 100;
-            seed(len, stops[len].offset);
-            for (i = 0; i <= len; i++) {
-                var stop = stops[i];
-                el.addStop(stop.color, stop.offset);
-            }
-            return el;
+            return gradient(this.defs, str);
         };
-        function stops() {
-            return this.selectAll("stop");
-        }
-        function addStop(color, offset) {
-            var stop = $("stop");
-            $(stop, {
-                "stop-color": color,
-                offset: +offset + "%"
-            });
-            this.node.appendChild(stop);
-            return this;
-        }
-        function getBBox() {
-            if (this.type == "linearGradient") {
-                var x1 = $(this.node, "x1") || 0,
-                    x2 = $(this.node, "x2") || 1,
-                    y1 = $(this.node, "y1") || 0,
-                    y2 = $(this.node, "y2") || 0;
-                return Savage._.box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
-            } else {
-                var cx = this.node.cx || .5,
-                    cy = this.node.cy || .5,
-                    r = this.node.r || 0;
-                return Savage._.box(cx - r, cy - r, r * 2, r * 2);
-            }
-        }
         proto.gradientLinear = function (x1, y1, x2, y2) {
-            var el = make("linearGradient", this.node);
-            el.stops = stops;
-            el.addStop = addStop;
-            el.getBBox = getBBox;
-            if (x1 != null) {
-                $(el.node, {
-                    x1: x1,
-                    y1: y1,
-                    x2: x2,
-                    y2: y2
-                });
-            }
-            return el;
+            return gradientLinear(this.defs, x1, y1, x2, y2);
         };
         proto.gradientRadial = function (cx, cy, r, fx, fy) {
-            var el = make("radialGradient", this.node);
-            el.stops = stops;
-            el.addStop = addStop;
-            el.getBBox = getBBox;
-            if (cx != null) {
-                $(el.node, {
-                    cx: cx,
-                    cy: cy,
-                    r: r
-                });
-            }
-            if (fx != null && fy != null) {
-                $(el.node, {
-                    fx: fx,
-                    fy: fy
-                });
-            }
-            return el;
+            return gradientRadial(this.defs, cx, cy, r, fx, fy);
         };
         /*\
          * Paper.toString
@@ -3999,13 +4096,13 @@ eve.on("savage.util.attr.mask", function (value) {
         eve.stop();
         if (value instanceof Fragment && value.node.childNodes.length == 1) {
             value = value.node.firstChild;
-            this.paper.defs.appendChild(value);
+            getSomeDefs(this).appendChild(value);
             value = wrap(value);
         }
         if (value.type == "mask") {
             var mask = value;
         } else {
-            mask = make("mask", this.paper.defs);
+            mask = make("mask", getSomeDefs(this));
             mask.node.appendChild(value.node);
             !mask.node.id && $(mask.node, {
                 id: mask.id
@@ -4026,7 +4123,7 @@ eve.on("savage.util.attr.mask", function (value) {
         if (value.type == "clipPath") {
             var clip = value;
         } else {
-            clip = make("clipPath", this.paper.defs);
+            clip = make("clipPath", getSomeDefs(this));
             clip.node.appendChild(value.node);
             !clip.node.id && $(clip.node, {
                 id: clip.id
@@ -4045,7 +4142,7 @@ function fillStroke(name) {
             value.node.firstChild.tagName == "linearGradient" ||
             value.node.firstChild.tagName == "pattern")) {
             value = value.node.firstChild;
-            this.paper.defs.appendChild(value);
+            getSomeDefs(this).appendChild(value);
             value = wrap(value);
         }
         if (value instanceof Element) {
@@ -4063,7 +4160,7 @@ function fillStroke(name) {
         } else {
             fill = Savage.color(value);
             if (fill.error) {
-                var grad = this.paper.gradient(value);
+                var grad = gradient(getSomeDefs(this), value);
                 if (grad) {
                     if (!grad.node.id) {
                         $(grad.node, {
@@ -4806,7 +4903,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         function O(val) {
             return +(+val).toFixed(3);
         }
-        return function (path, length, onlystart) {
+        return Savage._.cacher(function (path, length, onlystart) {
             if (path instanceof Element) {
                 path = path.attr("d");
             }
@@ -4861,7 +4958,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             subpaths.end = sp;
             point = istotal ? len : subpath ? subpaths : findDotsAtSegment(x, y, p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return point;
-        };
+        }, null, Savage._.clone);
     }
     var getTotalLength = getLengthFactory(1),
         getPointAtLength = getLengthFactory(),
@@ -5242,7 +5339,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         }
     };
     function pathToRelative(pathArray) {
-        var pth = paths(pathArray);
+        var pth = paths(pathArray),
+            lowerCase = String.prototype.toLowerCase;
         if (pth.rel) {
             return pathClone(pth.rel);
         }
@@ -6200,6 +6298,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             this.splice(i, 1);
             return true;
         }
+        return false;
     };
     setproto.insertAfter = function (el) {
         var i = this.items.length;
@@ -7005,6 +7104,10 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         if (blur == null) {
             blur = 4;
         }
+        if (typeof blur == "string") {
+            color = blur;
+            blur = 4;
+        }
         if (dx == null) {
             dx = 0;
             dy = 2;
@@ -7012,6 +7115,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         if (dy == null) {
             dy = dx;
         }
+        color = Savage.color(color);
         return Savage.format('<feGaussianBlur in="SourceAlpha" stdDeviation="{blur}"/><feOffset dx="{dx}" dy="{dy}" result="offsetblur"/><feFlood flood-color="{color}"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>', {
             color: color,
             dx: dx,

@@ -149,6 +149,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             this.splice(i, 1);
             return true;
         }
+        return false;
     };
     setproto.insertAfter = function (el) {
         var i = this.items.length;
