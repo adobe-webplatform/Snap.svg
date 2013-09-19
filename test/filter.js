@@ -55,28 +55,28 @@ describe("Filter methods", function () {
     });
     it("Savage.filter.shadow - dx & dy", function() {
         var str = Savage.filter.shadow(5, 5);
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
         str = Savage.filter.shadow(-1, 3);
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="#000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
     });
     it("Savage.filter.shadow - dx & dy, blur", function() {
         var str = Savage.filter.shadow(5, 5, 5);
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
         str = Savage.filter.shadow(-1, 3, 10);
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="#000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
     });
     it("Savage.filter.shadow - dx & dy, color", function() {
         var str = Savage.filter.shadow(5, 5, '#F00');
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#F00"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
-        str = Savage.filter.shadow(-1, 3, 'hsla(128, 50%, 50%, 0.8)');
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="hsla(128, 50%, 50%, 0.8)"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#ff0000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        str = Savage.filter.shadow(-1, 3, 'hsla(128deg, 50%, 50%, 0.8)');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="rgba(64,191,81,0.8)"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
     });
 
     it("Savage.filter.shadow - dx & dy, blur & color", function() {
         var str = Savage.filter.shadow(5, 5, 5, '#F00');
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#F00"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
-        str = Savage.filter.shadow(-1, 3, 10, 'hsla(128, 50%, 50%, 0.8)');
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="hsla(128, 50%, 50%, 0.8)"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#ff0000"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        str = Savage.filter.shadow(-1, 3, 10, 'hsla(128deg, 50%, 50%, 0.8)');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="rgba(64,191,81,0.8)"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
     });
     
        
