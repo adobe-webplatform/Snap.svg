@@ -40,6 +40,25 @@ module.exports = function(grunt) {
             }
         }
     });
+    
+    // Run 'grunt --requirejs' for AMD/requirejs compatible build
+    if (grunt.option("requirejs")) {
+        var concat = grunt.config("concat");
+        
+        // Include eve in banner, wrap savage in define function
+        concat.options.banner += "\n"
+            + grunt.file.read("./node_modules/eve/eve.js")
+            + ' define(["eve"], function(eve) {';
+        concat.options.footer = "\n return Savage; \n });";
+        
+        // Remove eve from src list
+        var first = concat.target.src.shift();
+        if(first.indexOf("/eve.js") < 0) {
+            throw Error("Expected first file to be eve.js for requirejs build");
+        }
+        
+        grunt.config("concat", concat);
+    }
 
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
