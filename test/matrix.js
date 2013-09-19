@@ -86,18 +86,6 @@ describe("Matrix methods", function () {
             f: 30
         });
     });
-    it("Matrix.scale - x, y, cx", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
-        matrix.scale(2, 3, 5);
-        expect(matrix).to.eql({
-            a: 2,
-            b: 0,
-            c: 0,
-            d: 3,
-            e: 15,
-            f: 25
-        });
-    });
     it("Matrix.scale - x, y, cx, cy", function() {
         var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
         matrix.scale(2, 3, 5, -5);
