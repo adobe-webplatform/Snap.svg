@@ -1,16 +1,40 @@
 describe("Matrix methods", function () {
-    // TODO: Write this test
     it("Matrix.add - matrix", function() {
-        var matrix1 = new Savage.Matrix(1, 2, 3, 4, 5, 6);
-        var matrix2 = new Savage.Matrix(1, 2, 3, 4, 5, 6);
+        var matrix1 = new Savage.Matrix(1, 0, 0, 1, 5, 5);
+        var matrix2 = new Savage.Matrix(1, 0, 0, 1, 10, 10);
         var result = matrix1.add(matrix2);
-        console.log('result', result);
+        expect(result).to.eql({
+            a: 1,
+            b: 0,
+            c: 0,
+            d: 1,
+            e: 15,
+            f: 15
+        });
+        // add two 90 degree rotations
+        var matrix3 = new Savage.Matrix(0, 1, -1, 0, 0, 0);
+        var matrix4 = new Savage.Matrix(0, 1, -1, 0, 0, 0);
+        result = matrix3.add(matrix4);
+        expect(result).to.eql({
+            a: -1,
+            b: 0,
+            c: 0,
+            d: -1,
+            e: 0,
+            f: 0
+        });
     });
-    // TODO: Write this test
     it("Matrix.add - numbers", function() {
-        var matrix1 = new Savage.Matrix(1, 2, 3, 4, 5, 6);
-        var result = matrix1.add(1, 2, 3, 4, 5, 6);
-        console.log('result', result);
+        var matrix1 = new Savage.Matrix(1, 0, 0, 1, 5, 5);
+        var result = matrix1.add(1, 0, 0, 1, 10, 10);
+        expect(result).to.eql({
+            a: 1,
+            b: 0,
+            c: 0,
+            d: 1,
+            e: 15,
+            f: 15
+        });
     });
     it("Matrix.clone", function() {
         var matrix1 = new Savage.Matrix(1, 2, 3, 4, 5, 6);
@@ -36,13 +60,16 @@ describe("Matrix methods", function () {
             e: 1,
             f: -2
         });
-        console.log('inverse', inverse);
     });
-    // TODO: Write this test
     it("Matrix.rotate", function() {
-        var matrix1 = new Savage.Matrix(1, 0, 0, 1, 0, 0);
-        matrix1.rotate(90, 0, 0);
-        console.log('m1', matrix1);
+        var matrix = new Savage.Matrix(1, 0, 0, 1, 0, 0);
+        matrix.rotate(45, 0, 0);
+        expect(+matrix.a.toFixed(3)).to.be(0.707);
+        expect(+matrix.b.toFixed(3)).to.be(0.707);
+        expect(+matrix.c.toFixed(3)).to.be(-0.707);
+        expect(+matrix.d.toFixed(3)).to.be(0.707);
+        expect(+matrix.e.toFixed(3)).to.be(0);
+        expect(+matrix.f.toFixed(3)).to.be(0);
     });
     it("Matrix.scale - x", function() {
         var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
@@ -121,21 +148,19 @@ describe("Matrix methods", function () {
     });
     it("Matrix.toTransformString", function() {
         var matrix = new Savage.Matrix(1.5, 0, 0, 0.5, 20, 25);
-        console.log(matrix.toTransformString());
-        
-        var transformArrs = Savage.parseTransformString(
-            "matrix(1, 2, 3, 4, 5, 6) " +
-            "translate(7) " +
-            "translate(8 9) " +
-            "scale(10) " +
-            "scale(11, 12) " +
-            "rotate(13) " +
-            "rotate(14 15 16) " +
-            "skewX(17) " +
-            "skewY(18) "
-        );
-        console.log(transformArrs.toString());
-
+        var str = matrix.toTransformString();
+        var s = Savage(10, 10);
+        var rect = s.rect(0, 0, 10, 20);
+        rect.transform(str);
+        var transform = rect.transform();
+        expect(transform.localMatrix).to.eql({
+            a: 1.5,
+            b: 0,
+            c: 0,
+            d: 0.5,
+            e: 20,
+            f: 25
+        });
     });
     it("Matrix.translate", function() {
         var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
