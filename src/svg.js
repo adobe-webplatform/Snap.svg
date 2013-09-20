@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var Savage = (function () {
+var Savage = (function() {
 Savage.version = "0.0.1";
 /*\
  * Savage
@@ -3713,5 +3713,6 @@ eve.on("savage.util.getattr", function () {
 Savage.plugin = function (f) {
     f(Savage, Element, Paper, glob);
 };
+glob.win.Savage = Savage;
 return Savage;
 }());
