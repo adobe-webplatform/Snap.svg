@@ -288,23 +288,16 @@ describe("Savage methods", function () {
         var pathArrs = Savage.parsePathString(["M1 2"]);
         expect(pathArrs[0]).to.eql(["M", 1, 2]);
     });
-    /*
-    // TODO: Find out how parseTransformString should work 
     it("Savage.parseTransformString - string", function() {
-        var transformArrs = Savage.parseTransformString(
-            "matrix(1, 2, 3, 4, 5, 6) " +
-            "translate(7) " +
-            "translate(8 9) " +
-            "scale(10) " +
-            "scale(11, 12) " +
-            "rotate(13) " +
-            "rotate(14 15 16) " +
-            "skewX(17) " +
-            "skewY(18) "
-        );
-        expect(transformArrs[0]).to.eql(["matrix", 1, 2, 3, 4, 5, 6]);
+        var matrix = new Savage.Matrix(1, 0, 0, 2, 0, 0);
+        var str = matrix.toTransformString();
+        var output = Savage.parseTransformString(str);
+        expect(output[0]).to.eql(['s', 1, 2, 0, 0]);
     });
-    */
+    it("Savage.parseTransformString - array", function() {
+        var output = Savage.parseTransformString(['s', 1, 2, 0, 0]);
+        expect(output[0]).to.eql(['s', 1, 2, 0, 0]);
+    });
     it("Savage.select", function() {
         var s = Savage(10, 10);
         var group1 = s.group();
