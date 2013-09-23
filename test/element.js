@@ -96,7 +96,6 @@ describe("Element methods", function () {
         s.append(circle);
         var clone = circle.clone();
         expect(circle.node).not.to.be(clone.node);
-        // NOTE: These assume a cloneNode copy, not a <use> element
         expect(clone.node.getAttribute("cx")).to.be("10");
         expect(clone.node.getAttribute("cy")).to.be("20");
         expect(clone.node.getAttribute("r")).to.be("30");
@@ -163,7 +162,7 @@ describe("Element methods", function () {
         data = circle.data("my-object");
         expect(data).to.be(myObject);
     });
-    it("Element.removeData", function() {
+    it("Element.removeData - with key", function() {
         var circle = s.circle(10, 20, 30);
         var myObject = {};
         circle.data("my-object", myObject);
@@ -172,6 +171,18 @@ describe("Element methods", function () {
         circle.removeData("my-object");
         data = circle.data("my-object");
         expect(data).to.be(undefined);
+    });
+    it("Element.removeData - no key", function() {
+        var circle = s.circle(10, 20, 30);
+        var myObject = {};
+        var myNumber = 42;
+        circle.data("my-object", myObject);
+        circle.data("my-number", 42);
+        expect(circle.data("my-object")).to.be(myObject);
+        expect(circle.data("my-number")).to.be(myNumber);
+        circle.removeData("my-object");
+        expect(circle.data("my-object")).to.be(undefined);
+        expect(circle.data("my-number")).to.be(undefined);
     });
     it("Element.asPX - from %", function() {
         s.attr({width: "200"}); // NOTE: This is only working with "200" as string, fails as number
@@ -279,7 +290,7 @@ describe("Element methods", function () {
         Element.pattern()
         Element.use()
         Element.transform()
-        
+        Element.toDefs()
     */
     
     it("Element.select", function() {
@@ -423,7 +434,12 @@ describe("Element methods", function () {
         var use = circle.use();
         expect(use.node.nodeName).to.be('use');
     });
-    
+     it("Element.toDefs", function() {
+        var circle = s.circle(10, 20, 30);
+        var result = circle.toDefs();
+        expect(use.node.parentElement.nodeName).to.be('defs');
+        expect(result).to.be(circle);
+    });   
         
     /*
         Event binding & unbinding: 
