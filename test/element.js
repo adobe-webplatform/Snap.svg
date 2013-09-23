@@ -180,7 +180,7 @@ describe("Element methods", function () {
         circle.data("my-number", 42);
         expect(circle.data("my-object")).to.be(myObject);
         expect(circle.data("my-number")).to.be(myNumber);
-        circle.removeData("my-object");
+        circle.removeData();
         expect(circle.data("my-object")).to.be(undefined);
         expect(circle.data("my-number")).to.be(undefined);
     });
@@ -437,7 +437,7 @@ describe("Element methods", function () {
      it("Element.toDefs", function() {
         var circle = s.circle(10, 20, 30);
         var result = circle.toDefs();
-        expect(use.node.parentElement.nodeName).to.be('defs');
+        expect(circle.node.parentElement.nodeName).to.be('defs');
         expect(result).to.be(circle);
     });   
         
