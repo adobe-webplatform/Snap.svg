@@ -338,6 +338,6 @@ var mina = (function (eve) {
         }
         return l;
     };
-
+    window.mina = mina;
     return mina;
 })(typeof eve == "undefined" ? function () {} : eve);
