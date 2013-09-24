@@ -53,7 +53,7 @@ describe("Path methods", function () {
             alpha: 180
         });
     });
-    it("Savage.path.bezierBBox", function () {
+    it("Savage.path.bezierBBox - params", function () {
         var bbox = Savage.path.bezierBBox(10, 10, 10, 20, 110, 0, 110, 10);
         expect(bbox.cx).to.be(60);
         expect(bbox.cy).to.be(10);
@@ -61,6 +61,25 @@ describe("Path methods", function () {
         expect(bbox.w).to.be(100);
         expect(bbox.width).to.be(100);
         expect(bbox.x2).to.be(110);
+    });
+    it("Savage.path.bezierBBox - array", function () {
+        var bbox = Savage.path.bezierBBox([10, 10, 10, 20, 110, 0, 110, 10]);
+        expect(bbox.cx).to.be(60);
+        expect(bbox.cy).to.be(10);
+        expect(bbox.x).to.be(10);
+        expect(bbox.w).to.be(100);
+        expect(bbox.width).to.be(100);
+        expect(bbox.x2).to.be(110);
+    });
+    it("Savage.path.getBBox", function() {
+        // same as 10,20,30,40 rect
+        var bbox = Savage.path.getBBox("M10,20h30v40h-30z");
+        expect(bbox.x).to.eql(10);
+        expect(bbox.y).to.eql(20);
+        expect(bbox.width).to.eql(30);
+        expect(bbox.height).to.eql(40);
+        expect(bbox.x2).to.eql(10 + 30);
+        expect(bbox.y2).to.eql(20 + 40);
     });
     it("Savage.path.isPointInsideBBox", function () {
         expect(Savage.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 5, 5)).to.be(true);

@@ -94,6 +94,14 @@ describe("Primitives creation", function () {
         expect(C).to.not.be(null);
         expect(C.childNodes.length).to.be(2);
     });
+    it("creates and fills a group on creation", function () {
+        var circle1 = s.circle(10, 10, 10);
+        var circle2 = s.circle(20, 10, 10);
+        var group = s.g(circle1, circle2);
+        var groupEl = document.querySelector("g");
+        expect(groupEl).to.not.be(null);
+        expect(groupEl.childNodes.length).to.be(2);
+    });
     it("creates a text", function () {
         var c = s.text(10, 10, "test");
         var C = document.querySelector("text");

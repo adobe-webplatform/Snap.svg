@@ -396,4 +396,18 @@ describe("Savage methods", function () {
         expect(bbox.x2).to.eql(10 + 30);
         expect(bbox.y2).to.eql(20 + 40);
     });
+    it("Savage.angle - 2 points", function() {
+        var angle = Savage.angle(0, 0, 10, 10);
+        expect(angle).to.not.be(0);
+        expect(angle % 45).to.be(0);
+        angle = Savage.angle(0, 0, 10, 0);
+        expect(angle % 90).to.be(0);
+    });
+    it("Savage.angle - 3 points", function() {
+        var angle = Savage.angle(10, 0, 0, 10, 0, 0);
+        expect(angle).to.not.be(0);
+        expect(angle % 45).to.be(0);
+        angle = Savage.angle(10, 0, 0, 10, 0, 0);
+        expect(Math.abs(angle)).to.be(90);
+    });
 });
