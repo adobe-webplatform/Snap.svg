@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Savage.plugin(function (Savage, Element, Paper, glob) {
+Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
     has = "hasOwnProperty",
     supportsTouch = "createTouch" in glob.doc,
@@ -118,7 +118,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             }
             var node = dragi.el.node,
                 o,
-                glob = Savage._.glob,
+                glob = Snap._.glob,
                 next = node.nextSibling,
                 parent = node.parentNode,
                 display = node.style.display;
@@ -127,20 +127,20 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             // o = dragi.el.paper.getElementByPoint(x, y);
             // node.style.display = display;
             // glob.win.opera && (next ? parent.insertBefore(node, next) : parent.appendChild(node));
-            // o && eve("savage.drag.over." + dragi.el.id, dragi.el, o);
+            // o && eve("snap.drag.over." + dragi.el.id, dragi.el, o);
             x += scrollX;
             y += scrollY;
-            eve("savage.drag.move." + dragi.el.id, dragi.move_scope || dragi.el, x - dragi.el._drag.x, y - dragi.el._drag.y, x, y, e);
+            eve("snap.drag.move." + dragi.el.id, dragi.move_scope || dragi.el, x - dragi.el._drag.x, y - dragi.el._drag.y, x, y, e);
         }
     },
     dragUp = function (e) {
-        Savage.unmousemove(dragMove).unmouseup(dragUp);
+        Snap.unmousemove(dragMove).unmouseup(dragUp);
         var i = drag.length,
             dragi;
         while (i--) {
             dragi = drag[i];
             dragi.el._drag = {};
-            eve("savage.drag.end." + dragi.el.id, dragi.end_scope || dragi.start_scope || dragi.move_scope || dragi.el, e);
+            eve("snap.drag.end." + dragi.el.id, dragi.end_scope || dragi.start_scope || dragi.move_scope || dragi.el, e);
         }
         drag = [];
     };
@@ -332,8 +332,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     \*/
     for (var i = events.length; i--;) {
         (function (eventName) {
-            Savage[eventName] = elproto[eventName] = function (fn, scope) {
-                if (Savage.is(fn, "function")) {
+            Snap[eventName] = elproto[eventName] = function (fn, scope) {
+                if (Snap.is(fn, "function")) {
                     this.events = this.events || [];
                     this.events.push({
                         name: eventName,
@@ -343,7 +343,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
                 }
                 return this;
             };
-            Savage["un" + eventName] =
+            Snap["un" + eventName] =
             elproto["un" + eventName] = function (fn) {
                 var events = this.events || [],
                     l = events.length;
@@ -432,12 +432,12 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             this._drag.x = e.clientX + scrollX;
             this._drag.y = e.clientY + scrollY;
             this._drag.id = e.identifier;
-            !drag.length && Savage.mousemove(dragMove).mouseup(dragUp);
+            !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
             drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
-            onstart && eve.on("savage.drag.start." + this.id, onstart);
-            onmove && eve.on("savage.drag.move." + this.id, onmove);
-            onend && eve.on("savage.drag.end." + this.id, onend);
-            eve("savage.drag.start." + this.id, start_scope || move_scope || this, e.clientX + scrollX, e.clientY + scrollY, e);
+            onstart && eve.on("snap.drag.start." + this.id, onstart);
+            onmove && eve.on("snap.drag.move." + this.id, onmove);
+            onend && eve.on("snap.drag.end." + this.id, onend);
+            eve("snap.drag.start." + this.id, start_scope || move_scope || this, e.clientX + scrollX, e.clientY + scrollY, e);
         }
         this._drag = {};
         draggable.push({el: this, start: start});
@@ -452,7 +452,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - f (function) handler for event, first argument would be the element you are dragging over
     \*/
     // elproto.onDragOver = function (f) {
-    //     f ? eve.on("savage.drag.over." + this.id, f) : eve.unbind("savage.drag.over." + this.id);
+    //     f ? eve.on("snap.drag.over." + this.id, f) : eve.unbind("snap.drag.over." + this.id);
     // };
     /*\
      * Element.undrag
@@ -465,9 +465,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         while (i--) if (draggable[i].el == this) {
             this.unmousedown(draggable[i].start);
             draggable.splice(i, 1);
-            eve.unbind("savage.drag.*." + this.id);
+            eve.unbind("snap.drag.*." + this.id);
         }
-        !draggable.length && Savage.unmousemove(dragMove).unmouseup(dragUp);
+        !draggable.length && Snap.unmousemove(dragMove).unmouseup(dragUp);
         return this;
     };
 });

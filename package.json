@@ -1,11 +1,11 @@
 {
-  "name": "Savage",
+  "name": "Snap.svg",
   "version": "0.0.1",
   "description": "JavaScript Vector Library",
-  "main": "./dist/savage.js",
+  "main": "Gruntfile.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/adobe-webplatform/savage.git"
+    "url": "git@github.com:adobe-webplatform/Snap.svg.git"
   },
   "author": "Dmitry Baranovskiy",
   "license": "Apache License v2",
@@ -13,10 +13,11 @@
     "grunt": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-concat": "~0.3.0",
+    "grunt-exec": "~0.4.2",
     "mocha": "*",
     "expect.js": "*",
     "eve": "*",
     "elemental.js": "~0.2.4",
-    "dr.js": "*"
+    "dr.js": "~0.0.9"
   }
 }

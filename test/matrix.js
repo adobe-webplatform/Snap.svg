@@ -1,7 +1,7 @@
 describe("Matrix methods", function () {
     it("Matrix.add - matrix", function() {
-        var matrix1 = new Savage.Matrix(1, 0, 0, 1, 5, 5);
-        var matrix2 = new Savage.Matrix(1, 0, 0, 1, 10, 10);
+        var matrix1 = new Snap.Matrix(1, 0, 0, 1, 5, 5);
+        var matrix2 = new Snap.Matrix(1, 0, 0, 1, 10, 10);
         var result = matrix1.add(matrix2);
         expect(result).to.eql({
             a: 1,
@@ -12,8 +12,8 @@ describe("Matrix methods", function () {
             f: 15
         });
         // add two 90 degree rotations
-        var matrix3 = new Savage.Matrix(0, 1, -1, 0, 0, 0);
-        var matrix4 = new Savage.Matrix(0, 1, -1, 0, 0, 0);
+        var matrix3 = new Snap.Matrix(0, 1, -1, 0, 0, 0);
+        var matrix4 = new Snap.Matrix(0, 1, -1, 0, 0, 0);
         result = matrix3.add(matrix4);
         expect(result).to.eql({
             a: -1,
@@ -25,7 +25,7 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.add - numbers", function() {
-        var matrix1 = new Savage.Matrix(1, 0, 0, 1, 5, 5);
+        var matrix1 = new Snap.Matrix(1, 0, 0, 1, 5, 5);
         var result = matrix1.add(1, 0, 0, 1, 10, 10);
         expect(result).to.eql({
             a: 1,
@@ -37,7 +37,7 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.clone", function() {
-        var matrix1 = new Savage.Matrix(1, 2, 3, 4, 5, 6);
+        var matrix1 = new Snap.Matrix(1, 2, 3, 4, 5, 6);
         var clone = matrix1.clone();
         expect(clone).to.not.be(matrix1);
         expect(clone).to.eql({
@@ -50,7 +50,7 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.invert", function() {
-        var matrix1 = new Savage.Matrix(1, 2, 3, 4, 5, 6);
+        var matrix1 = new Snap.Matrix(1, 2, 3, 4, 5, 6);
         var inverse = matrix1.invert();
         expect(inverse).to.eql({
             a: -2,
@@ -62,7 +62,7 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.rotate", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 0, 0);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 0, 0);
         matrix.rotate(45, 0, 0);
         expect(+matrix.a.toFixed(3)).to.be(0.707);
         expect(+matrix.b.toFixed(3)).to.be(0.707);
@@ -72,7 +72,7 @@ describe("Matrix methods", function () {
         expect(+matrix.f.toFixed(3)).to.be(0);
     });
     it("Matrix.scale - x", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
         matrix.scale(2);
         expect(matrix).to.eql({
             a: 2,
@@ -93,7 +93,7 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.scale - x, y", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
         matrix.scale(2, 3);
         expect(matrix).to.eql({
             a: 2,
@@ -114,7 +114,7 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.scale - x, y, cx, cy", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
         matrix.scale(2, 3, 5, -5);
         expect(matrix).to.eql({
             a: 2,
@@ -126,7 +126,7 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.split", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 0, 0);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 0, 0);
         var result = matrix.split();
         expect(result.dx).to.be(0);
         expect(result.dy).to.be(0);
@@ -136,7 +136,7 @@ describe("Matrix methods", function () {
         expect(result.rotate).to.be(0);
         expect(result.isSimple).to.be(true);
         
-        matrix = new Savage.Matrix(1.5, 0, 0, 0.5, 20, 25);
+        matrix = new Snap.Matrix(1.5, 0, 0, 0.5, 20, 25);
         result = matrix.split();
         expect(result.dx).to.be(20);
         expect(result.dy).to.be(25);
@@ -147,9 +147,9 @@ describe("Matrix methods", function () {
         expect(result.isSimple).to.be(true);
     });
     it("Matrix.toTransformString", function() {
-        var matrix = new Savage.Matrix(1.5, 0, 0, 0.5, 20, 25);
+        var matrix = new Snap.Matrix(1.5, 0, 0, 0.5, 20, 25);
         var str = matrix.toTransformString();
-        var s = Savage(10, 10);
+        var s = Snap(10, 10);
         var rect = s.rect(0, 0, 10, 20);
         rect.transform(str);
         var transform = rect.transform();
@@ -163,7 +163,7 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.translate", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
         matrix.translate(10, -10);
         expect(matrix).to.eql({
             a: 1,
@@ -184,12 +184,12 @@ describe("Matrix methods", function () {
         });
     });
     it("Matrix.x", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
         var result = matrix.x(10, -10);
         expect(result).to.be(30);
     });
     it("Matrix.y", function() {
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 20, 30);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
         var result = matrix.y(10, -10);
         expect(result).to.be(20);
     });

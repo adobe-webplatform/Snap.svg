@@ -1,7 +1,7 @@
 describe("Element methods", function () {
     var s;
     beforeEach(function () {
-        s = Savage(100, 100);
+        s = Snap(100, 100);
     });
     afterEach(function () {
         s.remove();
@@ -29,7 +29,7 @@ describe("Element methods", function () {
     it("Element.add (for Set)", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2);
+        var set = Snap.set(rect1, rect2);
         var result = s.add(set);
         expect(rect1.node.parentNode).to.be(s.node);
         expect(rect2.node.parentNode).to.be(s.node);
@@ -45,7 +45,7 @@ describe("Element methods", function () {
     it("Element.append (for Set)", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2);
+        var set = Snap.set(rect1, rect2);
         var result = s.append(set);
         expect(rect1.node.parentNode).to.be(s.node);
         expect(rect2.node.parentNode).to.be(s.node);

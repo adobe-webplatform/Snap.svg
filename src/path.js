@@ -11,10 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Savage.plugin(function (Savage, Element, Paper, glob) {
+Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
-        is = Savage.is,
-        clone = Savage._.clone,
+        is = Snap.is,
+        clone = Snap._.clone,
         has = "hasOwnProperty",
         p2s = /,?([a-z]),?/gi,
         toFloat = parseFloat,
@@ -89,7 +89,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         function O(val) {
             return +(+val).toFixed(3);
         }
-        return Savage._.cacher(function (path, length, onlystart) {
+        return Snap._.cacher(function (path, length, onlystart) {
             if (path instanceof Element) {
                 path = path.attr("d");
             }
@@ -144,7 +144,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             subpaths.end = sp;
             point = istotal ? len : subpath ? subpaths : findDotsAtSegment(x, y, p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return point;
-        }, null, Savage._.clone);
+        }, null, Snap._.clone);
     }
     var getTotalLength = getLengthFactory(1),
         getPointAtLength = getLengthFactory(),
@@ -178,7 +178,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         };
     }
     function bezierBBox(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) {
-        if (!Savage.is(p1x, "array")) {
+        if (!Snap.is(p1x, "array")) {
             p1x = [p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y];
         }
         var bbox = curveDim.apply(null, p1x);
@@ -490,7 +490,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         res.toString = toString;
         return res;
     }
-    var unit2px = Savage._unit2px,
+    var unit2px = Snap._unit2px,
         getPath = {
         path: function (el) {
             return el.attr("path");
@@ -530,8 +530,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         if (pth.rel) {
             return pathClone(pth.rel);
         }
-        if (!Savage.is(pathArray, "array") || !Savage.is(pathArray && pathArray[0], "array")) {
-            pathArray = Savage.parsePathString(pathArray);
+        if (!Snap.is(pathArray, "array") || !Snap.is(pathArray && pathArray[0], "array")) {
+            pathArray = Snap.parsePathString(pathArray);
         }
         var res = [],
             x = 0,
@@ -610,7 +610,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             return pathClone(pth.abs);
         }
         if (!is(pathArray, "array") || !is(pathArray && pathArray[0], "array")) { // rough assumption
-            pathArray = Savage.parsePathString(pathArray);
+            pathArray = Snap.parsePathString(pathArray);
         }
         if (!pathArray || !pathArray.length) {
             return [["M", 0, 0]];
@@ -751,7 +751,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             rad = PI / 180 * (+angle || 0),
             res = [],
             xy,
-            rotate = Savage._.cacher(function (x, y, rad) {
+            rotate = Snap._.cacher(function (x, y, rad) {
                 var X = x * math.cos(rad) - y * math.sin(rad),
                     Y = x * math.sin(rad) + y * math.cos(rad);
                 return {x: X, y: Y};
@@ -1040,10 +1040,10 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     }
 
     // export
-    Savage.path = paths;
+    Snap.path = paths;
 
     /*\
-     * Savage.path.getTotalLength
+     * Snap.path.getTotalLength
      [ method ]
      **
      * Returns length of the given path in pixels.
@@ -1052,9 +1052,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      = (number) length.
     \*/
-    Savage.path.getTotalLength = getTotalLength;
+    Snap.path.getTotalLength = getTotalLength;
     /*\
-     * Savage.path.getPointAtLength
+     * Snap.path.getPointAtLength
      [ method ]
      **
      * Return coordinates of the point located at the given length on the given path.
@@ -1069,9 +1069,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      o     alpha: (number) angle of derivative
      o }
     \*/
-    Savage.path.getPointAtLength = getPointAtLength;
+    Snap.path.getPointAtLength = getPointAtLength;
     /*\
-     * Savage.path.getSubpath
+     * Snap.path.getSubpath
      [ method ]
      **
      * Return subpath of a given path from given length to given length.
@@ -1082,7 +1082,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      **
      = (string) pathstring for the segment
     \*/
-    Savage.path.getSubpath = function (path, from, to) {
+    Snap.path.getSubpath = function (path, from, to) {
         if (this.getTotalLength(path) - to < 1e-6) {
             return getSubpathsAtLength(path, from).end;
         }
@@ -1131,11 +1131,11 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      = (string) pathstring for the segment
     \*/
     elproto.getSubpath = function (from, to) {
-        return Savage.path.getSubpath(this.attr("d"), from, to);
+        return Snap.path.getSubpath(this.attr("d"), from, to);
     };
-    Savage._.box = box;
+    Snap._.box = box;
     /*\
-     * Savage.path.findDotsAtSegment
+     * Snap.path.findDotsAtSegment
      [ method ]
      **
      * Utility method
@@ -1173,9 +1173,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      o     alpha: (number) angle of the curve derivative at the point
      o }
     \*/
-    Savage.path.findDotsAtSegment = findDotsAtSegment;
+    Snap.path.findDotsAtSegment = findDotsAtSegment;
     /*\
-     * Savage.path.bezierBBox
+     * Snap.path.bezierBBox
      [ method ]
      **
      * Utility method
@@ -1203,9 +1203,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      o     }
      o }
     \*/
-    Savage.path.bezierBBox = bezierBBox;
+    Snap.path.bezierBBox = bezierBBox;
     /*\
-     * Savage.path.isPointInsideBBox
+     * Snap.path.isPointInsideBBox
      [ method ]
      **
      * Utility method
@@ -1216,9 +1216,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - y (string) y coordinate of the point
      = (boolean) `true` if point inside
     \*/
-    Savage.path.isPointInsideBBox = isPointInsideBBox;
+    Snap.path.isPointInsideBBox = isPointInsideBBox;
     /*\
-     * Savage.path.isBBoxIntersect
+     * Snap.path.isBBoxIntersect
      [ method ]
      **
      * Utility method
@@ -1228,9 +1228,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - bbox2 (string) second bounding box
      = (boolean) `true` if they intersect
     \*/
-    Savage.path.isBBoxIntersect = isBBoxIntersect;
+    Snap.path.isBBoxIntersect = isBBoxIntersect;
     /*\
-     * Savage.path.intersection
+     * Snap.path.intersection
      [ method ]
      **
      * Utility method
@@ -1252,10 +1252,10 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      o     }
      o ]
     \*/
-    Savage.path.intersection = pathIntersection;
-    Savage.path.intersectionNumber = pathIntersectionNumber;
+    Snap.path.intersection = pathIntersection;
+    Snap.path.intersectionNumber = pathIntersectionNumber;
     /*\
-     * Savage.path.isPointInside
+     * Snap.path.isPointInside
      [ method ]
      **
      * Utility method
@@ -1266,9 +1266,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - y (number) y of the point
      = (boolean) true, if point is inside the path
     \*/
-    Savage.path.isPointInside = isPointInsidePath;
+    Snap.path.isPointInside = isPointInsidePath;
     /*\
-     * Savage.path.getBBox
+     * Snap.path.getBBox
      [ method ]
      **
      * Utility method
@@ -1285,10 +1285,10 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      o     height: (number) height of the box
      o }
     \*/
-    Savage.path.getBBox = pathBBox;
-    Savage.path.get = getPath;
+    Snap.path.getBBox = pathBBox;
+    Snap.path.get = getPath;
     /*\
-     * Savage.path.toRelative
+     * Snap.path.toRelative
      [ method ]
      **
      * Utility method
@@ -1297,9 +1297,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - path (string) path string
      = (array) path string
     \*/
-    Savage.path.toRelative = pathToRelative;
+    Snap.path.toRelative = pathToRelative;
     /*\
-     * Savage.path.toAbsolute
+     * Snap.path.toAbsolute
      [ method ]
      **
      * Utility method
@@ -1308,9 +1308,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - path (string) path string
      = (array) path string
     \*/
-    Savage.path.toAbsolute = pathToAbsolute;
+    Snap.path.toAbsolute = pathToAbsolute;
     /*\
-     * Savage.path.toCubic
+     * Snap.path.toCubic
      [ method ]
      **
      * Utility method
@@ -1319,9 +1319,9 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - pathString (string|array) path string or array of segments
      = (array) array of segments.
     \*/
-    Savage.path.toCubic = path2curve;
+    Snap.path.toCubic = path2curve;
     /*\
-     * Savage.path.map
+     * Snap.path.map
      [ method ]
      **
      * Transform the path string with given matrix.
@@ -1329,7 +1329,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
      - matrix (object) see @Matrix
      = (string) transformed path string
     \*/
-    Savage.path.map = mapPath;
-    Savage.path.toString = toString;
-    Savage.path.clone = pathClone;
+    Snap.path.map = mapPath;
+    Snap.path.toString = toString;
+    Snap.path.clone = pathClone;
 });

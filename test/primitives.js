@@ -1,7 +1,7 @@
 describe("Primitives creation", function () {
     var s;
     beforeEach(function () {
-        s = Savage(100, 100);
+        s = Snap(100, 100);
     });
     afterEach(function () {
         s.remove();

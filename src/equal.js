@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Savage.plugin(function (Savage, Element, Paper, glob) {
+Snap.plugin(function (Snap, Element, Paper, glob) {
     var names = {},
         reUnit = /[a-z]+$/i,
         Str = String;
@@ -37,8 +37,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
     }
     function equaliseTransform(t1, t2) {
         t2 = Str(t2).replace(/\.{3}|\u2026/g, t1);
-        t1 = Savage.parseTransformString(t1) || [];
-        t2 = Savage.parseTransformString(t2) || [];
+        t1 = Snap.parseTransformString(t1) || [];
+        t2 = Snap.parseTransformString(t2) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
@@ -75,7 +75,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         };
     }
     function getColour(clr) {
-        return Savage.rgb(clr[0], clr[1], clr[2]);
+        return Snap.rgb(clr[0], clr[1], clr[2]);
     }
     function getPath(path) {
         var k = 0, i, ii, j, jj, out, a, b = [];
@@ -88,7 +88,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             out += a + "]";
             b[i] = out;
         }
-        return Function("val", "return Savage.path.toString.call([" + b + "])");
+        return Function("val", "return Snap.path.toString.call([" + b + "])");
     }
     function path2array(path) {
         var out = [];
@@ -109,8 +109,8 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             };
         }
         if (names[name] == "colour") {
-            A = Savage.color(a);
-            B = Savage.color(b);
+            A = Snap.color(a);
+            B = Snap.color(b);
             return {
                 from: [A.r, A.g, A.b, A.opacity],
                 to: [B.r, B.g, B.b, B.opacity],
@@ -122,7 +122,7 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
             return equaliseTransform(a, b);
         }
         if (name == "d" || name == "path") {
-            A = Savage.path.toCubic(a, b);
+            A = Snap.path.toCubic(a, b);
             return {
                 from: path2array(A[0]),
                 to: path2array(A[1]),

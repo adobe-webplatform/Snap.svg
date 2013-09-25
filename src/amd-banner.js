@@ -7,7 +7,7 @@
         });
     } else {
         // Browser globals (glob is window)
-        // Savage adds itself to window
+        // Snap adds itself to window
         factory(glob, glob.eve);
     }
 }(this, function (window, eve) {

@@ -15,22 +15,22 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.">
-        <title>Savage</title>
+        <title>Snap</title>
         <style media="screen">
         body {
             background: #2c4e6b;
         }
         </style>
-        <script src="dist/savage-min.js"></script>
+        <script src="dist/snap.svg-min.js"></script>
         <script>
         window.onload = function () {
             1;
-            var g = Savage("100%", "100%");
+            var g = Snap("100%", "100%");
             g.attr({
                 viewBox: [0, 0, 800, 600]
             });
             
-            Savage.load("map.svg", function (f) {
+            Snap.load("map.svg", function (f) {
                 function getShift(dot) {
                     pln.attr({
                         transform: "t" + (dot.x) + "," + (dot.y) + "r" + (dot.alpha - 90)
@@ -83,7 +83,7 @@
                     click.attr({
                         display: "none"
                     });
-                    Savage.animate(0, pth.getTotalLength(), function (l) {
+                    Snap.animate(0, pth.getTotalLength(), function (l) {
                         var dot = pth.getPointAtLength(l);
                         flight.attr({
                             d: pth.getSubpath(0, l)

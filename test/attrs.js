@@ -1,7 +1,7 @@
 describe("Attributes", function () {
     var s, r;
     beforeEach(function () {
-        s = Savage(100, 100);
+        s = Snap(100, 100);
         r = s.rect(10, 10, 50, 50);
     });
     afterEach(function () {
@@ -37,7 +37,7 @@ describe("Attributes", function () {
         var o = {};
         return function () {
             function val() {
-                return Savage.color(r.node.getAttribute(key)).hex;
+                return Snap.color(r.node.getAttribute(key)).hex;
             }
             o[key] = "#fc0";
             r.attr(o);

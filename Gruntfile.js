@@ -40,11 +40,17 @@ module.exports = function(grunt) {
                     "./src/amd-footer.js",
                 ]
             }
+        },
+        exec: {
+            dr: {
+              command: "node node_modules/dr.js/dr dr.json"
+            }
         }
     });
 
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-exec");
 
-    grunt.registerTask("default", ["concat", "uglify"]);
+    grunt.registerTask("default", ["concat", "uglify", "exec"]);
 };

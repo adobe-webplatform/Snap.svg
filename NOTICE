@@ -1,7 +1,7 @@
-Savage is licensed under the Apache license version 2.0, January 2004  (see LICENSE file).
+Snap.svg is licensed under the Apache license version 2.0, January 2004  (see LICENSE file).
 
-Savage uses the following third party libraries that may have licenses 
-differing from that of Savage itself. You can find the libraries and their
+Snap.svg uses the following third party libraries that may have licenses 
+differing from that of Snap.svg itself. You can find the libraries and their
 respective licenses below.
 
  - eve ./node_modules/eve

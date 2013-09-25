@@ -1,7 +1,7 @@
 describe("Set methods", function () {
     var s;
     beforeEach(function () {
-        s = Savage(100, 100);
+        s = Snap(100, 100);
     });
     afterEach(function () {
         s.remove();
@@ -9,7 +9,7 @@ describe("Set methods", function () {
     it("Set.clear", function() {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2);
+        var set = Snap.set(rect1, rect2);
         expect(set.length).to.be(2);
         set.clear();
         expect(set.length).to.be(0);
@@ -18,7 +18,7 @@ describe("Set methods", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
         var rect3 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2, rect3);
+        var set = Snap.set(rect1, rect2, rect3);
         expect(set.length).to.be(3);
         var excluded = set.exclude(rect2);
         expect(set.length).to.be(2);
@@ -31,7 +31,7 @@ describe("Set methods", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
         var rect3 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2, rect3);
+        var set = Snap.set(rect1, rect2, rect3);
         var i = 0;
         var arr = [rect1, rect2, rect3];
         var result = set.forEach(function(item) {
@@ -46,7 +46,7 @@ describe("Set methods", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
         var rect3 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2, rect3);
+        var set = Snap.set(rect1, rect2, rect3);
         expect(set.length).to.be(3);
         var result = set.pop();
         expect(set.length).to.be(2);
@@ -62,7 +62,7 @@ describe("Set methods", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
         var rect3 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2);
+        var set = Snap.set(rect1, rect2);
         expect(set.length).to.be(2);
         set.push(rect3);
         expect(set.length).to.be(3);
@@ -75,7 +75,7 @@ describe("Set methods", function () {
         var rect2 = s.rect(10, 20, 30, 40);
         var rect3 = s.rect(10, 20, 30, 40);
         var rect4 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2, rect3, rect4);
+        var set = Snap.set(rect1, rect2, rect3, rect4);
         var removedSet = set.splice(1, 2);
         expect(set.length).to.be(2);
         expect(set[0]).to.be(rect1);
@@ -92,7 +92,7 @@ describe("Set methods", function () {
         var rect2 = s.rect(10, 20, 30, 40);
         var rect3 = s.rect(10, 20, 30, 40);
         var rect4 = s.rect(10, 20, 30, 40);
-        var set = Savage.set(rect1, rect2, rect3);
+        var set = Snap.set(rect1, rect2, rect3);
         var removedSet = set.splice(2, 1, rect4);
         expect(set.length).to.be(3);
         expect(set[0]).to.be(rect1);

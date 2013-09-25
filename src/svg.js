@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var Savage = (function() {
-Savage.version = "0.0.1";
+var Snap = (function() {
+Snap.version = "0.0.1";
 /*\
- * Savage
+ * Snap
  [ method ]
  **
  * Creates drawing surface or wraps existing SVG element.
@@ -23,12 +23,12 @@ Savage.version = "0.0.1";
  - width (number|string) width of surface
  - height (number|string) height of surface
  * or
- - dom (SVGElement) element to be wrapped into Savage structure
+ - dom (SVGElement) element to be wrapped into Snap structure
  * or
  - query (string) CSS query selector
  = (object) @Element
 \*/
-function Savage(w, h) {
+function Snap(w, h) {
     if (w) {
         if (w.tagName) {
             return wrap(w);
@@ -45,15 +45,15 @@ function Savage(w, h) {
     h = h == null ? "100%" : h;
     return new Paper(w, h);
 }
-Savage.toString = function () {
-    return "Savage v" + this.version;
+Snap.toString = function () {
+    return "Snap v" + this.version;
 };
-Savage._ = {};
+Snap._ = {};
 var glob = {
     win: window,
     doc: window.document
 };
-Savage._.glob = glob;
+Snap._.glob = glob;
 var has = "hasOwnProperty",
     Str = String,
     toFloat = parseFloat,
@@ -118,8 +118,8 @@ function $(el, attr) {
     }
     return el;
 }
-Savage._.$ = $;
-Savage._.id = ID;
+Snap._.$ = $;
+Snap._.id = ID;
 function getAttrs(el) {
     var attrs = el.attributes,
         name,
@@ -150,7 +150,7 @@ function is(o, type) {
             objectToString.call(o).slice(8, -1).toLowerCase() == type;
 }
 /*\
- * Savage.format
+ * Snap.format
  [ method ]
  **
  * Replaces construction of type “`{<name>}`” to the corresponding argument.
@@ -160,7 +160,7 @@ function is(o, type) {
  = (string) formated string
  > Usage
  | // this will draw a rectangular shape equivalent to "M10,20h40v50h-40z"
- | paper.path(Savage.format("M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z", {
+ | paper.path(Snap.format("M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z", {
  |     x: 10,
  |     y: 20,
  |     dim: {
@@ -170,7 +170,7 @@ function is(o, type) {
  |     }
  | }));
 \*/
-Savage.format = (function () {
+Snap.format = (function () {
     var tokenRegex = /\{([^\}]+)\}/g,
         objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g, // matches .xxxxx or ["xxxxx"] to run over object properties
         replacer = function (all, key, obj) {
@@ -221,7 +221,7 @@ function clone(obj) {
     }
     return res;
 }
-Savage._.clone = clone;
+Snap._.clone = clone;
 function repush(array, item) {
     for (var i = 0, ii = array.length; i < ii; i++) if (array[i] === item) {
         return array.push(array.splice(i, 1)[0]);
@@ -244,7 +244,7 @@ function cacher(f, scope, postprocessor) {
     }
     return newf;
 }
-Savage._.cacher = cacher;
+Snap._.cacher = cacher;
 function angle(x1, y1, x2, y2, x3, y3) {
     if (x3 == null) {
         var x = x1 - x2,
@@ -271,25 +271,25 @@ function x_y_w_h() {
 }
 
 /*\
- * Savage.rad
+ * Snap.rad
  [ method ]
  **
  * Transform angle to radians
  - deg (number) angle in degrees
  = (number) angle in radians.
 \*/
-Savage.rad = rad;
+Snap.rad = rad;
 /*\
- * Savage.deg
+ * Snap.deg
  [ method ]
  **
  * Transform angle to degrees
  - deg (number) angle in radians
  = (number) angle in degrees.
 \*/
-Savage.deg = deg;
+Snap.deg = deg;
 /*\
- * Savage.angle
+ * Snap.angle
  [ method ]
  **
  * Returns angle between two or three points.
@@ -302,9 +302,9 @@ Savage.deg = deg;
  - y3 (number) #optional y coord of third point
  = (number) angle in degrees.
 \*/
-Savage.angle = angle;
+Snap.angle = angle;
 /*\
- * Savage.is
+ * Snap.is
  [ method ]
  **
  * Handfull replacement for `typeof` operator.
@@ -312,9 +312,9 @@ Savage.angle = angle;
  - type (string) name of the type, i.e. “string”, “function”, “number”, etc.
  = (boolean) is given value is of given type
 \*/
-Savage.is = is;
+Snap.is = is;
 /*\
- * Savage.snapTo
+ * Snap.snapTo
  [ method ]
  **
  * Snaps given value to given grid.
@@ -323,7 +323,7 @@ Savage.is = is;
  - tolerance (number) #optional tolerance for snapping. Default is `10`.
  = (number) adjusted value.
 \*/
-Savage.snapTo = function (values, value, tolerance) {
+Snap.snapTo = function (values, value, tolerance) {
     tolerance = is(tolerance, "finite") ? tolerance : 10;
     if (is(values, "array")) {
         var i = values.length;
@@ -592,7 +592,7 @@ function Matrix(a, b, c, d, e, f) {
     };
 })(Matrix.prototype);
 /*\
- * Savage.Matrix
+ * Snap.Matrix
  [ method ]
  **
  * Utility method
@@ -608,10 +608,10 @@ function Matrix(a, b, c, d, e, f) {
  - svgMatrix (SVGMatrix)
  = (object) @Matrix
 \*/
-Savage.Matrix = Matrix;
+Snap.Matrix = Matrix;
 // Colour
 /*\
- * Savage.getRGB
+ * Snap.getRGB
  [ method ]
  **
  * Parses colour string as RGB object
@@ -643,7 +643,7 @@ Savage.Matrix = Matrix;
  o     error (boolean) true if string cant be parsed
  o }
 \*/
-Savage.getRGB = cacher(function (colour) {
+Snap.getRGB = cacher(function (colour) {
     if (!colour || !!((colour = Str(colour)).indexOf("-") + 1)) {
         return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
     }
@@ -695,7 +695,7 @@ Savage.getRGB = cacher(function (colour) {
             (values[0].slice(-3) == "deg" || values[0].slice(-1) == "\xb0") && (red /= 360);
             rgb[1].toLowerCase().slice(0, 4) == "hsba" && (opacity = toFloat(values[3]));
             values[3] && values[3].slice(-1) == "%" && (opacity /= 100);
-            return Savage.hsb2rgb(red, green, blue, opacity);
+            return Snap.hsb2rgb(red, green, blue, opacity);
         }
         if (rgb[6]) {
             values = rgb[6].split(commaSpaces);
@@ -708,7 +708,7 @@ Savage.getRGB = cacher(function (colour) {
             (values[0].slice(-3) == "deg" || values[0].slice(-1) == "\xb0") && (red /= 360);
             rgb[1].toLowerCase().slice(0, 4) == "hsla" && (opacity = toFloat(values[3]));
             values[3] && values[3].slice(-1) == "%" && (opacity /= 100);
-            return Savage.hsl2rgb(red, green, blue, opacity);
+            return Snap.hsl2rgb(red, green, blue, opacity);
         }
         red = mmin(math.round(red), 255);
         green = mmin(math.round(green), 255);
@@ -720,9 +720,9 @@ Savage.getRGB = cacher(function (colour) {
         return rgb;
     }
     return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
-}, Savage);
+}, Snap);
 /*\
- * Savage.hsb
+ * Snap.hsb
  [ method ]
  **
  * Converts HSB values to hex representation of the colour.
@@ -731,11 +731,11 @@ Savage.getRGB = cacher(function (colour) {
  - b (number) value or brightness
  = (string) hex representation of the colour.
 \*/
-Savage.hsb = cacher(function (h, s, b) {
-    return Savage.hsb2rgb(h, s, b).hex;
+Snap.hsb = cacher(function (h, s, b) {
+    return Snap.hsb2rgb(h, s, b).hex;
 });
 /*\
- * Savage.hsl
+ * Snap.hsl
  [ method ]
  **
  * Converts HSL values to hex representation of the colour.
@@ -744,11 +744,11 @@ Savage.hsb = cacher(function (h, s, b) {
  - l (number) luminosity
  = (string) hex representation of the colour.
 \*/
-Savage.hsl = cacher(function (h, s, l) {
-    return Savage.hsl2rgb(h, s, l).hex;
+Snap.hsl = cacher(function (h, s, l) {
+    return Snap.hsl2rgb(h, s, l).hex;
 });
 /*\
- * Savage.rgb
+ * Snap.rgb
  [ method ]
  **
  * Converts RGB values to hex representation of the colour.
@@ -757,7 +757,7 @@ Savage.hsl = cacher(function (h, s, l) {
  - b (number) blue
  = (string) hex representation of the colour.
 \*/
-Savage.rgb = cacher(function (r, g, b, o) {
+Snap.rgb = cacher(function (r, g, b, o) {
     if (is(o, "finite")) {
         var round = math.round;
         return "rgba(" + [round(r), round(g), round(b), +o.toFixed(2)] + ")";
@@ -796,7 +796,7 @@ prepareRGB = function (r, g, b) {
         r = r.r;
     }
     if (g == null && is(r, string)) {
-        var clr = Savage.getRGB(r);
+        var clr = Snap.getRGB(r);
         r = clr.r;
         g = clr.g;
         b = clr.b;
@@ -818,7 +818,7 @@ packageRGB = function (r, g, b, o) {
         g: g,
         b: b,
         opacity: is(o, "finite") ? o : 1,
-        hex: Savage.rgb(r, g, b),
+        hex: Snap.rgb(r, g, b),
         toString: rgbtoString
     };
     is(o, "finite") && (rgb.opacity = o);
@@ -826,11 +826,11 @@ packageRGB = function (r, g, b, o) {
 };
 
 /*\
- * Savage.color
+ * Snap.color
  [ method ]
  **
  * Parses the color string and returns object with all values for the given color.
- - clr (string) color string in one of the supported formats (see @Savage.getRGB)
+ - clr (string) color string in one of the supported formats (see @Snap.getRGB)
  = (object) Combined RGB & HSB object in format:
  o {
  o     r (number) red,
@@ -844,17 +844,17 @@ packageRGB = function (r, g, b, o) {
  o     l (number) lightness
  o }
 \*/
-Savage.color = function (clr) {
+Snap.color = function (clr) {
     var rgb;
     if (is(clr, "object") && "h" in clr && "s" in clr && "b" in clr) {
-        rgb = Savage.hsb2rgb(clr);
+        rgb = Snap.hsb2rgb(clr);
         clr.r = rgb.r;
         clr.g = rgb.g;
         clr.b = rgb.b;
         clr.opacity = 1;
         clr.hex = rgb.hex;
     } else if (is(clr, "object") && "h" in clr && "s" in clr && "l" in clr) {
-        rgb = Savage.hsl2rgb(clr);
+        rgb = Snap.hsl2rgb(clr);
         clr.r = rgb.r;
         clr.g = rgb.g;
         clr.b = rgb.b;
@@ -862,14 +862,14 @@ Savage.color = function (clr) {
         clr.hex = rgb.hex;
     } else {
         if (is(clr, "string")) {
-            clr = Savage.getRGB(clr);
+            clr = Snap.getRGB(clr);
         }
         if (is(clr, "object") && "r" in clr && "g" in clr && "b" in clr && !("error" in clr)) {
-            rgb = Savage.rgb2hsl(clr);
+            rgb = Snap.rgb2hsl(clr);
             clr.h = rgb.h;
             clr.s = rgb.s;
             clr.l = rgb.l;
-            rgb = Savage.rgb2hsb(clr);
+            rgb = Snap.rgb2hsb(clr);
             clr.v = rgb.b;
         } else {
             clr = {hex: "none"};
@@ -881,7 +881,7 @@ Savage.color = function (clr) {
     return clr;
 };
 /*\
- * Savage.hsb2rgb
+ * Snap.hsb2rgb
  [ method ]
  **
  * Converts HSB values to RGB object.
@@ -896,7 +896,7 @@ Savage.color = function (clr) {
  o     hex (string) color in HTML/CSS format: #••••••
  o }
 \*/
-Savage.hsb2rgb = function (h, s, v, o) {
+Snap.hsb2rgb = function (h, s, v, o) {
     if (is(h, "object") && "h" in h && "s" in h && "b" in h) {
         v = h.b;
         s = h.s;
@@ -917,7 +917,7 @@ Savage.hsb2rgb = function (h, s, v, o) {
     return packageRGB(R, G, B, o);
 };
 /*\
- * Savage.hsl2rgb
+ * Snap.hsl2rgb
  [ method ]
  **
  * Converts HSL values to RGB object.
@@ -932,7 +932,7 @@ Savage.hsb2rgb = function (h, s, v, o) {
  o     hex (string) color in HTML/CSS format: #••••••
  o }
 \*/
-Savage.hsl2rgb = function (h, s, l, o) {
+Snap.hsl2rgb = function (h, s, l, o) {
     if (is(h, "object") && "h" in h && "s" in h && "l" in h) {
         l = h.l;
         s = h.s;
@@ -957,7 +957,7 @@ Savage.hsl2rgb = function (h, s, l, o) {
     return packageRGB(R, G, B, o);
 };
 /*\
- * Savage.rgb2hsb
+ * Snap.rgb2hsb
  [ method ]
  **
  * Converts RGB values to HSB object.
@@ -971,7 +971,7 @@ Savage.hsl2rgb = function (h, s, l, o) {
  o     b (number) brightness
  o }
 \*/
-Savage.rgb2hsb = function (r, g, b) {
+Snap.rgb2hsb = function (r, g, b) {
     b = prepareRGB(r, g, b);
     r = b[0];
     g = b[1];
@@ -990,7 +990,7 @@ Savage.rgb2hsb = function (r, g, b) {
     return {h: H, s: S, b: V, toString: hsbtoString};
 };
 /*\
- * Savage.rgb2hsl
+ * Snap.rgb2hsl
  [ method ]
  **
  * Converts RGB values to HSL object.
@@ -1004,7 +1004,7 @@ Savage.rgb2hsb = function (r, g, b) {
  o     l (number) luminosity
  o }
 \*/
-Savage.rgb2hsl = function (r, g, b) {
+Snap.rgb2hsl = function (r, g, b) {
     b = prepareRGB(r, g, b);
     r = b[0];
     g = b[1];
@@ -1028,7 +1028,7 @@ Savage.rgb2hsl = function (r, g, b) {
 
 // Transformations
 /*\
- * Savage.parsePathString
+ * Snap.parsePathString
  [ method ]
  **
  * Utility method
@@ -1037,19 +1037,19 @@ Savage.rgb2hsl = function (r, g, b) {
  - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
  = (array) array of segments.
 \*/
-Savage.parsePathString = function (pathString) {
+Snap.parsePathString = function (pathString) {
     if (!pathString) {
         return null;
     }
-    var pth = Savage.path(pathString);
+    var pth = Snap.path(pathString);
     if (pth.arr) {
-        return Savage.path.clone(pth.arr);
+        return Snap.path.clone(pth.arr);
     }
     
     var paramCounts = {a: 7, c: 6, o: 2, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, u: 3, z: 0},
         data = [];
     if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
-        data = Savage.path.clone(pathString);
+        data = Snap.path.clone(pathString);
     }
     if (!data.length) {
         Str(pathString).replace(pathCommand, function (a, b, c) {
@@ -1076,12 +1076,12 @@ Savage.parsePathString = function (pathString) {
             }
         });
     }
-    data.toString = Savage.path.toString;
-    pth.arr = Savage.path.clone(data);
+    data.toString = Snap.path.toString;
+    pth.arr = Snap.path.clone(data);
     return data;
 };
 /*\
- * Savage.parseTransformString
+ * Snap.parseTransformString
  [ method ]
  **
  * Utility method
@@ -1090,14 +1090,14 @@ Savage.parsePathString = function (pathString) {
  - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
  = (array) array of transformations.
 \*/
-var parseTransformString = Savage.parseTransformString = function (TString) {
+var parseTransformString = Snap.parseTransformString = function (TString) {
     if (!TString) {
         return null;
     }
     var paramCounts = {r: 3, s: 4, t: 2, m: 6},
         data = [];
     if (is(TString, "array") && is(TString[0], "array")) { // rough assumption
-        data = Savage.path.clone(TString);
+        data = Snap.path.clone(TString);
     }
     if (!data.length) {
         Str(TString).replace(tCommand, function (a, b, c) {
@@ -1109,7 +1109,7 @@ var parseTransformString = Savage.parseTransformString = function (TString) {
             data.push([b].concat(params));
         });
     }
-    data.toString = Savage.path.toString;
+    data.toString = Snap.path.toString;
     return data;
 };
 function svgTransform2string(tstr) {
@@ -1248,23 +1248,23 @@ function extractTransform(el, tstr) {
         _.dirtyT = 1;
     }
 }
-Savage._unit2px = unit2px;
+Snap._unit2px = unit2px;
 function getSomeDefs(el) {
-    if (Savage._.someDefs) {
-        return Savage._.someDefs;
+    if (Snap._.someDefs) {
+        return Snap._.someDefs;
     }
     var p = el.paper ||
-            (el.node.parentNode && Savage(el.node.parentNode)) ||
-            Savage.select("svg") ||
-            Savage(0, 0),
+            (el.node.parentNode && Snap(el.node.parentNode)) ||
+            Snap.select("svg") ||
+            Snap(0, 0),
         defs = p.select("defs").node;
     if (!defs) {
         defs = make("defs", p.node).node;
     }
-    Savage._.someDefs = defs;
+    Snap._.someDefs = defs;
     return defs;
 }
-Savage._.getSomeDefs = getSomeDefs;
+Snap._.getSomeDefs = getSomeDefs;
 function unit2px(el, name, value) {
     var defs = getSomeDefs(el),
         out = {},
@@ -1349,27 +1349,27 @@ function unit2px(el, name, value) {
     return out;
 }
 /*\
- * Savage.select
+ * Snap.select
  [ method ]
  **
  * Wraps DOM element specified by CSS selector as @Element
  - query (string) CSS selector of the element
  = (Element)
 \*/
-Savage.select = function (query) {
+Snap.select = function (query) {
     return wrap(glob.doc.querySelector(query));
 };
 /*\
- * Savage.selectAll
+ * Snap.selectAll
  [ method ]
  **
  * Wraps DOM elements specified by CSS selector as set or array of @Element
  - query (string) CSS selector of the element
  = (Element)
 \*/
-Savage.selectAll = function (query) {
+Snap.selectAll = function (query) {
     var nodelist = glob.doc.querySelectorAll(query),
-        set = (Savage.set || Array)();
+        set = (Snap.set || Array)();
     for (var i = 0; i < nodelist.length; i++) {
         set.push(wrap(nodelist[i]));
     }
@@ -1394,13 +1394,13 @@ function add2group(list) {
         }
     }
     var children = node.childNodes;
-    for (i = 0; i < children.length; i++) if (children[i].savage) {
-        this[j++] = hub[children[i].savage];
+    for (i = 0; i < children.length; i++) if (children[i].snap) {
+        this[j++] = hub[children[i].snap];
     }
 }
 function Element(el) {
-    if (el.savage in hub) {
-        return hub[el.savage];
+    if (el.snap in hub) {
+        return hub[el.snap];
     }
     var id = this.id = ID(),
         svg;
@@ -1422,7 +1422,7 @@ function Element(el) {
         dy: 0,
         dirty: 1
     };
-    el.savage = id;
+    el.snap = id;
     hub[id] = this;
     if (this.type == "g") {
         this.add = add2group;
@@ -1474,12 +1474,12 @@ function arrayFirstValue(arr) {
                 json[params] = value;
                 params = json;
             } else {
-                return arrayFirstValue(eve("savage.util.getattr."+params, el));
+                return arrayFirstValue(eve("snap.util.getattr."+params, el));
             }
         }
         for (var att in params) {
             if (params[has](att)) {
-                eve("savage.util.attr." + att, el, params[att]);
+                eve("snap.util.attr." + att, el, params[att]);
             }
         }
         return el;
@@ -1520,23 +1520,23 @@ function arrayFirstValue(arr) {
         var _ = el._;
         if (isWithoutTransform) {
             if (_.dirty || !_.bboxwt) {
-                el.realPath = Savage.path.get[el.type](el);
-                _.bboxwt = Savage.path.getBBox(el.realPath);
+                el.realPath = Snap.path.get[el.type](el);
+                _.bboxwt = Snap.path.getBBox(el.realPath);
                 _.bboxwt.toString = x_y_w_h;
                 _.dirty = 0;
             }
-            return Savage._.box(_.bboxwt);
+            return Snap._.box(_.bboxwt);
         }
         if (_.dirty || _.dirtyT || !_.bbox) {
             if (_.dirty || !el.realPath) {
                 _.bboxwt = 0;
-                el.realPath = Savage.path.get[el.type](el);
+                el.realPath = Snap.path.get[el.type](el);
             }
-            _.bbox = Savage.path.getBBox(Savage.path.map(el.realPath, el.matrix));
+            _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, el.matrix));
             _.bbox.toString = x_y_w_h;
             _.dirty = _.dirtyT = 0;
         }
-        return Savage._.box(_.bbox);
+        return Snap._.box(_.bbox);
     };
     var propString = function () {
         return this.local;
@@ -1547,7 +1547,7 @@ function arrayFirstValue(arr) {
      **
      * Gets or sets transformation of the element
      **
-     - tstr (string) transform string in Savage or SVG format
+     - tstr (string) transform string in Snap or SVG format
      = (Element)
      * or
      = (object) transformation descriptor:
@@ -1746,7 +1746,7 @@ function arrayFirstValue(arr) {
     \*/
     elproto.selectAll = function (query) {
         var nodelist = this.node.querySelectorAll(query),
-            set = (Savage.set || Array)();
+            set = (Snap.set || Array)();
         for (var i = 0; i < nodelist.length; i++) {
             set.push(wrap(nodelist[i]));
         }
@@ -1998,7 +1998,7 @@ function arrayFirstValue(arr) {
         callback && (this.callback = callback);
     };
     /*\
-     * Savage.animation
+     * Snap.animation
      [ method ]
      **
      * Creates animation object.
@@ -2009,7 +2009,7 @@ function arrayFirstValue(arr) {
      - callback (function) #optional callback
      = (object) animation object
     \*/
-    Savage.animation = function (attr, ms, easing, callback) {
+    Snap.animation = function (attr, ms, easing, callback) {
         return new Animation(attr, ms, easing, callback);
     };
     /*\
@@ -2046,7 +2046,7 @@ function arrayFirstValue(arr) {
         return res;
     };
     /*\
-     * Savage.animate
+     * Snap.animate
      [ method ]
      **
      * Runs generic animation of one number into another with a caring function.
@@ -2067,7 +2067,7 @@ function arrayFirstValue(arr) {
      o     stop (function) stops the animation
      o }
     \*/
-    Savage.animate = function (from, to, setter, ms, easing, callback) {
+    Snap.animate = function (from, to, setter, ms, easing, callback) {
         if (typeof easing == "function" && !easing.length) {
             callback = easing;
             easing = mina.linear;
@@ -2178,17 +2178,17 @@ function arrayFirstValue(arr) {
     elproto.data = function (key, value) {
         var data = eldata[this.id] = eldata[this.id] || {};
         if (arguments.length == 1) {
-            if (Savage.is(key, "object")) {
+            if (Snap.is(key, "object")) {
                 for (var i in key) if (key[has](i)) {
                     this.data(i, key[i]);
                 }
                 return this;
             }
-            eve("savage.data.get." + this.id, this, data[key], key);
+            eve("snap.data.get." + this.id, this, data[key], key);
             return data[key];
         }
         data[key] = value;
-        eve("savage.data.set." + this.id, this, value, key);
+        eve("snap.data.set." + this.id, this, value, key);
         return this;
     };
     /*\
@@ -2253,7 +2253,7 @@ function arrayFirstValue(arr) {
     }
 }(Element.prototype));
 /*\
- * Savage.parse
+ * Snap.parse
  [ method ]
  **
  * Parses SVG fragment and converts it into @Fragment.
@@ -2261,7 +2261,7 @@ function arrayFirstValue(arr) {
  - svg (string) SVG string
  = (Fragment) the fragment
 \*/
-Savage.parse = function (svg) {
+Snap.parse = function (svg) {
     var f = glob.doc.createDocumentFragment(),
         pointer = f;
     eve.on("elemental.tag", function (data, extra, raw) {
@@ -2278,7 +2278,7 @@ Savage.parse = function (svg) {
     });
     eve.on("elemental.eof", function () {
         eve.off("elemental.*");
-        eve("savage.parsed", f);
+        eve("snap.parsed", f);
     });
     elemental().parse(svg).end();
     return new Fragment(f);
@@ -2301,7 +2301,7 @@ Fragment.prototype.select = Element.prototype.select;
 \*/
 Fragment.prototype.selectAll = Element.prototype.selectAll;
 /*\
- * Savage.fragment
+ * Snap.fragment
  [ method ]
  **
  * Creates DOM fragment from given list of elements or strings
@@ -2309,7 +2309,7 @@ Fragment.prototype.selectAll = Element.prototype.selectAll;
  - varargs (…) SVG string
  = (Fragment) the @Fragment
 \*/
-Savage.fragment = function () {
+Snap.fragment = function () {
     var args = Array.prototype.slice.call(arguments, 0),
         f = glob.doc.createDocumentFragment();
     for (var i = 0, ii = args.length; i < ii; i++) {
@@ -2321,7 +2321,7 @@ Savage.fragment = function () {
             f.appendChild(item);
         }
         if (typeof item == "string") {
-            f.appendChild(Savage.parse(item).node);
+            f.appendChild(Snap.parse(item).node);
         }
     }
     return new Fragment(f);
@@ -2340,15 +2340,15 @@ function Paper(w, h) {
         defs,
         proto = Paper.prototype;
     if (w && w.tagName == "svg") {
-        if (w.savage in hub) {
-            return hub[w.savage];
+        if (w.snap in hub) {
+            return hub[w.snap];
         }
         res = new Element(w);
         desc = w.getElementsByTagName("desc")[0];
         defs = w.getElementsByTagName("defs")[0];
         if (!desc) {
             desc = $("desc");
-            desc.appendChild(glob.doc.createTextNode("Created with Savage"));
+            desc.appendChild(glob.doc.createTextNode("Created with Snap"));
             res.node.appendChild(desc);
         }
         if (!defs) {
@@ -2392,7 +2392,7 @@ function GaddStop(color, offset) {
         attr = {
             offset: +offset + "%"
         };
-    color = Savage.color(color);
+    color = Snap.color(color);
     attr["stop-color"] = color.hex;
     if (color.opacity < 1) {
         attr["stop-opacity"] = color.opacity;
@@ -2407,16 +2407,16 @@ function GgetBBox() {
             x2 = $(this.node, "x2") || 1,
             y1 = $(this.node, "y1") || 0,
             y2 = $(this.node, "y2") || 0;
-        return Savage._.box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
+        return Snap._.box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
     } else {
         var cx = this.node.cx || .5,
             cy = this.node.cy || .5,
             r = this.node.r || 0;
-        return Savage._.box(cx - r, cy - r, r * 2, r * 2);
+        return Snap._.box(cx - r, cy - r, r * 2, r * 2);
     }
 }
 function gradient(defs, str) {
-    var grad = arrayFirstValue(eve("savage.util.grad.parse", null, str)),
+    var grad = arrayFirstValue(eve("snap.util.grad.parse", null, str)),
         el;
     if (!grad) {
         return null;
@@ -2763,8 +2763,8 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      = (object) Element object with type “text”
      **
      > Usage
-     | var t1 = paper.text(50, 50, "Savage");
-     | var t2 = paper.text(50, 50, ["S","a","v","a","g","e"]);
+     | var t1 = paper.text(50, 50, "Snap");
+     | var t2 = paper.text(50, 50, ["S","n","a","p"]);
     \*/
     proto.text = function (x, y, text) {
         var el = make("text", this.node);
@@ -2925,7 +2925,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
 
 // simple ajax
 /*\
- * Savage.ajax
+ * Snap.ajax
  [ method ]
  **
  * Simple implementation of Ajax.
@@ -2940,7 +2940,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
  - scope (object) #optional scope of callback
  = (XMLHttpRequest) XMLHttpRequest (just in case)
 \*/
-Savage.ajax = function (url, postData, callback, scope){
+Snap.ajax = function (url, postData, callback, scope){
     var req = new XMLHttpRequest,
         id = ID();
     if (req) {
@@ -2961,13 +2961,13 @@ Savage.ajax = function (url, postData, callback, scope){
             req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         }
         if (callback) {
-            eve.once("savage.ajax." + id + ".0", callback);
-            eve.once("savage.ajax." + id + ".200", callback);
-            eve.once("savage.ajax." + id + ".304", callback);
+            eve.once("snap.ajax." + id + ".0", callback);
+            eve.once("snap.ajax." + id + ".200", callback);
+            eve.once("snap.ajax." + id + ".304", callback);
         }
         req.onreadystatechange = function() {
             if (req.readyState != 4) return;
-            eve("savage.ajax." + id + "." + req.status, scope, req);
+            eve("snap.ajax." + id + "." + req.status, scope, req);
         };
         if (req.readyState == 4) {
             return req;
@@ -2977,24 +2977,24 @@ Savage.ajax = function (url, postData, callback, scope){
     }
 };
 /*\
- * Savage.load
+ * Snap.load
  [ method ]
  **
- * Loads external SVG file as a @Fragment. For more advanced AJAX see @Savage.ajax.
+ * Loads external SVG file as a @Fragment. For more advanced AJAX see @Snap.ajax.
  **
  - url (string) URL
  - callback (function) callback
  - scope (object) #optional scope of callback
 \*/
-Savage.load = function (url, callback, scope) {
-    Savage.ajax(url, function (req) {
-        var f = Savage.parse(req.responseText);
+Snap.load = function (url, callback, scope) {
+    Snap.ajax(url, function (req) {
+        var f = Snap.parse(req.responseText);
         scope ? callback.call(scope, f) : callback(f);
     });
 };
 
 // Attributes event handlers
-eve.on("savage.util.attr.mask", function (value) {
+eve.on("snap.util.attr.mask", function (value) {
     if (value instanceof Element || value instanceof Fragment) {
         eve.stop();
         if (value instanceof Fragment && value.node.childNodes.length == 1) {
@@ -3017,9 +3017,9 @@ eve.on("savage.util.attr.mask", function (value) {
     }
 });
 (function (clipIt) {
-    eve.on("savage.util.attr.clip", clipIt);
-    eve.on("savage.util.attr.clip-path", clipIt);
-    eve.on("savage.util.attr.clipPath", clipIt);
+    eve.on("snap.util.attr.clip", clipIt);
+    eve.on("snap.util.attr.clip-path", clipIt);
+    eve.on("snap.util.attr.clipPath", clipIt);
 }(function (value) {
     if (value instanceof Element || value instanceof Fragment) {
         eve.stop();
@@ -3061,7 +3061,7 @@ function fillStroke(name) {
                 fill = value.attr(name);
             }
         } else {
-            fill = Savage.color(value);
+            fill = Snap.color(value);
             if (fill.error) {
                 var grad = gradient(getSomeDefs(this), value);
                 if (grad) {
@@ -3084,10 +3084,10 @@ function fillStroke(name) {
         this.node.style[name] = E;
     };
 }
-eve.on("savage.util.attr.fill", fillStroke("fill"));
-eve.on("savage.util.attr.stroke", fillStroke("stroke"));
+eve.on("snap.util.attr.fill", fillStroke("fill"));
+eve.on("snap.util.attr.stroke", fillStroke("stroke"));
 var gradrg = /^([lr])(?:\(([^)]*)\))?(.*)$/i;
-eve.on("savage.util.grad.parse", function parseGrad(string) {
+eve.on("snap.util.grad.parse", function parseGrad(string) {
     string = Str(string);
     var tokens = string.match(gradrg);
     if (!tokens) {
@@ -3120,18 +3120,18 @@ eve.on("savage.util.grad.parse", function parseGrad(string) {
     };
 });
 
-eve.on("savage.util.attr.d", function (value) {
+eve.on("snap.util.attr.d", function (value) {
     eve.stop();
     if (is(value, "array") && is(value[0], "array")) {
-        value = Savage.path.toString.call(value);
+        value = Snap.path.toString.call(value);
     }
     value = Str(value);
     if (value.match(/[ruo]/i)) {
-        value = Savage.path.toAbsolute(value);
+        value = Snap.path.toAbsolute(value);
     }
     $(this.node, {d: value});
 })(-1);
-eve.on("savage.util.attr.#text", function (value) {
+eve.on("snap.util.attr.#text", function (value) {
     eve.stop();
     value = Str(value);
     var txt = glob.doc.createTextNode(value);
@@ -3140,11 +3140,11 @@ eve.on("savage.util.attr.#text", function (value) {
     }
     this.node.appendChild(txt);
 })(-1);
-eve.on("savage.util.attr.path", function (value) {
+eve.on("snap.util.attr.path", function (value) {
     eve.stop();
     this.attr({d: value});
 })(-1);
-eve.on("savage.util.attr.viewBox", function (value) {
+eve.on("snap.util.attr.viewBox", function (value) {
     var vb;
     if (is(value, "object") && "x" in value) {
         vb = [value.x, value.y, value.width, value.height].join(" ");
@@ -3158,11 +3158,11 @@ eve.on("savage.util.attr.viewBox", function (value) {
     });
     eve.stop();
 })(-1);
-eve.on("savage.util.attr.transform", function (value) {
+eve.on("snap.util.attr.transform", function (value) {
     this.transform(value);
     eve.stop();
 })(-1);
-eve.on("savage.util.attr.r", function (value) {
+eve.on("snap.util.attr.r", function (value) {
     if (this.type == "rect") {
         eve.stop();
         $(this.node, {
@@ -3171,7 +3171,7 @@ eve.on("savage.util.attr.r", function (value) {
         });
     }
 })(-1);
-eve.on("savage.util.attr.text", function (value) {
+eve.on("snap.util.attr.text", function (value) {
     if (this.type == "text") {
         var i = 0,
             node = this.node,
@@ -3587,7 +3587,7 @@ availableAttributes.feFuncR = availableAttributes.feFuncG = availableAttributes.
     exponent: 0,
     offset: 0
 };
-eve.on("savage.util.attr", function (value) {
+eve.on("snap.util.attr", function (value) {
     var att = eve.nt();
     att = att.substring(att.lastIndexOf(".") + 1);
     var style = att.replace(/-(\w)/gi, function (all, letter) {
@@ -3599,7 +3599,7 @@ eve.on("savage.util.attr", function (value) {
         this.node.style[style] = value == null ? E : value;
     }
 });
-eve.on("savage.util.getattr.transform", function () {
+eve.on("snap.util.getattr.transform", function () {
     eve.stop();
     return this.transform();
 })(-1);
@@ -3612,7 +3612,7 @@ eve.on("savage.util.getattr.transform", function () {
             if (style == "none") {
                 return style;
             } else {
-                return Savage(glob.doc.getElementById(style.match(reURLValue)[1]));
+                return Snap(glob.doc.getElementById(style.match(reURLValue)[1]));
             }
         };
     }
@@ -3634,20 +3634,20 @@ eve.on("savage.util.getattr.transform", function () {
             }
         };
     }
-    eve.on("savage.util.getattr.marker-end", getter("end"))(-1);
-    eve.on("savage.util.getattr.markerEnd", getter("end"))(-1);
-    eve.on("savage.util.getattr.marker-start", getter("start"))(-1);
-    eve.on("savage.util.getattr.markerStart", getter("start"))(-1);
-    eve.on("savage.util.getattr.marker-mid", getter("mid"))(-1);
-    eve.on("savage.util.getattr.markerMid", getter("mid"))(-1);
-    eve.on("savage.util.attr.marker-end", setter("end"))(-1);
-    eve.on("savage.util.attr.markerEnd", setter("end"))(-1);
-    eve.on("savage.util.attr.marker-start", setter("start"))(-1);
-    eve.on("savage.util.attr.markerStart", setter("start"))(-1);
-    eve.on("savage.util.attr.marker-mid", setter("mid"))(-1);
-    eve.on("savage.util.attr.markerMid", setter("mid"))(-1);
+    eve.on("snap.util.getattr.marker-end", getter("end"))(-1);
+    eve.on("snap.util.getattr.markerEnd", getter("end"))(-1);
+    eve.on("snap.util.getattr.marker-start", getter("start"))(-1);
+    eve.on("snap.util.getattr.markerStart", getter("start"))(-1);
+    eve.on("snap.util.getattr.marker-mid", getter("mid"))(-1);
+    eve.on("snap.util.getattr.markerMid", getter("mid"))(-1);
+    eve.on("snap.util.attr.marker-end", setter("end"))(-1);
+    eve.on("snap.util.attr.markerEnd", setter("end"))(-1);
+    eve.on("snap.util.attr.marker-start", setter("start"))(-1);
+    eve.on("snap.util.attr.markerStart", setter("start"))(-1);
+    eve.on("snap.util.attr.marker-mid", setter("mid"))(-1);
+    eve.on("snap.util.attr.markerMid", setter("mid"))(-1);
 }());
-eve.on("savage.util.getattr.r", function () {
+eve.on("snap.util.getattr.r", function () {
     if (this.type == "rect" && $(this.node, "rx") == $(this.node, "ry")) {
         eve.stop();
         return $(this.node, "rx");
@@ -3671,34 +3671,34 @@ function textExtract(node) {
     }
     return out;
 }
-eve.on("savage.util.getattr.text", function () {
+eve.on("snap.util.getattr.text", function () {
     if (this.type == "text" || this.type == "tspan") {
         eve.stop();
         var out = textExtract(this.node);
         return out.length == 1 ? out[0] : out;
     }
 })(-1);
-eve.on("savage.util.getattr.#text", function () {
+eve.on("snap.util.getattr.#text", function () {
     return this.node.textContent;
 })(-1);
-eve.on("savage.util.getattr.viewBox", function () {
+eve.on("snap.util.getattr.viewBox", function () {
     eve.stop();
     var vb = $(this.node, "viewBox").split(separator);
-    return Savage._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
+    return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
     // TODO: investigate why I need to z-index it
 })(-1);
-eve.on("savage.util.getattr.points", function () {
+eve.on("snap.util.getattr.points", function () {
     var p = $(this.node, "points");
     eve.stop();
     return p.split(separator);
 });
-eve.on("savage.util.getattr.path", function () {
+eve.on("snap.util.getattr.path", function () {
     var p = $(this.node, "d");
     eve.stop();
     return p;
 });
 // default
-eve.on("savage.util.getattr", function () {
+eve.on("snap.util.getattr", function () {
     var att = eve.nt();
     att = att.substring(att.lastIndexOf(".") + 1);
     var style = att.replace(/-(\w)/gi, function (all, letter) {
@@ -3710,9 +3710,9 @@ eve.on("savage.util.getattr", function () {
         return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(style);
     }
 });
-Savage.plugin = function (f) {
-    f(Savage, Element, Paper, glob);
+Snap.plugin = function (f) {
+    f(Snap, Element, Paper, glob);
 };
-glob.win.Savage = Savage;
-return Savage;
+glob.win.Snap = Snap;
+return Snap;
 }());

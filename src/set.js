@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Savage.plugin(function (Savage, Element, Paper, glob) {
+Snap.plugin(function (Snap, Element, Paper, glob) {
     var mmax = Math.max,
         mmin = Math.min;
 
@@ -193,11 +193,11 @@ Savage.plugin(function (Savage, Element, Paper, glob) {
         return s;
     };
     setproto.toString = function () {
-        return "Savage\u2018s set";
+        return "Snap\u2018s set";
     };
     setproto.type = "set";
     // export
-    Savage.set = function () {
+    Snap.set = function () {
         var set = new Set;
         if (arguments.length) {
             set.push.apply(set, Array.prototype.slice.call(arguments, 0));

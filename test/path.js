@@ -1,9 +1,9 @@
 describe("Path methods", function () {
-    it("Savage.path.getTotalLength", function () {
-        expect(+Savage.path.getTotalLength("M0,0 100,0").toFixed(2)).to.be(100);
+    it("Snap.path.getTotalLength", function () {
+        expect(+Snap.path.getTotalLength("M0,0 100,0").toFixed(2)).to.be(100);
     });
-    it("Savage.path.getPointAtLength", function () {
-        expect(Savage.path.getPointAtLength("M0,0 100,0", 50)).to.eql({
+    it("Snap.path.getPointAtLength", function () {
+        expect(Snap.path.getPointAtLength("M0,0 100,0", 50)).to.eql({
             x: 50,
             y: 0,
             m: {
@@ -25,13 +25,13 @@ describe("Path methods", function () {
             alpha: 180
         });
     });
-    it("Savage.path.getSubpath", function () {
-        expect(Savage.path.getSubpath("M0,0 100,0", 10, 90)).to.be("M9.995,0C29.153,0,70.839,0,90,0");
-        expect(Savage.path.getSubpath("M0,0 100,0", 0, 90)).to.be("M0,0C0,0,64.674,0,90,0");
-        expect(Savage.path.getSubpath("M0,0 100,0", 10, 120)).to.be("M10,0C35.326,0,100,0,100,0");
+    it("Snap.path.getSubpath", function () {
+        expect(Snap.path.getSubpath("M0,0 100,0", 10, 90)).to.be("M9.995,0C29.153,0,70.839,0,90,0");
+        expect(Snap.path.getSubpath("M0,0 100,0", 0, 90)).to.be("M0,0C0,0,64.674,0,90,0");
+        expect(Snap.path.getSubpath("M0,0 100,0", 10, 120)).to.be("M10,0C35.326,0,100,0,100,0");
     });
-    it("Savage.path.findDotsAtSegment", function () {
-        expect(Savage.path.findDotsAtSegment(0,0,0,0,100,0,100,0,.5)).to.eql({
+    it("Snap.path.findDotsAtSegment", function () {
+        expect(Snap.path.findDotsAtSegment(0,0,0,0,100,0,100,0,.5)).to.eql({
             x: 50,
             y: 0,
             m: {
@@ -53,8 +53,8 @@ describe("Path methods", function () {
             alpha: 180
         });
     });
-    it("Savage.path.bezierBBox - params", function () {
-        var bbox = Savage.path.bezierBBox(10, 10, 10, 20, 110, 0, 110, 10);
+    it("Snap.path.bezierBBox - params", function () {
+        var bbox = Snap.path.bezierBBox(10, 10, 10, 20, 110, 0, 110, 10);
         expect(bbox.cx).to.be(60);
         expect(bbox.cy).to.be(10);
         expect(bbox.x).to.be(10);
@@ -62,8 +62,8 @@ describe("Path methods", function () {
         expect(bbox.width).to.be(100);
         expect(bbox.x2).to.be(110);
     });
-    it("Savage.path.bezierBBox - array", function () {
-        var bbox = Savage.path.bezierBBox([10, 10, 10, 20, 110, 0, 110, 10]);
+    it("Snap.path.bezierBBox - array", function () {
+        var bbox = Snap.path.bezierBBox([10, 10, 10, 20, 110, 0, 110, 10]);
         expect(bbox.cx).to.be(60);
         expect(bbox.cy).to.be(10);
         expect(bbox.x).to.be(10);
@@ -71,9 +71,9 @@ describe("Path methods", function () {
         expect(bbox.width).to.be(100);
         expect(bbox.x2).to.be(110);
     });
-    it("Savage.path.getBBox", function() {
+    it("Snap.path.getBBox", function() {
         // same as 10,20,30,40 rect
-        var bbox = Savage.path.getBBox("M10,20h30v40h-30z");
+        var bbox = Snap.path.getBBox("M10,20h30v40h-30z");
         expect(bbox.x).to.eql(10);
         expect(bbox.y).to.eql(20);
         expect(bbox.width).to.eql(30);
@@ -81,13 +81,13 @@ describe("Path methods", function () {
         expect(bbox.x2).to.eql(10 + 30);
         expect(bbox.y2).to.eql(20 + 40);
     });
-    it("Savage.path.isPointInsideBBox", function () {
-        expect(Savage.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 5, 5)).to.be(true);
-        expect(Savage.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 10, 5)).to.be(true);
-        expect(Savage.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 10, 10)).to.be(true);
+    it("Snap.path.isPointInsideBBox", function () {
+        expect(Snap.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 5, 5)).to.be(true);
+        expect(Snap.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 10, 5)).to.be(true);
+        expect(Snap.path.isPointInsideBBox({x: 0, y: 0, width: 10, height: 10}, 10, 10)).to.be(true);
     });
-    it("Savage.path.isBBoxIntersect", function () {
-        expect(Savage.path.isBBoxIntersect({
+    it("Snap.path.isBBoxIntersect", function () {
+        expect(Snap.path.isBBoxIntersect({
                 x: 0,
                 y: 0,
                 width: 10,
@@ -98,7 +98,7 @@ describe("Path methods", function () {
                 width: 15,
                 height: 15
             })).to.be(true);
-        expect(Savage.path.isBBoxIntersect({
+        expect(Snap.path.isBBoxIntersect({
                 x: 0,
                 y: 0,
                 width: 10,
@@ -109,7 +109,7 @@ describe("Path methods", function () {
                 width: 7,
                 height: 7
             })).to.be(true);
-        expect(Savage.path.isBBoxIntersect({
+        expect(Snap.path.isBBoxIntersect({
                 x: 0,
                 y: 0,
                 width: 10,
@@ -121,7 +121,7 @@ describe("Path methods", function () {
                 height: 10
             })).to.be(false);
     });
-    it("Savage.path.toAbsolute", function() {
+    it("Snap.path.toAbsolute", function() {
         var relPath = "M 10 10" +
                         "h 40" +
                         "v 30" +
@@ -143,7 +143,7 @@ describe("Path methods", function () {
                         "t 20 0" +
                         "m -40 30" +
                         "a 10 10 0 0 0 40 0";
-        var absPath = Savage.path.toAbsolute(relPath);
+        var absPath = Snap.path.toAbsolute(relPath);
         var i = 0;
         var checkNext = function(arr) {
             expect(absPath[i++]).to.eql(arr);
@@ -170,7 +170,7 @@ describe("Path methods", function () {
         checkNext(['M', 80, 80]);
         checkNext(['A', 10, 10, 0, 0, 0, 120, 80]);
     });
-    it("Savage.path.toRelative", function() {
+    it("Snap.path.toRelative", function() {
         var absPath = "M10 10 H 50 V 40 H 10 L 10 10" +
                     "M10 50 L 40 50 L 40 90 L 10 90" +
                     "M10 100 C 30 120, 50 120, 50 100" +
@@ -178,7 +178,7 @@ describe("Path methods", function () {
                     "M80 10 Q 110 40, 140 10" +
                     "M80 50 Q 90 70, 100 50 T 120 50" +
                     "M80 80 A 10 10 0 0 0 120 80";
-        var relPath = Savage.path.toRelative(absPath);
+        var relPath = Snap.path.toRelative(absPath);
         var i = 0;
         var checkNext = function(arr) {
             expect(relPath[i++]).to.eql(arr);
@@ -206,7 +206,7 @@ describe("Path methods", function () {
         checkNext(['m', -40, 30]);
         checkNext(['a', 10, 10, 0, 0, 0, 40, 0]);
     });
-    it("Savage.path.toCubic", function() {
+    it("Snap.path.toCubic", function() {
         var absPath = "M10 10 H 50 V 40 H 10 L 10 10" +
                     "M10 50 L 40 50 L 40 90 L 10 90" +
                     "M10 100 C 30 120, 50 120, 50 100" +
@@ -235,8 +235,8 @@ describe("Path methods", function () {
                         "t 20 0" +
                         "m -40 30" +
                         "a 10 10 0 0 0 40 0";
-        var cubicPathFromAbs = Savage.path.toCubic(absPath);
-        var cubicPathFromRel = Savage.path.toCubic(relPath);
+        var cubicPathFromAbs = Snap.path.toCubic(absPath);
+        var cubicPathFromRel = Snap.path.toCubic(relPath);
         var i = 0;
         var checkNext = function(arr) {
             expect(cubicPathFromAbs[i]).to.eql(arr);
@@ -268,7 +268,7 @@ describe("Path methods", function () {
         checkNext(['C', 116.18802153517007, 93.74785217660714, 120, 87.14531179816328, 120, 80]);
         
     });
-    it("Savage.path.map", function() {
+    it("Snap.path.map", function() {
         var absPath = "M10 10 H 50 V 40 H 10 L 10 10" +
                     "M10 50 L 40 50 L 40 90 L 10 90" +
                     "M10 100 C 30 120, 50 120, 50 100" +
@@ -276,8 +276,8 @@ describe("Path methods", function () {
                     "M80 10 Q 110 40, 140 10" +
                     "M80 50 Q 90 70, 100 50 T 120 50" +
                     "M80 80 A 10 10 0 0 0 120 80";
-        var matrix = new Savage.Matrix(1, 0, 0, 1, 1000, 0);
-        var transformedPath = Savage.path.map(absPath, matrix);
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 1000, 0);
+        var transformedPath = Snap.path.map(absPath, matrix);
         
         var i = 0;
         var checkNext = function(arr) {
@@ -306,7 +306,7 @@ describe("Path methods", function () {
         checkNext(['C', 1080, 95.39600717839002, 1096.66666666666667, 105.01851166488379, 1110, 97.32050807568878]);
         checkNext(['C', 1116.18802153517007, 93.74785217660714, 1120, 87.14531179816328, 1120, 80]);
     });
-    it("Savage.path.isPointInside", function () {
+    it("Snap.path.isPointInside", function () {
         var path = "M10 10 H 50 V 40 H 10 L 10 10 Z" +
             "M10 50 L 40 50 L 40 90 L 10 90 Z" +
             "M10 100 C 30 120, 50 120, 50 100 Z" +
@@ -315,37 +315,37 @@ describe("Path methods", function () {
             "M80 50 Q 90 70, 100 50 T 120 50 Z" +
             "M80 80 A 10 10 0 0 0 120 80 Z";
         
-        expect(Savage.path.isPointInside(path, 15, 35)).to.be(true);
-        expect(Savage.path.isPointInside(path, 35, 75)).to.be(true);
-        expect(Savage.path.isPointInside(path, 15, 102)).to.be(true);
-        expect(Savage.path.isPointInside(path, 15, 135)).to.be(true);
-        expect(Savage.path.isPointInside(path, 50, 145)).to.be(true);
-        expect(Savage.path.isPointInside(path, 130, 15)).to.be(true);
-        expect(Savage.path.isPointInside(path, 110, 45)).to.be(true);
-        expect(Savage.path.isPointInside(path, 85, 55)).to.be(true);
-        expect(Savage.path.isPointInside(path, 115, 82)).to.be(true);
-        expect(Savage.path.isPointInside(path, 95, 98)).to.be(true);
+        expect(Snap.path.isPointInside(path, 15, 35)).to.be(true);
+        expect(Snap.path.isPointInside(path, 35, 75)).to.be(true);
+        expect(Snap.path.isPointInside(path, 15, 102)).to.be(true);
+        expect(Snap.path.isPointInside(path, 15, 135)).to.be(true);
+        expect(Snap.path.isPointInside(path, 50, 145)).to.be(true);
+        expect(Snap.path.isPointInside(path, 130, 15)).to.be(true);
+        expect(Snap.path.isPointInside(path, 110, 45)).to.be(true);
+        expect(Snap.path.isPointInside(path, 85, 55)).to.be(true);
+        expect(Snap.path.isPointInside(path, 115, 82)).to.be(true);
+        expect(Snap.path.isPointInside(path, 95, 98)).to.be(true);
         
-        expect(Savage.path.isPointInside(path, 5, 5)).to.be(false);
-        expect(Savage.path.isPointInside(path, 25, 48)).to.be(false);
-        expect(Savage.path.isPointInside(path, 42, 87)).to.be(false);
-        expect(Savage.path.isPointInside(path, 12, 105)).to.be(false);
-        expect(Savage.path.isPointInside(path, 47, 113)).to.be(false);
-        expect(Savage.path.isPointInside(path, 47, 135)).to.be(false);
-        expect(Savage.path.isPointInside(path, 25, 142)).to.be(false);
-        expect(Savage.path.isPointInside(path, 15, 125)).to.be(false);
-        expect(Savage.path.isPointInside(path, 43, 152)).to.be(false);
-        expect(Savage.path.isPointInside(path, 58, 152)).to.be(false);
-        expect(Savage.path.isPointInside(path, 90, 21)).to.be(false);
-        expect(Savage.path.isPointInside(path, 130, 21)).to.be(false);
-        expect(Savage.path.isPointInside(path, 95, 48)).to.be(false);
-        expect(Savage.path.isPointInside(path, 110, 55)).to.be(false);
-        expect(Savage.path.isPointInside(path, 100, 70)).to.be(false);
-        expect(Savage.path.isPointInside(path, 115, 96)).to.be(false);
-        expect(Savage.path.isPointInside(path, 85, 96)).to.be(false);
+        expect(Snap.path.isPointInside(path, 5, 5)).to.be(false);
+        expect(Snap.path.isPointInside(path, 25, 48)).to.be(false);
+        expect(Snap.path.isPointInside(path, 42, 87)).to.be(false);
+        expect(Snap.path.isPointInside(path, 12, 105)).to.be(false);
+        expect(Snap.path.isPointInside(path, 47, 113)).to.be(false);
+        expect(Snap.path.isPointInside(path, 47, 135)).to.be(false);
+        expect(Snap.path.isPointInside(path, 25, 142)).to.be(false);
+        expect(Snap.path.isPointInside(path, 15, 125)).to.be(false);
+        expect(Snap.path.isPointInside(path, 43, 152)).to.be(false);
+        expect(Snap.path.isPointInside(path, 58, 152)).to.be(false);
+        expect(Snap.path.isPointInside(path, 90, 21)).to.be(false);
+        expect(Snap.path.isPointInside(path, 130, 21)).to.be(false);
+        expect(Snap.path.isPointInside(path, 95, 48)).to.be(false);
+        expect(Snap.path.isPointInside(path, 110, 55)).to.be(false);
+        expect(Snap.path.isPointInside(path, 100, 70)).to.be(false);
+        expect(Snap.path.isPointInside(path, 115, 96)).to.be(false);
+        expect(Snap.path.isPointInside(path, 85, 96)).to.be(false);
     });
     
-    it("Savage.path.intersection", function () {
+    it("Snap.path.intersection", function () {
         var path1 = "M10 10 H 50 V 40 H 10 L 10 10 Z" +
             "M10 50 L 40 50 L 40 90 L 10 90 Z" +
             "M10 100 C 30 120, 50 120, 50 100 Z" +
@@ -354,7 +354,7 @@ describe("Path methods", function () {
             "M80 50 Q 90 70, 100 50 T 120 50 Z" +
             "M80 80 A 10 10 0 0 0 120 80 Z";
         var path2 = "M10,0 L80,200 L20, 200 L30, 0 L110, 15 L90, 150";
-        var intersection = Savage.path.intersection(path1, path2);
+        var intersection = Snap.path.intersection(path1, path2);
         expect(intersection.length).to.be(22);
         var first = intersection[0];
         expect(first.x).to.be.a('number');

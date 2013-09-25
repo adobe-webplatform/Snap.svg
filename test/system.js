@@ -1,6 +1,6 @@
 describe("System check", function () {
-    it("Savage exists", function () {
-        expect(Savage).to.be.a("function");
+    it("Snap exists", function () {
+        expect(Snap).to.be.a("function");
     });
     it("eve exists", function () {
         expect(eve).to.be.a("function");
