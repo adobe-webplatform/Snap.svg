@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="copyright" content="Copyright © 2013 Adobe Systems Incorporated. All rights reserved.
+ 
+ Licensed under the Apache License, Version 2.0 (the “License”);
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an “AS IS” BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.">
+        <title>Snap</title>
+        <style media="screen">
+        body {
+            background: #030 url("bg.png");
+        }
+        .shape {
+            fill: none;
+            stroke: #60544F;
+        }
+        .outline,
+        .doors {
+            fill: #F4EEE6;
+            stroke: #60544F;
+            stroke-width: 2pt;
+        }
+        .water {
+            fill: #D6EDEE;
+            stroke: #60544F;
+        }
+        .water-cut {
+            fill: #B4D6DB;
+        }
+        .milk {
+            fill: #fff;
+            stroke: #60544F;
+        }
+        .milk-cut {
+            fill: #F4EEE6;
+        }
+        .coffee {
+            fill: #60544F;
+            stroke: #60544F;
+        }
+        .coffee-cut {
+            fill: #60544F;
+        }
+        </style>
+        <script src="dist/snap.svg-min.js"></script>
+        <script>
+        window.onload = function () {
+            var s = Snap(800, 600),
+                p = 100 / 30,
+                h = 250,
+                x = 400,
+                y = 200,
+                R = 100,
+                r = 70,
+                open = 0,
+                gmilk = "l()#F4EEE6-#fff:50-#F4EEE6:50-#F4EEE6",
+                gcoffee = "l()#60544F-#8c7a73:50-#60544F:50-#60544F";
+            function getEll(height) {
+                var ra = r + (R - r) / h * height;
+                return {
+                    cx: x,
+                    cy: y + h - height,
+                    rx: ra,
+                    ry: ra / p
+                };
+            }
+            function arc(cx, cy, R, r, from, to, command) {
+                var start = pointAtAngle(cx, cy, R, r, from),
+                    end = pointAtAngle(cx, cy, R, r, to);
+                command = command || "M";
+                return command + Snap.format("{sx},{sy}A{R},{r},0,{big},{way},{tx},{ty}", {
+                    sx: start.x,
+                    sy: start.y,
+                    R: R,
+                    r: r,
+                    tx: end.x,
+                    ty: end.y,
+                    big: +(Math.abs(to - from) > 180),
+                    way: +(from > to)
+                });
+            }
+            function pointAtAngle(cx, cy, rx, ry, angle) {
+                angle = Snap.rad(angle);
+                return {
+                    x: cx + rx * Math.cos(angle),
+                    y: cy - ry * Math.sin(angle)
+                };
+            }
+            function doors(alpha) {
+                var sa = 270 - alpha / 2,
+                    ea = 270 + alpha / 2;
+                if (alpha) {
+                    return arc(x, y, R, R / p, 180, sa) + arc(x, y + h, r, r / p, sa, 180, "L") + "z" + 
+                           arc(x, y, R, R / p, ea, 360) + arc(x, y + h, r, r / p, 360, ea, "L") + "z";
+                } else {
+                    return arc(x, y, R, R / p, 180, 360) + arc(x, y + h, r, r / p, 360, 180, "L") + "z";
+                }
+            }
+            function fill(from, to) {
+                var start = getEll(from),
+                    end = getEll(to);
+                return "M" + (start.cx - start.rx) + "," + start.cy + "h" + start.rx * 2 +
+                       arc(end.cx, end.cy, end.rx, end.ry, 0, 180, "L") + "z";
+            }
+            function outline(from, to) {
+                var start = getEll(from),
+                    end = getEll(to);
+                return arc(start.cx, start.cy, start.rx, start.ry, 180, 0) +
+                       arc(end.cx, end.cy, end.rx, end.ry, 0, 180, "L") + "z";
+            }
+            function cut(from, to, alpha) {
+                var s = getEll(from),
+                    e = getEll(to),
+                    sa = Snap.rad(270 - alpha / 2),
+                    ea = Snap.rad(270 + alpha / 2);
+                return "M" + [s.cx, s.cy,
+                    s.cx + s.rx * Math.cos(ea), s.cy - s.ry * Math.sin(ea),
+                    e.cx + e.rx * Math.cos(ea), e.cy - e.ry * Math.sin(ea),
+                    e.cx, e.cy,
+                    e.cx + e.rx * Math.cos(sa), e.cy - e.ry * Math.sin(sa),
+                    s.cx + s.rx * Math.cos(sa), s.cy - s.ry * Math.sin(sa)
+                ] + "z";
+            }
+            s.path(outline(0, h)).attr("class", "outline");
+            var o3 = (h - 50) / 3;
+            s.path(fill(10, h - 60)).attr("class", "water");
+            var ct1 = s.path(cut(10, 10 + o3, 0)).attr({
+                fill: gcoffee
+            });
+            var ct2 = s.path(cut(10 + o3, h - 60, 0)).attr({
+                fill: "l()#B4D6DB-#D6EDEE:50-#B4D6DB:50-#B4D6DB"
+            });
+            var g = s.g();
+            var dr = s.path(doors(0)).attr("class", "doors");
+            function steam(callback) {
+                g.rect(x - 10, y - 1030, 20, 1000, 10).attr({
+                    fill: "l(0,1,0,0)#60544F-#60544F:33-#B4D6DB",
+                    clip: s.rect(x - 10, y - 200, 20, h + 200)
+                }).animate({y: y + 40}, 800, function () {
+                    this.remove();
+                });
+                s.ellipse(x, y, R, R/p).attr({
+                    fill: "#fff",
+                    filter: s.filter(Snap.filter.blur(10))
+                }).animate({cy: y - 30, opacity: 0}, 1000, callback);
+            }
+            steam(function () {
+                Snap.animate(0, 90, function (val) {
+                    ct1.attr("path", cut(10, 10 + o3, val));
+                    ct2.attr("path", cut(10 + o3, h - 60, val));
+                    dr.attr("path", doors(val));
+                }, 1000, mina.elastic);
+            });
+            s.text(10, 30, "Work in progress…");
+        };
+        </script>
+    </head>
+    <body></body>
+</html>
