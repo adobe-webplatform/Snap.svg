@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-25
+// build: 2013-09-27
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2235,34 +2235,14 @@ function svgTransform2string(tstr) {
     return res;
 }
 var rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d");
-function extractTransform(el, tstr) {
-    if (tstr == null) {
-        var doReturn = true;
-        if (el.type == "linearGradient" || el.type == "radialGradient") {
-            tstr = el.node.getAttribute("gradientTransform");
-        } else if (el.type == "pattern") {
-            tstr = el.node.getAttribute("patternTransform");
-        } else {
-            tstr = el.node.getAttribute("transform");
-        }
-        if (!tstr) {
-            return new Matrix;
-        }
-        tstr = svgTransform2string(tstr);
-    } else if (!rgTransform.test(tstr)) {
-        tstr = svgTransform2string(tstr);
-    } else {
-        tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
-    }
+function transform2matrix(tstr, bbox) {
     var tdata = parseTransformString(tstr),
         deg = 0,
         dx = 0,
         dy = 0,
         sx = 1,
         sy = 1,
-        _ = el._,
         m = new Matrix;
-    _.transform = tdata || [];
     if (tdata) {
         for (var i = 0, ii = tdata.length; i < ii; i++) {
             var t = tdata[i],
@@ -2287,7 +2267,7 @@ function extractTransform(el, tstr) {
                 }
             } else if (command == "r") {
                 if (tlen == 2) {
-                    bb = bb || el.getBBox(1);
+                    bb = bb || bbox;
                     m.rotate(t[1], bb.x + bb.width / 2, bb.y + bb.height / 2);
                     deg += t[1];
                 } else if (tlen == 4) {
@@ -2302,7 +2282,7 @@ function extractTransform(el, tstr) {
                 }
             } else if (command == "s") {
                 if (tlen == 2 || tlen == 3) {
-                    bb = bb || el.getBBox(1);
+                    bb = bb || bbox;
                     m.scale(t[1], t[tlen - 1], bb.x + bb.width / 2, bb.y + bb.height / 2);
                     sx *= t[1];
                     sy *= t[tlen - 1];
@@ -2321,28 +2301,49 @@ function extractTransform(el, tstr) {
                 m.add(t[1], t[2], t[3], t[4], t[5], t[6]);
             }
         }
-        if (doReturn) {
-            return m;
+    }
+    return m;
+}
+Snap._.transform2matrix = transform2matrix;
+function extractTransform(el, tstr) {
+    if (tstr == null) {
+        var doReturn = true;
+        if (el.type == "linearGradient" || el.type == "radialGradient") {
+            tstr = el.node.getAttribute("gradientTransform");
+        } else if (el.type == "pattern") {
+            tstr = el.node.getAttribute("patternTransform");
         } else {
-            _.dirtyT = 1;
-            el.matrix = m;
+            tstr = el.node.getAttribute("transform");
         }
-    }
-
-    el.matrix = m;
-
-    _.sx = sx;
-    _.sy = sy;
-    _.deg = deg;
-    _.dx = dx = m.e;
-    _.dy = dy = m.f;
-
-    if (sx == 1 && sy == 1 && !deg && _.bbox) {
-        _.bbox.x += +dx;
-        _.bbox.y += +dy;
+        if (!tstr) {
+            return new Matrix;
+        }
+        tstr = svgTransform2string(tstr);
+    } else if (!rgTransform.test(tstr)) {
+        tstr = svgTransform2string(tstr);
     } else {
-        _.dirtyT = 1;
+        tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
     }
+    el._.transform = tstr;
+    var m = transform2matrix(tstr, el.getBBox(1));
+    if (doReturn) {
+        return m;
+    } else {
+        el.matrix = m;
+    }
+
+    // _.sx = sx;
+    // _.sy = sy;
+    // _.deg = deg;
+    // _.dx = dx = m.e;
+    // _.dy = dy = m.f;
+    // 
+    // if (sx == 1 && sy == 1 && !deg && _.bbox) {
+    //     _.bbox.x += +dx;
+    //     _.bbox.y += +dy;
+    // } else {
+    //     _.dirtyT = 1;
+    // }
 }
 Snap._unit2px = unit2px;
 function getSomeDefs(el) {
@@ -6391,7 +6392,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
         }
     }
-    function equaliseTransform(t1, t2) {
+    function equaliseTransform(t1, t2, getBBox) {
         t2 = Str(t2).replace(/\.{3}|\u2026/g, t1);
         t1 = Snap.parseTransformString(t1) || [];
         t2 = Snap.parseTransformString(t2) || [];
@@ -6407,7 +6408,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 (tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3])) ||
                 (tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4]))
                 ) {
-                return;
+                    t1 = Snap._.transform2matrix(t1, getBBox());
+                    t2 = Snap._.transform2matrix(t2, getBBox());
+                    from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
+                    to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
+                    break;
             }
             from[i] = [];
             to[i] = [];
@@ -6456,7 +6461,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return out;
     }
     Element.prototype.equal = function (name, b) {
-        var A, B, a = Str(this.attr(name) || "");
+        var A, B, a = Str(this.attr(name) || ""),
+            el = this;
         if (a == +a && b == +b) {
             return {
                 from: +a,
@@ -6475,7 +6481,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
             // TODO: b could be an SVG transform string or matrix
-            return equaliseTransform(a, b);
+            return equaliseTransform(a, b, function () {
+                return el.getBBox(1);
+            });
         }
         if (name == "d" || name == "path") {
             A = Snap.path.toCubic(a, b);

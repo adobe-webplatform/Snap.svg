@@ -35,7 +35,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
         }
     }
-    function equaliseTransform(t1, t2) {
+    function equaliseTransform(t1, t2, getBBox) {
         t2 = Str(t2).replace(/\.{3}|\u2026/g, t1);
         t1 = Snap.parseTransformString(t1) || [];
         t2 = Snap.parseTransformString(t2) || [];
@@ -51,7 +51,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 (tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3])) ||
                 (tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4]))
                 ) {
-                return;
+                    t1 = Snap._.transform2matrix(t1, getBBox());
+                    t2 = Snap._.transform2matrix(t2, getBBox());
+                    from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
+                    to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
+                    break;
             }
             from[i] = [];
             to[i] = [];
@@ -100,7 +104,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return out;
     }
     Element.prototype.equal = function (name, b) {
-        var A, B, a = Str(this.attr(name) || "");
+        var A, B, a = Str(this.attr(name) || ""),
+            el = this;
         if (a == +a && b == +b) {
             return {
                 from: +a,
@@ -119,7 +124,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
             // TODO: b could be an SVG transform string or matrix
-            return equaliseTransform(a, b);
+            return equaliseTransform(a, b, function () {
+                return el.getBBox(1);
+            });
         }
         if (name == "d" || name == "path") {
             A = Snap.path.toCubic(a, b);
