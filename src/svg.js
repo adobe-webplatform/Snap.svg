@@ -617,7 +617,7 @@ Snap.Matrix = Matrix;
  [ method ]
  **
  * Parses colour string as RGB object
- - colour (string) colour string in one of formats:
+ - colour (string) colour string in one of the following formats:
  # <ul>
  #     <li>Colour name (“<code>red</code>”, “<code>green</code>”, “<code>cornflowerblue</code>”, etc)</li>
  #     <li>#••• — shortened HTML colour: (“<code>#000</code>”, “<code>#fc0</code>”, etc)</li>
