@@ -2307,6 +2307,7 @@ Fragment.prototype.select = Element.prototype.select;
  * See @Element.selectAll
 \*/
 Fragment.prototype.selectAll = Element.prototype.selectAll;
+// SIERRA Snap.fragment() could especially use a code example
 /*\
  * Snap.fragment
  [ method ]
