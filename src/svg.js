@@ -470,9 +470,9 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Rotates the matrix
-     - a (number)
-     - x (number)
-     - y (number)
+     - a (number) angle of rotation, in radians VERIFY
+     - x (number) horizontal origin point from which to rotate VERIFY
+     - y (number) vertical origin point from which to rotate VERIFY
     \*/
     matrixproto.rotate = function (a, x, y) {
         a = rad(a);
