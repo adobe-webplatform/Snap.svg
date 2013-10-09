@@ -2742,13 +2742,14 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         }
         return el;
     };
+// SIERRA Paper.g(): Don't understand the code comment about the order being _different._ Wouldn't it be a rect followed by a circle?
     /*\
      * Paper.g
      [ method ]
      **
      * Makes a group element.
      **
-     - varargs (…) #optional elements
+     - varargs (…) #optional elements to nest within the group
      = (object) `g` element
      **
      > Usage
