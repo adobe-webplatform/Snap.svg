@@ -2025,7 +2025,7 @@ function arrayFirstValue(arr) {
      * Element.inAnim
      [ method ]
      **
-     * Returns an array of animations element currently in
+     * Returns a set of animations that may be able to manipulate the current element VERIFY
      **
      = (object) in format
      o {
