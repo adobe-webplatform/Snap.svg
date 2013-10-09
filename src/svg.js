@@ -575,6 +575,7 @@ function Matrix(a, b, c, d, e, f) {
         out.noRotation = !+out.shear.toFixed(9) && !out.rotate;
         return out;
     };
+// SIERRA Matrix.toTransformString(): The format of the string needs to be detailed.
     /*\
      * Matrix.toTransformString
      [ method ]
