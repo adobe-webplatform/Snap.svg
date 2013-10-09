@@ -148,7 +148,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.click
      [ method ]
      **
-     * Adds event handler for click for the element.
+     * Adds a click event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -156,7 +156,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unclick
      [ method ]
      **
-     * Removes event handler for click for the element.
+     * Removes a click event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -165,7 +165,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.dblclick
      [ method ]
      **
-     * Adds event handler for double click for the element.
+     * Adds a double click event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -173,7 +173,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.undblclick
      [ method ]
      **
-     * Removes event handler for double click for the element.
+     * Removes a double click event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -182,7 +182,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mousedown
      [ method ]
      **
-     * Adds event handler for mousedown for the element.
+     * Adds a mousedown event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -190,7 +190,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmousedown
      [ method ]
      **
-     * Removes event handler for mousedown for the element.
+     * Removes a mousedown event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -199,7 +199,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mousemove
      [ method ]
      **
-     * Adds event handler for mousemove for the element.
+     * Adds a mousemove event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -207,7 +207,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmousemove
      [ method ]
      **
-     * Removes event handler for mousemove for the element.
+     * Removes a mousemove event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -216,7 +216,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mouseout
      [ method ]
      **
-     * Adds event handler for mouseout for the element.
+     * Adds a mouseout event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -224,7 +224,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmouseout
      [ method ]
      **
-     * Removes event handler for mouseout for the element.
+     * Removes a mouseout event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -233,7 +233,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mouseover
      [ method ]
      **
-     * Adds event handler for mouseover for the element.
+     * Adds a mouseover event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -241,7 +241,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmouseover
      [ method ]
      **
-     * Removes event handler for mouseover for the element.
+     * Removes a mouseover event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -250,7 +250,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mouseup
      [ method ]
      **
-     * Adds event handler for mouseup for the element.
+     * Adds a mouseup event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -258,7 +258,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmouseup
      [ method ]
      **
-     * Removes event handler for mouseup for the element.
+     * Removes a mouseup event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -267,7 +267,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.touchstart
      [ method ]
      **
-     * Adds event handler for touchstart for the element.
+     * Adds a touchstart event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -275,7 +275,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.untouchstart
      [ method ]
      **
-     * Removes event handler for touchstart for the element.
+     * Removes a touchstart event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -284,7 +284,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.touchmove
      [ method ]
      **
-     * Adds event handler for touchmove for the element.
+     * Adds a touchmove event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -292,7 +292,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.untouchmove
      [ method ]
      **
-     * Removes event handler for touchmove for the element.
+     * Removes a touchmove event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -301,7 +301,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.touchend
      [ method ]
      **
-     * Adds event handler for touchend for the element.
+     * Adds a touchend event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -309,7 +309,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.untouchend
      [ method ]
      **
-     * Removes event handler for touchend for the element.
+     * Removes a touchend event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -318,7 +318,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.touchcancel
      [ method ]
      **
-     * Adds event handler for touchcancel for the element.
+     * Adds a touchcancel event handler to the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -326,7 +326,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.untouchcancel
      [ method ]
      **
-     * Removes event handler for touchcancel for the element.
+     * Removes a touchcancel event handler from the element.
      - handler (function) handler for the event
      = (object) @Element
     \*/
