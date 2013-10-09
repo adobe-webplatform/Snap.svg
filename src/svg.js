@@ -2777,7 +2777,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      **
      - x (number) x coordinate position
      - y (number) y coordinate position
-     - text (string|array) The text string to draw or array of <tspan>s
+     - text (string|array) The text string to draw or array of strings to nest within separate `<tspan>` elements
      = (object) `text` element
      **
      > Usage
