@@ -2694,7 +2694,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - pathString (string) #optional path string in SVG format.
      * Path string consists of one-letter commands, followed by comma seprarated arguments in numercal form. Example:
      | "M10,20L30,40"
-     * Here we can see two commands: “M”, with arguments `(10, 20)` and “L” with arguments `(30, 40)`. Upper case letter mean command is absolute, lower case—relative.
+     * This example features two commands: “M”, with arguments `(10, 20)` and “L” with arguments `(30, 40)`. Uppercase commands indicate absolute coordinates. Lowercase commands position relative to the previous coordinates.
      *
      # <p>Here is short list of commands available, for more details see <a href="http://www.w3.org/TR/SVG/paths.html#PathData" title="Details of a path's data attribute's format are described in the SVG specification.">SVG path string format</a> or <a href="https://developer.mozilla.org/en/SVG/Tutorial/Paths">article about path strings at MDN</a>.</p>
      # <table><thead><tr><th>Command</th><th>Name</th><th>Parameters</th></tr></thead><tbody>
