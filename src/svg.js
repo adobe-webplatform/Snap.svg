@@ -1490,6 +1490,8 @@ function arrayFirstValue(arr) {
         }
         return el;
     };
+// SIERRA Element.getBBox(): Unclear why you would want to express the dimension of the box as a path.
+// SIERRA Element.getBBox(): Unclear why you would want to use r0/r1/r2. Also, basic definitions: wouldn't the _smallest circle that can be enclosed_ be a zero-radius point?
     /*\
      * Element.getBBox
      [ method ]
@@ -1511,8 +1513,8 @@ function arrayFirstValue(arr) {
      o     width: (number) width,
      o     x2: (number) x of the right side,
      o     x: (number) x of the left side,
-     o     y2: (number) y of the right side,
-     o     y: (number) y of the left side
+     o     y2: (number) y of the bottom edge,
+     o     y: (number) y of the top edge
      o }
     \*/
     elproto.getBBox = function (isWithoutTransform) {
