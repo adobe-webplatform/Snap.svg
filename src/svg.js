@@ -2612,6 +2612,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         }
         return el;
     };
+
     /*\
      * Paper.image
      [ method ]
@@ -2619,27 +2620,13 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Embeds an image into the surface.
      **
      - src (string) URI of the source image
-     - x (number) x coordinate position
-     - y (number) y coordinate position
-     - width (number) width of the image
-     - height (number) height of the image
-     = (object) Raphaël element object with type `image`
-     **
-     > Usage
-     | var c = paper.image("apple.png", 10, 10, 80, 80);
-    \*/
-    /*\
-     * Paper.image
-     [ method ]
-     **
-     * Embeds an image into the surface.
-     **
-     - src (string) URI of the source image
-     - x (number) x coordinate position
-     - y (number) y coordinate position
+     - x (number) x offset position
+     - y (number) y offset position
      - width (number) width of the image
      - height (number) height of the image
      = (object) `image` element
+     * or
+     = (object) Raphaël element object with type `image`
      **
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);
