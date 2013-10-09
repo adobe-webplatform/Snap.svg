@@ -309,10 +309,10 @@ Snap.angle = angle;
  * Snap.is
  [ method ]
  **
- * Handfull replacement for `typeof` operator.
+ * Handy replacement for the `typeof` operator.
  - o (…) any object or primitive
  - type (string) name of the type, e.g., `string`, `function`, `number`, etc.
- = (boolean) is given value is of given type
+ = (boolean) if given value is of given type
 \*/
 Snap.is = is;
 /*\
