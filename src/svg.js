@@ -1084,13 +1084,14 @@ Snap.parsePathString = function (pathString) {
     pth.arr = Snap.path.clone(data);
     return data;
 };
+// SIERRA Snap.parseTransformString(): I don't understand the string format.
 /*\
  * Snap.parseTransformString
  [ method ]
  **
  * Utility method
  **
- * Parses given path string into an array of transformations.
+ * Parses given transform string into an array of transformations.
  - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
  = (array) array of transformations.
 \*/
