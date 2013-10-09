@@ -156,10 +156,10 @@ function is(o, type) {
  * Replaces construction of type “`{<name>}`” to the corresponding argument.
  **
  - token (string) string to format
- - json (object) object which properties will be used as a replacement
+ - json (object) object which properties are used as a replacement
  = (string) formated string
  > Usage
- | // this will draw a rectangular shape equivalent to "M10,20h40v50h-40z"
+ | // this draws a rectangular shape equivalent to "M10,20h40v50h-40z"
  | paper.path(Snap.format("M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z", {
  |     x: 10,
  |     y: 20,
@@ -1038,7 +1038,7 @@ Snap.rgb2hsl = function (r, g, b) {
  * Utility method
  **
  * Parses given path string into an array of arrays of path segments.
- - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
+ - pathString (string|array) path string or array of segments (in the last case it is returned straight away)
  = (array) array of segments.
 \*/
 Snap.parsePathString = function (pathString) {
@@ -1092,7 +1092,7 @@ Snap.parsePathString = function (pathString) {
  * Utility method
  **
  * Parses given transform string into an array of transformations.
- - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
+ - TString (string|array) transform string or array of transformations (in the last case it is returned straight away)
  = (array) array of transformations.
 \*/
 var parseTransformString = Snap.parseTransformString = function (TString) {
@@ -1503,9 +1503,9 @@ function arrayFirstValue(arr) {
      o     h: (number) height,
      o     height: (number) height,
      o     path: (string) path command for the box,
-     o     r0: (number) radius of the circle that will enclose the box,
+     o     r0: (number) radius of a circle that fully encloses the box,
      o     r1: (number) radius of the smallest circle that can be enclosed,
-     o     r2: (number) radius of the biggest circle that can be enclosed,
+     o     r2: (number) radius of the largest circle that can be enclosed,
      o     vb: (string) box as a viewbox command,
      o     w: (number) width,
      o     width: (number) width,
@@ -2066,7 +2066,7 @@ function arrayFirstValue(arr) {
      **
      - from (number|array) number or array of numbers
      - to (number|array) number or array of numbers
-     - setter (function) caring function that will take one number argument
+     - setter (function) caring function that accepts one number argument
      - duration (number) duration, in milliseconds
      - easing (function) #optional easing function from @mina or custom
      - callback (function) #optional callback function to execute when animation ends VERIFY
@@ -2716,7 +2716,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      # <tr><td>A</td><td>elliptical arc</td><td>(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+</td></tr>
      # <tr><td>R</td><td><a href="http://en.wikipedia.org/wiki/Catmull–Rom_spline#Catmull.E2.80.93Rom_spline">Catmull-Rom curveto</a>*</td><td>x1 y1 (x y)+</td></tr></tbody></table>
      * * “Catmull-Rom curveto” is a not standard SVG command and added to make life easier.
-     * Note: there is a special case when path consist of just three commands: “M10,10R…z”. In this case path will smoothly connects to its beginning.
+     * Note: there is a special case when a path consists of only three commands: “M10,10R…z”. In this case, the path connects smoothly to its beginning.
      > Usage
      | var c = paper.path("M10 10L90 90");
      | // draw a diagonal line:
@@ -2745,7 +2745,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      > Usage
      | var c1 = paper.circle(),
      |     c2 = paper.rect(),
-     |     g = paper.g(c2, c1); // note that the order of elements will be different
+     |     g = paper.g(c2, c1); // note that the order of elements is different
      * or
      | var c1 = paper.circle(),
      |     c2 = paper.rect(),

@@ -67,7 +67,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Executes given function for each element in the set.
      *
-     * If function returns `false` it will stop loop running.
+     * If the function returns `false`, the loop stops running.
      **
      - callback (function) function to run
      - thisArg (object) context object for the callback
