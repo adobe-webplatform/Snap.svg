@@ -2050,6 +2050,7 @@ function arrayFirstValue(arr) {
     // SIERRA unfamiliar with the phrase _caring function,_ so the text for the _setter_ param isn't clear.
     // SIERRA With the animation's start/end states defined, how is its _speed_ distinguished from its _duration_?
     // SIERRA Text explaining the mina format should move to the section on the mina object interface. (Prior comment applies: object interfaces need to also be documented.)
+    // SIERRA unclear how to express a custom _easing_ (+)
     /*\
      * Snap.animate
      [ method ]
