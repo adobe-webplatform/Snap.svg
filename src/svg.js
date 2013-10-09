@@ -2835,7 +2835,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - points (array) array of points
      * or
      - varargs (…) points
-     = (object) `text` element
+     = (object) `polyline` element
      **
      > Usage
      | var p1 = paper.polyline([10, 10, 100, 100]);
