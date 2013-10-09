@@ -122,6 +122,7 @@ var mina = (function (eve) {
         }
         len && requestAnimFrame(frame);
     },
+    // SIERRA Unfamiliar with the word _slave_ in this context. Also, I don't know what _gereal_ means. Do you mean _general_?
     /*\
      * mina
      [ method ]
