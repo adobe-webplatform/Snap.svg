@@ -1732,7 +1732,7 @@ function arrayFirstValue(arr) {
      * Element.select
      [ method ]
      **
-     * Applies CSS selector with the element as a parent and returns the result as an @Element.
+     * Gathers nested @Element matching the given set of CSS selectors.
      **
      - query (string) CSS selector
      = (Element) result of query selection
@@ -1744,7 +1744,7 @@ function arrayFirstValue(arr) {
      * Element.selectAll
      [ method ]
      **
-     * Applies CSS selector with the element as a parent and returns the result as a set or array of elements.
+     * Gathers nested @Element objects matching the given set of CSS selectors.
      **
      - query (string) CSS selector
      = (Set|array) result of query selection
