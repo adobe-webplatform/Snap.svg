@@ -2106,6 +2106,8 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
+    // SIERRA Element.animate(): For _attrs_, clarify if they represent the destination values, and if the animation executes relative to the element's current attribute values.
+    // SIERRA would a _custom_ animation function be an SVG keySplines value?
     /*\
      * Element.animate
      [ method ]
@@ -2113,9 +2115,9 @@ function arrayFirstValue(arr) {
      * Animate given attributes of the element.
      **
      - attrs (object) key-value pairs of destination attributes
-     - duration (number) duration of the animation, in milliseconds
+     - duration (number) duration of the animation in milliseconds
      - easing (function) #optional easing function from @mina or custom
-     - callback (function) #optional 
+     - callback (function) #optional callback function that executes when the animation ends VERIFY
      = (Element) the element
     \*/
     elproto.animate = function (attrs, ms, easing, callback) {
