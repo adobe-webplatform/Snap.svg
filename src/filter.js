@@ -18,6 +18,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         Str = String,
         $ = Snap._.$;
     Snap.filter = {};
+// SIERRA Paper.filter(): I don't understand the note. Does that mean an HTML should dedicate a separate SVG region for a filter definition? What's the advantage over a DEFS?
     /*\
      * Paper.filter
      [ method ]
@@ -26,7 +27,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      - filstr (string) SVG fragment of filter provided as a string.
      = (object) @Element
-     * Note: It is recommended to use filters embedded into page inside empty SVG element.
+     * Note: It is recommended to use filters embedded into the page inside an empty SVG element.
      > Usage
      | var f = paper.filter('<feGaussianBlur stdDeviation="2"/>'),
      |     c = paper.circle(10, 10, 10).attr({
