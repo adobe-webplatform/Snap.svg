@@ -1030,6 +1030,7 @@ Snap.rgb2hsl = function (r, g, b) {
 };
 
 // Transformations
+# SIERRA Snap.parsePathString(): By _array of arrays,_ I assume you mean a format like this for two separate segments? [ ["M10,10","L90,90"], ["M90,10","L10,90"] ] Otherwise how is each command structured?
 /*\
  * Snap.parsePathString
  [ method ]
