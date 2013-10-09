@@ -1446,13 +1446,14 @@ function arrayFirstValue(arr) {
     }
 }
 (function (elproto) {
+    // SIERRA Element.attr(): There appear to be two possible return values, one of which is blank. (Search the doc for _Returns:_ to identify problems.)
     /*\
      * Element.attr
      [ method ]
      **
      * Gets or sets given attributes of the element
      **
-     - params (object) key-value pairs of attributes you want to set
+     - params (object) contains key-value pairs of attributes you want to set
      * or
      - param (string) name of the attribute
      = (Element)
@@ -1773,6 +1774,7 @@ function arrayFirstValue(arr) {
         }
         return unit2px(this, attr, value);
     };
+    // SIERRA Element.use(): I suggest adding a note about how to access the original element the returned <use> instantiates. It's a part of SVG with which ordinary web developers may be least familiar.
     /*\
      * Element.use
      [ method ]
