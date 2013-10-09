@@ -2006,7 +2006,7 @@ function arrayFirstValue(arr) {
      * Creates animation object.
      **
      - attr (object) attributes of final destination
-     - ms (number) animation duration
+     - duration (number) duration of the animation, in milliseconds
      - easing (function) #optional one of easing functions of @mina or custom one
      - callback (function) #optional callback
      = (object) animation object
@@ -2059,7 +2059,7 @@ function arrayFirstValue(arr) {
      - from (number|array) number or array of numbers
      - to (number|array) number or array of numbers
      - setter (function) caring function that will take one number argument
-     - ms (number) duration
+     - duration (number) duration, in milliseconds
      - easing (function) #optional easing function from @mina or custom
      - callback (function) #optional 
      = (object) animation object in @mina format
@@ -2104,7 +2104,7 @@ function arrayFirstValue(arr) {
      * Animate given attributes of the element.
      **
      - attrs (object) key-value pairs of destination attributes
-     - ms (number) duration
+     - duration (number) duration of the animation, in milliseconds
      - easing (function) #optional easing function from @mina or custom
      - callback (function) #optional 
      = (Element) the element
