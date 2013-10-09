@@ -2061,7 +2061,7 @@ function arrayFirstValue(arr) {
      - setter (function) caring function that will take one number argument
      - duration (number) duration, in milliseconds
      - easing (function) #optional easing function from @mina or custom
-     - callback (function) #optional 
+     - callback (function) #optional callback function to execute when animation ends VERIFY
      = (object) animation object in @mina format
      o {
      o     id (string) animation id, consider it read-only,
