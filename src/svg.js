@@ -2395,7 +2395,7 @@ function wrap(dom) {
     }
     return new Element(dom);
 }
-// gradients’ helpers
+// gradients' helpers
 function Gstops() {
     return this.selectAll("stop");
 }

@@ -198,8 +198,8 @@ var mina = (function (eve) {
      * mina.getById
      [ method ]
      **
-     * Returns animation by it’s id.
-     - id (string) animation’s id
+     * Returns animation by its id.
+     - id (string) animation's id
      = (object) See @mina
     \*/
     mina.getById = function (id) {
