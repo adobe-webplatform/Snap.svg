@@ -129,24 +129,24 @@ var mina = (function (eve) {
      **
      * Generic animation of numbers.
      **
-     - a (number) start “slave” number
-     - A (number) end “slave” number
-     - b (number) start “master” number (start time in gereal case)
-     - B (number) end “master” number (end time in gereal case)
-     - get (function) getter of “master” number (see @mina.time)
-     - set (function) setter of “slave” number
+     - a (number) start _slave_ number
+     - A (number) end _slave_ number
+     - b (number) start _master_ number (start time in gereal case)
+     - B (number) end _master_ number (end time in gereal case)
+     - get (function) getter of _master_ number (see @mina.time)
+     - set (function) setter of _slave_ number
      - easing (function) #optional easing function, default is @mina.linear
      = (object) animation descriptor
      o {
      o         id (string) animation id,
-     o         start (number) start “slave” number,
-     o         end (number) end “slave” number,
-     o         b (number) start “master” number,
+     o         start (number) start _slave_ number,
+     o         end (number) end _slave_ number,
+     o         b (number) start _master_ number,
      o         s (number) animation status (0..1),
      o         dur (number) animation duration,
      o         spd (number) animation speed,
-     o         get (function) getter of “master” number (see @mina.time),
-     o         set (function) setter of “slave” number,
+     o         get (function) getter of _master_ number (see @mina.time),
+     o         set (function) setter of _slave_ number,
      o         easing (function) easing function, default is @mina.linear,
      o         status (function) status getter/setter,
      o         speed (function) speed getter/setter,

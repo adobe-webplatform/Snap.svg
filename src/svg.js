@@ -153,7 +153,7 @@ function is(o, type) {
  * Snap.format
  [ method ]
  **
- * Replaces construction of type “`{<name>}`” to the corresponding argument.
+ * Replaces construction of type `{<name>}` to the corresponding argument.
  **
  - token (string) string to format
  - json (object) object which properties are used as a replacement
@@ -310,7 +310,7 @@ Snap.angle = angle;
  **
  * Handfull replacement for `typeof` operator.
  - o (…) any object or primitive
- - type (string) name of the type, i.e. “string”, “function”, “number”, etc.
+ - type (string) name of the type, i.e. `string`, `function`, `number`, etc.
  = (boolean) is given value is of given type
 \*/
 Snap.is = is;
@@ -619,18 +619,18 @@ Snap.Matrix = Matrix;
  * Parses colour string as RGB object
  - colour (string) colour string in one of the following formats:
  # <ul>
- #     <li>Colour name (“<code>red</code>”, “<code>green</code>”, “<code>cornflowerblue</code>”, etc)</li>
- #     <li>#••• — shortened HTML colour: (“<code>#000</code>”, “<code>#fc0</code>”, etc)</li>
- #     <li>#•••••• — full length HTML colour: (“<code>#000000</code>”, “<code>#bd2300</code>”)</li>
- #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (“<code>rgb(200,&nbsp;100,&nbsp;0)</code>”)</li>
+ #     <li>Colour name (<code>red</code>, <code>green</code>, <code>cornflowerblue</code>, etc)</li>
+ #     <li>#••• — shortened HTML colour: (<code>#000</code>, <code>#fc0</code>, etc)</li>
+ #     <li>#•••••• — full length HTML colour: (<code>#000000</code>, <code>#bd2300</code>)</li>
+ #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (<code>rgb(200,&nbsp;100,&nbsp;0)</code>)</li>
  #     <li>rgba(•••, •••, •••, •••) — also with opacity</li>
- #     <li>rgb(•••%, •••%, •••%) — same as above, but in %: (“<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>”)</li>
+ #     <li>rgb(•••%, •••%, •••%) — same as above, but in %: (<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>)</li>
  #     <li>rgba(•••%, •••%, •••%, •••%) — also with opacity</li>
- #     <li>hsb(•••, •••, •••) — hue, saturation and brightness values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;1)</code>”)</li>
+ #     <li>hsb(•••, •••, •••) — hue, saturation and brightness values: (<code>hsb(0.5,&nbsp;0.25,&nbsp;1)</code>)</li>
  #     <li>hsba(•••, •••, •••, •••) — also with opacity</li>
  #     <li>hsb(•••%, •••%, •••%) — same as above, but in %</li>
  #     <li>hsba(•••%, •••%, •••%, •••%) — also with opacity</li>
- #     <li>hsl(•••, •••, •••) — hue, saturation and luminosity values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;0.5)</code>”)</li>
+ #     <li>hsl(•••, •••, •••) — hue, saturation and luminosity values: (<code>hsb(0.5,&nbsp;0.25,&nbsp;0.5)</code>)</li>
  #     <li>hsla(•••, •••, •••, •••) — also with opacity</li>
  #     <li>hsl(•••%, •••%, •••%) — same as above, but in %</li>
  #     <li>hsla(•••%, •••%, •••%, •••%) — also with opacity</li>
@@ -1466,7 +1466,7 @@ function arrayFirstValue(arr) {
      |     strokeWidth: 2, // CamelCase...
      |     "fill-opacity": 0.5 // or dash-separated names
      | });
-     | console.log(el.attr("fill")); // “#fc0”
+     | console.log(el.attr("fill")); // #fc0
     \*/
     elproto.attr = function (params, value) {
         var el = this,
@@ -2545,7 +2545,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - height (number) height
      - rx (number) #optional horisontal radius for rounded corners, default is 0
      - ry (number) #optional vertical radius for rounded corners, default is rx or 0
-     = (object) Element object with type “rect”
+     = (object) Element object with type `rect`
      **
      > Usage
      | // regular rectangle
@@ -2585,7 +2585,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - r (number) radius
-     = (object) Element object with type “circle”
+     = (object) Element object with type `circle`
      **
      > Usage
      | var c = paper.circle(50, 50, 40);
@@ -2614,7 +2614,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y (number) y coordinate position
      - width (number) width of the image
      - height (number) height of the image
-     = (object) Raphaël element object with type “image”
+     = (object) Raphaël element object with type `image`
      **
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);
@@ -2630,7 +2630,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y (number) y coordinate position
      - width (number) width of the image
      - height (number) height of the image
-     = (object) Element object with type “image”
+     = (object) Element object with type `image`
      **
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);
@@ -2673,7 +2673,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y (number) y coordinate of the centre
      - rx (number) horizontal radius
      - ry (number) vertical radius
-     = (object) Element object with type “ellipse”
+     = (object) Element object with type `ellipse`
      **
      > Usage
      | var c = paper.ellipse(50, 50, 40, 20);
@@ -2700,7 +2700,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - pathString (string) #optional path string in SVG format.
      * Path string consists of one-letter commands, followed by comma seprarated arguments in numercal form. Example:
      | "M10,20L30,40"
-     * This example features two commands: “M”, with arguments `(10, 20)` and “L” with arguments `(30, 40)`. Uppercase commands indicate absolute coordinates. Lowercase commands position relative to the previous coordinates.
+     * This example features two commands: `M`, with arguments `(10, 20)` and `L` with arguments `(30, 40)`. Uppercase commands indicate absolute coordinates. Lowercase commands position relative to the previous coordinates.
      *
      # <p>Here is short list of commands available, for more details see <a href="http://www.w3.org/TR/SVG/paths.html#PathData" title="Details of a path's data attribute's format are described in the SVG specification.">SVG path string format</a> or <a href="https://developer.mozilla.org/en/SVG/Tutorial/Paths">article about path strings at MDN</a>.</p>
      # <table><thead><tr><th>Command</th><th>Name</th><th>Parameters</th></tr></thead><tbody>
@@ -2715,8 +2715,8 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      # <tr><td>T</td><td>smooth quadratic Bézier curveto</td><td>(x y)+</td></tr>
      # <tr><td>A</td><td>elliptical arc</td><td>(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+</td></tr>
      # <tr><td>R</td><td><a href="http://en.wikipedia.org/wiki/Catmull–Rom_spline#Catmull.E2.80.93Rom_spline">Catmull-Rom curveto</a>*</td><td>x1 y1 (x y)+</td></tr></tbody></table>
-     * * “Catmull-Rom curveto” is a not standard SVG command and added to make life easier.
-     * Note: there is a special case when a path consists of only three commands: “M10,10R…z”. In this case, the path connects smoothly to its beginning.
+     * * _Catmull-Rom curveto_ is a not standard SVG command and added to make life easier.
+     * Note: there is a special case when a path consists of only three commands: `M10,10R…z`. In this case, the path connects smoothly to its beginning.
      > Usage
      | var c = paper.path("M10 10L90 90");
      | // draw a diagonal line:
@@ -2740,7 +2740,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Makes a group element.
      **
      - varargs (…) #optional elements
-     = (object) Element object with type “g”
+     = (object) Element object with type `g`
      **
      > Usage
      | var c1 = paper.circle(),
@@ -2780,7 +2780,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - x (number) x coordinate position
      - y (number) y coordinate position
      - text (string|array) The text string to draw or array of <tspan>s
-     = (object) Element object with type “text”
+     = (object) Element object with type `text`
      **
      > Usage
      | var t1 = paper.text(50, 50, "Snap");
@@ -2809,7 +2809,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y1 (number) y coordinate position of the start
      - x2 (number) x coordinate position of the end
      - y2 (number) y coordinate position of the end
-     = (object) Element object with type “line”
+     = (object) Element object with type `line`
      **
      > Usage
      | var t1 = paper.line(50, 50, 100, 100);
@@ -2837,7 +2837,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - points (array) array of points
      * or
      - varargs (…) points
-     = (object) Element object with type “text”
+     = (object) Element object with type `text`
      **
      > Usage
      | var p1 = paper.polyline([10, 10, 100, 100]);
@@ -2888,12 +2888,12 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          - gradient (string) gradient descriptor
          > Gradient Descriptor
          * Gradient descriptor consists of `<type>(<coords>)<colors>`. Type
-         * could be linear or radial, which presented as letter “L” or “R”. Any
+         * could be linear or radial, which presented as letter `L` or `R`. Any
          * type could be absolute or relative, absolute gradient take it coords
          * relative to the SVG surface, while relative takes them relative to
          * the bounding box of the element it applied to. For absolute
-         * coordinates you specify type as an upper case letter (“L” or “R”).
-         * For relative use low case letter (“l” or “r”). Coordinates specify
+         * coordinates you specify type as an upper case letter (`L` or `R`).
+         * For relative use low case letter (`l` or `r`). Coordinates specify
          * vector of gradient for linear as x1, y1, x2, y2. For radial as cx,
          * cy, r and optional fx, fy. Colors are list of dash separated colors.
          * Optionally color could have offset after colon.
@@ -2910,7 +2910,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          | paper.circle(50, 50, 40).attr({
          |     fill: g
          | });
-         = (object) Element object with type “gradient”
+         = (object) Element object with type `gradient`
         \*/
         proto.gradient = function (str) {
             return gradient(this.defs, str);
