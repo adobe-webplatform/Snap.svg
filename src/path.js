@@ -1093,7 +1093,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.getTotalLength
      [ method ]
      **
-     * Returns length of the path in pixels. Only works for element of “path” type.
+     * Returns length of the path in pixels. Only works for `path` elements.
      = (number) length.
     \*/
     elproto.getTotalLength = function () {
@@ -1101,11 +1101,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return this.node.getTotalLength();
         }
     };
+    // SIERRA Element.getPointAtLength()/Element.getTotalLength(): If a <path> is broken into different segments, is the jump distance to the new coordinates set by the _M_ or _m_ commands calculated as part of the path's total length?
     /*\
      * Element.getPointAtLength
      [ method ]
      **
-     * Return coordinates of the point located at the given length on the given path. Only works for element of “path” type.
+     * Return coordinates of the point located at the given length on the given path. Only works for `path` elements.
      **
      - length (number)
      **
@@ -1123,7 +1124,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.getSubpath
      [ method ]
      **
-     * Return subpath of a given element from given length to given length. Only works for element of “path” type.
+     * Return subpath of a given element from given length to given length. Only works for `path` elements.
      **
      - from (number) position of the start of the segment
      - to (number) position of the end of the segment
