@@ -2552,7 +2552,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y (number) y coordinate of the top left corner
      - width (number) width
      - height (number) height
-     - rx (number) #optional horisontal radius for rounded corners, default is 0
+     - rx (number) #optional horizontal radius for rounded corners, default is 0
      - ry (number) #optional vertical radius for rounded corners, default is rx or 0
      = (object) `rect` element
      **

@@ -90,7 +90,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns string of the blur filter.
      **
-     - x (number) amount of horisontal blur in px.
+     - x (number) amount of horizontal blur in px.
      - y (number) #optional amount of vertical blur in px.
      = (string) filter representation
      > Usage
@@ -117,7 +117,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns string of the shadow filter.
      **
-     - dx (number) horisontal shift of the shadow in px.
+     - dx (number) horizontal shift of the shadow in px.
      - dy (number) vertical shift of the shadow in px.
      - blur (number) #optional amount of blur.
      - color (string) #optional color of the shadow.
