@@ -636,13 +636,13 @@ Snap.Matrix = Matrix;
  #     <li>hsla(•••%, •••%, •••%, •••%) — also with opacity</li>
  # </ul>
  * Note that `%` can be used any time: `rgb(20%, 255, 50%)`.
- = (object) RGB object in format:
+ = (object) RGB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
  o     b (number) blue
  o     hex (string) color in HTML/CSS format: #••••••,
- o     error (boolean) true if string cant be parsed
+ o     error (boolean) true if string can't be parsed
  o }
 \*/
 Snap.getRGB = cacher(function (colour) {
@@ -826,20 +826,20 @@ packageRGB = function (r, g, b, o) {
     is(o, "finite") && (rgb.opacity = o);
     return rgb;
 };
-
+// SIERRA Clarify if Snap does not support consolidated HSLA/RGBA colors. E.g., can you specify a semi-transparent value for Snap.filter.shadow()?
 /*\
  * Snap.color
  [ method ]
  **
- * Parses the color string and returns object with all values for the given color.
+ * Parses the color string and returns an object featuring the color's component values.
  - clr (string) color string in one of the supported formats (see @Snap.getRGB)
- = (object) Combined RGB & HSB object in format:
+ = (object) Combined RGB & HSB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
  o     b (number) blue,
  o     hex (string) color in HTML/CSS format: #••••••,
- o     error (boolean) `true` if string cant be parsed,
+ o     error (boolean) `true` if string can't be parsed,
  o     h (number) hue,
  o     s (number) saturation,
  o     v (number) value (brightness),
@@ -890,7 +890,7 @@ Snap.color = function (clr) {
  - h (number) hue
  - s (number) saturation
  - v (number) value or brightness
- = (object) RGB object in format:
+ = (object) RGB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
@@ -926,7 +926,7 @@ Snap.hsb2rgb = function (h, s, v, o) {
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
- = (object) RGB object in format:
+ = (object) RGB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
@@ -966,7 +966,7 @@ Snap.hsl2rgb = function (h, s, l, o) {
  - r (number) red
  - g (number) green
  - b (number) blue
- = (object) HSB object in format:
+ = (object) HSB object in the following format:
  o {
  o     h (number) hue
  o     s (number) saturation
@@ -999,7 +999,7 @@ Snap.rgb2hsb = function (r, g, b) {
  - r (number) red
  - g (number) green
  - b (number) blue
- = (object) HSL object in format:
+ = (object) HSL object in the following format:
  o {
  o     h (number) hue
  o     s (number) saturation
@@ -1999,6 +1999,7 @@ function arrayFirstValue(arr) {
         easing && (this.easing = easing);
         callback && (this.callback = callback);
     };
+    // SIERRA All object methods should feature sample code. This is just one instance.
     /*\
      * Snap.animation
      [ method ]
