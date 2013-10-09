@@ -385,11 +385,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return this.unmouseover(f_in).unmouseout(f_out);
     };
     var draggable = [];
+    // SIERRA unclear what _context_ refers to for starting, ending, moving the drag gesture.
+    // SIERRA Element.drag(): _x position of the mouse_: Where are the x/y values offset from?
+    // SIERRA Element.drag(): much of this member's doc appears to be duplicated for some reason.
+    // SIERRA Unclear about this sentence: _Additionally following drag events will be triggered: drag.start.<id> on start, drag.end.<id> on end and drag.move.<id> on every move._ Is there a global _drag_ object to which you can assign handlers keyed by an element's ID?
     /*\
      * Element.drag
      [ method ]
      **
-     * Adds event handlers for drag of the element.
+     * Adds event handlers for an element's drag gesture.
+     **
      - onmove (function) handler for moving
      - onstart (function) handler for drag start
      - onend (function) handler for drag end
