@@ -1060,7 +1060,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Return coordinates of the point located at the given length on the given path.
      **
      - path (string) SVG path string
-     - length (number)
+     - length (number) distance, in pixels, from the start of the path, excluding non-rendering jumps VERIFY
      **
      = (object) representation of the point:
      o {
@@ -1074,13 +1074,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.path.getSubpath
      [ method ]
      **
-     * Return subpath of a given path from given length to given length.
+     * Return subpath of a given path between given start and end lengths
      **
      - path (string) SVG path string
-     - from (number) position of the start of the segment
-     - to (number) position of the end of the segment
+     - from (number) distance, in pixels, to the start of the segment VERIFY
+     - to (number) distance, in pixels, to the end of the segment VERIFY
      **
-     = (string) pathstring for the segment
+     = (string) path string definition for the segment
     \*/
     Snap.path.getSubpath = function (path, from, to) {
         if (this.getTotalLength(path) - to < 1e-6) {
@@ -1125,12 +1125,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.getSubpath
      [ method ]
      **
-     * Return subpath of a given element from given length to given length. Only works for `path` elements.
+     * Return subpath of a given element from given start and end lengths. Only works for `path` elements.
      **
-     - from (number) position of the start of the segment
-     - to (number) position of the end of the segment
+     - from (number) distance, in pixels, of the start of the segment VERIFY
+     - to (number) distance, in pixels, of the end of the segment VERIFY
      **
-     = (string) pathstring for the segment
+     = (string) path string definition for the segment
     \*/
     elproto.getSubpath = function (from, to) {
         return Snap.path.getSubpath(this.attr("d"), from, to);
