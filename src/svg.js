@@ -321,7 +321,7 @@ Snap.is = is;
  * Snaps given value to given grid.
  - values (array|number) given array of values or step of the grid
  - value (number) value to adjust
- - tolerance (number) #optional tolerance for snapping. Default is `10`.
+ - tolerance (number) #optional maximum distance to the target value that would trigger the snap. Default is `10`. VERIFY
  = (number) adjusted value.
 \*/
 Snap.snapTo = function (values, value, tolerance) {

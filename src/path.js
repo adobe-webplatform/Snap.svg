@@ -1254,6 +1254,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     \*/
     Snap.path.intersection = pathIntersection;
     Snap.path.intersectionNumber = pathIntersectionNumber;
+    // SIERRA Does the fill mode affect how isPointInside behaves?
     /*\
      * Snap.path.isPointInside
      [ method ]
