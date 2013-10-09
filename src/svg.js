@@ -311,7 +311,7 @@ Snap.angle = angle;
  **
  * Handfull replacement for `typeof` operator.
  - o (…) any object or primitive
- - type (string) name of the type, i.e. `string`, `function`, `number`, etc.
+ - type (string) name of the type, e.g., `string`, `function`, `number`, etc.
  = (boolean) is given value is of given type
 \*/
 Snap.is = is;
@@ -627,7 +627,7 @@ Snap.Matrix = Matrix;
  - colour (string) colour string in one of the following formats:
  # <ul>
  #     <li>Colour name (<code>red</code>, <code>green</code>, <code>cornflowerblue</code>, etc)</li>
- #     <li>#••• — shortened HTML colour: (<code>#000</code>, <code>#fc0</code>, etc)</li>
+ #     <li>#••• — shortened HTML colour: (<code>#000</code>, <code>#fc0</code>, etc.)</li>
  #     <li>#•••••• — full length HTML colour: (<code>#000000</code>, <code>#bd2300</code>)</li>
  #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (<code>rgb(200,&nbsp;100,&nbsp;0)</code>)</li>
  #     <li>rgba(•••, •••, •••, •••) — also with opacity</li>
@@ -1774,7 +1774,7 @@ function arrayFirstValue(arr) {
      * Element.asPX
      [ method ]
      **
-     * Return given attribute of the element as a `px` value. (Not %, em, etc)
+     * Return given attribute of the element as a `px` value. (Not %, em, etc.)
      **
      - attr (string) attribute name
      - value (string) #optional attribute value
