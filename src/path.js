@@ -1120,6 +1120,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     elproto.getPointAtLength = function (length) {
         return getPointAtLength(this.attr("d"), length);
     };
+    // SIERRA Element.getSubpath(): Similar to the problem for Element.getPointAtLength(). Unclear how this would work for a segmented path. Overall, the concept of _subpath_ and what I'm calling a _segment_ (series of non-_M_ or _Z_ commands) is unclear.
     /*\
      * Element.getSubpath
      [ method ]
