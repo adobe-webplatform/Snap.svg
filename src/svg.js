@@ -2008,7 +2008,7 @@ function arrayFirstValue(arr) {
      - attr (object) attributes of final destination
      - duration (number) duration of the animation, in milliseconds
      - easing (function) #optional one of easing functions of @mina or custom one
-     - callback (function) #optional callback
+     - callback (function) #optional callback function that fires when animation ends VERIFY
      = (object) animation object
     \*/
     Snap.animation = function (attr, ms, easing, callback) {
