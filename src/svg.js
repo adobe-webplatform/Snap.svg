@@ -2090,6 +2090,7 @@ function arrayFirstValue(arr) {
         callback && eve.once("mina.finish." + anim.id, callback);
         return anim;
     };
+    // SIERRA Element.stop(). Does it _stop_ or _pause_ the animations? If you run Element.animate() to restart the animation, does it commence from the beginning?
     /*\
      * Element.stop
      [ method ]
