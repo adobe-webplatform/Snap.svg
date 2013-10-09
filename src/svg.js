@@ -14,6 +14,7 @@
 
 var Snap = (function() {
 Snap.version = "0.0.1";
+// SIERRA: this method appears to be missing from HTML output
 /*\
  * Snap
  [ method ]
@@ -23,7 +24,7 @@ Snap.version = "0.0.1";
  - width (number|string) width of surface
  - height (number|string) height of surface
  * or
- - dom (SVGElement) element to be wrapped into Snap structure
+ - DOM (SVGElement) element to be wrapped into Snap structure
  * or
  - query (string) CSS query selector
  = (object) @Element
@@ -2369,6 +2370,7 @@ function make(name, parent) {
     el.type = name;
     return el;
 }
+// SIERRA Is Paper() part of final interface, akin to Snap()? Document if so.
 function Paper(w, h) {
     var res,
         desc,
