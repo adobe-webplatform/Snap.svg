@@ -1060,7 +1060,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Return coordinates of the point located at the given length on the given path.
      **
      - path (string) SVG path string
-     - length (number) distance, in pixels, from the start of the path, excluding non-rendering jumps VERIFY
+     - length (number) length, in pixels, from the start of the path, excluding non-rendering jumps VERIFY
      **
      = (object) representation of the point:
      o {
@@ -1077,8 +1077,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Return subpath of a given path between given start and end lengths
      **
      - path (string) SVG path string
-     - from (number) distance, in pixels, to the start of the segment VERIFY
-     - to (number) distance, in pixels, to the end of the segment VERIFY
+     - from (number) length, in pixels, from the start of the path to the start of the segment VERIFY
+     - to (number) length, in pixels, from the start of the path to the end of the segment VERIFY
      **
      = (string) path string definition for the segment
     \*/
@@ -1108,7 +1108,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Return coordinates of the point located at the given length on the given path. Only works for `path` elements.
      **
-     - length (number)
+     - length (number) length, in pixels, from the start of the path, excluding non-rendering jumps VERIFY
      **
      = (object) representation of the point:
      o {
@@ -1127,8 +1127,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Return subpath of a given element from given start and end lengths. Only works for `path` elements.
      **
-     - from (number) distance, in pixels, of the start of the segment VERIFY
-     - to (number) distance, in pixels, of the end of the segment VERIFY
+     - from (number) length, in pixels, from the start of the path to the start of the segment VERIFY
+     - to (number) length, in pixels, from the start of the path to the end of the segment VERIFY
      **
      = (string) path string definition for the segment
     \*/
