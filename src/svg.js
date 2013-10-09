@@ -284,7 +284,7 @@ Snap.rad = rad;
  [ method ]
  **
  * Transform angle to degrees
- - deg (number) angle in radians
+ - rad (number) angle in radians
  = (number) angle in degrees.
 \*/
 Snap.deg = deg;
