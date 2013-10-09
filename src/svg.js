@@ -1547,6 +1547,9 @@ function arrayFirstValue(arr) {
     var propString = function () {
         return this.local;
     };
+// SIERRA Element.transform(): seems to allow two return values, one of which (_Element_) is undefined.
+// SIERRA Element.transform(): if this only accepts one argument, it's unclear how it can both _get_ and _set_ a transform.
+// SIERRA Element.transform(): Unclear how Snap transform string format differs from SVG's.
     /*\
      * Element.transform
      [ method ]
