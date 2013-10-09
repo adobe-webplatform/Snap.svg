@@ -1881,11 +1881,12 @@ function arrayFirstValue(arr) {
         clone.insertAfter(this);
         return clone;
     };
+// SIERRA Element.toDefs(): If this _moves_ an element to the <defs> region, why is the return value a _clone_? Also unclear why it's called the _relative_ <defs> section. Perhaps _shared_?
     /*\
      * Element.toDefs
      [ method ]
      **
-     * Moves element to the relative `<defs>` section.
+     * Moves element to the shared `<defs>` area.
      **
      = (Element) the clone
     \*/
