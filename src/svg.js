@@ -723,6 +723,7 @@ Snap.getRGB = cacher(function (colour) {
     }
     return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
 }, Snap);
+// SIERRA It seems odd that the following 3 conversion methods are not expressed as .this2that(), like the others.
 /*\
  * Snap.hsb
  [ method ]
@@ -2259,6 +2260,7 @@ function arrayFirstValue(arr) {
         };
     }
 }(Element.prototype));
+// SIERRA Snap.parse() accepts & returns a fragment, but there's no info on what it does in between. What if it doesn't parse?
 /*\
  * Snap.parse
  [ method ]
