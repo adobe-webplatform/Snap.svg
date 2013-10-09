@@ -2672,8 +2672,6 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         }
         return el;
     };
-// SIERRA Paper.ellipse(): Returns _ellipse element_. Use in-line font change for _ellipse,_ not quote characters.
-
     /*\
      * Paper.ellipse
      [ method ]
