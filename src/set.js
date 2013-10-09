@@ -91,7 +91,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.clear
      [ method ]
      **
-     * Removeds all elements from the set
+     * Removes all elements from the set
     \*/
     setproto.clear = function () {
         while (this.length) {
