@@ -2897,26 +2897,30 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          **
          - gradient (string) gradient descriptor
          > Gradient Descriptor
-         * Gradient descriptor consists of `<type>(<coords>)<colors>`. Type
-         * could be linear or radial, which presented as letter `L` or `R`. Any
-         * type could be absolute or relative, absolute gradient take it coords
-         * relative to the SVG surface, while relative takes them relative to
-         * the bounding box of the element it applied to. For absolute
-         * coordinates you specify type as an upper case letter (`L` or `R`).
-         * For relative use low case letter (`l` or `r`). Coordinates specify
-         * vector of gradient for linear as x1, y1, x2, y2. For radial as cx,
-         * cy, r and optional fx, fy. Colors are list of dash separated colors.
-         * Optionally color could have offset after colon.
-         > Example
-         | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
+         * The gradient descriptor is an expression formatted as
+         * follows: `<type>(<coords>)<colors>`.  The `<type>` can be
+         * either linear or radial.  The uppercase `L` or `R` letters
+         * indicate absolute coordinates offset from the SVG surface.
+         * Lowercase `l` or `r` letters indicate coordinates
+         * calculated relative to the element to which the gradient is
+         * applied.  Coordinates specify a linear gradient vector as
+         * `x1`, `y1`, `x2`, `y2`, or a radial gradient as `cx`, `cy`,
+         * `r` and optional `fx`, `fy` specifying a focal point away
+         * from the center of the circle. Specify `<colors>` as a list
+         * of dash-separated CSS color values.  Each color may be
+         * followed by a custom offset value, separated with a colon
+         * character.
+         > Examples
          * Linear gradient, relative from top-left corner to bottom-right
-         * corner, from black through red to white.
-         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
+         * corner, from black through red to white:
+         | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
          * Linear gradient, absolute from (0, 0) to (100, 100), from black
-         * through red at 25% to white.
-         | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
+         * through red at 25% to white:
+         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
          * Radial gradient, relative from the center of the element with radius
-         * 0.5 of the width, from black to white.
+         * half the width, from black to white:
+         | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
+         * To apply the gradient:
          | paper.circle(50, 50, 40).attr({
          |     fill: g
          | });
