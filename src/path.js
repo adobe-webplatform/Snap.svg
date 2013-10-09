@@ -522,6 +522,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         symbol: function (el) {
             var bbox = el.getBBox();
             return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
+        },
+        polyline: function (el) {
+            return "M" + el.attr("points");
+        },
+        polygon: function (el) {
+            return "M" + el.attr("points") + "z";
         }
     };
     function pathToRelative(pathArray) {

@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-09-27
+// build: 2013-10-06
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -5337,6 +5337,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         symbol: function (el) {
             var bbox = el.getBBox();
             return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
+        },
+        polyline: function (el) {
+            return "M" + el.attr("points");
+        },
+        polygon: function (el) {
+            return "M" + el.attr("points") + "z";
         }
     };
     function pathToRelative(pathArray) {
