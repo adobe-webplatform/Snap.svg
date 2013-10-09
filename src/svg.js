@@ -288,6 +288,7 @@ Snap.rad = rad;
  = (number) angle in degrees.
 \*/
 Snap.deg = deg;
+// SIERRA for which point is the angle calculated?
 /*\
  * Snap.angle
  [ method ]
@@ -591,6 +592,7 @@ function Matrix(a, b, c, d, e, f) {
         }
     };
 })(Matrix.prototype);
+// SIERRA Unclear the difference between the two matrix formats ("parameters" vs svgMatrix). See my comment about Element.matrix().
 /*\
  * Snap.Matrix
  [ method ]
@@ -2045,6 +2047,9 @@ function arrayFirstValue(arr) {
         }
         return res;
     };
+    // SIERRA unfamiliar with the phrase _caring function,_ so the text for the _setter_ param isn't clear.
+    // SIERRA With the animation's start/end states defined, how is its _speed_ distinguished from its _duration_?
+    // SIERRA Text explaining the mina format should move to the section on the mina object interface. (Prior comment applies: object interfaces need to also be documented.)
     /*\
      * Snap.animate
      [ method ]
