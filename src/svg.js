@@ -2554,7 +2554,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - height (number) height
      - rx (number) #optional horisontal radius for rounded corners, default is 0
      - ry (number) #optional vertical radius for rounded corners, default is rx or 0
-     = (object) Element object with type `rect`
+     = (object) `rect` element
      **
      > Usage
      | // regular rectangle
@@ -2594,7 +2594,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - r (number) radius
-     = (object) Element object with type `circle`
+     = (object) `circle` element
      **
      > Usage
      | var c = paper.circle(50, 50, 40);
@@ -2639,7 +2639,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y (number) y coordinate position
      - width (number) width of the image
      - height (number) height of the image
-     = (object) Element object with type `image`
+     = (object) `image` element
      **
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);
@@ -2672,6 +2672,8 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         }
         return el;
     };
+// SIERRA Paper.ellipse(): Returns _ellipse element_. Use in-line font change for _ellipse,_ not quote characters.
+
     /*\
      * Paper.ellipse
      [ method ]
@@ -2682,7 +2684,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y (number) y coordinate of the centre
      - rx (number) horizontal radius
      - ry (number) vertical radius
-     = (object) Element object with type `ellipse`
+     = (object) `ellipse` element
      **
      > Usage
      | var c = paper.ellipse(50, 50, 40, 20);
@@ -2749,7 +2751,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Makes a group element.
      **
      - varargs (…) #optional elements
-     = (object) Element object with type `g`
+     = (object) `g` element
      **
      > Usage
      | var c1 = paper.circle(),
@@ -2789,7 +2791,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - x (number) x coordinate position
      - y (number) y coordinate position
      - text (string|array) The text string to draw or array of <tspan>s
-     = (object) Element object with type `text`
+     = (object) `text` element
      **
      > Usage
      | var t1 = paper.text(50, 50, "Snap");
@@ -2818,7 +2820,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y1 (number) y coordinate position of the start
      - x2 (number) x coordinate position of the end
      - y2 (number) y coordinate position of the end
-     = (object) Element object with type `line`
+     = (object) `line` element
      **
      > Usage
      | var t1 = paper.line(50, 50, 100, 100);
@@ -2846,7 +2848,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - points (array) array of points
      * or
      - varargs (…) points
-     = (object) Element object with type `text`
+     = (object) `text` element
      **
      > Usage
      | var p1 = paper.polyline([10, 10, 100, 100]);
@@ -2919,7 +2921,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          | paper.circle(50, 50, 40).attr({
          |     fill: g
          | });
-         = (object) Element object with type `gradient`
+         = (object) `gradient` element
         \*/
         proto.gradient = function (str) {
             return gradient(this.defs, str);
