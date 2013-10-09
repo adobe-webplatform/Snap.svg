@@ -441,8 +441,8 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Translate the matrix
-     - x (number)
-     - y (number)
+     - x (number) horizontal offset distance VERIFY
+     - y (number) vertical offset distance VERIFY
     \*/
     matrixproto.translate = function (x, y) {
         return this.add(1, 0, 0, 1, x, y);
@@ -838,7 +838,7 @@ packageRGB = function (r, g, b, o) {
  [ method ]
  **
  * Parses the color string and returns an object featuring the color's component values.
- - clr (string) color string in one of the supported formats (see @Snap.getRGB)
+ - clr (string) color string in one of the supported formats. See @Snap.getRGB.
  = (object) Combined RGB & HSB object in the following format:
  o {
  o     r (number) red,
