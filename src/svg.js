@@ -1030,7 +1030,7 @@ Snap.rgb2hsl = function (r, g, b) {
 };
 
 // Transformations
-# SIERRA Snap.parsePathString(): By _array of arrays,_ I assume you mean a format like this for two separate segments? [ ["M10,10","L90,90"], ["M90,10","L10,90"] ] Otherwise how is each command structured?
+// SIERRA Snap.parsePathString(): By _array of arrays,_ I assume you mean a format like this for two separate segments? [ ["M10,10","L90,90"], ["M90,10","L10,90"] ] Otherwise how is each command structured?
 /*\
  * Snap.parsePathString
  [ method ]
@@ -1897,6 +1897,8 @@ function arrayFirstValue(arr) {
         defs.appendChild(this.node);
         return this;
     };
+// SIERRA Element.pattern(): x/y/width/height data types are listed as both String and Number. Is that an error, or does it mean strings are coerced?
+// SIERRA Element.pattern(): clarify that x/y are offsets that e.g., may add gutters between the tiles.
     /*\
      * Element.pattern
      [ method ]
