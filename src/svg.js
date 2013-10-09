@@ -2163,11 +2163,12 @@ function arrayFirstValue(arr) {
         return el;
     };
     var eldata = {};
+    // SIERRA Element.data()/Element.removeData(): Do these correspond to _data- attributes, and if so, can you ordinarily use the the dataset API within SVG?
     /*\
      * Element.data
      [ method ]
      **
-     * Adds or retrieves given value asociated with given key.
+     * Adds or retrieves given value associated with given key.
      ** 
      * See also @Element.removeData
      - key (string) key to store data
