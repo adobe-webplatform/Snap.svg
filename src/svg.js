@@ -447,15 +447,16 @@ function Matrix(a, b, c, d, e, f) {
     matrixproto.translate = function (x, y) {
         return this.add(1, 0, 0, 1, x, y);
     };
+    // SIERRA: do cx/cy default to the center point, as in CSS? If so, Snap appears to resolve important discrepancies between how transforms behave in SVG & CSS.
     /*\
      * Matrix.scale
      [ method ]
      **
      * Scales the matrix
-     - x (number)
-     - y (number) #optional
-     - cx (number) #optional
-     - cy (number) #optional
+     - x (number) amount to be scaled, with `1` resulting in no change VERIFY
+     - y (number) #optional amount to scale along the vertical axis. (Otherwise `x` applies to both axes.)
+     - cx (number) #optional horizontal origin point from which to scale VERIFY
+     - cy (number) #optional vertical origin point from which to scale
     \*/
     matrixproto.scale = function (x, y, cx, cy) {
         y == null && (y = x);
