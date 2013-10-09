@@ -522,6 +522,9 @@ function Matrix(a, b, c, d, e, f) {
         a[0] && (a[0] /= mag);
         a[1] && (a[1] /= mag);
     }
+// SIERRA Matrix.split(): HTML formatting for the return value is scrambled. It should appear _Returns: {OBJECT} in format:..._
+// SIERRA Matrix.split(): the _shear_ parameter needs to be detailed. Is it an angle? What does it affect?
+// SIERRA Matrix.split(): The idea of _simple_ transforms needs to be detailed and contrasted with any alternatives.
     /*\
      * Matrix.split
      [ method ]
