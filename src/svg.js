@@ -1943,6 +1943,8 @@ function arrayFirstValue(arr) {
         p.node.appendChild(this.node);
         return p;
     };
+// SIERRA Element.marker(): clarify what a reference point is. E.g., helps you offset the object from its edge such as when centering it over a path.
+// SIERRA Element.marker(): I suggest the method should accept default reference point values.  Perhaps centered with (refX = width/2) and (refY = height/2)? Also, couldn't it assume the element's current _width_ and _height_? And please specify what _x_ and _y_ mean: offsets? If so, from where?  Couldn't they also be assigned default values?
     /*\
      * Element.marker
      [ method ]
@@ -1957,7 +1959,7 @@ function arrayFirstValue(arr) {
      - refX (number)
      - refY (number)
      = (Element) `<marker>` element
-     * You can use pattern later on as an argument for `marker-start` or `marker-end` attributes.
+     * You can specify the marker later as an argument for `marker-start`, `marker-end`, `marker-mid`, and `marker` attributes. The `marker` attribute places the marker at every point along the path, and `marker-mid` places them at every point except the start and end.
     \*/
     // TODO add usage for markers
     elproto.marker = function (x, y, width, height, refX, refY) {
