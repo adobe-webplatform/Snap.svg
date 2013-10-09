@@ -18,7 +18,9 @@
         <title>Snap</title>
         <style media="screen">
         body {
-            background: #030 url("bg.png");
+            background: #fff;
+            margin: 0;
+            padding: 0;
         }
         .shape {
             fill: none;
@@ -55,7 +57,7 @@
         <script src="dist/snap.svg-min.js"></script>
         <script>
         window.onload = function () {
-            var s = Snap(800, 600),
+            var s = Snap(1000, 800),
                 p = 100 / 30,
                 h = 250,
                 x = 400,
@@ -63,8 +65,227 @@
                 R = 100,
                 r = 70,
                 open = 0,
+                gstream,
                 gmilk = "l()#F4EEE6-#fff:50-#F4EEE6:50-#F4EEE6",
-                gcoffee = "l()#60544F-#8c7a73:50-#60544F:50-#60544F";
+                gcoffee = "l()#60544F-#8c7a73:50-#60544F:50-#60544F",
+                gwater = "l()#B4D6DB-#D6EDEE:50-#B4D6DB:50-#B4D6DB";
+
+            Snap.load("demo.svg", function (f) {
+                var top = f.select("#top"),
+                    bot = f.select("#bottom"),
+                    tap = f.select("#tap"),
+                    knob = f.select("#knob"),
+                    dot = f.select("#dot"),
+                    arr = f.select("#arrow"),
+                    knobcx = knob.attr("cx"),
+                    knobcy = knob.attr("cy"),
+                    lead = f.select("#lead"),
+                    pie = {
+                        cx: f.select("#pie-chart circle").attr("cx"),
+                        cy: f.select("#pie-chart circle").attr("cy"),
+                        r: f.select("#pie-chart circle").attr("r"),
+                        coffee: f.select("#legend text tspan"),
+                        title: f.selectAll("#legend text")[1],
+                        water: f.select("#legend text tspan:nth-child(2)"),
+                        waterBox: f.select("#legend rect:nth-child(2)")
+                    },
+                    angle = 0,
+                    lastAngle,
+                    startAngle,
+                    leadOpenPath = lead.attr("d"),
+                    leadClosedPath = f.select("#lead-target").attr("d"),
+                    closed,
+                    grp = s.g().insertBefore(tap);
+                f.select("#pie-chart").remove();
+                x = +top.attr("cx");
+                y = +top.attr("cy");
+                R = +top.attr("rx");
+                r = +bot.attr("rx");
+                h = bot.attr("cy") - y;
+                s.add(f.select("g"));
+                lead.click(function () {
+                    var path,
+                        ease;
+                    if (closed) {
+                        path = leadOpenPath;
+                        ease = mina.easein;
+                        closed = 0;
+                    } else {
+                        path = leadClosedPath;
+                        ease = mina.bounce;
+                        closed = 1;
+                    }
+                    lead.stop().animate({
+                        d: path
+                    }, 1000, ease);
+                });
+                knob.attr({
+                    fill: "#000",
+                    opacity: 0
+                }).drag(function (dx, dy, x, y) {
+                    var a = Snap.angle(knobcx, knobcy, x, y) - startAngle + angle;
+                    dot.transform("r" + [a, knobcx, knobcy]);
+                    arr.transform("r" + [a, knobcx, knobcy]);
+                    lastAngle = a;
+                }, function (x, y) {
+                    startAngle = Snap.angle(knobcx, knobcy, x, y);
+                    dot.stop();
+                    arr.stop();
+                }, function () {
+                    angle = lastAngle;
+                    var a = Snap.snapTo(72, angle, 36);
+                    dot.animate({
+                        transform: "r" + [a, knobcx, knobcy]
+                    }, 1000, mina.elastic);
+                    arr.animate({
+                        transform: "r" + [a, knobcx, knobcy]
+                    }, 1000, mina.elastic, function () {
+                        angle = (a + 1080) % 360;
+                        closeCup(function () {
+                            types[a]();
+                            pour();
+                            pieShow();
+                        });
+                    });
+                });
+
+                grp.path(outline(0, h)).attr("class", "outline");
+                var o3 = (h - 70) / 3,
+                    o2 = (h - 70) / 2,
+                    cover = grp.ellipse(getEll(h - 60)).attr("class", "water"),
+                    ct1 = grp.path(cut(10, 10 + o3, 0)).attr({
+                        fill: gcoffee
+                    }),
+                    ct2 = grp.path(cut(10 + o3, h - 60, 0)).attr({
+                        fill: gwater
+                    }),
+                    middle = 10 + o3,
+                    pieCoffee,
+                    pieTitle,
+                    pieType,
+                    g = grp.g(),
+                    dr = grp.path(doors(0)).attr("class", "doors"),
+                    types = {
+                        // americano
+                        0: function () {
+                            cover.attr("class", "water");
+                            ct2.attr("fill", gwater);
+                            middle = 10 + o3;
+                            pieCoffee = 1 / 3;
+                            pieType = "water";
+                            pieTitle = "Americano";
+                            gstream = "l(0,1,0,0)#60544F-#60544F:33-#B4D6DB";
+                        },
+                        // latté
+                        72: function () {
+                            cover.attr("class", "milk");
+                            ct2.attr("fill", gmilk);
+                            middle = 10 + o3 * 2;
+                            pieCoffee = 2 / 3;
+                            pieType = "milk";
+                            pieTitle = "Latté";
+                            gstream = "l(0,1,0,0)#60544F-#60544F:66-#fff";
+                        },
+                        // mocha
+                        144: function () {
+                            cover.attr("class", "milk");
+                            ct2.attr("fill", gmilk);
+                            middle = 10 + o3;
+                            pieCoffee = 1 / 3;
+                            pieType = "milk";
+                            pieTitle = "Mocha";
+                            gstream = "l(0,1,0,0)#60544F-#60544F:33-#fff";
+                        },
+                        // machiatto
+                        216: function () {
+                            cover.attr("class", "milk");
+                            ct2.attr("fill", gmilk);
+                            middle = 10 + o2;
+                            pieCoffee = 1 / 2;
+                            pieType = "milk";
+                            pieTitle = "Machiatto";
+                            gstream = "l(0,1,0,0)#60544F-#60544F:50-#fff";
+                        },
+                        // espresso
+                        288: function () {
+                            cover.attr("class", "coffee");
+                            ct2.attr("fill", gcoffee);
+                            middle = 10;
+                            pieCoffee = 1;
+                            pieType = "milk";
+                            pieTitle = "Espresso";
+                            gstream = "#60544F";
+                        }
+                    };
+                function closeCup(callback) {
+                    Snap.animate(90, 0, function (val) {
+                        ct1.attr("path", cut(10, middle, val));
+                        ct2.attr("path", cut(middle, h - 60, val));
+                        dr.attr("path", doors(val));
+                    }, 500, mina.easein, callback);
+                }
+                function pour() {
+                    steam(g, function () {
+                        Snap.animate(0, 90, function (val) {
+                            ct1.attr("path", cut(10, middle, val));
+                            ct2.attr("path", cut(middle, h - 60, val));
+                            dr.attr("path", doors(val));
+                        }, 1500, mina.elastic);
+                    });
+                }
+                var pieShow = (function () {
+                    var disc = s.circle(pie.cx, pie.cy, pie.r).attr({
+                        fill: "#fff",
+                        stroke: "#60544F"
+                    }),
+                    coffee = s.path().attr({
+                        stroke: "#60544F",
+                        strokeWidth: pie.r,
+                        fill: "none"
+                    }),
+                    olda = 0,
+                    a;
+                    return function () {
+                        var cof = pieCoffee,
+                            type = pieType;
+                        a = 360 * cof / 2;
+                        pie.waterBox.attr({
+                            fill: type == "water" ? "#d6edee" : "#fff"
+                        });
+                        disc.attr({
+                            fill: type == "water" ? "#d6edee" : "#fff"
+                        });
+                        pie.title.attr({
+                            "#text": pieTitle
+                        });
+                        pie.coffee.attr({
+                            "#text": "Espresso (" + Math.round(cof * 100) + "%)"
+                        });
+                        pie.water.attr({
+                            "#text": (type == "water" ? "Hot Water" : "Milk") + " (" + (100 - Math.round(cof * 100)) + "%)"
+                        });
+                        Snap.animate(olda, a, function (val) {
+                            coffee.attr({
+                                d: "M" + [pie.cx, pie.cy] +
+                                   "U" + [pie.r / 2, 90 - val, 90 + val]
+                            });
+                        }, 500, function () {
+                            if (cof == 1) {
+                                disc.attr({
+                                    fill: "#60544F"
+                                });
+                            }
+                        });
+                        olda = a;
+                    };
+                }());
+                
+                types[0]();
+                pour();
+                pieShow();
+            });
+
+
             function getEll(height) {
                 var ra = r + (R - r) / h * height;
                 return {
@@ -131,20 +352,9 @@
                     s.cx + s.rx * Math.cos(sa), s.cy - s.ry * Math.sin(sa)
                 ] + "z";
             }
-            s.path(outline(0, h)).attr("class", "outline");
-            var o3 = (h - 50) / 3;
-            s.path(fill(10, h - 60)).attr("class", "water");
-            var ct1 = s.path(cut(10, 10 + o3, 0)).attr({
-                fill: gcoffee
-            });
-            var ct2 = s.path(cut(10 + o3, h - 60, 0)).attr({
-                fill: "l()#B4D6DB-#D6EDEE:50-#B4D6DB:50-#B4D6DB"
-            });
-            var g = s.g();
-            var dr = s.path(doors(0)).attr("class", "doors");
-            function steam(callback) {
+            function steam(g, callback) {
                 g.rect(x - 10, y - 1030, 20, 1000, 10).attr({
-                    fill: "l(0,1,0,0)#60544F-#60544F:33-#B4D6DB",
+                    fill: gstream,
                     clip: s.rect(x - 10, y - 200, 20, h + 200)
                 }).animate({y: y + 40}, 800, function () {
                     this.remove();
@@ -154,14 +364,6 @@
                     filter: s.filter(Snap.filter.blur(10))
                 }).animate({cy: y - 30, opacity: 0}, 1000, callback);
             }
-            steam(function () {
-                Snap.animate(0, 90, function (val) {
-                    ct1.attr("path", cut(10, 10 + o3, val));
-                    ct2.attr("path", cut(10 + o3, h - 60, val));
-                    dr.attr("path", doors(val));
-                }, 1000, mina.elastic);
-            });
-            s.text(10, 30, "Work in progress…");
         };
         </script>
     </head>
