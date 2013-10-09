@@ -1140,7 +1140,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Utility method
      **
-     * Find dot coordinates on the given cubic bezier curve at the given t.
+     * Find dot coordinates on the given cubic beziér curve at the given t.
      - p1x (number) x of the first point of the curve
      - p1y (number) y of the first point of the curve
      - c1x (number) x of the first anchor of the curve
@@ -1180,7 +1180,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Utility method
      **
-     * Return bounding box of a given cubic bezier curve
+     * Return bounding box of a given cubic beziér curve
      - p1x (number) x of the first point of the curve
      - p1y (number) y of the first point of the curve
      - c1x (number) x of the first anchor of the curve
@@ -1190,7 +1190,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - p2x (number) x of the second point of the curve
      - p2y (number) y of the second point of the curve
      * or
-     - bez (array) array of six points for bezier curve
+     - bez (array) array of six points for beziér curve
      = (object) point information in format:
      o {
      o     min: {
@@ -1316,7 +1316,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Utility method
      **
-     * Converts path to a new path where all segments are cubic bezier curves.
+     * Converts path to a new path where all segments are cubic beziér curves.
      - pathString (string|array) path string or array of segments
      = (array) array of segments.
     \*/
