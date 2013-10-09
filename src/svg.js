@@ -413,6 +413,7 @@ function Matrix(a, b, c, d, e, f) {
         this.f = out[1][2];
         return this;
     };
+// SIERRA Matrix.invert(): Unclear what it means to invert a matrix.
     /*\
      * Matrix.invert
      [ method ]
