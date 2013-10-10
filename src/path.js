@@ -1048,7 +1048,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns the length of the given path in pixels
      **
-     - path (string) SVG path string.
+     - path (string) SVG path string
      **
      = (number) length
     \*/

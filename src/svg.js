@@ -840,7 +840,7 @@ packageRGB = function (r, g, b, o) {
  [ method ]
  **
  * Parses the color string and returns an object featuring the color's component values
- - clr (string) color string in one of the supported formats. See @Snap.getRGB.
+ - clr (string) color string in one of the supported formats (see @Snap.getRGB)
  = (object) Combined RGB/HSB object in the following format:
  o {
  o     r (number) red,
@@ -2702,7 +2702,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      [ method ]
      **
      * Creates a `<path>` element using the given string as the path's definition
-     - pathString (string) #optional path string in SVG format.
+     - pathString (string) #optional path string in SVG format
      * Path string consists of one-letter commands, followed by comma seprarated arguments in numerical form. Example:
      | "M10,20L30,40"
      * This example features two commands: `M`, with arguments `(10, 20)` and `L` with arguments `(30, 40)`. Uppercase letter commands express coordinates in absolute terms, while lowercase commands express them in relative terms from the most recently declared coordinates.

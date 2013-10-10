@@ -25,7 +25,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Creates a `<filter>` element
      **
-     - filstr (string) SVG fragment of filter provided as a string.
+     - filstr (string) SVG fragment of filter provided as a string
      = (object) @Element
      * Note: It is recommended to use filters embedded into the page inside an empty SVG element.
      > Usage
@@ -90,8 +90,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the blur filter
      **
-     - x (number) amount of horizontal blur in px.
-     - y (number) #optional amount of vertical blur in px.
+     - x (number) amount of horizontal blur, in pixels
+     - y (number) #optional amount of vertical blur, in pixels
      = (string) filter representation
      > Usage
      | var f = paper.filter(Snap.filter.blur(5, 10)),
@@ -117,10 +117,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the shadow filter
      **
-     - dx (number) horizontal shift of the shadow in px.
-     - dy (number) vertical shift of the shadow in px.
-     - blur (number) #optional amount of blur.
-     - color (string) #optional color of the shadow.
+     - dx (number) horizontal shift of the shadow, in pixels
+     - dy (number) vertical shift of the shadow, in pixels
+     - blur (number) #optional amount of blur
+     - color (string) #optional color of the shadow
      = (string) filter representation
      > Usage
      | var f = paper.filter(Snap.filter.shadow(0, 2, 3)),
@@ -161,7 +161,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the grayscale filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.grayscale = function (amount) {
@@ -188,7 +188,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the sepia filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.sepia = function (amount) {
@@ -216,7 +216,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the saturate filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.saturate = function (amount) {
@@ -236,7 +236,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the hue-rotate filter
      **
-     - angle (number) angle of rotation.
+     - angle (number) angle of rotation
      = (string) filter representation
     \*/
     Snap.filter.hueRotate = function (angle) {
@@ -254,7 +254,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the invert filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.invert = function (amount) {
@@ -275,7 +275,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the brightness filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.brightness = function (amount) {
@@ -295,7 +295,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the contrast filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.contrast = function (amount) {
