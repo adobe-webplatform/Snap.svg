@@ -647,7 +647,7 @@ Snap.Matrix = Matrix;
  o {
  o     r (number) red,
  o     g (number) green,
- o     b (number) blue
+ o     b (number) blue,
  o     hex (string) color in HTML/CSS format: #••••••,
  o     error (boolean) true if string can't be parsed
  o }
@@ -976,8 +976,8 @@ Snap.hsl2rgb = function (h, s, l, o) {
  - b (number) blue
  = (object) HSB object in the following format:
  o {
- o     h (number) hue
- o     s (number) saturation
+ o     h (number) hue,
+ o     s (number) saturation,
  o     b (number) brightness
  o }
 \*/
@@ -1009,8 +1009,8 @@ Snap.rgb2hsb = function (r, g, b) {
  - b (number) blue
  = (object) HSL object in the following format:
  o {
- o     h (number) hue
- o     s (number) saturation
+ o     h (number) hue,
+ o     s (number) saturation,
  o     l (number) luminosity
  o }
 \*/

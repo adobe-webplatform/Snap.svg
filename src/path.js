@@ -1064,8 +1064,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      = (object) representation of the point:
      o {
-     o     x: (number) x coordinate
-     o     y: (number) y coordinate
+     o     x: (number) x coordinate,
+     o     y: (number) y coordinate,
      o     alpha: (number) angle of derivative
      o }
     \*/
@@ -1112,8 +1112,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      = (object) representation of the point:
      o {
-     o     x: (number) x coordinate
-     o     y: (number) y coordinate
+     o     x: (number) x coordinate,
+     o     y: (number) y coordinate,
      o     alpha: (number) angle of derivative
      o }
     \*/
@@ -1154,24 +1154,24 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - t (number) position on the curve (0..1)
      = (object) point information in format:
      o {
-     o     x: (number) x coordinate of the point
-     o     y: (number) y coordinate of the point
+     o     x: (number) x coordinate of the point,
+     o     y: (number) y coordinate of the point,
      o     m: {
-     o         x: (number) x coordinate of the left anchor
+     o         x: (number) x coordinate of the left anchor,
      o         y: (number) y coordinate of the left anchor
-     o     }
+     o     },
      o     n: {
-     o         x: (number) x coordinate of the right anchor
+     o         x: (number) x coordinate of the right anchor,
      o         y: (number) y coordinate of the right anchor
-     o     }
+     o     },
      o     start: {
-     o         x: (number) x coordinate of the start of the curve
+     o         x: (number) x coordinate of the start of the curve,
      o         y: (number) y coordinate of the start of the curve
-     o     }
+     o     },
      o     end: {
-     o         x: (number) x coordinate of the end of the curve
+     o         x: (number) x coordinate of the end of the curve,
      o         y: (number) y coordinate of the end of the curve
-     o     }
+     o     },
      o     alpha: (number) angle of the curve derivative at the point
      o }
     \*/
@@ -1196,11 +1196,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) point information in format:
      o {
      o     min: {
-     o         x: (number) x coordinate of the left point
+     o         x: (number) x coordinate of the left point,
      o         y: (number) y coordinate of the top point
-     o     }
+     o     },
      o     max: {
-     o         x: (number) x coordinate of the right point
+     o         x: (number) x coordinate of the right point,
      o         y: (number) y coordinate of the bottom point
      o     }
      o }
@@ -1243,13 +1243,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (array) dots of intersection
      o [
      o     {
-     o         x: (number) x coordinate of the point
-     o         y: (number) y coordinate of the point
-     o         t1: (number) t value for segment of path1
-     o         t2: (number) t value for segment of path2
-     o         segment1: (number) order number for segment of path1
-     o         segment2: (number) order number for segment of path2
-     o         bez1: (array) eight coordinates representing beziér curve for the segment of path1
+     o         x: (number) x coordinate of the point,
+     o         y: (number) y coordinate of the point,
+     o         t1: (number) t value for segment of path1,
+     o         t2: (number) t value for segment of path2,
+     o         segment1: (number) order number for segment of path1,
+     o         segment2: (number) order number for segment of path2,
+     o         bez1: (array) eight coordinates representing beziér curve for the segment of path1,
      o         bez2: (array) eight coordinates representing beziér curve for the segment of path2
      o     }
      o ]
@@ -1280,11 +1280,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - path (string) path string
      = (object) bounding box
      o {
-     o     x: (number) x coordinate of the left top point of the box
-     o     y: (number) y coordinate of the left top point of the box
-     o     x2: (number) x coordinate of the right bottom point of the box
-     o     y2: (number) y coordinate of the right bottom point of the box
-     o     width: (number) width of the box
+     o     x: (number) x coordinate of the left top point of the box,
+     o     y: (number) y coordinate of the left top point of the box,
+     o     x2: (number) x coordinate of the right bottom point of the box,
+     o     y2: (number) y coordinate of the right bottom point of the box,
+     o     width: (number) width of the box,
      o     height: (number) height of the box
      o }
     \*/
