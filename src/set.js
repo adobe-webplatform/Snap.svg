@@ -142,7 +142,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Removes given element from the set
      **
      - element (object) element to remove
-     = (boolean) `true` if object was found & removed from the set
+     = (boolean) `true` if object was found and removed from the set
     \*/
     setproto.exclude = function (el) {
         for (var i = 0, ii = this.length; i < ii; i++) if (this[i] == el) {

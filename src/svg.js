@@ -841,7 +841,7 @@ packageRGB = function (r, g, b, o) {
  **
  * Parses the color string and returns an object featuring the color's component values
  - clr (string) color string in one of the supported formats. See @Snap.getRGB.
- = (object) Combined RGB & HSB object in the following format:
+ = (object) Combined RGB/HSB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
