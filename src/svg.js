@@ -158,7 +158,7 @@ function is(o, type) {
  **
  - token (string) string to format
  - json (object) object which properties are used as a replacement
- = (string) formated string
+ = (string) formatted string
  > Usage
  | // this draws a rectangular shape equivalent to "M10,20h40v50h-40z"
  | paper.path(Snap.format("M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z", {
@@ -312,7 +312,7 @@ Snap.angle = angle;
  * Handy replacement for the `typeof` operator
  - o (…) any object or primitive
  - type (string) name of the type, e.g., `string`, `function`, `number`, etc.
- = (boolean) if given value is of given type
+ = (boolean) `true` if given value is of given type
 \*/
 Snap.is = is;
 /*\
@@ -1366,7 +1366,7 @@ function unit2px(el, name, value) {
  **
  * Wraps a DOM element specified by CSS selector as @Element
  - query (string) CSS selector of the element
- = (Element)
+ = (Element) the current element
 \*/
 Snap.select = function (query) {
     return wrap(glob.doc.querySelector(query));
@@ -1377,7 +1377,7 @@ Snap.select = function (query) {
  **
  * Wraps DOM elements specified by CSS selector as set or array of @Element
  - query (string) CSS selector of the element
- = (Element)
+ = (Element) the current element
 \*/
 Snap.selectAll = function (query) {
     var nodelist = glob.doc.querySelectorAll(query),
@@ -1463,7 +1463,7 @@ function arrayFirstValue(arr) {
      - params (object) contains key-value pairs of attributes you want to set
      * or
      - param (string) name of the attribute
-     = (Element)
+     = (Element) the current element
      * or
      = (string) value of attribute
      > Usage
@@ -1566,7 +1566,7 @@ function arrayFirstValue(arr) {
      * Gets or sets transformation of the element
      **
      - tstr (string) transform string in Snap or SVG format
-     = (Element)
+     = (Element) the current element
      * or
      = (object) transformation descriptor:
      o {
@@ -1619,7 +1619,7 @@ function arrayFirstValue(arr) {
      **
      * Returns the element's parent
      **
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.parent = function () {
         return wrap(this.node.parentNode);
@@ -1631,7 +1631,7 @@ function arrayFirstValue(arr) {
      * Appends the given element to current one
      **
      - el (Element|Set) element to append
-     = (Element) parent
+     = (Element) the parent element
     \*/
     /*\
      * Element.add
@@ -1659,7 +1659,7 @@ function arrayFirstValue(arr) {
      * Prepends the given element to the current one
      **
      - el (Element) element to prepend
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.prepend = function (el) {
         el = wrap(el);
@@ -1674,7 +1674,7 @@ function arrayFirstValue(arr) {
      * Inserts given element before the current one
      **
      - el (Element) element to insert
-     = (Element) parent
+     = (Element) the parent element
     \*/
     // TODO make it work for sets too
     elproto.before = function (el) {
@@ -1690,7 +1690,7 @@ function arrayFirstValue(arr) {
      * Inserts given element after the current one
      **
      - el (Element) element to insert
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.after = function (el) {
         el = wrap(el);
@@ -1705,7 +1705,7 @@ function arrayFirstValue(arr) {
      * Inserts the element after the given one
      **
      - el (Element) element next to whom insert to
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.insertBefore = function (el) {
         el = wrap(el);
@@ -1720,7 +1720,7 @@ function arrayFirstValue(arr) {
      * Inserts the element after the given one
      **
      - el (Element) element next to whom insert to
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.insertAfter = function (el) {
         el = wrap(el);
@@ -1733,7 +1733,7 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Removes element from the DOM
-     = (Element) removed element
+     = (Element) the detached element
     \*/
     elproto.remove = function () {
         this.node.parentNode && this.node.parentNode.removeChild(this.node);
@@ -1793,7 +1793,7 @@ function arrayFirstValue(arr) {
      **
      * Creates a `<use>` element linked to the current element
      **
-     = (Element) `<use>` element
+     = (Element) the `<use>` element
     \*/
     elproto.use = function () {
         var use,
@@ -1922,7 +1922,7 @@ function arrayFirstValue(arr) {
      - y (string|number)
      - width (string|number)
      - height (string|number)
-     = (Element) `<pattern>` element
+     = (Element) the `<pattern>` element
      * You can use pattern later on as an argument for `fill` attribute:
      | var p = paper.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
      |         fill: "none",
@@ -1972,7 +1972,7 @@ function arrayFirstValue(arr) {
      - height (number)
      - refX (number)
      - refY (number)
-     = (Element) `<marker>` element
+     = (Element) the `<marker>` element
      * You can specify the marker later as an argument for `marker-start`, `marker-end`, `marker-mid`, and `marker` attributes. The `marker` attribute places the marker at every point along the path, and `marker-mid` places them at every point except the start and end.
     \*/
     // TODO add usage for markers
@@ -2043,7 +2043,7 @@ function arrayFirstValue(arr) {
      **
      * Returns a set of animations that may be able to manipulate the current element VERIFY
      **
-     = (object) in format
+     = (object) in format:
      o {
      o     anim (object) animation object,
      o     curStatus (number) 0..1 — status of the animation: 0 — just started, 1 — just finished,
@@ -2113,7 +2113,7 @@ function arrayFirstValue(arr) {
      **
      * Stops all the animations for the current element
      **
-     = (Element) the element
+     = (Element) the current element
     \*/
     elproto.stop = function () {
         var anims = this.inAnim();
@@ -2134,7 +2134,7 @@ function arrayFirstValue(arr) {
      - duration (number) duration of the animation in milliseconds
      - easing (function) #optional easing function from @mina or custom
      - callback (function) #optional callback function that executes when the animation ends VERIFY
-     = (Element) the element
+     = (Element) the current element
     \*/
     elproto.animate = function (attrs, ms, easing, callback) {
         if (typeof easing == "function" && !easing.length) {
@@ -2291,10 +2291,10 @@ function arrayFirstValue(arr) {
  * Snap.parse
  [ method ]
  **
- * Parses SVG fragment and converts it into @Fragment
+ * Parses SVG fragment and converts it into a @Fragment
  **
  - svg (string) SVG string
- = (Fragment) the fragment
+ = (Fragment) the @Fragment
 \*/
 Snap.parse = function (svg) {
     var f = glob.doc.createDocumentFragment(),
@@ -2538,7 +2538,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      **
      - name (string) tag name
      - attr (object) attributes
-     = (Element) the element
+     = (Element) the current element
      > Usage
      | var c = paper.circle(10, 10, 10); // is the same as...
      | var c = paper.el("circle").attr({
@@ -2562,7 +2562,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - height (number) height
      - rx (number) #optional horizontal radius for rounded corners, default is 0
      - ry (number) #optional vertical radius for rounded corners, default is rx or 0
-     = (object) `rect` element
+     = (object) the `rect` element
      **
      > Usage
      | // regular rectangle
@@ -2602,7 +2602,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - r (number) radius
-     = (object) `circle` element
+     = (object) the `circle` element
      **
      > Usage
      | var c = paper.circle(50, 50, 40);
@@ -2632,7 +2632,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y (number) y offset position
      - width (number) width of the image
      - height (number) height of the image
-     = (object) `image` element
+     = (object) the `image` element
      * or
      = (object) Raphaël element object with type `image`
      **
@@ -2677,7 +2677,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y (number) y coordinate of the centre
      - rx (number) horizontal radius
      - ry (number) vertical radius
-     = (object) `ellipse` element
+     = (object) the `ellipse` element
      **
      > Usage
      | var c = paper.ellipse(50, 50, 40, 20);
@@ -2746,7 +2746,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Creates a group element
      **
      - varargs (…) #optional elements to nest within the group
-     = (object) `g` element
+     = (object) the `g` element
      **
      > Usage
      | var c1 = paper.circle(),
@@ -2786,7 +2786,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - x (number) x coordinate position
      - y (number) y coordinate position
      - text (string|array) The text string to draw or array of strings to nest within separate `<tspan>` elements
-     = (object) `text` element
+     = (object) the `text` element
      **
      > Usage
      | var t1 = paper.text(50, 50, "Snap");
@@ -2815,7 +2815,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - y1 (number) y coordinate position of the start
      - x2 (number) x coordinate position of the end
      - y2 (number) y coordinate position of the end
-     = (object) `line` element
+     = (object) the `line` element
      **
      > Usage
      | var t1 = paper.line(50, 50, 100, 100);
@@ -2843,7 +2843,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - points (array) array of points
      * or
      - varargs (…) points
-     = (object) `polyline` element
+     = (object) the `polyline` element
      **
      > Usage
      | var p1 = paper.polyline([10, 10, 100, 100]);
@@ -2920,7 +2920,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          | paper.circle(50, 50, 40).attr({
          |     fill: g
          | });
-         = (object) `gradient` element
+         = (object) the `gradient` element
         \*/
         proto.gradient = function (str) {
             return gradient(this.defs, str);
@@ -2968,7 +2968,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
  - url (string) URL
  - callback (function) callback
  - scope (object) #optional scope of callback
- = (XMLHttpRequest) XMLHttpRequest (just in case)
+ = (XMLHttpRequest) the XMLHttpRequest object, just in case
 \*/
 Snap.ajax = function (url, postData, callback, scope){
     var req = new XMLHttpRequest,

@@ -1216,7 +1216,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - bbox (string) bounding box
      - x (string) x coordinate of the point
      - y (string) y coordinate of the point
-     = (boolean) `true` if point inside
+     = (boolean) `true` if point is inside
     \*/
     Snap.path.isPointInsideBBox = isPointInsideBBox;
     /*\
@@ -1228,7 +1228,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Returns `true` if two bounding boxes intersect
      - bbox1 (string) first bounding box
      - bbox2 (string) second bounding box
-     = (boolean) `true` if they intersect
+     = (boolean) `true` if bounding boxes intersect
     \*/
     Snap.path.isBBoxIntersect = isBBoxIntersect;
     /*\
@@ -1267,7 +1267,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - path (string) path string
      - x (number) x of the point
      - y (number) y of the point
-     = (boolean) true, if point is inside the path
+     = (boolean) `true` if point is inside the path
     \*/
     Snap.path.isPointInside = isPointInsidePath;
     /*\
