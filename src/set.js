@@ -34,7 +34,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.push
      [ method ]
      **
-     * Adds each argument to the current set.
+     * Adds each argument to the current set
      = (object) original element
     \*/
     setproto.push = function () {
@@ -54,7 +54,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.pop
      [ method ]
      **
-     * Removes last element and returns it.
+     * Removes last element and returns it
      = (object) element
     \*/
     setproto.pop = function () {
@@ -65,7 +65,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.forEach
      [ method ]
      **
-     * Executes given function for each element in the set.
+     * Executes given function for each element in the set
      *
      * If the function returns `false`, the loop stops running.
      **
@@ -102,7 +102,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.splice
      [ method ]
      **
-     * Removes given element from the set
+     * Removes range of elements from the set
      **
      - index (number) position of the deletion
      - count (number) number of element to remove

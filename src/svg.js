@@ -19,7 +19,7 @@ Snap.version = "0.0.1";
  * Snap
  [ method ]
  **
- * Creates drawing surface or wraps existing SVG element.
+ * Creates a drawing surface or wraps existing SVG element
  **
  - width (number|string) width of surface
  - height (number|string) height of surface
@@ -154,7 +154,7 @@ function is(o, type) {
  * Snap.format
  [ method ]
  **
- * Replaces construction of type `{<name>}` to the corresponding argument.
+ * Replaces construction of type `{<name>}` to the corresponding argument
  **
  - token (string) string to format
  - json (object) object which properties are used as a replacement
@@ -294,7 +294,7 @@ Snap.deg = deg;
  * Snap.angle
  [ method ]
  **
- * Returns angle between two or three points.
+ * Returns an angle between two or three points
  > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
@@ -309,7 +309,7 @@ Snap.angle = angle;
  * Snap.is
  [ method ]
  **
- * Handy replacement for the `typeof` operator.
+ * Handy replacement for the `typeof` operator
  - o (…) any object or primitive
  - type (string) name of the type, e.g., `string`, `function`, `number`, etc.
  = (boolean) if given value is of given type
@@ -319,7 +319,7 @@ Snap.is = is;
  * Snap.snapTo
  [ method ]
  **
- * Snaps given value to given grid.
+ * Snaps given value to given grid
  - values (array|number) given array of values or step of the grid
  - value (number) value to adjust
  - tolerance (number) #optional maximum distance to the target value that would trigger the snap. Default is `10`. VERIFY
@@ -377,7 +377,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.add
      [ method ]
      **
-     * Adds given matrix to existing one.
+     * Adds the given matrix to existing one
      - a (number)
      - b (number)
      - c (number)
@@ -419,7 +419,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.invert
      [ method ]
      **
-     * Returns inverted version of the matrix
+     * Returns an inverted version of the matrix
      = (object) @Matrix
     \*/
     matrixproto.invert = function () {
@@ -431,7 +431,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.clone
      [ method ]
      **
-     * Returns copy of the matrix
+     * Returns a copy of the matrix
      = (object) @Matrix
     \*/
     matrixproto.clone = function () {
@@ -488,7 +488,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.x
      [ method ]
      **
-     * Return x coordinate for given point after transformation described by the matrix. See also @Matrix.y
+     * Returns  x coordinate for given point after transformation described by the matrix. See also @Matrix.y
      - x (number)
      - y (number)
      = (number) x
@@ -500,7 +500,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.y
      [ method ]
      **
-     * Return y coordinate for given point after transformation described by the matrix. See also @Matrix.x
+     * Returns  y coordinate for given point after transformation described by the matrix. See also @Matrix.x
      - x (number)
      - y (number)
      = (number) y
@@ -582,7 +582,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.toTransformString
      [ method ]
      **
-     * Return transform string that represents given matrix
+     * Returns  transform string that represents given matrix
      = (string) transform string
     \*/
     matrixproto.toTransformString = function (shorter) {
@@ -606,7 +606,7 @@ function Matrix(a, b, c, d, e, f) {
  **
  * Utility method
  **
- * Returns matrix based on given parameters.
+ * Returns a matrix based on the given parameters
  - a (number)
  - b (number)
  - c (number)
@@ -735,7 +735,7 @@ Snap.getRGB = cacher(function (colour) {
  * Snap.hsb
  [ method ]
  **
- * Converts HSB values to hex representation of the colour.
+ * Converts HSB values to a hex representation of the colour
  - h (number) hue
  - s (number) saturation
  - b (number) value or brightness
@@ -748,7 +748,7 @@ Snap.hsb = cacher(function (h, s, b) {
  * Snap.hsl
  [ method ]
  **
- * Converts HSL values to hex representation of the colour.
+ * Converts HSL values to a hex representation of the colour
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
@@ -761,7 +761,7 @@ Snap.hsl = cacher(function (h, s, l) {
  * Snap.rgb
  [ method ]
  **
- * Converts RGB values to hex representation of the colour.
+ * Converts RGB values to a hex representation of the colour
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -839,7 +839,7 @@ packageRGB = function (r, g, b, o) {
  * Snap.color
  [ method ]
  **
- * Parses the color string and returns an object featuring the color's component values.
+ * Parses the color string and returns an object featuring the color's component values
  - clr (string) color string in one of the supported formats. See @Snap.getRGB.
  = (object) Combined RGB & HSB object in the following format:
  o {
@@ -894,7 +894,7 @@ Snap.color = function (clr) {
  * Snap.hsb2rgb
  [ method ]
  **
- * Converts HSB values to RGB object.
+ * Converts HSB values to an RGB object
  - h (number) hue
  - s (number) saturation
  - v (number) value or brightness
@@ -930,7 +930,7 @@ Snap.hsb2rgb = function (h, s, v, o) {
  * Snap.hsl2rgb
  [ method ]
  **
- * Converts HSL values to RGB object.
+ * Converts HSL values to an RGB object
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
@@ -970,7 +970,7 @@ Snap.hsl2rgb = function (h, s, l, o) {
  * Snap.rgb2hsb
  [ method ]
  **
- * Converts RGB values to HSB object.
+ * Converts RGB values to an HSB object
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -1003,7 +1003,7 @@ Snap.rgb2hsb = function (r, g, b) {
  * Snap.rgb2hsl
  [ method ]
  **
- * Converts RGB values to HSL object.
+ * Converts RGB values to an HSL object
  - r (number) red
  - g (number) green
  - b (number) blue
@@ -1044,7 +1044,7 @@ Snap.rgb2hsl = function (r, g, b) {
  **
  * Utility method
  **
- * Parses given path string into an array of arrays of path segments.
+ * Parses given path string into an array of arrays of path segments
  - pathString (string|array) path string or array of segments (in the last case it is returned straight away)
  = (array) array of segments.
 \*/
@@ -1098,7 +1098,7 @@ Snap.parsePathString = function (pathString) {
  **
  * Utility method
  **
- * Parses given transform string into an array of transformations.
+ * Parses given transform string into an array of transformations
  - TString (string|array) transform string or array of transformations (in the last case it is returned straight away)
  = (array) array of transformations.
 \*/
@@ -1364,7 +1364,7 @@ function unit2px(el, name, value) {
  * Snap.select
  [ method ]
  **
- * Wraps DOM element specified by CSS selector as @Element
+ * Wraps a DOM element specified by CSS selector as @Element
  - query (string) CSS selector of the element
  = (Element)
 \*/
@@ -1503,7 +1503,7 @@ function arrayFirstValue(arr) {
      * Element.getBBox
      [ method ]
      **
-     * Returns bounding box descriptor for the given element.
+     * Returns the bounding box descriptor for the given element
      **
      = (object) bounding box descriptor:
      o {
@@ -1617,7 +1617,7 @@ function arrayFirstValue(arr) {
      * Element.parent
      [ method ]
      **
-     * Returns parent of the element
+     * Returns the element's parent
      **
      = (Element) parent
     \*/
@@ -1628,7 +1628,7 @@ function arrayFirstValue(arr) {
      * Element.append
      [ method ]
      **
-     * Appends given element to current one.
+     * Appends the given element to current one
      **
      - el (Element|Set) element to append
      = (Element) parent
@@ -1637,7 +1637,7 @@ function arrayFirstValue(arr) {
      * Element.add
      [ method ]
      **
-     * See @Element.append.
+     * See @Element.append
     \*/
     elproto.append = elproto.add = function (el) {
         if (el.type == "set") {
@@ -1656,7 +1656,7 @@ function arrayFirstValue(arr) {
      * Element.prepend
      [ method ]
      **
-     * Prepends given element to current one.
+     * Prepends the given element to the current one
      **
      - el (Element) element to prepend
      = (Element) parent
@@ -1671,7 +1671,7 @@ function arrayFirstValue(arr) {
      * Element.before
      [ method ]
      **
-     * Inserts given element before the current one.
+     * Inserts given element before the current one
      **
      - el (Element) element to insert
      = (Element) parent
@@ -1687,7 +1687,7 @@ function arrayFirstValue(arr) {
      * Element.after
      [ method ]
      **
-     * Inserts given element after the current one.
+     * Inserts given element after the current one
      **
      - el (Element) element to insert
      = (Element) parent
@@ -1702,7 +1702,7 @@ function arrayFirstValue(arr) {
      * Element.insertBefore
      [ method ]
      **
-     * Inserts the element after the given one.
+     * Inserts the element after the given one
      **
      - el (Element) element next to whom insert to
      = (Element) parent
@@ -1717,7 +1717,7 @@ function arrayFirstValue(arr) {
      * Element.insertAfter
      [ method ]
      **
-     * Inserts the element after the given one.
+     * Inserts the element after the given one
      **
      - el (Element) element next to whom insert to
      = (Element) parent
@@ -1745,7 +1745,7 @@ function arrayFirstValue(arr) {
      * Element.select
      [ method ]
      **
-     * Gathers nested @Element matching the given set of CSS selectors.
+     * Gathers the nested @Element matching the given set of CSS selectors
      **
      - query (string) CSS selector
      = (Element) result of query selection
@@ -1757,7 +1757,7 @@ function arrayFirstValue(arr) {
      * Element.selectAll
      [ method ]
      **
-     * Gathers nested @Element objects matching the given set of CSS selectors.
+     * Gathers nested @Element objects matching the given set of CSS selectors
      **
      - query (string) CSS selector
      = (Set|array) result of query selection
@@ -1774,7 +1774,7 @@ function arrayFirstValue(arr) {
      * Element.asPX
      [ method ]
      **
-     * Return given attribute of the element as a `px` value. (Not %, em, etc.)
+     * Returns  given attribute of the element as a `px` value (not %, em, etc.)
      **
      - attr (string) attribute name
      - value (string) #optional attribute value
@@ -1791,7 +1791,7 @@ function arrayFirstValue(arr) {
      * Element.use
      [ method ]
      **
-     * Creates `<use>` element linked to the current element.
+     * Creates a `<use>` element linked to the current element
      **
      = (Element) `<use>` element
     \*/
@@ -1820,7 +1820,7 @@ function arrayFirstValue(arr) {
      * Element.clone
      [ method ]
      **
-     * Creates clone of the element and inserts it after the element.
+     * Creates a clone of the element and inserts it after the element
      **
      = (Element) the clone
     \*/
@@ -1900,7 +1900,7 @@ function arrayFirstValue(arr) {
      * Element.toDefs
      [ method ]
      **
-     * Moves element to the shared `<defs>` area.
+     * Moves element to the shared `<defs>` area
      **
      = (Element) the clone
     \*/
@@ -1915,7 +1915,7 @@ function arrayFirstValue(arr) {
      * Element.pattern
      [ method ]
      **
-     * Creates `<pattern>` element from the current element.
+     * Creates a `<pattern>` element from the current element
      **
      * To create a pattern you have to specify the pattern rect:
      - x (string|number)
@@ -1963,7 +1963,7 @@ function arrayFirstValue(arr) {
      * Element.marker
      [ method ]
      **
-     * Creates `<marker>` element from the current element.
+     * Creates a `<marker>` element from the current element
      **
      * To create a marker you have to specify the bounding rect and reference point:
      - x (number)
@@ -2026,7 +2026,7 @@ function arrayFirstValue(arr) {
      * Snap.animation
      [ method ]
      **
-     * Creates animation object.
+     * Creates an animation object
      **
      - attr (object) attributes of final destination
      - duration (number) duration of the animation, in milliseconds
@@ -2078,7 +2078,7 @@ function arrayFirstValue(arr) {
      * Snap.animate
      [ method ]
      **
-     * Runs generic animation of one number into another with a caring function.
+     * Runs generic animation of one number into another with a caring function
      **
      - from (number|array) number or array of numbers
      - to (number|array) number or array of numbers
@@ -2111,7 +2111,7 @@ function arrayFirstValue(arr) {
      * Element.stop
      [ method ]
      **
-     * Stops all the animations of the current element.
+     * Stops all the animations for the current element
      **
      = (Element) the element
     \*/
@@ -2128,7 +2128,7 @@ function arrayFirstValue(arr) {
      * Element.animate
      [ method ]
      **
-     * Animate given attributes of the element.
+     * Animates the given attributes of the element
      **
      - attrs (object) key-value pairs of destination attributes
      - duration (number) duration of the animation in milliseconds
@@ -2190,7 +2190,7 @@ function arrayFirstValue(arr) {
      * Element.data
      [ method ]
      **
-     * Adds or retrieves given value associated with given key.
+     * Adds or retrieves given value associated with given key
      ** 
      * See also @Element.removeData
      - key (string) key to store data
@@ -2246,7 +2246,7 @@ function arrayFirstValue(arr) {
      * Element.toString
      [ method ]
      **
-     * Returns SVG code of the element. Equivalent to `outerHTML` in HTML context.
+     * Returns SVG code of the element, equivalent to HTML's `outerHTML`
      = (string) SVG code of the element.
     \*/
     elproto.toString = toString(1);
@@ -2254,7 +2254,7 @@ function arrayFirstValue(arr) {
      * Element.innerSVG
      [ method ]
      **
-     * Returns SVG code of the element. Equivalent to `innerHTML` in HTML context.
+     * Returns SVG code of the element's contents, equivalent to HTML's `innerHTML`
      = (string) SVG code of the element.
     \*/
     elproto.innerSVG = toString();
@@ -2291,7 +2291,7 @@ function arrayFirstValue(arr) {
  * Snap.parse
  [ method ]
  **
- * Parses SVG fragment and converts it into @Fragment.
+ * Parses SVG fragment and converts it into @Fragment
  **
  - svg (string) SVG string
  = (Fragment) the fragment
@@ -2534,7 +2534,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.el
      [ method ]
      **
-     * Creates element on paper with a given name and no attributes.
+     * Creates an element on paper with a given name and no attributes
      **
      - name (string) tag name
      - attr (object) attributes
@@ -2554,7 +2554,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.rect
      [ method ]
      *
-     * Draws a rectangle.
+     * Draws a rectangle
      **
      - x (number) x coordinate of the top left corner
      - y (number) y coordinate of the top left corner
@@ -2597,7 +2597,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.circle
      [ method ]
      **
-     * Draws a circle.
+     * Draws a circle
      **
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
@@ -2625,7 +2625,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.image
      [ method ]
      **
-     * Embeds an image into the surface.
+     * Places an image on the surface
      **
      - src (string) URI of the source image
      - x (number) x offset position
@@ -2671,7 +2671,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.ellipse
      [ method ]
      **
-     * Draws an ellipse.
+     * Draws an ellipse
      **
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
@@ -2701,7 +2701,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.path
      [ method ]
      **
-     * Creates a path element using the given string as the path's definition.
+     * Creates a `<path>` element using the given string as the path's definition
      - pathString (string) #optional path string in SVG format.
      * Path string consists of one-letter commands, followed by comma seprarated arguments in numerical form. Example:
      | "M10,20L30,40"
@@ -2743,7 +2743,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.g
      [ method ]
      **
-     * Makes a group element.
+     * Creates a group element
      **
      - varargs (…) #optional elements to nest within the group
      = (object) `g` element
@@ -2781,7 +2781,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.text
      [ method ]
      **
-     * Draws a text string.
+     * Draws a text string
      **
      - x (number) x coordinate position
      - y (number) y coordinate position
@@ -2809,7 +2809,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.line
      [ method ]
      **
-     * Draws a line.
+     * Draws a line
      **
      - x1 (number) x coordinate position of the start
      - y1 (number) y coordinate position of the start
@@ -2838,7 +2838,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.polyline
      [ method ]
      **
-     * Draws a polyline.
+     * Draws a polyline
      **
      - points (array) array of points
      * or
@@ -2889,7 +2889,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          * Paper.gradient
          [ method ]
          **
-         * Creates a gradient element.
+         * Creates a gradient element
          **
          - gradient (string) gradient descriptor
          > Gradient Descriptor
@@ -2935,8 +2935,8 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          * Paper.toString
          [ method ]
          **
-         * Returns SVG code of the @Paper.
-         = (string) SVG code of the @Paper.
+         * Returns SVG code for the @Paper
+         = (string) SVG code for the @Paper.
         \*/
         proto.toString = function () {
             var f = glob.doc.createDocumentFragment(),
@@ -2958,7 +2958,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
  * Snap.ajax
  [ method ]
  **
- * Simple implementation of Ajax.
+ * Simple implementation of Ajax
  **
  - url (string) URL
  - postData (object|string) data for post request
@@ -3010,7 +3010,7 @@ Snap.ajax = function (url, postData, callback, scope){
  * Snap.load
  [ method ]
  **
- * Loads external SVG file as a @Fragment. For more advanced AJAX see @Snap.ajax.
+ * Loads external SVG file as a @Fragment (see @Snap.ajax for more advanced AJAX)
  **
  - url (string) URL
  - callback (function) callback

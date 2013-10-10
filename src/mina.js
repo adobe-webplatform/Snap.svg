@@ -127,7 +127,7 @@ var mina = (function (eve) {
      * mina
      [ method ]
      **
-     * Generic animation of numbers.
+     * Generic animation of numbers
      **
      - a (number) start _slave_ number
      - A (number) end _slave_ number
@@ -188,7 +188,7 @@ var mina = (function (eve) {
      * mina.time
      [ method ]
      **
-     * Returns current time. Equal to
+     * Returns the current time. Equivalent to:
      | function () {
      |     return (new Date).getTime();
      | }
@@ -198,7 +198,7 @@ var mina = (function (eve) {
      * mina.getById
      [ method ]
      **
-     * Returns animation by its id.
+     * Returns an animation by its id
      - id (string) animation's id
      = (object) See @mina
     \*/
@@ -210,7 +210,7 @@ var mina = (function (eve) {
      * mina.linear
      [ method ]
      **
-     * Default linear easing.
+     * Default linear easing
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -221,7 +221,7 @@ var mina = (function (eve) {
      * mina.easeout
      [ method ]
      **
-     * Easeout easing.
+     * Easeout easing
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -232,7 +232,7 @@ var mina = (function (eve) {
      * mina.easein
      [ method ]
      **
-     * Easein easing.
+     * Easein easing
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -243,7 +243,7 @@ var mina = (function (eve) {
      * mina.easeinout
      [ method ]
      **
-     * Easeinout easing.
+     * Easeinout easing
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -267,7 +267,7 @@ var mina = (function (eve) {
      * mina.backin
      [ method ]
      **
-     * Backin easing.
+     * Backin easing
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -282,7 +282,7 @@ var mina = (function (eve) {
      * mina.backout
      [ method ]
      **
-     * Backout easing.
+     * Backout easing
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -298,7 +298,7 @@ var mina = (function (eve) {
      * mina.elastic
      [ method ]
      **
-     * Elastic easing.
+     * Elastic easing
      - n (number) input 0..1
      = (number) output 0..1
     \*/
@@ -313,7 +313,7 @@ var mina = (function (eve) {
      * mina.bounce
      [ method ]
      **
-     * Bounce easing.
+     * Bounce easing
      - n (number) input 0..1
      = (number) output 0..1
     \*/
