@@ -14,16 +14,17 @@
 
 var Snap = (function() {
 Snap.version = "0.0.1";
+// SIERRA: this method appears to be missing from HTML output
 /*\
  * Snap
  [ method ]
  **
- * Creates drawing surface or wraps existing SVG element.
+ * Creates a drawing surface or wraps existing SVG element
  **
  - width (number|string) width of surface
  - height (number|string) height of surface
  * or
- - dom (SVGElement) element to be wrapped into Snap structure
+ - DOM (SVGElement) element to be wrapped into Snap structure
  * or
  - query (string) CSS query selector
  = (object) @Element
@@ -153,13 +154,13 @@ function is(o, type) {
  * Snap.format
  [ method ]
  **
- * Replaces construction of type “`{<name>}`” to the corresponding argument.
+ * Replaces construction of type `{<name>}` to the corresponding argument
  **
  - token (string) string to format
- - json (object) object which properties will be used as a replacement
- = (string) formated string
+ - json (object) object which properties are used as a replacement
+ = (string) formatted string
  > Usage
- | // this will draw a rectangular shape equivalent to "M10,20h40v50h-40z"
+ | // this draws a rectangular shape equivalent to "M10,20h40v50h-40z"
  | paper.path(Snap.format("M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z", {
  |     x: 10,
  |     y: 20,
@@ -276,7 +277,7 @@ function x_y_w_h() {
  **
  * Transform angle to radians
  - deg (number) angle in degrees
- = (number) angle in radians.
+ = (number) angle in radians
 \*/
 Snap.rad = rad;
 /*\
@@ -284,15 +285,16 @@ Snap.rad = rad;
  [ method ]
  **
  * Transform angle to degrees
- - deg (number) angle in radians
- = (number) angle in degrees.
+ - rad (number) angle in radians
+ = (number) angle in degrees
 \*/
 Snap.deg = deg;
+// SIERRA for which point is the angle calculated?
 /*\
  * Snap.angle
  [ method ]
  **
- * Returns angle between two or three points.
+ * Returns an angle between two or three points
  > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
@@ -300,28 +302,28 @@ Snap.deg = deg;
  - y2 (number) y coord of second point
  - x3 (number) #optional x coord of third point
  - y3 (number) #optional y coord of third point
- = (number) angle in degrees.
+ = (number) angle in degrees
 \*/
 Snap.angle = angle;
 /*\
  * Snap.is
  [ method ]
  **
- * Handfull replacement for `typeof` operator.
+ * Handy replacement for the `typeof` operator
  - o (…) any object or primitive
- - type (string) name of the type, i.e. “string”, “function”, “number”, etc.
- = (boolean) is given value is of given type
+ - type (string) name of the type, e.g., `string`, `function`, `number`, etc.
+ = (boolean) `true` if given value is of given type
 \*/
 Snap.is = is;
 /*\
  * Snap.snapTo
  [ method ]
  **
- * Snaps given value to given grid.
+ * Snaps given value to given grid
  - values (array|number) given array of values or step of the grid
  - value (number) value to adjust
- - tolerance (number) #optional tolerance for snapping. Default is `10`.
- = (number) adjusted value.
+ - tolerance (number) #optional maximum distance to the target value that would trigger the snap. Default is `10`. VERIFY
+ = (number) adjusted value
 \*/
 Snap.snapTo = function (values, value, tolerance) {
     tolerance = is(tolerance, "finite") ? tolerance : 10;
@@ -375,7 +377,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.add
      [ method ]
      **
-     * Adds given matrix to existing one.
+     * Adds the given matrix to existing one
      - a (number)
      - b (number)
      - c (number)
@@ -412,11 +414,12 @@ function Matrix(a, b, c, d, e, f) {
         this.f = out[1][2];
         return this;
     };
+// SIERRA Matrix.invert(): Unclear what it means to invert a matrix.
     /*\
      * Matrix.invert
      [ method ]
      **
-     * Returns inverted version of the matrix
+     * Returns an inverted version of the matrix
      = (object) @Matrix
     \*/
     matrixproto.invert = function () {
@@ -428,7 +431,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.clone
      [ method ]
      **
-     * Returns copy of the matrix
+     * Returns a copy of the matrix
      = (object) @Matrix
     \*/
     matrixproto.clone = function () {
@@ -439,21 +442,22 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Translate the matrix
-     - x (number)
-     - y (number)
+     - x (number) horizontal offset distance VERIFY
+     - y (number) vertical offset distance VERIFY
     \*/
     matrixproto.translate = function (x, y) {
         return this.add(1, 0, 0, 1, x, y);
     };
+    // SIERRA: do cx/cy default to the center point, as in CSS? If so, Snap appears to resolve important discrepancies between how transforms behave in SVG & CSS.
     /*\
      * Matrix.scale
      [ method ]
      **
      * Scales the matrix
-     - x (number)
-     - y (number) #optional
-     - cx (number) #optional
-     - cy (number) #optional
+     - x (number) amount to be scaled, with `1` resulting in no change VERIFY
+     - y (number) #optional amount to scale along the vertical axis. (Otherwise `x` applies to both axes.)
+     - cx (number) #optional horizontal origin point from which to scale VERIFY
+     - cy (number) #optional vertical origin point from which to scale
     \*/
     matrixproto.scale = function (x, y, cx, cy) {
         y == null && (y = x);
@@ -467,9 +471,9 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Rotates the matrix
-     - a (number)
-     - x (number)
-     - y (number)
+     - a (number) angle of rotation, in radians VERIFY
+     - x (number) horizontal origin point from which to rotate VERIFY
+     - y (number) vertical origin point from which to rotate VERIFY
     \*/
     matrixproto.rotate = function (a, x, y) {
         a = rad(a);
@@ -484,7 +488,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.x
      [ method ]
      **
-     * Return x coordinate for given point after transformation described by the matrix. See also @Matrix.y
+     * Returns x coordinate for given point after transformation described by the matrix. See also @Matrix.y
      - x (number)
      - y (number)
      = (number) x
@@ -496,7 +500,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.y
      [ method ]
      **
-     * Return y coordinate for given point after transformation described by the matrix. See also @Matrix.x
+     * Returns y coordinate for given point after transformation described by the matrix. See also @Matrix.x
      - x (number)
      - y (number)
      = (number) y
@@ -521,6 +525,9 @@ function Matrix(a, b, c, d, e, f) {
         a[0] && (a[0] /= mag);
         a[1] && (a[1] /= mag);
     }
+// SIERRA Matrix.split(): HTML formatting for the return value is scrambled. It should appear _Returns: {OBJECT} in format:..._
+// SIERRA Matrix.split(): the _shear_ parameter needs to be detailed. Is it an angle? What does it affect?
+// SIERRA Matrix.split(): The idea of _simple_ transforms needs to be detailed and contrasted with any alternatives.
     /*\
      * Matrix.split
      [ method ]
@@ -570,11 +577,12 @@ function Matrix(a, b, c, d, e, f) {
         out.noRotation = !+out.shear.toFixed(9) && !out.rotate;
         return out;
     };
+// SIERRA Matrix.toTransformString(): The format of the string needs to be detailed.
     /*\
      * Matrix.toTransformString
      [ method ]
      **
-     * Return transform string that represents given matrix
+     * Returns transform string that represents given matrix
      = (string) transform string
     \*/
     matrixproto.toTransformString = function (shorter) {
@@ -591,13 +599,14 @@ function Matrix(a, b, c, d, e, f) {
         }
     };
 })(Matrix.prototype);
+// SIERRA Unclear the difference between the two matrix formats ("parameters" vs svgMatrix). See my comment about Element.matrix().
 /*\
  * Snap.Matrix
  [ method ]
  **
  * Utility method
  **
- * Returns matrix based on given parameters.
+ * Returns a matrix based on the given parameters
  - a (number)
  - b (number)
  - c (number)
@@ -614,33 +623,33 @@ Snap.Matrix = Matrix;
  * Snap.getRGB
  [ method ]
  **
- * Parses colour string as RGB object
- - colour (string) colour string in one of formats:
+ * Parses color string as RGB object
+ - color (string) color string in one of the following formats:
  # <ul>
- #     <li>Colour name (“<code>red</code>”, “<code>green</code>”, “<code>cornflowerblue</code>”, etc)</li>
- #     <li>#••• — shortened HTML colour: (“<code>#000</code>”, “<code>#fc0</code>”, etc)</li>
- #     <li>#•••••• — full length HTML colour: (“<code>#000000</code>”, “<code>#bd2300</code>”)</li>
- #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (“<code>rgb(200,&nbsp;100,&nbsp;0)</code>”)</li>
+ #     <li>Color name (<code>red</code>, <code>green</code>, <code>cornflowerblue</code>, etc)</li>
+ #     <li>#••• — shortened HTML color: (<code>#000</code>, <code>#fc0</code>, etc.)</li>
+ #     <li>#•••••• — full length HTML color: (<code>#000000</code>, <code>#bd2300</code>)</li>
+ #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (<code>rgb(200,&nbsp;100,&nbsp;0)</code>)</li>
  #     <li>rgba(•••, •••, •••, •••) — also with opacity</li>
- #     <li>rgb(•••%, •••%, •••%) — same as above, but in %: (“<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>”)</li>
+ #     <li>rgb(•••%, •••%, •••%) — same as above, but in %: (<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>)</li>
  #     <li>rgba(•••%, •••%, •••%, •••%) — also with opacity</li>
- #     <li>hsb(•••, •••, •••) — hue, saturation and brightness values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;1)</code>”)</li>
+ #     <li>hsb(•••, •••, •••) — hue, saturation and brightness values: (<code>hsb(0.5,&nbsp;0.25,&nbsp;1)</code>)</li>
  #     <li>hsba(•••, •••, •••, •••) — also with opacity</li>
  #     <li>hsb(•••%, •••%, •••%) — same as above, but in %</li>
  #     <li>hsba(•••%, •••%, •••%, •••%) — also with opacity</li>
- #     <li>hsl(•••, •••, •••) — hue, saturation and luminosity values: (“<code>hsb(0.5,&nbsp;0.25,&nbsp;0.5)</code>”)</li>
+ #     <li>hsl(•••, •••, •••) — hue, saturation and luminosity values: (<code>hsb(0.5,&nbsp;0.25,&nbsp;0.5)</code>)</li>
  #     <li>hsla(•••, •••, •••, •••) — also with opacity</li>
  #     <li>hsl(•••%, •••%, •••%) — same as above, but in %</li>
  #     <li>hsla(•••%, •••%, •••%, •••%) — also with opacity</li>
  # </ul>
  * Note that `%` can be used any time: `rgb(20%, 255, 50%)`.
- = (object) RGB object in format:
+ = (object) RGB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
- o     b (number) blue
+ o     b (number) blue,
  o     hex (string) color in HTML/CSS format: #••••••,
- o     error (boolean) true if string cant be parsed
+ o     error (boolean) true if string can't be parsed
  o }
 \*/
 Snap.getRGB = cacher(function (colour) {
@@ -721,15 +730,16 @@ Snap.getRGB = cacher(function (colour) {
     }
     return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
 }, Snap);
+// SIERRA It seems odd that the following 3 conversion methods are not expressed as .this2that(), like the others.
 /*\
  * Snap.hsb
  [ method ]
  **
- * Converts HSB values to hex representation of the colour.
+ * Converts HSB values to a hex representation of the color
  - h (number) hue
  - s (number) saturation
  - b (number) value or brightness
- = (string) hex representation of the colour.
+ = (string) hex representation of the color
 \*/
 Snap.hsb = cacher(function (h, s, b) {
     return Snap.hsb2rgb(h, s, b).hex;
@@ -738,11 +748,11 @@ Snap.hsb = cacher(function (h, s, b) {
  * Snap.hsl
  [ method ]
  **
- * Converts HSL values to hex representation of the colour.
+ * Converts HSL values to a hex representation of the color
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
- = (string) hex representation of the colour.
+ = (string) hex representation of the color
 \*/
 Snap.hsl = cacher(function (h, s, l) {
     return Snap.hsl2rgb(h, s, l).hex;
@@ -751,11 +761,11 @@ Snap.hsl = cacher(function (h, s, l) {
  * Snap.rgb
  [ method ]
  **
- * Converts RGB values to hex representation of the colour.
+ * Converts RGB values to a hex representation of the color
  - r (number) red
  - g (number) green
  - b (number) blue
- = (string) hex representation of the colour.
+ = (string) hex representation of the color
 \*/
 Snap.rgb = cacher(function (r, g, b, o) {
     if (is(o, "finite")) {
@@ -824,20 +834,20 @@ packageRGB = function (r, g, b, o) {
     is(o, "finite") && (rgb.opacity = o);
     return rgb;
 };
-
+// SIERRA Clarify if Snap does not support consolidated HSLA/RGBA colors. E.g., can you specify a semi-transparent value for Snap.filter.shadow()?
 /*\
  * Snap.color
  [ method ]
  **
- * Parses the color string and returns object with all values for the given color.
+ * Parses the color string and returns an object featuring the color's component values
  - clr (string) color string in one of the supported formats (see @Snap.getRGB)
- = (object) Combined RGB & HSB object in format:
+ = (object) Combined RGB/HSB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
  o     b (number) blue,
  o     hex (string) color in HTML/CSS format: #••••••,
- o     error (boolean) `true` if string cant be parsed,
+ o     error (boolean) `true` if string can't be parsed,
  o     h (number) hue,
  o     s (number) saturation,
  o     v (number) value (brightness),
@@ -884,11 +894,11 @@ Snap.color = function (clr) {
  * Snap.hsb2rgb
  [ method ]
  **
- * Converts HSB values to RGB object.
+ * Converts HSB values to an RGB object
  - h (number) hue
  - s (number) saturation
  - v (number) value or brightness
- = (object) RGB object in format:
+ = (object) RGB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
@@ -920,11 +930,11 @@ Snap.hsb2rgb = function (h, s, v, o) {
  * Snap.hsl2rgb
  [ method ]
  **
- * Converts HSL values to RGB object.
+ * Converts HSL values to an RGB object
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
- = (object) RGB object in format:
+ = (object) RGB object in the following format:
  o {
  o     r (number) red,
  o     g (number) green,
@@ -960,14 +970,14 @@ Snap.hsl2rgb = function (h, s, l, o) {
  * Snap.rgb2hsb
  [ method ]
  **
- * Converts RGB values to HSB object.
+ * Converts RGB values to an HSB object
  - r (number) red
  - g (number) green
  - b (number) blue
- = (object) HSB object in format:
+ = (object) HSB object in the following format:
  o {
- o     h (number) hue
- o     s (number) saturation
+ o     h (number) hue,
+ o     s (number) saturation,
  o     b (number) brightness
  o }
 \*/
@@ -993,14 +1003,14 @@ Snap.rgb2hsb = function (r, g, b) {
  * Snap.rgb2hsl
  [ method ]
  **
- * Converts RGB values to HSL object.
+ * Converts RGB values to an HSL object
  - r (number) red
  - g (number) green
  - b (number) blue
- = (object) HSL object in format:
+ = (object) HSL object in the following format:
  o {
- o     h (number) hue
- o     s (number) saturation
+ o     h (number) hue,
+ o     s (number) saturation,
  o     l (number) luminosity
  o }
 \*/
@@ -1027,15 +1037,16 @@ Snap.rgb2hsl = function (r, g, b) {
 };
 
 // Transformations
+// SIERRA Snap.parsePathString(): By _array of arrays,_ I assume you mean a format like this for two separate segments? [ ["M10,10","L90,90"], ["M90,10","L10,90"] ] Otherwise how is each command structured?
 /*\
  * Snap.parsePathString
  [ method ]
  **
  * Utility method
  **
- * Parses given path string into an array of arrays of path segments.
- - pathString (string|array) path string or array of segments (in the last case it will be returned straight away)
- = (array) array of segments.
+ * Parses given path string into an array of arrays of path segments
+ - pathString (string|array) path string or array of segments (in the last case it is returned straight away)
+ = (array) array of segments
 \*/
 Snap.parsePathString = function (pathString) {
     if (!pathString) {
@@ -1080,15 +1091,16 @@ Snap.parsePathString = function (pathString) {
     pth.arr = Snap.path.clone(data);
     return data;
 };
+// SIERRA Snap.parseTransformString(): I don't understand the string format.
 /*\
  * Snap.parseTransformString
  [ method ]
  **
  * Utility method
  **
- * Parses given path string into an array of transformations.
- - TString (string|array) transform string or array of transformations (in the last case it will be returned straight away)
- = (array) array of transformations.
+ * Parses given transform string into an array of transformations
+ - TString (string|array) transform string or array of transformations (in the last case it is returned straight away)
+ = (array) array of transformations
 \*/
 var parseTransformString = Snap.parseTransformString = function (TString) {
     if (!TString) {
@@ -1353,9 +1365,9 @@ function unit2px(el, name, value) {
  * Snap.select
  [ method ]
  **
- * Wraps DOM element specified by CSS selector as @Element
+ * Wraps a DOM element specified by CSS selector as @Element
  - query (string) CSS selector of the element
- = (Element)
+ = (Element) the current element
 \*/
 Snap.select = function (query) {
     return wrap(glob.doc.querySelector(query));
@@ -1366,7 +1378,7 @@ Snap.select = function (query) {
  **
  * Wraps DOM elements specified by CSS selector as set or array of @Element
  - query (string) CSS selector of the element
- = (Element)
+ = (Element) the current element
 \*/
 Snap.selectAll = function (query) {
     var nodelist = glob.doc.querySelectorAll(query),
@@ -1442,16 +1454,17 @@ function arrayFirstValue(arr) {
     }
 }
 (function (elproto) {
+    // SIERRA Element.attr(): There appear to be two possible return values, one of which is blank. (Search the doc for _Returns:_ to identify problems.)
     /*\
      * Element.attr
      [ method ]
      **
      * Gets or sets given attributes of the element
      **
-     - params (object) key-value pairs of attributes you want to set
+     - params (object) contains key-value pairs of attributes you want to set
      * or
      - param (string) name of the attribute
-     = (Element)
+     = (Element) the current element
      * or
      = (string) value of attribute
      > Usage
@@ -1461,7 +1474,7 @@ function arrayFirstValue(arr) {
      |     strokeWidth: 2, // CamelCase...
      |     "fill-opacity": 0.5 // or dash-separated names
      | });
-     | console.log(el.attr("fill")); // “#fc0”
+     | console.log(el.attr("fill")); // #fc0
     \*/
     elproto.attr = function (params, value) {
         var el = this,
@@ -1485,11 +1498,13 @@ function arrayFirstValue(arr) {
         }
         return el;
     };
+// SIERRA Element.getBBox(): Unclear why you would want to express the dimension of the box as a path.
+// SIERRA Element.getBBox(): Unclear why you would want to use r0/r1/r2. Also, basic definitions: wouldn't the _smallest circle that can be enclosed_ be a zero-radius point?
     /*\
      * Element.getBBox
      [ method ]
      **
-     * Returns bounding box descriptor for the given element.
+     * Returns the bounding box descriptor for the given element
      **
      = (object) bounding box descriptor:
      o {
@@ -1498,16 +1513,16 @@ function arrayFirstValue(arr) {
      o     h: (number) height,
      o     height: (number) height,
      o     path: (string) path command for the box,
-     o     r0: (number) radius of the circle that will enclose the box,
+     o     r0: (number) radius of a circle that fully encloses the box,
      o     r1: (number) radius of the smallest circle that can be enclosed,
-     o     r2: (number) radius of the biggest circle that can be enclosed,
+     o     r2: (number) radius of the largest circle that can be enclosed,
      o     vb: (string) box as a viewbox command,
      o     w: (number) width,
      o     width: (number) width,
      o     x2: (number) x of the right side,
      o     x: (number) x of the left side,
-     o     y2: (number) y of the right side,
-     o     y: (number) y of the left side
+     o     y2: (number) y of the bottom edge,
+     o     y: (number) y of the top edge
      o }
     \*/
     elproto.getBBox = function (isWithoutTransform) {
@@ -1542,6 +1557,9 @@ function arrayFirstValue(arr) {
     var propString = function () {
         return this.local;
     };
+// SIERRA Element.transform(): seems to allow two return values, one of which (_Element_) is undefined.
+// SIERRA Element.transform(): if this only accepts one argument, it's unclear how it can both _get_ and _set_ a transform.
+// SIERRA Element.transform(): Unclear how Snap transform string format differs from SVG's.
     /*\
      * Element.transform
      [ method ]
@@ -1549,7 +1567,7 @@ function arrayFirstValue(arr) {
      * Gets or sets transformation of the element
      **
      - tstr (string) transform string in Snap or SVG format
-     = (Element)
+     = (Element) the current element
      * or
      = (object) transformation descriptor:
      o {
@@ -1600,9 +1618,9 @@ function arrayFirstValue(arr) {
      * Element.parent
      [ method ]
      **
-     * Returns parent of the element
+     * Returns the element's parent
      **
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.parent = function () {
         return wrap(this.node.parentNode);
@@ -1611,16 +1629,16 @@ function arrayFirstValue(arr) {
      * Element.append
      [ method ]
      **
-     * Appends given element to current one.
+     * Appends the given element to current one
      **
      - el (Element|Set) element to append
-     = (Element) parent
+     = (Element) the parent element
     \*/
     /*\
      * Element.add
      [ method ]
      **
-     * See @Element.append.
+     * See @Element.append
     \*/
     elproto.append = elproto.add = function (el) {
         if (el.type == "set") {
@@ -1639,10 +1657,10 @@ function arrayFirstValue(arr) {
      * Element.prepend
      [ method ]
      **
-     * Prepends given element to current one.
+     * Prepends the given element to the current one
      **
      - el (Element) element to prepend
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.prepend = function (el) {
         el = wrap(el);
@@ -1654,10 +1672,10 @@ function arrayFirstValue(arr) {
      * Element.before
      [ method ]
      **
-     * Inserts given element before the current one.
+     * Inserts given element before the current one
      **
      - el (Element) element to insert
-     = (Element) parent
+     = (Element) the parent element
     \*/
     // TODO make it work for sets too
     elproto.before = function (el) {
@@ -1670,10 +1688,10 @@ function arrayFirstValue(arr) {
      * Element.after
      [ method ]
      **
-     * Inserts given element after the current one.
+     * Inserts given element after the current one
      **
      - el (Element) element to insert
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.after = function (el) {
         el = wrap(el);
@@ -1685,10 +1703,10 @@ function arrayFirstValue(arr) {
      * Element.insertBefore
      [ method ]
      **
-     * Inserts the element after the given one.
+     * Inserts the element after the given one
      **
      - el (Element) element next to whom insert to
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.insertBefore = function (el) {
         el = wrap(el);
@@ -1700,10 +1718,10 @@ function arrayFirstValue(arr) {
      * Element.insertAfter
      [ method ]
      **
-     * Inserts the element after the given one.
+     * Inserts the element after the given one
      **
      - el (Element) element next to whom insert to
-     = (Element) parent
+     = (Element) the parent element
     \*/
     elproto.insertAfter = function (el) {
         el = wrap(el);
@@ -1716,7 +1734,7 @@ function arrayFirstValue(arr) {
      [ method ]
      **
      * Removes element from the DOM
-     = (Element) removed element
+     = (Element) the detached element
     \*/
     elproto.remove = function () {
         this.node.parentNode && this.node.parentNode.removeChild(this.node);
@@ -1728,7 +1746,7 @@ function arrayFirstValue(arr) {
      * Element.select
      [ method ]
      **
-     * Applies CSS selector with the element as a parent and returns the result as an @Element.
+     * Gathers the nested @Element matching the given set of CSS selectors
      **
      - query (string) CSS selector
      = (Element) result of query selection
@@ -1740,7 +1758,7 @@ function arrayFirstValue(arr) {
      * Element.selectAll
      [ method ]
      **
-     * Applies CSS selector with the element as a parent and returns the result as a set or array of elements.
+     * Gathers nested @Element objects matching the given set of CSS selectors
      **
      - query (string) CSS selector
      = (Set|array) result of query selection
@@ -1757,7 +1775,7 @@ function arrayFirstValue(arr) {
      * Element.asPX
      [ method ]
      **
-     * Return given attribute of the element as a `px` value. (Not %, em, etc)
+     * Returns given attribute of the element as a `px` value (not %, em, etc.)
      **
      - attr (string) attribute name
      - value (string) #optional attribute value
@@ -1769,13 +1787,14 @@ function arrayFirstValue(arr) {
         }
         return unit2px(this, attr, value);
     };
+    // SIERRA Element.use(): I suggest adding a note about how to access the original element the returned <use> instantiates. It's a part of SVG with which ordinary web developers may be least familiar.
     /*\
      * Element.use
      [ method ]
      **
-     * Creates `<use>` element linked to the current element.
+     * Creates a `<use>` element linked to the current element
      **
-     = (Element) `<use>` element
+     = (Element) the `<use>` element
     \*/
     elproto.use = function () {
         var use,
@@ -1802,7 +1821,7 @@ function arrayFirstValue(arr) {
      * Element.clone
      [ method ]
      **
-     * Creates clone of the element and inserts it after the element.
+     * Creates a clone of the element and inserts it after the element
      **
      = (Element) the clone
     \*/
@@ -1877,11 +1896,12 @@ function arrayFirstValue(arr) {
         clone.insertAfter(this);
         return clone;
     };
+// SIERRA Element.toDefs(): If this _moves_ an element to the <defs> region, why is the return value a _clone_? Also unclear why it's called the _relative_ <defs> section. Perhaps _shared_?
     /*\
      * Element.toDefs
      [ method ]
      **
-     * Moves element to the relative `<defs>` section.
+     * Moves element to the shared `<defs>` area
      **
      = (Element) the clone
     \*/
@@ -1890,18 +1910,20 @@ function arrayFirstValue(arr) {
         defs.appendChild(this.node);
         return this;
     };
+// SIERRA Element.pattern(): x/y/width/height data types are listed as both String and Number. Is that an error, or does it mean strings are coerced?
+// SIERRA Element.pattern(): clarify that x/y are offsets that e.g., may add gutters between the tiles.
     /*\
      * Element.pattern
      [ method ]
      **
-     * Creates `<pattern>` element from the current element.
+     * Creates a `<pattern>` element from the current element
      **
      * To create a pattern you have to specify the pattern rect:
      - x (string|number)
      - y (string|number)
      - width (string|number)
      - height (string|number)
-     = (Element) `<pattern>` element
+     = (Element) the `<pattern>` element
      * You can use pattern later on as an argument for `fill` attribute:
      | var p = paper.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
      |         fill: "none",
@@ -1936,11 +1958,13 @@ function arrayFirstValue(arr) {
         p.node.appendChild(this.node);
         return p;
     };
+// SIERRA Element.marker(): clarify what a reference point is. E.g., helps you offset the object from its edge such as when centering it over a path.
+// SIERRA Element.marker(): I suggest the method should accept default reference point values.  Perhaps centered with (refX = width/2) and (refY = height/2)? Also, couldn't it assume the element's current _width_ and _height_? And please specify what _x_ and _y_ mean: offsets? If so, from where?  Couldn't they also be assigned default values?
     /*\
      * Element.marker
      [ method ]
      **
-     * Creates `<marker>` element from the current element.
+     * Creates a `<marker>` element from the current element
      **
      * To create a marker you have to specify the bounding rect and reference point:
      - x (number)
@@ -1949,8 +1973,8 @@ function arrayFirstValue(arr) {
      - height (number)
      - refX (number)
      - refY (number)
-     = (Element) `<marker>` element
-     * You can use pattern later on as an argument for `marker-start` or `marker-end` attributes.
+     = (Element) the `<marker>` element
+     * You can specify the marker later as an argument for `marker-start`, `marker-end`, `marker-mid`, and `marker` attributes. The `marker` attribute places the marker at every point along the path, and `marker-mid` places them at every point except the start and end.
     \*/
     // TODO add usage for markers
     elproto.marker = function (x, y, width, height, refX, refY) {
@@ -1998,16 +2022,17 @@ function arrayFirstValue(arr) {
         easing && (this.easing = easing);
         callback && (this.callback = callback);
     };
+    // SIERRA All object methods should feature sample code. This is just one instance.
     /*\
      * Snap.animation
      [ method ]
      **
-     * Creates animation object.
+     * Creates an animation object
      **
      - attr (object) attributes of final destination
-     - ms (number) animation duration
+     - duration (number) duration of the animation, in milliseconds
      - easing (function) #optional one of easing functions of @mina or custom one
-     - callback (function) #optional callback
+     - callback (function) #optional callback function that fires when animation ends VERIFY
      = (object) animation object
     \*/
     Snap.animation = function (attr, ms, easing, callback) {
@@ -2017,9 +2042,9 @@ function arrayFirstValue(arr) {
      * Element.inAnim
      [ method ]
      **
-     * Returns an array of animations element currently in
+     * Returns a set of animations that may be able to manipulate the current element VERIFY
      **
-     = (object) in format
+     = (object) in format:
      o {
      o     anim (object) animation object,
      o     curStatus (number) 0..1 — status of the animation: 0 — just started, 1 — just finished,
@@ -2046,18 +2071,22 @@ function arrayFirstValue(arr) {
         }
         return res;
     };
+    // SIERRA unfamiliar with the phrase _caring function,_ so the text for the _setter_ param isn't clear.
+    // SIERRA With the animation's start/end states defined, how is its _speed_ distinguished from its _duration_?
+    // SIERRA Text explaining the mina format should move to the section on the mina object interface. (Prior comment applies: object interfaces need to also be documented.)
+    // SIERRA unclear how to express a custom _easing_ (+)
     /*\
      * Snap.animate
      [ method ]
      **
-     * Runs generic animation of one number into another with a caring function.
+     * Runs generic animation of one number into another with a caring function
      **
      - from (number|array) number or array of numbers
      - to (number|array) number or array of numbers
-     - setter (function) caring function that will take one number argument
-     - ms (number) duration
+     - setter (function) caring function that accepts one number argument
+     - duration (number) duration, in milliseconds
      - easing (function) #optional easing function from @mina or custom
-     - callback (function) #optional 
+     - callback (function) #optional callback function to execute when animation ends VERIFY
      = (object) animation object in @mina format
      o {
      o     id (string) animation id, consider it read-only,
@@ -2078,13 +2107,14 @@ function arrayFirstValue(arr) {
         callback && eve.once("mina.finish." + anim.id, callback);
         return anim;
     };
+    // SIERRA Element.stop(). Does it _stop_ or _pause_ the animations? If you run Element.animate() to restart the animation, does it commence from the beginning?
     /*\
      * Element.stop
      [ method ]
      **
-     * Stops all the animations of the current element.
+     * Stops all the animations for the current element
      **
-     = (Element) the element
+     = (Element) the current element
     \*/
     elproto.stop = function () {
         var anims = this.inAnim();
@@ -2093,17 +2123,19 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
+    // SIERRA Element.animate(): For _attrs_, clarify if they represent the destination values, and if the animation executes relative to the element's current attribute values.
+    // SIERRA would a _custom_ animation function be an SVG keySplines value?
     /*\
      * Element.animate
      [ method ]
      **
-     * Animate given attributes of the element.
+     * Animates the given attributes of the element
      **
      - attrs (object) key-value pairs of destination attributes
-     - ms (number) duration
+     - duration (number) duration of the animation in milliseconds
      - easing (function) #optional easing function from @mina or custom
-     - callback (function) #optional 
-     = (Element) the element
+     - callback (function) #optional callback function that executes when the animation ends VERIFY
+     = (Element) the current element
     \*/
     elproto.animate = function (attrs, ms, easing, callback) {
         if (typeof easing == "function" && !easing.length) {
@@ -2154,11 +2186,12 @@ function arrayFirstValue(arr) {
         return el;
     };
     var eldata = {};
+    // SIERRA Element.data()/Element.removeData(): Do these correspond to _data- attributes, and if so, can you ordinarily use the the dataset API within SVG?
     /*\
      * Element.data
      [ method ]
      **
-     * Adds or retrieves given value asociated with given key.
+     * Adds or retrieves given value associated with given key
      ** 
      * See also @Element.removeData
      - key (string) key to store data
@@ -2209,20 +2242,21 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
+    // SIERRA Element.toString(): Recommend renaming this _outerSVG_ to keep it consistent with HTML & innerSVG, and also to avoid confusing it with what textContent() does. Cross-reference with innerSVG.
     /*\
      * Element.toString
      [ method ]
      **
-     * Returns SVG code of the element. Equivalent to `outerHTML` in HTML context.
-     = (string) SVG code of the element.
+     * Returns SVG code for the element, equivalent to HTML's `outerHTML`
+     = (string) SVG code for the element
     \*/
     elproto.toString = toString(1);
     /*\
      * Element.innerSVG
      [ method ]
      **
-     * Returns SVG code of the element. Equivalent to `innerHTML` in HTML context.
-     = (string) SVG code of the element.
+     * Returns SVG code for the element's contents, equivalent to HTML's `innerHTML`
+     = (string) SVG code for the element
     \*/
     elproto.innerSVG = toString();
     function toString(type) {
@@ -2253,14 +2287,15 @@ function arrayFirstValue(arr) {
         };
     }
 }(Element.prototype));
+// SIERRA Snap.parse() accepts & returns a fragment, but there's no info on what it does in between. What if it doesn't parse?
 /*\
  * Snap.parse
  [ method ]
  **
- * Parses SVG fragment and converts it into @Fragment.
+ * Parses SVG fragment and converts it into a @Fragment
  **
  - svg (string) SVG string
- = (Fragment) the fragment
+ = (Fragment) the @Fragment
 \*/
 Snap.parse = function (svg) {
     var f = glob.doc.createDocumentFragment(),
@@ -2301,11 +2336,12 @@ Fragment.prototype.select = Element.prototype.select;
  * See @Element.selectAll
 \*/
 Fragment.prototype.selectAll = Element.prototype.selectAll;
+// SIERRA Snap.fragment() could especially use a code example
 /*\
  * Snap.fragment
  [ method ]
  **
- * Creates DOM fragment from given list of elements or strings
+ * Creates a DOM fragment from a given list of elements or strings
  **
  - varargs (…) SVG string
  = (Fragment) the @Fragment
@@ -2335,6 +2371,7 @@ function make(name, parent) {
     el.type = name;
     return el;
 }
+// SIERRA Is Paper() part of final interface, akin to Snap()? Document if so.
 function Paper(w, h) {
     var res,
         desc,
@@ -2384,7 +2421,7 @@ function wrap(dom) {
     }
     return new Element(dom);
 }
-// gradients’ helpers
+// gradients' helpers
 function Gstops() {
     return this.selectAll("stop");
 }
@@ -2498,11 +2535,11 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.el
      [ method ]
      **
-     * Creates element on paper with a given name and no attributes.
+     * Creates an element on paper with a given name and no attributes
      **
      - name (string) tag name
      - attr (object) attributes
-     = (Element) the element
+     = (Element) the current element
      > Usage
      | var c = paper.circle(10, 10, 10); // is the same as...
      | var c = paper.el("circle").attr({
@@ -2518,15 +2555,15 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.rect
      [ method ]
      *
-     * Draws a rectangle.
+     * Draws a rectangle
      **
      - x (number) x coordinate of the top left corner
      - y (number) y coordinate of the top left corner
      - width (number) width
      - height (number) height
-     - rx (number) #optional horisontal radius for rounded corners, default is 0
+     - rx (number) #optional horizontal radius for rounded corners, default is 0
      - ry (number) #optional vertical radius for rounded corners, default is rx or 0
-     = (object) Element object with type “rect”
+     = (object) the `rect` element
      **
      > Usage
      | // regular rectangle
@@ -2561,12 +2598,12 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.circle
      [ method ]
      **
-     * Draws a circle.
+     * Draws a circle
      **
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - r (number) radius
-     = (object) Element object with type “circle”
+     = (object) the `circle` element
      **
      > Usage
      | var c = paper.circle(50, 50, 40);
@@ -2584,34 +2621,21 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         }
         return el;
     };
+
     /*\
      * Paper.image
      [ method ]
      **
-     * Embeds an image into the surface.
+     * Places an image on the surface
      **
      - src (string) URI of the source image
-     - x (number) x coordinate position
-     - y (number) y coordinate position
+     - x (number) x offset position
+     - y (number) y offset position
      - width (number) width of the image
      - height (number) height of the image
-     = (object) Raphaël element object with type “image”
-     **
-     > Usage
-     | var c = paper.image("apple.png", 10, 10, 80, 80);
-    \*/
-    /*\
-     * Paper.image
-     [ method ]
-     **
-     * Embeds an image into the surface.
-     **
-     - src (string) URI of the source image
-     - x (number) x coordinate position
-     - y (number) y coordinate position
-     - width (number) width of the image
-     - height (number) height of the image
-     = (object) Element object with type “image”
+     = (object) the `image` element
+     * or
+     = (object) Raphaël element object with type `image`
      **
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);
@@ -2648,13 +2672,13 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.ellipse
      [ method ]
      **
-     * Draws an ellipse.
+     * Draws an ellipse
      **
      - x (number) x coordinate of the centre
      - y (number) y coordinate of the centre
      - rx (number) horizontal radius
      - ry (number) vertical radius
-     = (object) Element object with type “ellipse”
+     = (object) the `ellipse` element
      **
      > Usage
      | var c = paper.ellipse(50, 50, 40, 20);
@@ -2673,15 +2697,16 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         }
         return el;
     };
+    // SIERRA Paper.path(): Unclear from the link what a Catmull-Rom curveto is, and why it would make life any easier.
     /*\
      * Paper.path
      [ method ]
      **
-     * Creates a path element by given path data string.
-     - pathString (string) #optional path string in SVG format.
-     * Path string consists of one-letter commands, followed by comma seprarated arguments in numercal form. Example:
+     * Creates a `<path>` element using the given string as the path's definition
+     - pathString (string) #optional path string in SVG format
+     * Path string consists of one-letter commands, followed by comma seprarated arguments in numerical form. Example:
      | "M10,20L30,40"
-     * Here we can see two commands: “M”, with arguments `(10, 20)` and “L” with arguments `(30, 40)`. Upper case letter mean command is absolute, lower case—relative.
+     * This example features two commands: `M`, with arguments `(10, 20)` and `L` with arguments `(30, 40)`. Uppercase letter commands express coordinates in absolute terms, while lowercase commands express them in relative terms from the most recently declared coordinates.
      *
      # <p>Here is short list of commands available, for more details see <a href="http://www.w3.org/TR/SVG/paths.html#PathData" title="Details of a path's data attribute's format are described in the SVG specification.">SVG path string format</a> or <a href="https://developer.mozilla.org/en/SVG/Tutorial/Paths">article about path strings at MDN</a>.</p>
      # <table><thead><tr><th>Command</th><th>Name</th><th>Parameters</th></tr></thead><tbody>
@@ -2696,8 +2721,8 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      # <tr><td>T</td><td>smooth quadratic Bézier curveto</td><td>(x y)+</td></tr>
      # <tr><td>A</td><td>elliptical arc</td><td>(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+</td></tr>
      # <tr><td>R</td><td><a href="http://en.wikipedia.org/wiki/Catmull–Rom_spline#Catmull.E2.80.93Rom_spline">Catmull-Rom curveto</a>*</td><td>x1 y1 (x y)+</td></tr></tbody></table>
-     * * “Catmull-Rom curveto” is a not standard SVG command and added to make life easier.
-     * Note: there is a special case when path consist of just three commands: “M10,10R…z”. In this case path will smoothly connects to its beginning.
+     * * _Catmull-Rom curveto_ is a not standard SVG command and added to make life easier.
+     * Note: there is a special case when a path consists of only three commands: `M10,10R…z`. In this case the path connects back to its starting point.
      > Usage
      | var c = paper.path("M10 10L90 90");
      | // draw a diagonal line:
@@ -2714,19 +2739,20 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         }
         return el;
     };
+// SIERRA Paper.g(): Don't understand the code comment about the order being _different._ Wouldn't it be a rect followed by a circle?
     /*\
      * Paper.g
      [ method ]
      **
-     * Makes a group element.
+     * Creates a group element
      **
-     - varargs (…) #optional elements
-     = (object) Element object with type “g”
+     - varargs (…) #optional elements to nest within the group
+     = (object) the `g` element
      **
      > Usage
      | var c1 = paper.circle(),
      |     c2 = paper.rect(),
-     |     g = paper.g(c2, c1); // note that the order of elements will be different
+     |     g = paper.g(c2, c1); // note that the order of elements is different
      * or
      | var c1 = paper.circle(),
      |     c2 = paper.rect(),
@@ -2756,12 +2782,12 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.text
      [ method ]
      **
-     * Draws a text string.
+     * Draws a text string
      **
      - x (number) x coordinate position
      - y (number) y coordinate position
-     - text (string|array) The text string to draw or array of <tspan>s
-     = (object) Element object with type “text”
+     - text (string|array) The text string to draw or array of strings to nest within separate `<tspan>` elements
+     = (object) the `text` element
      **
      > Usage
      | var t1 = paper.text(50, 50, "Snap");
@@ -2784,13 +2810,13 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.line
      [ method ]
      **
-     * Draws a line.
+     * Draws a line
      **
      - x1 (number) x coordinate position of the start
      - y1 (number) y coordinate position of the start
      - x2 (number) x coordinate position of the end
      - y2 (number) y coordinate position of the end
-     = (object) Element object with type “line”
+     = (object) the `line` element
      **
      > Usage
      | var t1 = paper.line(50, 50, 100, 100);
@@ -2813,12 +2839,12 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      * Paper.polyline
      [ method ]
      **
-     * Draws a polyline.
+     * Draws a polyline
      **
      - points (array) array of points
      * or
      - varargs (…) points
-     = (object) Element object with type “text”
+     = (object) the `polyline` element
      **
      > Usage
      | var p1 = paper.polyline([10, 10, 100, 100]);
@@ -2864,34 +2890,38 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          * Paper.gradient
          [ method ]
          **
-         * Creates a gradient element.
+         * Creates a gradient element
          **
          - gradient (string) gradient descriptor
          > Gradient Descriptor
-         * Gradient descriptor consists of `<type>(<coords>)<colors>`. Type
-         * could be linear or radial, which presented as letter “L” or “R”. Any
-         * type could be absolute or relative, absolute gradient take it coords
-         * relative to the SVG surface, while relative takes them relative to
-         * the bounding box of the element it applied to. For absolute
-         * coordinates you specify type as an upper case letter (“L” or “R”).
-         * For relative use low case letter (“l” or “r”). Coordinates specify
-         * vector of gradient for linear as x1, y1, x2, y2. For radial as cx,
-         * cy, r and optional fx, fy. Colors are list of dash separated colors.
-         * Optionally color could have offset after colon.
-         > Example
-         | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
+         * The gradient descriptor is an expression formatted as
+         * follows: `<type>(<coords>)<colors>`.  The `<type>` can be
+         * either linear or radial.  The uppercase `L` or `R` letters
+         * indicate absolute coordinates offset from the SVG surface.
+         * Lowercase `l` or `r` letters indicate coordinates
+         * calculated relative to the element to which the gradient is
+         * applied.  Coordinates specify a linear gradient vector as
+         * `x1`, `y1`, `x2`, `y2`, or a radial gradient as `cx`, `cy`,
+         * `r` and optional `fx`, `fy` specifying a focal point away
+         * from the center of the circle. Specify `<colors>` as a list
+         * of dash-separated CSS color values.  Each color may be
+         * followed by a custom offset value, separated with a colon
+         * character.
+         > Examples
          * Linear gradient, relative from top-left corner to bottom-right
-         * corner, from black through red to white.
-         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
+         * corner, from black through red to white:
+         | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
          * Linear gradient, absolute from (0, 0) to (100, 100), from black
-         * through red at 25% to white.
-         | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
+         * through red at 25% to white:
+         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
          * Radial gradient, relative from the center of the element with radius
-         * 0.5 of the width, from black to white.
+         * half the width, from black to white:
+         | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
+         * To apply the gradient:
          | paper.circle(50, 50, 40).attr({
          |     fill: g
          | });
-         = (object) Element object with type “gradient”
+         = (object) the `gradient` element
         \*/
         proto.gradient = function (str) {
             return gradient(this.defs, str);
@@ -2906,8 +2936,8 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          * Paper.toString
          [ method ]
          **
-         * Returns SVG code of the @Paper.
-         = (string) SVG code of the @Paper.
+         * Returns SVG code for the @Paper
+         = (string) SVG code for the @Paper
         \*/
         proto.toString = function () {
             var f = glob.doc.createDocumentFragment(),
@@ -2929,7 +2959,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
  * Snap.ajax
  [ method ]
  **
- * Simple implementation of Ajax.
+ * Simple implementation of Ajax
  **
  - url (string) URL
  - postData (object|string) data for post request
@@ -2939,7 +2969,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
  - url (string) URL
  - callback (function) callback
  - scope (object) #optional scope of callback
- = (XMLHttpRequest) XMLHttpRequest (just in case)
+ = (XMLHttpRequest) the XMLHttpRequest object, just in case
 \*/
 Snap.ajax = function (url, postData, callback, scope){
     var req = new XMLHttpRequest,
@@ -2981,7 +3011,7 @@ Snap.ajax = function (url, postData, callback, scope){
  * Snap.load
  [ method ]
  **
- * Loads external SVG file as a @Fragment. For more advanced AJAX see @Snap.ajax.
+ * Loads external SVG file as a @Fragment (see @Snap.ajax for more advanced AJAX)
  **
  - url (string) URL
  - callback (function) callback

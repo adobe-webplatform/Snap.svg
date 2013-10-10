@@ -18,15 +18,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         Str = String,
         $ = Snap._.$;
     Snap.filter = {};
+// SIERRA Paper.filter(): I don't understand the note. Does that mean an HTML should dedicate a separate SVG region for a filter definition? What's the advantage over a DEFS?
     /*\
      * Paper.filter
      [ method ]
      **
-     * Creates filter element
+     * Creates a `<filter>` element
      **
-     - filstr (string) SVG fragment of filter provided as a string.
+     - filstr (string) SVG fragment of filter provided as a string
      = (object) @Element
-     * Note: It is recommended to use filters embedded into page inside empty SVG element.
+     * Note: It is recommended to use filters embedded into the page inside an empty SVG element.
      > Usage
      | var f = paper.filter('<feGaussianBlur stdDeviation="2"/>'),
      |     c = paper.circle(10, 10, 10).attr({
@@ -81,15 +82,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             this.node.removeAttribute("filter");
         }
     });
-    
+    // SIERRA Would help to clarify when various Snap.filter.* matches the behavior of CSS filter property keyword functions. E.g., I don't think CSS's blur() accepts a second parameter for y axis.
+    // SIERRA Would also be useful to illustrate a chain of >1 filter as a code snippet.
     /*\
      * Snap.filter.blur
      [ method ]
      **
-     * Returns string of the blur filter.
+     * Returns an SVG markup string for the blur filter
      **
-     - x (number) amount of horisontal blur in px.
-     - y (number) #optional amount of vertical blur in px.
+     - x (number) amount of horizontal blur, in pixels
+     - y (number) #optional amount of vertical blur, in pixels
      = (string) filter representation
      > Usage
      | var f = paper.filter(Snap.filter.blur(5, 10)),
@@ -113,12 +115,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.filter.shadow
      [ method ]
      **
-     * Returns string of the shadow filter.
+     * Returns an SVG markup string for the shadow filter
      **
-     - dx (number) horisontal shift of the shadow in px.
-     - dy (number) vertical shift of the shadow in px.
-     - blur (number) #optional amount of blur.
-     - color (string) #optional color of the shadow.
+     - dx (number) horizontal shift of the shadow, in pixels
+     - dy (number) vertical shift of the shadow, in pixels
+     - blur (number) #optional amount of blur
+     - color (string) #optional color of the shadow
      = (string) filter representation
      > Usage
      | var f = paper.filter(Snap.filter.shadow(0, 2, 3)),
@@ -157,9 +159,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.filter.grayscale
      [ method ]
      **
-     * Returns string of the grayscale filter.
+     * Returns an SVG markup string for the grayscale filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.grayscale = function (amount) {
@@ -184,9 +186,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.filter.sepia
      [ method ]
      **
-     * Returns string of the sepia filter.
+     * Returns an SVG markup string for the sepia filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.sepia = function (amount) {
@@ -212,9 +214,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.filter.saturate
      [ method ]
      **
-     * Returns string of the saturate filter.
+     * Returns an SVG markup string for the saturate filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.saturate = function (amount) {
@@ -232,9 +234,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.filter.hueRotate
      [ method ]
      **
-     * Returns string of the hue-rotate filter.
+     * Returns an SVG markup string for the hue-rotate filter
      **
-     - angle (number) angle of rotation.
+     - angle (number) angle of rotation
      = (string) filter representation
     \*/
     Snap.filter.hueRotate = function (angle) {
@@ -250,9 +252,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.filter.invert
      [ method ]
      **
-     * Returns string of the invert filter.
+     * Returns an SVG markup string for the invert filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.invert = function (amount) {
@@ -271,9 +273,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.filter.brightness
      [ method ]
      **
-     * Returns string of the brightness filter.
+     * Returns an SVG markup string for the brightness filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.brightness = function (amount) {
@@ -291,9 +293,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Snap.filter.contrast
      [ method ]
      **
-     * Returns string of the contrast filter.
+     * Returns an SVG markup string for the contrast filter
      **
-     - amount (number) amount of filter (`0..1`).
+     - amount (number) amount of filter (`0..1`)
      = (string) filter representation
     \*/
     Snap.filter.contrast = function (amount) {

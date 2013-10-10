@@ -34,7 +34,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.push
      [ method ]
      **
-     * Adds each argument to the current set.
+     * Adds each argument to the current set
      = (object) original element
     \*/
     setproto.push = function () {
@@ -54,7 +54,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.pop
      [ method ]
      **
-     * Removes last element and returns it.
+     * Removes last element and returns it
      = (object) element
     \*/
     setproto.pop = function () {
@@ -65,9 +65,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.forEach
      [ method ]
      **
-     * Executes given function for each element in the set.
+     * Executes given function for each element in the set
      *
-     * If function returns `false` it will stop loop running.
+     * If the function returns `false`, the loop stops running.
      **
      - callback (function) function to run
      - thisArg (object) context object for the callback
@@ -91,7 +91,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.clear
      [ method ]
      **
-     * Removeds all elements from the set
+     * Removes all elements from the set
     \*/
     setproto.clear = function () {
         while (this.length) {
@@ -102,7 +102,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Set.splice
      [ method ]
      **
-     * Removes given element from the set
+     * Removes range of elements from the set
      **
      - index (number) position of the deletion
      - count (number) number of element to remove
@@ -142,7 +142,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Removes given element from the set
      **
      - element (object) element to remove
-     = (boolean) `true` if object was found & removed from the set
+     = (boolean) `true` if object was found and removed from the set
     \*/
     setproto.exclude = function (el) {
         for (var i = 0, ii = this.length; i < ii; i++) if (this[i] == el) {

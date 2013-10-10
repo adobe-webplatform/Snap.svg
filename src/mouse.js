@@ -148,7 +148,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.click
      [ method ]
      **
-     * Adds event handler for click for the element.
+     * Adds a click event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -156,7 +156,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unclick
      [ method ]
      **
-     * Removes event handler for click for the element.
+     * Removes a click event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -165,7 +165,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.dblclick
      [ method ]
      **
-     * Adds event handler for double click for the element.
+     * Adds a double click event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -173,7 +173,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.undblclick
      [ method ]
      **
-     * Removes event handler for double click for the element.
+     * Removes a double click event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -182,7 +182,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mousedown
      [ method ]
      **
-     * Adds event handler for mousedown for the element.
+     * Adds a mousedown event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -190,7 +190,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmousedown
      [ method ]
      **
-     * Removes event handler for mousedown for the element.
+     * Removes a mousedown event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -199,7 +199,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mousemove
      [ method ]
      **
-     * Adds event handler for mousemove for the element.
+     * Adds a mousemove event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -207,7 +207,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmousemove
      [ method ]
      **
-     * Removes event handler for mousemove for the element.
+     * Removes a mousemove event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -216,7 +216,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mouseout
      [ method ]
      **
-     * Adds event handler for mouseout for the element.
+     * Adds a mouseout event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -224,7 +224,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmouseout
      [ method ]
      **
-     * Removes event handler for mouseout for the element.
+     * Removes a mouseout event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -233,7 +233,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mouseover
      [ method ]
      **
-     * Adds event handler for mouseover for the element.
+     * Adds a mouseover event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -241,7 +241,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmouseover
      [ method ]
      **
-     * Removes event handler for mouseover for the element.
+     * Removes a mouseover event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -250,7 +250,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.mouseup
      [ method ]
      **
-     * Adds event handler for mouseup for the element.
+     * Adds a mouseup event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -258,7 +258,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unmouseup
      [ method ]
      **
-     * Removes event handler for mouseup for the element.
+     * Removes a mouseup event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -267,7 +267,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.touchstart
      [ method ]
      **
-     * Adds event handler for touchstart for the element.
+     * Adds a touchstart event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -275,7 +275,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.untouchstart
      [ method ]
      **
-     * Removes event handler for touchstart for the element.
+     * Removes a touchstart event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -284,7 +284,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.touchmove
      [ method ]
      **
-     * Adds event handler for touchmove for the element.
+     * Adds a touchmove event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -292,7 +292,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.untouchmove
      [ method ]
      **
-     * Removes event handler for touchmove for the element.
+     * Removes a touchmove event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -301,7 +301,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.touchend
      [ method ]
      **
-     * Adds event handler for touchend for the element.
+     * Adds a touchend event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -309,7 +309,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.untouchend
      [ method ]
      **
-     * Removes event handler for touchend for the element.
+     * Removes a touchend event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -318,7 +318,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.touchcancel
      [ method ]
      **
-     * Adds event handler for touchcancel for the element.
+     * Adds a touchcancel event handler to the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -326,7 +326,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.untouchcancel
      [ method ]
      **
-     * Removes event handler for touchcancel for the element.
+     * Removes a touchcancel event handler from the element
      - handler (function) handler for the event
      = (object) @Element
     \*/
@@ -362,7 +362,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.hover
      [ method ]
      **
-     * Adds event handlers for hover for the element.
+     * Adds hover event handlers to the element
      - f_in (function) handler for hover in
      - f_out (function) handler for hover out
      - icontext (object) #optional context for hover in handler
@@ -376,7 +376,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.unhover
      [ method ]
      **
-     * Removes event handlers for hover for the element.
+     * Removes hover event handlers from the element
      - f_in (function) handler for hover in
      - f_out (function) handler for hover out
      = (object) @Element
@@ -385,32 +385,37 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return this.unmouseover(f_in).unmouseout(f_out);
     };
     var draggable = [];
+    // SIERRA unclear what _context_ refers to for starting, ending, moving the drag gesture.
+    // SIERRA Element.drag(): _x position of the mouse_: Where are the x/y values offset from?
+    // SIERRA Element.drag(): much of this member's doc appears to be duplicated for some reason.
+    // SIERRA Unclear about this sentence: _Additionally following drag events will be triggered: drag.start.<id> on start, drag.end.<id> on end and drag.move.<id> on every move._ Is there a global _drag_ object to which you can assign handlers keyed by an element's ID?
     /*\
      * Element.drag
      [ method ]
      **
-     * Adds event handlers for drag of the element.
+     * Adds event handlers for an element's drag gesture
+     **
      - onmove (function) handler for moving
      - onstart (function) handler for drag start
      - onend (function) handler for drag end
      - mcontext (object) #optional context for moving handler
      - scontext (object) #optional context for drag start handler
      - econtext (object) #optional context for drag end handler
-     * Additionaly following `drag` events will be triggered: `drag.start.<id>` on start, 
-     * `drag.end.<id>` on end and `drag.move.<id>` on every move. When element will be dragged over another element 
-     * `drag.over.<id>` will be fired as well.
+     * Additionaly following `drag` events are triggered: `drag.start.<id>` on start, 
+     * `drag.end.<id>` on end and `drag.move.<id>` on every move. When element is dragged over another element 
+     * `drag.over.<id>` fires as well.
      *
-     * Start event and start handler will be called in specified context or in context of the element with following parameters:
+     * Start event and start handler are called in specified context or in context of the element with following parameters:
      o x (number) x position of the mouse
      o y (number) y position of the mouse
      o event (object) DOM event object
-     * Move event and move handler will be called in specified context or in context of the element with following parameters:
+     * Move event and move handler are called in specified context or in context of the element with following parameters:
      o dx (number) shift by x from the start point
      o dy (number) shift by y from the start point
      o x (number) x position of the mouse
      o y (number) y position of the mouse
      o event (object) DOM event object
-     * End event and end handler will be called in specified context or in context of the element with following parameters:
+     * End event and end handler are called in specified context or in context of the element with following parameters:
      o event (object) DOM event object
      = (object) @Element
     \*/
@@ -448,7 +453,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.onDragOver
      [ method ]
      **
-     * Shortcut for assigning event handler for `drag.over.<id>` event, where id is id of the element (see @Element.id).
+     * Shortcut to assign event handler for `drag.over.<id>` event, where `id` is the element's `id` (see @Element.id)
      - f (function) handler for event, first argument would be the element you are dragging over
     \*/
     // elproto.onDragOver = function (f) {
@@ -458,7 +463,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.undrag
      [ method ]
      **
-     * Removes all drag event handlers from given element.
+     * Removes all drag event handlers from the given element
     \*/
     elproto.undrag = function () {
         var i = draggable.length;
