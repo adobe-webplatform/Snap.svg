@@ -488,7 +488,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.x
      [ method ]
      **
-     * Returns  x coordinate for given point after transformation described by the matrix. See also @Matrix.y
+     * Returns x coordinate for given point after transformation described by the matrix. See also @Matrix.y
      - x (number)
      - y (number)
      = (number) x
@@ -500,7 +500,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.y
      [ method ]
      **
-     * Returns  y coordinate for given point after transformation described by the matrix. See also @Matrix.x
+     * Returns y coordinate for given point after transformation described by the matrix. See also @Matrix.x
      - x (number)
      - y (number)
      = (number) y
@@ -582,7 +582,7 @@ function Matrix(a, b, c, d, e, f) {
      * Matrix.toTransformString
      [ method ]
      **
-     * Returns  transform string that represents given matrix
+     * Returns transform string that represents given matrix
      = (string) transform string
     \*/
     matrixproto.toTransformString = function (shorter) {
@@ -623,12 +623,12 @@ Snap.Matrix = Matrix;
  * Snap.getRGB
  [ method ]
  **
- * Parses colour string as RGB object
- - colour (string) colour string in one of the following formats:
+ * Parses color string as RGB object
+ - color (string) color string in one of the following formats:
  # <ul>
  #     <li>Colour name (<code>red</code>, <code>green</code>, <code>cornflowerblue</code>, etc)</li>
- #     <li>#••• — shortened HTML colour: (<code>#000</code>, <code>#fc0</code>, etc.)</li>
- #     <li>#•••••• — full length HTML colour: (<code>#000000</code>, <code>#bd2300</code>)</li>
+ #     <li>#••• — shortened HTML color: (<code>#000</code>, <code>#fc0</code>, etc.)</li>
+ #     <li>#•••••• — full length HTML color: (<code>#000000</code>, <code>#bd2300</code>)</li>
  #     <li>rgb(•••, •••, •••) — red, green and blue channels values: (<code>rgb(200,&nbsp;100,&nbsp;0)</code>)</li>
  #     <li>rgba(•••, •••, •••, •••) — also with opacity</li>
  #     <li>rgb(•••%, •••%, •••%) — same as above, but in %: (<code>rgb(100%,&nbsp;175%,&nbsp;0%)</code>)</li>
@@ -735,11 +735,11 @@ Snap.getRGB = cacher(function (colour) {
  * Snap.hsb
  [ method ]
  **
- * Converts HSB values to a hex representation of the colour
+ * Converts HSB values to a hex representation of the color
  - h (number) hue
  - s (number) saturation
  - b (number) value or brightness
- = (string) hex representation of the colour
+ = (string) hex representation of the color
 \*/
 Snap.hsb = cacher(function (h, s, b) {
     return Snap.hsb2rgb(h, s, b).hex;
@@ -748,11 +748,11 @@ Snap.hsb = cacher(function (h, s, b) {
  * Snap.hsl
  [ method ]
  **
- * Converts HSL values to a hex representation of the colour
+ * Converts HSL values to a hex representation of the color
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
- = (string) hex representation of the colour
+ = (string) hex representation of the color
 \*/
 Snap.hsl = cacher(function (h, s, l) {
     return Snap.hsl2rgb(h, s, l).hex;
@@ -761,11 +761,11 @@ Snap.hsl = cacher(function (h, s, l) {
  * Snap.rgb
  [ method ]
  **
- * Converts RGB values to a hex representation of the colour
+ * Converts RGB values to a hex representation of the color
  - r (number) red
  - g (number) green
  - b (number) blue
- = (string) hex representation of the colour
+ = (string) hex representation of the color
 \*/
 Snap.rgb = cacher(function (r, g, b, o) {
     if (is(o, "finite")) {
@@ -1774,7 +1774,7 @@ function arrayFirstValue(arr) {
      * Element.asPX
      [ method ]
      **
-     * Returns  given attribute of the element as a `px` value (not %, em, etc.)
+     * Returns given attribute of the element as a `px` value (not %, em, etc.)
      **
      - attr (string) attribute name
      - value (string) #optional attribute value

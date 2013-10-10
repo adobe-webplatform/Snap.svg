@@ -1125,7 +1125,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Element.getSubpath
      [ method ]
      **
-     * Returns  subpath of a given element from given start and end lengths (only works for `path` elements)
+     * Returns subpath of a given element from given start and end lengths (only works for `path` elements)
      **
      - from (number) length, in pixels, from the start of the path to the start of the segment VERIFY
      - to (number) length, in pixels, from the start of the path to the end of the segment VERIFY
