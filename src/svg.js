@@ -2340,7 +2340,7 @@ Fragment.prototype.selectAll = Element.prototype.selectAll;
  * Snap.fragment
  [ method ]
  **
- * Creates DOM fragment from given list of elements or strings
+ * Creates a DOM fragment from a given list of elements or strings
  **
  - varargs (…) SVG string
  = (Fragment) the @Fragment
