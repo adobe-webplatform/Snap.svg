@@ -277,7 +277,7 @@ function x_y_w_h() {
  **
  * Transform angle to radians
  - deg (number) angle in degrees
- = (number) angle in radians.
+ = (number) angle in radians
 \*/
 Snap.rad = rad;
 /*\
@@ -286,7 +286,7 @@ Snap.rad = rad;
  **
  * Transform angle to degrees
  - rad (number) angle in radians
- = (number) angle in degrees.
+ = (number) angle in degrees
 \*/
 Snap.deg = deg;
 // SIERRA for which point is the angle calculated?
@@ -302,7 +302,7 @@ Snap.deg = deg;
  - y2 (number) y coord of second point
  - x3 (number) #optional x coord of third point
  - y3 (number) #optional y coord of third point
- = (number) angle in degrees.
+ = (number) angle in degrees
 \*/
 Snap.angle = angle;
 /*\
@@ -323,7 +323,7 @@ Snap.is = is;
  - values (array|number) given array of values or step of the grid
  - value (number) value to adjust
  - tolerance (number) #optional maximum distance to the target value that would trigger the snap. Default is `10`. VERIFY
- = (number) adjusted value.
+ = (number) adjusted value
 \*/
 Snap.snapTo = function (values, value, tolerance) {
     tolerance = is(tolerance, "finite") ? tolerance : 10;
@@ -739,7 +739,7 @@ Snap.getRGB = cacher(function (colour) {
  - h (number) hue
  - s (number) saturation
  - b (number) value or brightness
- = (string) hex representation of the colour.
+ = (string) hex representation of the colour
 \*/
 Snap.hsb = cacher(function (h, s, b) {
     return Snap.hsb2rgb(h, s, b).hex;
@@ -752,7 +752,7 @@ Snap.hsb = cacher(function (h, s, b) {
  - h (number) hue
  - s (number) saturation
  - l (number) luminosity
- = (string) hex representation of the colour.
+ = (string) hex representation of the colour
 \*/
 Snap.hsl = cacher(function (h, s, l) {
     return Snap.hsl2rgb(h, s, l).hex;
@@ -765,7 +765,7 @@ Snap.hsl = cacher(function (h, s, l) {
  - r (number) red
  - g (number) green
  - b (number) blue
- = (string) hex representation of the colour.
+ = (string) hex representation of the colour
 \*/
 Snap.rgb = cacher(function (r, g, b, o) {
     if (is(o, "finite")) {
@@ -1046,7 +1046,7 @@ Snap.rgb2hsl = function (r, g, b) {
  **
  * Parses given path string into an array of arrays of path segments
  - pathString (string|array) path string or array of segments (in the last case it is returned straight away)
- = (array) array of segments.
+ = (array) array of segments
 \*/
 Snap.parsePathString = function (pathString) {
     if (!pathString) {
@@ -1100,7 +1100,7 @@ Snap.parsePathString = function (pathString) {
  **
  * Parses given transform string into an array of transformations
  - TString (string|array) transform string or array of transformations (in the last case it is returned straight away)
- = (array) array of transformations.
+ = (array) array of transformations
 \*/
 var parseTransformString = Snap.parseTransformString = function (TString) {
     if (!TString) {
@@ -2246,16 +2246,16 @@ function arrayFirstValue(arr) {
      * Element.toString
      [ method ]
      **
-     * Returns SVG code of the element, equivalent to HTML's `outerHTML`
-     = (string) SVG code of the element.
+     * Returns SVG code for the element, equivalent to HTML's `outerHTML`
+     = (string) SVG code for the element
     \*/
     elproto.toString = toString(1);
     /*\
      * Element.innerSVG
      [ method ]
      **
-     * Returns SVG code of the element's contents, equivalent to HTML's `innerHTML`
-     = (string) SVG code of the element.
+     * Returns SVG code for the element's contents, equivalent to HTML's `innerHTML`
+     = (string) SVG code for the element
     \*/
     elproto.innerSVG = toString();
     function toString(type) {
@@ -2936,7 +2936,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          [ method ]
          **
          * Returns SVG code for the @Paper
-         = (string) SVG code for the @Paper.
+         = (string) SVG code for the @Paper
         \*/
         proto.toString = function () {
             var f = glob.doc.createDocumentFragment(),

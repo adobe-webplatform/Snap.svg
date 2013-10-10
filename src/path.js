@@ -1050,7 +1050,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      - path (string) SVG path string.
      **
-     = (number) length.
+     = (number) length
     \*/
     Snap.path.getTotalLength = getTotalLength;
     /*\
@@ -1094,7 +1094,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      [ method ]
      **
      * Returns the length of the path in pixels (only works for `path` elements)
-     = (number) length.
+     = (number) length
     \*/
     elproto.getTotalLength = function () {
         if (this.node.getTotalLength) {
@@ -1320,7 +1320,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Converts path to a new path where all segments are cubic beziér curves
      - pathString (string|array) path string or array of segments
-     = (array) array of segments.
+     = (array) array of segments
     \*/
     Snap.path.toCubic = path2curve;
     /*\
