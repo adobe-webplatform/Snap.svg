@@ -11,7 +11,7 @@ Snap.svg uses [Grunt](http://gruntjs.com/) to build
 
 * Open the terminal from the Snap.svg directory
 
-        cd savage
+        cd Snap.svg
 
 * Install its command line interface (CLI) globally
 
