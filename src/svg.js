@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.0.1";
+Snap.version = "0.1.0";
 // SIERRA: this method appears to be missing from HTML output
 /*\
  * Snap
@@ -322,7 +322,7 @@ Snap.is = is;
  * Snaps given value to given grid
  - values (array|number) given array of values or step of the grid
  - value (number) value to adjust
- - tolerance (number) #optional maximum distance to the target value that would trigger the snap. Default is `10`. VERIFY
+ - tolerance (number) #optional maximum distance to the target value that would trigger the snap. Default is `10`.
  = (number) adjusted value
 \*/
 Snap.snapTo = function (values, value, tolerance) {
@@ -442,8 +442,8 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Translate the matrix
-     - x (number) horizontal offset distance VERIFY
-     - y (number) vertical offset distance VERIFY
+     - x (number) horizontal offset distance
+     - y (number) vertical offset distance
     \*/
     matrixproto.translate = function (x, y) {
         return this.add(1, 0, 0, 1, x, y);
@@ -454,9 +454,9 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Scales the matrix
-     - x (number) amount to be scaled, with `1` resulting in no change VERIFY
+     - x (number) amount to be scaled, with `1` resulting in no change
      - y (number) #optional amount to scale along the vertical axis. (Otherwise `x` applies to both axes.)
-     - cx (number) #optional horizontal origin point from which to scale VERIFY
+     - cx (number) #optional horizontal origin point from which to scale
      - cy (number) #optional vertical origin point from which to scale
     \*/
     matrixproto.scale = function (x, y, cx, cy) {
@@ -471,9 +471,9 @@ function Matrix(a, b, c, d, e, f) {
      [ method ]
      **
      * Rotates the matrix
-     - a (number) angle of rotation, in radians VERIFY
-     - x (number) horizontal origin point from which to rotate VERIFY
-     - y (number) vertical origin point from which to rotate VERIFY
+     - a (number) angle of rotation, in degrees
+     - x (number) horizontal origin point from which to rotate
+     - y (number) vertical origin point from which to rotate
     \*/
     matrixproto.rotate = function (a, x, y) {
         a = rad(a);
@@ -2032,7 +2032,7 @@ function arrayFirstValue(arr) {
      - attr (object) attributes of final destination
      - duration (number) duration of the animation, in milliseconds
      - easing (function) #optional one of easing functions of @mina or custom one
-     - callback (function) #optional callback function that fires when animation ends VERIFY
+     - callback (function) #optional callback function that fires when animation ends
      = (object) animation object
     \*/
     Snap.animation = function (attr, ms, easing, callback) {
@@ -2042,7 +2042,7 @@ function arrayFirstValue(arr) {
      * Element.inAnim
      [ method ]
      **
-     * Returns a set of animations that may be able to manipulate the current element VERIFY
+     * Returns a set of animations that may be able to manipulate the current element
      **
      = (object) in format:
      o {
@@ -2086,7 +2086,7 @@ function arrayFirstValue(arr) {
      - setter (function) caring function that accepts one number argument
      - duration (number) duration, in milliseconds
      - easing (function) #optional easing function from @mina or custom
-     - callback (function) #optional callback function to execute when animation ends VERIFY
+     - callback (function) #optional callback function to execute when animation ends
      = (object) animation object in @mina format
      o {
      o     id (string) animation id, consider it read-only,
@@ -2134,7 +2134,7 @@ function arrayFirstValue(arr) {
      - attrs (object) key-value pairs of destination attributes
      - duration (number) duration of the animation in milliseconds
      - easing (function) #optional easing function from @mina or custom
-     - callback (function) #optional callback function that executes when the animation ends VERIFY
+     - callback (function) #optional callback function that executes when the animation ends
      = (Element) the current element
     \*/
     elproto.animate = function (attrs, ms, easing, callback) {

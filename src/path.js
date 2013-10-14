@@ -1066,7 +1066,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Returns the coordinates of the point located at the given length along the given path
      **
      - path (string) SVG path string
-     - length (number) length, in pixels, from the start of the path, excluding non-rendering jumps VERIFY
+     - length (number) length, in pixels, from the start of the path, excluding non-rendering jumps
      **
      = (object) representation of the point:
      o {
@@ -1083,8 +1083,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      * Returns the subpath of a given path between given start and end lengths
      **
      - path (string) SVG path string
-     - from (number) length, in pixels, from the start of the path to the start of the segment VERIFY
-     - to (number) length, in pixels, from the start of the path to the end of the segment VERIFY
+     - from (number) length, in pixels, from the start of the path to the start of the segment
+     - to (number) length, in pixels, from the start of the path to the end of the segment
      **
      = (string) path string definition for the segment
     \*/
@@ -1114,7 +1114,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns coordinates of the point located at the given length on the given path (only works for `path` elements)
      **
-     - length (number) length, in pixels, from the start of the path, excluding non-rendering jumps VERIFY
+     - length (number) length, in pixels, from the start of the path, excluding non-rendering jumps
      **
      = (object) representation of the point:
      o {
@@ -1133,8 +1133,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns subpath of a given element from given start and end lengths (only works for `path` elements)
      **
-     - from (number) length, in pixels, from the start of the path to the start of the segment VERIFY
-     - to (number) length, in pixels, from the start of the path to the end of the segment VERIFY
+     - from (number) length, in pixels, from the start of the path to the start of the segment
+     - to (number) length, in pixels, from the start of the path to the end of the segment
      **
      = (string) path string definition for the segment
     \*/
@@ -1199,16 +1199,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - p2y (number) y of the second point of the curve
      * or
      - bez (array) array of six points for beziér curve
-     = (object) point information in format:
+     = (object) bounding box
      o {
-     o     min: {
-     o         x: (number) x coordinate of the left point,
-     o         y: (number) y coordinate of the top point
-     o     },
-     o     max: {
-     o         x: (number) x coordinate of the right point,
-     o         y: (number) y coordinate of the bottom point
-     o     }
+     o     x: (number) x coordinate of the left top point of the box,
+     o     y: (number) y coordinate of the left top point of the box,
+     o     x2: (number) x coordinate of the right bottom point of the box,
+     o     y2: (number) y coordinate of the right bottom point of the box,
+     o     width: (number) width of the box,
+     o     height: (number) height of the box
      o }
     \*/
     Snap.path.bezierBBox = bezierBBox;
@@ -1262,14 +1260,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     \*/
     Snap.path.intersection = pathIntersection;
     Snap.path.intersectionNumber = pathIntersectionNumber;
-    // SIERRA Does the fill mode affect how isPointInside behaves?
     /*\
      * Snap.path.isPointInside
      [ method ]
      **
      * Utility method
      **
-     * Returns `true` if given point is inside a given closed path
+     * Returns `true` if given point is inside a given closed path.
+     *
+     * Note: fill mode doesn’t affect the result of this method.
      - path (string) path string
      - x (number) x of the point
      - y (number) y of the point
