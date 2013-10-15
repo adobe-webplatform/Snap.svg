@@ -84,9 +84,9 @@
                         cx: f.select("#pie-chart circle").attr("cx"),
                         cy: f.select("#pie-chart circle").attr("cy"),
                         r: f.select("#pie-chart circle").attr("r"),
-                        coffee: f.select("#legend text tspan"),
-                        title: f.selectAll("#legend text")[1],
-                        water: f.select("#legend text tspan:nth-child(2)"),
+                        coffee: f.select("#legend text"),
+                        water: f.selectAll("#legend text")[1],
+                        title: f.selectAll("#legend text")[2],
                         waterBox: f.select("#legend rect:nth-child(2)")
                     },
                     angle = 0,
@@ -142,7 +142,7 @@
                     }, 1000, mina.elastic, function () {
                         angle = (a + 1080) % 360;
                         closeCup(function () {
-                            types[a]();
+                            types[angle]();
                             pour();
                             pieShow();
                         });

@@ -3268,7 +3268,6 @@ function arrayFirstValue(arr) {
                 for (var key in keys) if (keys[has](key)) {
                     attr[key] = keys[key](val);
                 }
-                console.log(attr["stroke-dashoffset"]);
                 el.attr(attr);
             }, easing);
         el.anims[anim.id] = anim;
