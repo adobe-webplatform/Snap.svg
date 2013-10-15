@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="copyright" content="Copyright © 2013 Adobe Systems Incorporated. All rights reserved.
+ 
+ Licensed under the Apache License, Version 2.0 (the “License”);
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an “AS IS” BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.">
+        <title>Snap</title>
+        <script src="../../dist/snap.svg-min.js"></script>
+        <script>
+        window.onload = function () {
+
+            var g = Snap("100%", "100%");
+            
+            Snap.load("crocodile.svg", function (f) {
+                var gr = f.select("g"),
+                    head = f.select("#upper-head"),
+                    jaw = f.select("#upper-jaw"),
+                    symbol = f.select("#symbol"),
+                    top = g.g();
+
+                var pivots = [
+                    [44,147],
+                    [92,126]
+                ];
+
+
+                function close() {
+                    
+                    head.animate({ 
+                        transform: "r" + [8, pivots[0][0], pivots[0][1]]
+                    }, 500, mina.backin);
+                    
+                    jaw.animate({
+                        transform: "r" + [37, pivots[1][0], pivots[1][1]]
+                    }, 500, mina.backin);
+
+                    setTimeout(function() {
+                        symbol.animate({
+                            transform: "t" + (-70) + "," + (40) + "r" + (40)
+                        }, 100);
+                    }, 400);
+
+                    setTimeout(open, 1000);
+                }
+
+                function open() {
+
+                    head.animate({ 
+                        transform: "r" + [0, pivots[0][0], pivots[0][1]]
+                    }, 700, mina.elastic);
+                    
+                    jaw.animate({
+                        transform: "r" + [0, pivots[1][0], pivots[1][1]]
+                    }, 700, mina.elastic);
+
+                    symbol.animate({
+                        transform: "t" + (0) + "," + (0) + "r" + (0)
+                    }, 500, mina.elastic);
+
+                    setTimeout(close, 1000);
+                }
+                
+
+                top.add(gr.attr());
+
+                close();
+            });
+        };
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
