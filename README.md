@@ -1,7 +1,7 @@
 [Snap.svg](http://snapsvg.io)
 ======
 
-A JavaScript library for modern SVG graphics.
+A JavaScript SVG library for the modern web
 
 API Reference is in `dist/reference.html`
 
