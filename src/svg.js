@@ -1357,7 +1357,7 @@ function unit2px(el, name, value) {
             set("dy", getH);
         break;
         default:
-            out = null;
+            set(name, getW);
     }
     return out;
 }
@@ -2186,13 +2186,13 @@ function arrayFirstValue(arr) {
         return el;
     };
     var eldata = {};
-    // SIERRA Element.data()/Element.removeData(): Do these correspond to _data- attributes, and if so, can you ordinarily use the the dataset API within SVG?
     /*\
      * Element.data
      [ method ]
      **
-     * Adds or retrieves given value associated with given key
-     ** 
+     * Adds or retrieves given value associated with given key. (Don’t confuse
+     * with `data-` attributes)
+     *
      * See also @Element.removeData
      - key (string) key to store data
      - value (any) #optional value to store
@@ -3732,13 +3732,10 @@ eve.on("snap.util.getattr.path", function () {
 eve.on("snap.util.getattr", function () {
     var att = eve.nt();
     att = att.substring(att.lastIndexOf(".") + 1);
-    var style = att.replace(/-(\w)/gi, function (all, letter) {
-        return letter.toUpperCase();
-    });
     if (availableAttributes[has](this.type) && availableAttributes[this.type][has](att)) {
         return this.node.getAttribute(att);
     } else {
-        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(style);
+        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(att);
     }
 });
 Snap.plugin = function (f) {

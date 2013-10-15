@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-10-14
+// build: 2013-10-15
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1110,7 +1110,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.0.1";
+Snap.version = "0.1.0";
 // SIERRA: this method appears to be missing from HTML output
 /*\
  * Snap
@@ -2454,7 +2454,7 @@ function unit2px(el, name, value) {
             set("dy", getH);
         break;
         default:
-            out = null;
+            set(name, getW);
     }
     return out;
 }
@@ -3268,6 +3268,7 @@ function arrayFirstValue(arr) {
                 for (var key in keys) if (keys[has](key)) {
                     attr[key] = keys[key](val);
                 }
+                console.log(attr["stroke-dashoffset"]);
                 el.attr(attr);
             }, easing);
         el.anims[anim.id] = anim;
@@ -3283,13 +3284,13 @@ function arrayFirstValue(arr) {
         return el;
     };
     var eldata = {};
-    // SIERRA Element.data()/Element.removeData(): Do these correspond to _data- attributes, and if so, can you ordinarily use the the dataset API within SVG?
     /*\
      * Element.data
      [ method ]
      **
-     * Adds or retrieves given value associated with given key
-     ** 
+     * Adds or retrieves given value associated with given key. (Don’t confuse
+     * with `data-` attributes)
+     *
      * See also @Element.removeData
      - key (string) key to store data
      - value (any) #optional value to store
@@ -4829,13 +4830,10 @@ eve.on("snap.util.getattr.path", function () {
 eve.on("snap.util.getattr", function () {
     var att = eve.nt();
     att = att.substring(att.lastIndexOf(".") + 1);
-    var style = att.replace(/-(\w)/gi, function (all, letter) {
-        return letter.toUpperCase();
-    });
     if (availableAttributes[has](this.type) && availableAttributes[this.type][has](att)) {
         return this.node.getAttribute(att);
     } else {
-        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(style);
+        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(att);
     }
 });
 Snap.plugin = function (f) {
@@ -6045,16 +6043,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - p2y (number) y of the second point of the curve
      * or
      - bez (array) array of six points for beziér curve
-     = (object) point information in format:
+     = (object) bounding box
      o {
-     o     min: {
-     o         x: (number) x coordinate of the left point,
-     o         y: (number) y coordinate of the top point
-     o     },
-     o     max: {
-     o         x: (number) x coordinate of the right point,
-     o         y: (number) y coordinate of the bottom point
-     o     }
+     o     x: (number) x coordinate of the left top point of the box,
+     o     y: (number) y coordinate of the left top point of the box,
+     o     x2: (number) x coordinate of the right bottom point of the box,
+     o     y2: (number) y coordinate of the right bottom point of the box,
+     o     width: (number) width of the box,
+     o     height: (number) height of the box
      o }
     \*/
     Snap.path.bezierBBox = bezierBBox;
@@ -6108,14 +6104,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     \*/
     Snap.path.intersection = pathIntersection;
     Snap.path.intersectionNumber = pathIntersectionNumber;
-    // SIERRA Does the fill mode affect how isPointInside behaves?
     /*\
      * Snap.path.isPointInside
      [ method ]
      **
      * Utility method
      **
-     * Returns `true` if given point is inside a given closed path
+     * Returns `true` if given point is inside a given closed path.
+     *
+     * Note: fill mode doesn’t affect the result of this method.
      - path (string) path string
      - x (number) x of the point
      - y (number) y of the point
