@@ -31,7 +31,7 @@ _*Snap.svg uses Grunt 0.4.0. You might want to [read](http://gruntjs.com/getting
 
 ## Contributing
 
-* [Fill out the CLA](http://snapsvg.io/dev/snapsvg-cla.html).
+* [Fill out the CLA](http://snapsvg.io/page-contributions.html).
 * [Fork](https://help.github.com/articles/fork-a-repo) the repo.
 * Create a branch:
 
