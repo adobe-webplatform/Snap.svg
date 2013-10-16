@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="copyright" content="Copyright © 2013 Adobe Systems Incorporated. All rights reserved.
+ 
+ Licensed under the Apache License, Version 2.0 (the “License”);
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an “AS IS” BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.">
+        <title>Snap</title>
+        <script src="../../dist/snap.svg-min.js"></script>
+
+        <svg version="1.1" id="snap-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="250px" height="250px" viewBox="0 0 250 250" enable-background="new 0 0 250 250" xml:space="preserve">
+            <linearGradient id="bottom_1_" gradientUnits="userSpaceOnUse" x1="175" y1="111.8719" x2="175" y2="-135.0812" gradientTransform="matrix(1 0 0 -1 -50 111)">
+            <stop  offset="0" style="stop-color:#002E3B"/>
+            <stop  offset="1" style="stop-color:#002639"/>
+            </linearGradient>
+            <polygon id="bottom" fill="url(#bottom_1_)" points="124.913,210.751 89.063,193.264 89.103,193.245 89.093,193.24 51,211.82 
+            124.941,247.884 199,211.9 160.771,192.962 "/>
+            <radialGradient id="right_2_" cx="63.3041" cy="235.6129" r="219.7985" gradientUnits="userSpaceOnUse">
+            <stop  offset="0" style="stop-color:#00BC85"/>
+            <stop  offset="1" style="stop-color:#149D91"/>
+            </radialGradient>
+            <polygon id="right" fill="url(#right_2_)" points="51.091,211.945 51.091,174.781 87.749,156.903 125.455,175.5 "/>
+            <radialGradient id="right-2_1_" cx="186.8275" cy="123.7814" r="265.5574" gradientTransform="matrix(1 0 0 -1 -50 111)" gradientUnits="userSpaceOnUse">
+            <stop  offset="0" style="stop-color:#00BC85"/>
+            <stop  offset="1" style="stop-color:#149D91"/>
+            </radialGradient>
+            <polygon id="right-2" fill="url(#right-2_1_)" points="165.596,58.995 165.596,117.758 165.596,117.758 165.596,117.758 
+            124.611,137.737 162.301,156.506 198.996,138.632 198.996,38.123 "/>
+            <radialGradient id="left_2_" cx="118.0562" cy="143.2378" r="507.5908" gradientTransform="matrix(1 0 0 -1 -50 111)" gradientUnits="userSpaceOnUse">
+            <stop  offset="0" style="stop-color:#004473"/>
+            <stop  offset="1" style="stop-color:#00345F"/>
+            </radialGradient>
+            <polygon id="left" fill="url(#left_2_)" points="199,211.912 199,211.912 199,174.746 84.498,117.723 84.498,58.96 
+            51.096,38.088 51.096,138.597 "/>
+            <linearGradient id="top_1_" gradientUnits="userSpaceOnUse" x1="174.922" y1="110.6136" x2="174.922" y2="-135.0903" gradientTransform="matrix(1 0 0 -1 -50 111)">
+            <stop  offset="0" style="stop-color:#002E3B"/>
+            <stop  offset="1" style="stop-color:#002639"/>
+            </linearGradient>
+            <polygon id="top" fill="url(#top_1_)" points="84.396,58.904 84.396,58.892 124.939,39.118 165.485,58.892 198.844,38.046 
+            124.912,1.985 51,38.035 51,38.067 84.368,58.918 "/>
+        </svg>
+
+
+        <script>
+
+        var logo = Snap.select("#snap-logo").attr({display:'none'});
+        window.onload = function () {
+
+            var elements = [
+                    ['top', 0, 20], 
+                    ['left', 20, 0], 
+                    ['bottom', 0, -20],
+                    ['right', 20, 0],
+                    ['right-2', -20, 0]
+                ],
+                components = [],
+                i = 0;
+
+            for (i = 0; i < elements.length; i++) {
+                var el = elements[i]
+                    elid = el[0];
+                    element = logo.select("#" + elid);
+                element.attr({opacity:0, transform: "t" + (el[1]) + "," + (el[2])});
+                components.push(element);
+            }
+
+            i = 0;
+
+            function animateEach() {
+                if (!components[i]) return;
+                components[i].animate({ 
+                    transform: "t" + (0) + "," + (0),
+                    opacity: 1
+                }, 200, mina.easeout);
+                setTimeout(animateEach, 200);
+                i++;
+            };
+
+            setTimeout(function() {
+                logo.attr({display:'block'});
+                animateEach();
+            }, 500);
+        };
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
