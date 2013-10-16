@@ -2071,10 +2071,6 @@ function arrayFirstValue(arr) {
         }
         return res;
     };
-    // SIERRA unfamiliar with the phrase _caring function,_ so the text for the _setter_ param isn't clear.
-    // SIERRA With the animation's start/end states defined, how is its _speed_ distinguished from its _duration_?
-    // SIERRA Text explaining the mina format should move to the section on the mina object interface. (Prior comment applies: object interfaces need to also be documented.)
-    // SIERRA unclear how to express a custom _easing_ (+)
     /*\
      * Snap.animate
      [ method ]
@@ -2096,6 +2092,14 @@ function arrayFirstValue(arr) {
      o     status (function) gets or sets the status of the animation,
      o     stop (function) stops the animation
      o }
+     | var rect = Snap().rect(0, 0, 10, 10);
+     | Snap.animate(0, 10, function (val) {
+     |     rect.attr({
+     |         x: val
+     |     });
+     | }, 1000);
+     | // in given context is equivalent to
+     | rect.animate({x: 10}, 1000);
     \*/
     Snap.animate = function (from, to, setter, ms, easing, callback) {
         if (typeof easing == "function" && !easing.length) {
@@ -2107,7 +2111,6 @@ function arrayFirstValue(arr) {
         callback && eve.once("mina.finish." + anim.id, callback);
         return anim;
     };
-    // SIERRA Element.stop(). Does it _stop_ or _pause_ the animations? If you run Element.animate() to restart the animation, does it commence from the beginning?
     /*\
      * Element.stop
      [ method ]

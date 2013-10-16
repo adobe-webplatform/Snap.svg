@@ -1,7 +1,7 @@
-Snap.svg
+[Snap.svg](http://snapsvg.io)
 ======
 
-JavaScript library for SVG.
+A JavaScript SVG library for the modern web
 
 API Reference is in `dist/reference.html`
 
@@ -17,10 +17,11 @@ Snap.svg uses [Grunt](http://gruntjs.com/) to build
 
         npm install -g grunt-cli
 
+_*You might need to use `sudo npm`, depending on your configuration._
+
 * Install dependencies with npm
 
         npm install
-
 
 _*Snap.svg uses Grunt 0.4.0. You might want to [read](http://gruntjs.com/getting-started) more on their website if you haven’t upgraded since a lot has changed._
 
