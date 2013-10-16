@@ -85,9 +85,9 @@ var MainView = Backbone.View.extend({
 			rz = 0;
 		}
 		
-		this.cube.css({'webkitTransform': 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(' + rz + 'deg)'});
+		this.cube.style['webkitTransform'] = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(' + rz + 'deg)';
 		
-		setTimeout(this.trigger.bind(this), 1000);
+		//setTimeout(this.trigger.bind(this), 1000);
 	},
 	
 	trigger: function () {
