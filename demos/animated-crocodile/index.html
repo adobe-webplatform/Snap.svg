@@ -20,8 +20,8 @@
         <script>
         window.onload = function () {
 
-            var g = Snap("100%", "100%");
-            
+            var g = Snap();
+
             Snap.load("crocodile.svg", function (f) {
                 var gr = f.select("g"),
                     head = f.select("#upper-head"),
@@ -30,8 +30,8 @@
                     top = g.g();
 
                 var pivots = [
-                    [44,147],
-                    [92,126]
+                    [44, 147],
+                    [92, 126]
                 ];
 
 
@@ -72,7 +72,7 @@
                 }
                 
 
-                top.add(gr.attr());
+                top.add(gr);
 
                 close();
             });
