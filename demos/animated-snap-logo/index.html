@@ -19,12 +19,10 @@
         <script src="../../dist/snap.svg-min.js"></script>
         <script>
 
-        var logo = Snap.select("#snap-logo").attr({
-            display: "none"
-        });
         window.onload = function () {
 
-            var elements = [
+            var logo = Snap.select("#snap-logo"),
+                elements = [
                     ["top", [0, 20]], 
                     ["left", [20, 0]], 
                     ["bottom", [0, -20]],
@@ -66,7 +64,7 @@
     <body>
         <svg version="1.1" id="snap-logo" xmlns="http://www.w3.org/2000/svg" 
             xmlns:xlink="http://www.w3.org/1999/xlink"
-        	width="250px" height="250px">
+        	width="250px" height="250px" style="display:none">
             <defs>
                 <linearGradient id="bottom_1_" gradientUnits="userSpaceOnUse" 
                     x1="196" y1="485.6281" x2="196" y2="732.5812" 
