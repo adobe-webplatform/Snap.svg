@@ -80,8 +80,9 @@
                     click.attr({
                         display: "none"
                     });
-                    var flag;
-                    Snap.animate(0, pth.getTotalLength(), function (l) {
+                    var flag,
+                        len = pth.getTotalLength();
+                    Snap.animate(0, len, function (l) {
                         flag = !flag;
                         // Safari bug workaround: forcing redraw
                         g.attr({width: 100 + (flag ? .00001 : 0) + "%"});
@@ -91,7 +92,8 @@
                             d: pth.getSubpath(0, l)
                         });
                         pln.attr({
-                            transform: "t" + [dot.x, dot.y] + "r" + (dot.alpha - 90)
+                            transform: "t" + [dot.x, dot.y] +
+                                       "r" + (dot.alpha - 90)
                         });
                         gr.attr({
                             transform: getShift(dot)
