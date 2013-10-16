@@ -31,19 +31,19 @@ _*Snap.svg uses Grunt 0.4.0. You might want to [read](http://gruntjs.com/getting
 
 ## Contributing
 
-# [Fill out the CLA](http://snapsvg.io/dev/snapsvg-cla.html).
-# [Fork](https://help.github.com/articles/fork-a-repo) the repo.
-# Create a branch:
+* [Fill out the CLA](http://snapsvg.io/dev/snapsvg-cla.html).
+* [Fork](https://help.github.com/articles/fork-a-repo) the repo.
+* Create a branch:
 
         git checkout -b my_branch
 
-# Add your changes.
-# Commit your changes:
+* Add your changes.
+* Commit your changes:
 
         git commit -am "Added some awesome stuff"
 
-# Push your branch:
+* Push your branch:
 
         git push origin my_branch
 
-# Make a [pull request](https://help.github.com/articles/using-pull-requests).
+* Make a [pull request](https://help.github.com/articles/using-pull-requests).
