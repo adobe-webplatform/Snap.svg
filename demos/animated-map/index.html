@@ -83,10 +83,9 @@
                     var flag,
                         len = pth.getTotalLength();
                     Snap.animate(0, len, function (l) {
-                        flag = !flag;
                         // Safari bug workaround: forcing redraw
-                        g.attr({width: 100 + (flag ? .00001 : 0) + "%"});
-                        
+                        g.attr({width: 100 + (flag = !flag ? 1e-5 : 0) + "%"});
+                        //
                         var dot = pth.getPointAtLength(l);
                         flight.attr({
                             d: pth.getSubpath(0, l)
