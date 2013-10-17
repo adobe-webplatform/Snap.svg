@@ -31,6 +31,8 @@
 				margin: auto;
 				-webkit-transform-origin: top center;
 				-webkit-transform: scale(1.5);
+				-moz-transform-origin: top center;
+				-moz-transform: scale(1.5);
 			}
 			
 			.hit-area{
@@ -41,19 +43,26 @@
 				-webkit-transform-origin: 0px 4px;
 				-webkit-transition: -webkit-transform .4s;
 				-webkit-transform: scale(1, 0);
+				-moz-transform-origin: 0px 4px;
+				-moz-transition: -webkit-transform .4s;
+				-moz-transform: scale(1, 0);
 			}
 			
 			.face .eye.right{
 				-webkit-transform-origin: 8px -4px;
+				-moz-transform-origin: 8px -4px;
 			}
 			
 			.face .eye.left{
 				-webkit-transform-origin: -8px -4px;
+				-moz-transform-origin: -8px -4px;
 			}
 			
 			.face .eye{
 				-webkit-transition: -webkit-transform .2s;
 				-webkit-transform: scale(1, 0);
+				-moz-transition: -webkit-transform .2s;
+				-moz-transform: scale(1, 0);
 			}
 			
 			@-webkit-keyframes breeze{
@@ -65,6 +74,18 @@
 				}
 				100% {
 					-webkit-transform: rotate(0deg);
+				}
+			}
+			
+			@-moz-keyframes breeze{
+				0% {
+					-moz-transform: rotate(0deg);
+				}
+				50% {
+					-moz-transform: rotate(10deg);
+				}
+				100% {
+					-moz-transform: rotate(0deg);
 				}
 			}
 			
@@ -83,6 +104,21 @@
 				}
 			}
 			
+			@-moz-keyframes blink{
+				0% {
+					-moz-transform: scale(1, 0);
+				}
+				10% {
+					-moz-transform: scale(1, 1);
+				}
+				90% {
+					-moz-transform: scale(1, 1);
+				}
+				100% {
+					-moz-transform: scale(1, 0);
+				}
+			}
+			
 			@-webkit-keyframes talk{
 				0% {
 					-webkit-transform: scale(1, 0);
@@ -95,21 +131,38 @@
 				}
 			}
 			
+			@-moz-keyframes talk{
+				0% {
+					-moz-transform: scale(1, 0);
+				}
+				50% {
+					-moz-transform: scale(1, 1);
+				}
+				100% {
+					-moz-transform: scale(1, 0);
+				}
+			}
+			
 			.tree{
 				-webkit-transform-origin: 50% 100%;
 				-webkit-animation: breeze 2s ease-out infinite;
+				-moz-transform-origin: 50% bottom;
+				/*-moz-animation: breeze 2s ease-out infinite;*/
 			}
 			
 			.tree .face.animating .eye{
 				-webkit-transform: scale(1, 1);
+				-moz-transform: scale(1, 1);
 			}
 			
 			.face.animating .eye{
 				-webkit-animation: blink 5s infinite;
+				-moz-animation: blink 5s infinite;
 			}
 			
 			.face.animating .mouth{
 				-webkit-animation: talk 1s infinite;
+				-moz-animation: talk 1s infinite;
 			}
 			
 			#cube-hitarea{
@@ -128,13 +181,18 @@
 				width: 74px;
 				height: 74px;
 				z-index: 100;
+				backface-visibility: visible;
+				pointer-events: none;
 				-webkit-transform-style: preserve-3d;
 				-webkit-transform-origin: center center;
 				-webkit-backface-visibility: visible;
-				backface-visibility: visible;
-				pointer-events: none;
 				-webkit-transform: rotateX(-45deg) rotateY(50deg);
 				-webkit-transition: -webkit-transform 1s;
+				-moz-transform-style: preserve-3d;
+				-moz-transform-origin: center center;
+				-moz-backface-visibility: visible;
+				-moz-transform: rotateX(-45deg) rotateY(50deg);
+				-moz-transition: -moz-transform 1s;
 			}
 			
 			.side{
@@ -144,10 +202,9 @@
 				width: 74px;
 				height: 74px;
 				pointer-events: none;
-				
-				-webkit-transform-origin: center center;
-				-webkit-backface-visibility: visible;
 				backface-visibility: visible;
+				-moz-transform-origin: center center;
+				-moz-backface-visibility: visible;
 			}
 			
 			.side *{
@@ -156,26 +213,34 @@
 			
 			#cube .side:nth-child(1) {
 				-webkit-transform: translateY(37px) rotateX(90deg);
+				-moz-transform: translateY(37px) rotateX(90deg);
 			}
 			
 			#cube .side:nth-child(2) {
 				-webkit-transform: translateY(-37px) rotateX(-90deg);
+				-moz-transform: translateY(-37px) rotateX(-90deg);
+				
 			}
 		
 			#cube .side:nth-child(3) {				
 				-webkit-transform: translateX(37px) rotateY(-90deg);
+				-moz-transform: translateX(37px) rotateY(-90deg);
+				
 			}
 			
 			#cube .side:nth-child(4) {				
 				-webkit-transform: translateX(-37px) rotateY(-90deg);
+				-moz-transform: translateX(-37px) rotateY(-90deg);
 			}
 			
 			#cube .side:nth-child(5) {	
 				-webkit-transform: translateZ(37px) rotateZ(90deg);
+				-moz-transform: translateZ(37px) rotateZ(90deg);
 			}
 			
 			#cube .side:nth-child(6) {			
 				-webkit-transform: translateZ(-37px) rotateZ(0deg);
+				-moz-transform: translateZ(-37px) rotateZ(0deg);
 			}
 		
 		</style>
