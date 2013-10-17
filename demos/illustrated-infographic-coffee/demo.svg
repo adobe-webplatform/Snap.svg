@@ -10,7 +10,7 @@
 			L357,685.672v0.828v20v2h2h280h2v-2v-20v-0.828l-0.586-0.586L581,625.672V304.5V302.5L581,302.5z"/>
 	</g>
 	
-		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="121.5" y1="-63" x2="121.5" y2="540" gradientTransform="matrix(1 0 0 -1 -21 803.5)">
+		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="142.5" y1="660.5" x2="142.5" y2="57.5" gradientTransform="matrix(1 0 0 1 -42 206)">
 		<stop  offset="0" style="stop-color:#E1DAD5"/>
 		<stop  offset="0.3204" style="stop-color:#FFFFFF"/>
 	</linearGradient>
@@ -64,58 +64,68 @@
 	<polyline id="arrow" fill="#60544F" points="496.83,348.346 500,339.894 503.17,348.346 	"/>
 	<g>
 		<g>
-			<defs>
-				<circle id="SVGID_2_" cx="500" cy="379.5" r="61"/>
-			</defs>
-			<clipPath id="SVGID_3_">
-				<use xlink:href="#SVGID_2_"  overflow="visible"/>
-			</clipPath>
-			
-				<line clip-path="url(#SVGID_3_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="498.856" y1="382.55" x2="498.856" y2="442.025"/>
+			<g>
+				<defs>
+					<circle id="SVGID_2_" cx="500" cy="379.5" r="61"/>
+				</defs>
+				<clipPath id="SVGID_3_">
+					<use xlink:href="#SVGID_2_"  overflow="visible"/>
+				</clipPath>
+				
+					<line clip-path="url(#SVGID_3_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="498.856" y1="382.55" x2="498.856" y2="442.025"/>
+			</g>
 		</g>
 		<g>
-			<defs>
-				<circle id="SVGID_4_" cx="500" cy="379.5" r="61"/>
-			</defs>
-			<clipPath id="SVGID_5_">
-				<use xlink:href="#SVGID_4_"  overflow="visible"/>
-			</clipPath>
-			
-				<line clip-path="url(#SVGID_5_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="506.985" y1="376.834" x2="440.119" y2="398.56"/>
+			<g>
+				<defs>
+					<circle id="SVGID_4_" cx="500" cy="379.5" r="61"/>
+				</defs>
+				<clipPath id="SVGID_5_">
+					<use xlink:href="#SVGID_4_"  overflow="visible"/>
+				</clipPath>
+				
+					<line clip-path="url(#SVGID_5_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="506.985" y1="376.834" x2="440.119" y2="398.56"/>
+			</g>
 		</g>
 		<g>
-			<defs>
-				<circle id="SVGID_6_" cx="500" cy="379.5" r="61"/>
-			</defs>
-			<clipPath id="SVGID_7_">
-				<use xlink:href="#SVGID_6_"  overflow="visible"/>
-			</clipPath>
-			
-				<line clip-path="url(#SVGID_7_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="503.882" y1="385.088" x2="463.047" y2="328.883"/>
+			<g>
+				<defs>
+					<circle id="SVGID_6_" cx="500" cy="379.5" r="61"/>
+				</defs>
+				<clipPath id="SVGID_7_">
+					<use xlink:href="#SVGID_6_"  overflow="visible"/>
+				</clipPath>
+				
+					<line clip-path="url(#SVGID_7_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="503.882" y1="385.088" x2="463.047" y2="328.883"/>
+			</g>
 		</g>
 		<g>
-			<defs>
-				<circle id="SVGID_8_" cx="500" cy="379.5" r="61"/>
-			</defs>
-			<clipPath id="SVGID_9_">
-				<use xlink:href="#SVGID_8_"  overflow="visible"/>
-			</clipPath>
-			
-				<line clip-path="url(#SVGID_9_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="495.806" y1="378.044" x2="558.949" y2="398.56"/>
+			<g>
+				<defs>
+					<circle id="SVGID_8_" cx="500" cy="379.5" r="61"/>
+				</defs>
+				<clipPath id="SVGID_9_">
+					<use xlink:href="#SVGID_8_"  overflow="visible"/>
+				</clipPath>
+				
+					<line clip-path="url(#SVGID_9_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="495.806" y1="378.044" x2="558.949" y2="398.56"/>
+			</g>
 		</g>
 		<g>
-			<defs>
-				<circle id="SVGID_10_" cx="500" cy="379.5" r="61"/>
-			</defs>
-			<clipPath id="SVGID_11_">
-				<use xlink:href="#SVGID_10_"  overflow="visible"/>
-			</clipPath>
-			
-				<line clip-path="url(#SVGID_11_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="495.187" y1="385.088" x2="536.022" y2="328.883"/>
+			<g>
+				<defs>
+					<circle id="SVGID_10_" cx="500" cy="379.5" r="61"/>
+				</defs>
+				<clipPath id="SVGID_11_">
+					<use xlink:href="#SVGID_10_"  overflow="visible"/>
+				</clipPath>
+				
+					<line clip-path="url(#SVGID_11_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="495.187" y1="385.088" x2="536.022" y2="328.883"/>
+			</g>
 		</g>
 	</g>
 	
-		<radialGradient id="SVGID_12_" cx="521" cy="422.78" r="35.99" gradientTransform="matrix(1 0 0 -1 -21 803.5)" gradientUnits="userSpaceOnUse">
+		<radialGradient id="SVGID_12_" cx="542" cy="174.72" r="35.99" gradientTransform="matrix(1 0 0 1 -42 206)" gradientUnits="userSpaceOnUse">
 		<stop  offset="0.8139" style="stop-color:#60544F"/>
 		<stop  offset="1" style="stop-color:#60544F;stop-opacity:0"/>
 	</radialGradient>
@@ -128,79 +138,23 @@
 			S518.192,346.56,500,346.56L500,346.56z"/>
 	</g>
 	<circle id="dot" fill="none" stroke="#60544F" stroke-miterlimit="10" cx="500" cy="355.71" r="3.66"/>
-	<circle fill="none" cx="500" cy="379.5" r="43.298"/>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 478.4504 341.8154)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">A</text>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 483.5673 339.189)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">m</text>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 491.7365 336.9175)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">e</text>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 496.4777 336.3157)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">r</text>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 499.4411 336.1863)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">i</text>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 501.4992 336.1714)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">c</text>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 505.6591 336.4995)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">a</text>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 510.2248 337.3235)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">n</text>
-	
-		<text transform="matrix(0.9002 -0.4355 0.4355 0.9002 515.3032 338.8904)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">o</text>
-	
-		<text transform="matrix(-0.6466 0.7629 -0.7629 -0.6466 535.9556 404.1569)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6756">M</text>
-	
-		<text transform="matrix(-0.7585 0.6517 -0.6517 -0.7585 530.3695 410.5786)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">o</text>
-	
-		<text transform="matrix(-0.8241 0.5664 -0.5664 -0.8241 526.3553 414.0005)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">c</text>
-	
-		<text transform="matrix(-0.8808 0.4734 -0.4734 -0.8808 522.9499 416.3944)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6746">h</text>
-	
-		<text transform="matrix(-0.9297 0.3684 -0.3684 -0.9297 518.2133 418.9275)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">a</text>
-	
-		<text transform="matrix(-0.9696 -0.2448 0.2448 -0.9696 493.7036 422.6106)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">M</text>
-	
-		<text transform="matrix(-0.9214 -0.3886 0.3886 -0.9214 485.4735 420.4004)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">a</text>
-	
-		<text transform="matrix(-0.8767 -0.4811 0.4811 -0.8767 481.1738 418.5826)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">c</text>
-	
-		<text transform="matrix(-0.8191 -0.5736 0.5736 -0.8191 477.4998 416.6138)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">h</text>
-	
-		<text transform="matrix(-0.7682 -0.6402 0.6402 -0.7682 473.1217 413.4721)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">i</text>
-	
-		<text transform="matrix(-0.7165 -0.6976 0.6976 -0.7165 471.525 412.2145)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">a</text>
-	
-		<text transform="matrix(-0.6298 -0.7768 0.7768 -0.6298 468.1793 409.0093)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">tt</text>
-	
-		<text transform="matrix(-0.5286 -0.8489 0.8489 -0.5286 464.7281 404.7617)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.675">o</text>
-	<circle fill="none" cx="500" cy="379.5" r="43.298"/>
-	
-		<text transform="matrix(0.4804 0.8771 -0.8771 0.4804 536.8207 356.5429)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6755">L</text>
-	
-		<text transform="matrix(0.4804 0.8771 -0.8771 0.4804 539.0884 360.6679)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6755">a</text>
-	
-		<text transform="matrix(0.4804 0.8771 -0.8771 0.4804 540.8921 364.9197)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6755">t</text>
-	
-		<text transform="matrix(0.4804 0.8771 -0.8771 0.4804 542.2816 367.4567)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6755">t</text>
-	
-		<text transform="matrix(0.4804 0.8771 -0.8771 0.4804 542.3942 370.2121)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6755">é</text>
-	<circle id="knob" fill="none" cx="500" cy="379.5" r="43.298"/>
-	
-		<text transform="matrix(-0.0384 -0.9993 0.9993 -0.0384 456.858 383.803)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">E</text>
-	
-		<text transform="matrix(-0.0384 -0.9993 0.9993 -0.0384 456.6931 378.7348)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">s</text>
-	
-		<text transform="matrix(-0.0384 -0.9993 0.9993 -0.0384 456.8699 375.109)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">p</text>
-	
-		<text transform="matrix(-0.0384 -0.9993 0.9993 -0.0384 457.7745 369.9764)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">r</text>
-	
-		<text transform="matrix(-0.0384 -0.9993 0.9993 -0.0384 458.4847 367.119)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">e</text>
-	
-		<text transform="matrix(-0.0384 -0.9993 0.9993 -0.0384 460.1193 362.6446)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">s</text>
-	
-		<text transform="matrix(-0.0384 -0.9993 0.9993 -0.0384 461.6823 359.3342)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">s</text>
-	
-		<text transform="matrix(-0.0384 -0.9993 0.9993 -0.0384 463.4649 356.1693)" fill="#423733" font-family="'AdobeClean-Light'" font-size="10.6754">o</text>
+    	<circle id="knob" fill="none" cx="500" cy="379.5" r="43.298"/>
+        <path id="textline" fill="none" d="M474.432,344.553c7.165-5.251,16.004-8.351,25.568-8.351c9.294,0,17.905,2.928,24.958,7.913"/>
+        <text fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+            <textPath xlink:href="#textline" startOffset="50%">Americano</textPath>
+        </text>
+        <text transform="rotate(72, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+            <textPath xlink:href="#textline" startOffset="50%">Latté</textPath>
+        </text>
+        <text transform="rotate(144, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+            <textPath xlink:href="#textline" startOffset="50%">Mocha</textPath>
+        </text>
+        <text transform="rotate(216, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+            <textPath xlink:href="#textline" startOffset="50%">Mochiatto</textPath>
+        </text>
+        <text transform="rotate(288, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+            <textPath xlink:href="#textline" startOffset="50%">Espresso</textPath>
+        </text>
 	<circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="439" cy="318.5" r="2"/>
 	<circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="561" cy="318.5" r="2"/>
 	<circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="561" cy="440.5" r="2"/>
@@ -215,9 +169,9 @@
 	<g id="legend">
 		<rect x="785.5" y="524.5" fill="#60544F" stroke="#60544F" width="10" height="10"/>
 		<rect x="785.5" y="544.5" fill="#D6EDEE" stroke="#60544F" stroke-miterlimit="10" width="10" height="10"/>
-		<text transform="matrix(1 0 0 1 802.2 533.1641)" fill="#60544F" font-family="'AdobeClean-Light'" font-size="12">Espresso (10%)</text>
-		<text transform="matrix(1 0 0 1 802.2 553.1641)" fill="#60544F" font-family="'AdobeClean-Light'" font-size="12">Hot Water (90%)</text>
-		<text transform="matrix(1 0 0 1 695.0001 628.8398)" fill="#60544F" font-family="'AdobeClean-Regular'" font-size="20">Americano</text>
+		<text transform="matrix(1 0 0 1 802.2 533.1641)" fill="#60544F" style="font: 400 12px Source Sans Pro, source-sans-pro, sans-serif">Espresso (10%)</text>
+		<text transform="matrix(1 0 0 1 802.2 553.1641)" fill="#60544F" style="font: 400 12px Source Sans Pro, source-sans-pro, sans-serif">Hot Water (90%)</text>
+		<text transform="matrix(1 0 0 1 695.0001 628.8398)" fill="#60544F" style="font: 300 20px Source Sans Pro, source-sans-pro, sans-serif">Americano</text>
 	</g>
 	<path fill="none" stroke="#60544F" stroke-width="3" stroke-miterlimit="10" d="M917,634.5c0,6.627-5.373,12-12,12H691
 		c-6.627,0-12-5.373-12-12v-124c0-6.627,5.373-12,12-12h214c6.627,0,12,5.373,12,12V634.5z"/>
@@ -227,96 +181,98 @@
 	<line fill="none" stroke="#60544F" stroke-miterlimit="10" x1="559.571" y1="228.5" x2="559.571" y2="278.5"/>
 	<polygon fill="#D6EDEE" stroke="#60544F" stroke-miterlimit="10" points="499,277.5 584.886,277.5 559.143,243.5 499,243.5 	"/>
 	<g>
-		<defs>
-			<polygon id="SVGID_13_" points="498.886,277.259 413,277.259 438.743,243.259 498.886,243.259 			"/>
-		</defs>
-		<clipPath id="SVGID_14_">
-			<use xlink:href="#SVGID_13_"  overflow="visible"/>
-		</clipPath>
-		<g clip-path="url(#SVGID_14_)">
-			<ellipse fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="450.912" cy="258.311" rx="4" ry="6"/>
-			
-				<ellipse transform="matrix(0.4868 -0.8735 0.8735 0.4868 -15.6506 511.3535)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="427.363" cy="268.996" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.8822 -0.4709 0.4709 0.8822 -65.9239 261.9898)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="490.631" cy="262.746" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.8822 -0.4709 0.4709 0.8822 -74.6779 240.8655)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="444.037" cy="269.678" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.8822 -0.4709 0.4709 0.8822 -67.878 259.8302)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="485.338" cy="265.571" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.8822 -0.4709 0.4709 0.8822 -70.2979 245.0704)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="454.631" cy="263.027" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 11.1471 551.2357)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="464.931" cy="266.329" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 8.3345 557.2053)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="468.499" cy="271.657" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 11.3558 566.2411)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="477.539" cy="273.657" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 19.6293 548.0284)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="466.499" cy="257.657" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 10.5231 545.5045)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="459.843" cy="263.983" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 -8.8687 526.3604)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="434.193" cy="270.571" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 26.9462 551.4629)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="473.019" cy="253.277" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 -9.4687 535.5333)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="441.538" cy="275.657" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.4706 -0.8824 0.8824 0.4706 10.063 570.5688)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="480.499" cy="276.899" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -36.2078 82.5229)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="462.934" cy="252.322" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -36.0145 82.5295)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="463.07" cy="251.198" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(-0.8107 -0.5855 0.5855 -0.8107 670.6575 715.2228)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="450.963" cy="249.182" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -37.4117 78.5321)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="439.069" cy="257.344" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -37.5684 84.7052)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="474.975" cy="261.344" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -41.092 77.8184)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="433.069" cy="278.44" rx="6" ry="4"/>
-			<ellipse fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="439" cy="269.259" rx="4" ry="6"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -40.5305 76.071)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="423.164" cy="274.294" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -40.006 82.1857)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="459.07" cy="274.294" rx="6" ry="4"/>
-			<ellipse fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="437" cy="263.259" rx="4" ry="6"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -37.3383 81.2857)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="455.157" cy="258.293" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -38.9408 80.7055)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="450.974" cy="267.345" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -35.6652 86.6006)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="486.975" cy="251.198" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -40.3832 84.595)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="472.925" cy="277.697" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -37.1095 86.0548)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="483.071" cy="259.344" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -39.9054 87.6506)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="490.976" cy="276.44" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -36.3173 86.9996)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="488.975" cy="255.198" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -38.0313 85.7907)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="481.071" cy="264.585" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -38.3751 79.3009)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="443.069" cy="263.344" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -36.1213 85.2837)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="479.071" cy="253.198" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -39.0071 87.9331)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="493.072" cy="271.345" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -36.9308 79.8467)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="446.973" cy="255.199" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -39.5449 86.3158)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="483.375" cy="273.671" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -38.4901 84.4411)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="472.975" cy="266.585" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -39.6275 83.1826)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="465.07" cy="272.586" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -38.9016 85.1627)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="476.975" cy="269.345" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -40.3379 80.5055)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="449.109" cy="275.388" rx="6" ry="4"/>
-			
-				<ellipse transform="matrix(0.9854 -0.1703 0.1703 0.9854 -39.0923 81.4211)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="455.07" cy="268.585" rx="6" ry="4"/>
+		<g>
+			<defs>
+				<polygon id="SVGID_13_" points="498.886,277.259 413,277.259 438.743,243.259 498.886,243.259 				"/>
+			</defs>
+			<clipPath id="SVGID_14_">
+				<use xlink:href="#SVGID_13_"  overflow="visible"/>
+			</clipPath>
+			<g clip-path="url(#SVGID_14_)">
+				<ellipse fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="450.912" cy="258.311" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8735 -0.4868 0.4868 -0.8735 669.7087 712.0128)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="427.358" cy="268.999" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.4709 -0.8822 0.8822 -0.4709 489.8846 819.3075)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="490.638" cy="262.746" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.4709 -0.8822 0.8822 -0.4709 415.2328 788.3985)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="444.043" cy="269.678" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.4709 -0.8822 0.8822 -0.4709 479.6064 818.7933)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="485.345" cy="265.571" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.4709 -0.8822 0.8822 -0.4709 436.6833 787.9611)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="454.637" cy="263.027" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 749.885 720.0967)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="464.952" cy="266.315" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 754.0936 731.8059)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="468.52" cy="271.644" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 770.1696 739.825)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="477.561" cy="273.644" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 756.9172 704.5107)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="466.52" cy="257.643" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 741.4103 713.2869)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="459.864" cy="263.969" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 690.028 713.6212)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="434.214" cy="270.559" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 771.2519 699.3343)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="473.041" cy="253.263" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 701.4598 726.6494)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="441.559" cy="275.644" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.8824 -0.4706 0.4706 -0.8824 774.2177 747.3199)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="480.521" cy="276.885" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 293.138 751.4692)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="462.938" cy="252.323" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 294.4048 750.2875)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="463.074" cy="251.199" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.5855 0.8107 -0.8107 -0.5855 916.987 29.4758)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="450.958" cy="249.172" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 260.2598 733.8298)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="439.073" cy="257.345" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 298.3394 773.8927)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="474.979" cy="261.345" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 232.4501 752.6062)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="433.073" cy="278.442" rx="4" ry="6"/>
+				<ellipse fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="439" cy="269.259" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 224.9438 737.9938)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="423.168" cy="274.295" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 266.965 773.3755)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="459.074" cy="274.295" rx="4" ry="6"/>
+				<ellipse fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="437" cy="263.259" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 278.1527 750.7935)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="455.161" cy="258.294" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 264.3377 757.2653)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="450.978" cy="267.346" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 322.381 773.8436)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="486.979" cy="251.199" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 279.8261 791.0107)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="472.929" cy="277.698" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 309.7851 779.53)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="483.075" cy="259.345" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 302.1902 807.3271)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="490.98" cy="276.441" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 320.78 780.4955)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="488.979" cy="255.199" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 302.28 783.6927)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="481.075" cy="264.586" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 259.0287 744.7932)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="443.073" cy="263.345" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 311.1602 768.3956)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="479.075" cy="253.199" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 309.6638 803.4297)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="493.076" cy="271.346" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 271.6239 739.1082)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="446.977" cy="255.2" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 296.0231 796.5965)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="483.379" cy="273.672" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 290.8345 778.0555)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="472.979" cy="266.586" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 275.6698 777.2891)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="465.074" cy="272.587" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 292.7961 785.2273)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="476.979" cy="269.346" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 254.2292 764.8404)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="449.113" cy="275.39" rx="4" ry="6"/>
+				
+					<ellipse transform="matrix(-0.1703 -0.9854 0.9854 -0.1703 267.9093 762.7525)" fill="#7F6C65" stroke="#60544F" stroke-miterlimit="10" cx="455.074" cy="268.586" rx="4" ry="6"/>
+			</g>
 		</g>
 	</g>
 	<polygon fill="#CCC1BC" stroke="#60544F" stroke-miterlimit="10" points="503,277.5 501.297,235.5 495.846,235.5 495,277.5 	"/>
