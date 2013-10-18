@@ -33,10 +33,11 @@
                 if (animating[key]) return;
                 clearTimeout(cleartimers[key]);
                 animating[key] = true;
-                var element = elements[key];
+                var element = elements[key],
+                x = element[0].getBBox().x,
+                offset = x/2 + 25;
                 element[0].attr({
-                    opacity: 0,
-                    transform: "translate(50,50) scale(0.5, 0.5)"
+                    transform: "translate("+offset+",80) scale(0.5, 0.5)"
                 });
                 setTimeout(function() {
                     element[0].animate({opacity:1,transform:""}, 500, mina.elastic);
@@ -50,30 +51,13 @@
                 function cycle() {
                     show(elementkeys[j]);
                     j++;
-                    if (j < elementkeys.length) setTimeout(cycle, 300);
+                    if (j < elementkeys.length) setTimeout(cycle, 200);
                 }
                 cycle();
             }
 
-            function hide(key) {
-                if (animating[key]) return;
-                animating[key] = true;
-                var element = elements[key];
-                element[0].animate({opacity:0}, 200);
-                element[1].animate({opacity:0}, 200);
-                setTimeout(function(){animating[key] = false}, 200);
-            }
-
             function hoverIn() {
-                hide( this.node.id.replace('hit-', '') );
-            }
-
-            function hoverOut() {
-                var key = this.node.id.replace('hit-', '');
-                show(key);
-                cleartimers[key] = setTimeout(function() {
-                    show( key );
-                }, 200);
+                show( this.node.id.replace('hit-', '') );
             }
 
 
@@ -82,7 +66,7 @@
                 diagram = diagramgroup.select("#diagram-" + key).attr({opacity:0}),
                 path = diagramgroup.select("#path-" + key).attr({opacity:0}),
                 hitarea = diagramgroup.select("#hit-" + key);
-                hitarea.hover(hoverIn, hoverOut);
+                hitarea.hover(hoverIn);
                 elements[key] = [diagram, path];
             }
 
