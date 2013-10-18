@@ -414,7 +414,6 @@ function Matrix(a, b, c, d, e, f) {
         this.f = out[1][2];
         return this;
     };
-// SIERRA Matrix.invert(): Unclear what it means to invert a matrix.
     /*\
      * Matrix.invert
      [ method ]
@@ -448,7 +447,6 @@ function Matrix(a, b, c, d, e, f) {
     matrixproto.translate = function (x, y) {
         return this.add(1, 0, 0, 1, x, y);
     };
-    // SIERRA: do cx/cy default to the center point, as in CSS? If so, Snap appears to resolve important discrepancies between how transforms behave in SVG & CSS.
     /*\
      * Matrix.scale
      [ method ]
@@ -458,6 +456,7 @@ function Matrix(a, b, c, d, e, f) {
      - y (number) #optional amount to scale along the vertical axis. (Otherwise `x` applies to both axes.)
      - cx (number) #optional horizontal origin point from which to scale
      - cy (number) #optional vertical origin point from which to scale
+     * Default cx, cy is the middle point of the element.
     \*/
     matrixproto.scale = function (x, y, cx, cy) {
         y == null && (y = x);
@@ -1235,31 +1234,20 @@ function extractTransform(el, tstr) {
             return new Matrix;
         }
         tstr = svgTransform2string(tstr);
-    } else if (!rgTransform.test(tstr)) {
-        tstr = svgTransform2string(tstr);
     } else {
-        tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
+        el._.transform = tstr;
+        if (!rgTransform.test(tstr)) {
+            tstr = svgTransform2string(tstr);
+        } else {
+            tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
+        }
     }
-    el._.transform = tstr;
     var m = transform2matrix(tstr, el.getBBox(1));
     if (doReturn) {
         return m;
     } else {
         el.matrix = m;
     }
-
-    // _.sx = sx;
-    // _.sy = sy;
-    // _.deg = deg;
-    // _.dx = dx = m.e;
-    // _.dy = dy = m.f;
-    // 
-    // if (sx == 1 && sy == 1 && !deg && _.bbox) {
-    //     _.bbox.x += +dx;
-    //     _.bbox.y += +dy;
-    // } else {
-    //     _.dirtyT = 1;
-    // }
 }
 Snap._unit2px = unit2px;
 function getSomeDefs(el) {
@@ -1555,7 +1543,7 @@ function arrayFirstValue(arr) {
         return Snap._.box(_.bbox);
     };
     var propString = function () {
-        return this.local;
+        return this.string;
     };
 // SIERRA Element.transform(): seems to allow two return values, one of which (_Element_) is undefined.
 // SIERRA Element.transform(): if this only accepts one argument, it's unclear how it can both _get_ and _set_ a transform.
@@ -1584,14 +1572,17 @@ function arrayFirstValue(arr) {
         var _ = this._;
         if (tstr == null) {
             var global = new Matrix(this.node.getCTM()),
-                local = extractTransform(this);
+                local = extractTransform(this),
+                localString = local.toTransformString(),
+                string = Str(local) == Str(this.matrix) ?
+                            _.transform : localString;
             return {
-                string: Str(_.transform) || "",
+                string: string,
                 globalMatrix: global,
                 localMatrix: local,
                 diffMatrix: global.clone().add(local.invert()),
                 global: global.toTransformString(),
-                local: local.toTransformString(),
+                local: localString,
                 toString: propString
             };
         }

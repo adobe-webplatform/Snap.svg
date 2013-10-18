@@ -98,6 +98,21 @@
                     closed,
                     grp = s.g().insertBefore(tap);
                 f.select("#pie-chart").remove();
+                f.select("#americano-area").click(function () {
+                    chosen(0);
+                });
+                f.select("#latte-area").click(function () {
+                    chosen(72);
+                });
+                f.select("#mocha-area").click(function () {
+                    chosen(144);
+                });
+                f.select("#mochiatto-area").click(function () {
+                    chosen(216);
+                });
+                f.select("#espresso-area").click(function () {
+                    chosen(288);
+                });
                 x = +top.attr("cx");
                 y = +top.attr("cy");
                 R = +top.attr("rx");
@@ -130,25 +145,31 @@
                     lastAngle = a;
                 }, function (x, y) {
                     startAngle = Snap.angle(knobcx, knobcy, x, y);
+                    lastAngle = angle;
                     dot.stop();
                     arr.stop();
                 }, function () {
                     angle = lastAngle;
                     var a = Snap.snapTo(72, angle, 36);
+                    chosen(a);
+                });
+                function chosen(a) {
+                    a = (a + 1080) % 360;
+                    angle = a;
+                    var to = "r" + [a, knobcx, knobcy];
                     dot.animate({
-                        transform: "r" + [a, knobcx, knobcy]
+                        transform: to
                     }, 1000, mina.elastic);
                     arr.animate({
-                        transform: "r" + [a, knobcx, knobcy]
+                        transform: to
                     }, 1000, mina.elastic, function () {
-                        angle = (a + 1080) % 360;
                         closeCup(function () {
-                            types[angle]();
+                            types[a]();
                             pour();
                             pieShow();
                         });
                     });
-                });
+                }
 
                 grp.path(outline(0, h)).attr("class", "outline");
                 var o3 = (h - 70) / 3,

@@ -4,6 +4,9 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="1000px" height="800px" viewBox="0 0 1000 800" enable-background="new 0 0 1000 800" xml:space="preserve">
 <g id="Layer_1_1_">
+    <defs>
+        <path id="textline" fill="none" d="M474.432,344.553c7.165-5.251,16.004-8.351,25.568-8.351c9.294,0,17.905,2.928,24.958,7.913"/>
+    </defs>
 	<g>
 		<polygon fill="#FFFFFF" points="358,707.5 358,686.086 418,626.086 418,303.5 580,303.5 580,626.086 640,686.086 640,707.5 		"/>
 		<path fill="#60544F" d="M579,304.5v322l60,60v20H359v-20l60-60v-322H579 M581,302.5h-2H419h-2v2v321.172l-59.414,59.414
@@ -62,103 +65,47 @@
 			 M500,318.5c-33.689,0-61,27.311-61,61s27.311,61,61,61s61-27.311,61-61S533.689,318.5,500,318.5L500,318.5z"/>
 	</g>
 	<polyline id="arrow" fill="#60544F" points="496.83,348.346 500,339.894 503.17,348.346 	"/>
-	<g>
-		<g>
-			<g>
-				<defs>
-					<circle id="SVGID_2_" cx="500" cy="379.5" r="61"/>
-				</defs>
-				<clipPath id="SVGID_3_">
-					<use xlink:href="#SVGID_2_"  overflow="visible"/>
-				</clipPath>
-				
-					<line clip-path="url(#SVGID_3_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="498.856" y1="382.55" x2="498.856" y2="442.025"/>
-			</g>
-		</g>
-		<g>
-			<g>
-				<defs>
-					<circle id="SVGID_4_" cx="500" cy="379.5" r="61"/>
-				</defs>
-				<clipPath id="SVGID_5_">
-					<use xlink:href="#SVGID_4_"  overflow="visible"/>
-				</clipPath>
-				
-					<line clip-path="url(#SVGID_5_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="506.985" y1="376.834" x2="440.119" y2="398.56"/>
-			</g>
-		</g>
-		<g>
-			<g>
-				<defs>
-					<circle id="SVGID_6_" cx="500" cy="379.5" r="61"/>
-				</defs>
-				<clipPath id="SVGID_7_">
-					<use xlink:href="#SVGID_6_"  overflow="visible"/>
-				</clipPath>
-				
-					<line clip-path="url(#SVGID_7_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="503.882" y1="385.088" x2="463.047" y2="328.883"/>
-			</g>
-		</g>
-		<g>
-			<g>
-				<defs>
-					<circle id="SVGID_8_" cx="500" cy="379.5" r="61"/>
-				</defs>
-				<clipPath id="SVGID_9_">
-					<use xlink:href="#SVGID_8_"  overflow="visible"/>
-				</clipPath>
-				
-					<line clip-path="url(#SVGID_9_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="495.806" y1="378.044" x2="558.949" y2="398.56"/>
-			</g>
-		</g>
-		<g>
-			<g>
-				<defs>
-					<circle id="SVGID_10_" cx="500" cy="379.5" r="61"/>
-				</defs>
-				<clipPath id="SVGID_11_">
-					<use xlink:href="#SVGID_10_"  overflow="visible"/>
-				</clipPath>
-				
-					<line clip-path="url(#SVGID_11_)" fill="none" stroke="#60544F" stroke-miterlimit="10" x1="495.187" y1="385.088" x2="536.022" y2="328.883"/>
-			</g>
-		</g>
-	</g>
-	
-		<radialGradient id="SVGID_12_" cx="542" cy="174.72" r="35.99" gradientTransform="matrix(1 0 0 1 -42 206)" gradientUnits="userSpaceOnUse">
+    <g>
+        <path fill="none" stroke="#60544F" d="M500,379.5v61" id="separator"/>
+        <use xlink:href="#separator" transform="rotate(72, 500, 379.5)"/>
+        <use xlink:href="#separator" transform="rotate(144, 500, 379.5)"/>
+        <use xlink:href="#separator" transform="rotate(216, 500, 379.5)"/>
+        <use xlink:href="#separator" transform="rotate(288, 500, 379.5)"/>
+    </g>
+    <text fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+        <textPath xlink:href="#textline" startOffset="50%">Americano</textPath>
+    </text>
+    <text transform="rotate(72, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+        <textPath xlink:href="#textline" startOffset="50%">Latté</textPath>
+    </text>
+    <text transform="rotate(144, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+        <textPath xlink:href="#textline" startOffset="50%">Mocha</textPath>
+    </text>
+    <text transform="rotate(216, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+        <textPath xlink:href="#textline" startOffset="50%">Mochiatto</textPath>
+    </text>
+    <text transform="rotate(288, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
+        <textPath xlink:href="#textline" startOffset="50%">Espresso</textPath>
+    </text>
+	<radialGradient id="SVGID_12_" cx="542" cy="174.72" r="35.99" gradientTransform="matrix(1 0 0 1 -42 206)" gradientUnits="userSpaceOnUse">
 		<stop  offset="0.8139" style="stop-color:#60544F"/>
 		<stop  offset="1" style="stop-color:#60544F;stop-opacity:0"/>
 	</radialGradient>
-	<circle opacity="0.5" fill="url(#SVGID_12_)" enable-background="new    " cx="500" cy="380.72" r="35.99"/>
-	<g>
-		<path fill="#FFFFFF" d="M500,411.94c-17.888,0-32.44-14.553-32.44-32.44s14.553-32.44,32.44-32.44
-			c17.887,0,32.44,14.553,32.44,32.44S517.888,411.94,500,411.94z"/>
-		<path fill="#60544F" d="M500,347.56c17.612,0,31.94,14.328,31.94,31.94s-14.328,31.94-31.94,31.94s-31.94-14.328-31.94-31.94
-			S482.388,347.56,500,347.56 M500,346.56c-18.192,0-32.94,14.748-32.94,32.94s14.748,32.94,32.94,32.94s32.94-14.748,32.94-32.94
-			S518.192,346.56,500,346.56L500,346.56z"/>
-	</g>
+	<circle opacity="0.5" fill="url(#SVGID_12_)" cx="500" cy="380.72" r="35.99"/>
+    <g opacity="0">
+        <path id="mocha-area" d="M500,379.5v61A61,61,0,0,0,558.01,398.35z"/>
+        <path id="mochiatto-area" d="M500,379.5v61A61,61,0,0,0,558.01,398.35z" transform="rotate(72, 500, 379.5)"/>
+        <path id="espresso-area" d="M500,379.5v61A61,61,0,0,0,558.01,398.35z" transform="rotate(144, 500, 379.5)"/>
+        <path id="americano-area" d="M500,379.5v61A61,61,0,0,0,558.01,398.35z" transform="rotate(216, 500, 379.5)"/>
+        <path id="latte-area" d="M500,379.5v61A61,61,0,0,0,558.01,398.35z" transform="rotate(288, 500, 379.5)"/>
+    </g>
+	<circle fill="#fff" stroke="#60544F" cx="500" cy="379.5" r="33"/>
 	<circle id="dot" fill="none" stroke="#60544F" stroke-miterlimit="10" cx="500" cy="355.71" r="3.66"/>
-    	<circle id="knob" fill="none" cx="500" cy="379.5" r="43.298"/>
-        <path id="textline" fill="none" d="M474.432,344.553c7.165-5.251,16.004-8.351,25.568-8.351c9.294,0,17.905,2.928,24.958,7.913"/>
-        <text fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
-            <textPath xlink:href="#textline" startOffset="50%">Americano</textPath>
-        </text>
-        <text transform="rotate(72, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
-            <textPath xlink:href="#textline" startOffset="50%">Latté</textPath>
-        </text>
-        <text transform="rotate(144, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
-            <textPath xlink:href="#textline" startOffset="50%">Mocha</textPath>
-        </text>
-        <text transform="rotate(216, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
-            <textPath xlink:href="#textline" startOffset="50%">Mochiatto</textPath>
-        </text>
-        <text transform="rotate(288, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
-            <textPath xlink:href="#textline" startOffset="50%">Espresso</textPath>
-        </text>
-	<circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="439" cy="318.5" r="2"/>
-	<circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="561" cy="318.5" r="2"/>
-	<circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="561" cy="440.5" r="2"/>
-	<circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="439" cy="440.5" r="2"/>
+	<circle id="knob" fill="none" cx="500" cy="379.5" r="33"/>
+    <circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="439" cy="318.5" r="2"/>
+    <circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="561" cy="318.5" r="2"/>
+    <circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="561" cy="440.5" r="2"/>
+    <circle fill="#FFFFFF" stroke="#60544F" stroke-miterlimit="10" cx="439" cy="440.5" r="2"/>
 	<g id="pie-chart">
 		<circle fill="#D6EDEE" cx="735" cy="560" r="35"/>
 		<path fill="#60544F" d="M746.089,527.343c-4.258-1.827-8.947-2.843-13.874-2.843v35.215L746.089,527.343z"/>
