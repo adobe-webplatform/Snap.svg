@@ -1,0 +1,20 @@
+html {
+    overflow: hidden;
+}
+
+body {
+    background: #eee;
+    text-align: center;
+}
+
+svg {
+    display: inline-block;
+}
+
+iframe {
+    display: inline-block;
+    border: none;
+    height: 300px;
+    width: 400px;
+    margin: 10px;
+}
