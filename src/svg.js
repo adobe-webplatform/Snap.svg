@@ -1090,7 +1090,6 @@ Snap.parsePathString = function (pathString) {
     pth.arr = Snap.path.clone(data);
     return data;
 };
-// SIERRA Snap.parseTransformString(): I don't understand the string format.
 /*\
  * Snap.parseTransformString
  [ method ]
@@ -1152,11 +1151,6 @@ function svgTransform2string(tstr) {
 var rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d");
 function transform2matrix(tstr, bbox) {
     var tdata = parseTransformString(tstr),
-        deg = 0,
-        dx = 0,
-        dy = 0,
-        sx = 1,
-        sy = 1,
         m = new Matrix;
     if (tdata) {
         for (var i = 0, ii = tdata.length; i < ii; i++) {
@@ -1193,14 +1187,19 @@ function transform2matrix(tstr, bbox) {
                     } else {
                         m.rotate(t[1], t[2], t[3]);
                     }
-                    deg += t[1];
                 }
             } else if (command == "s") {
                 if (tlen == 2 || tlen == 3) {
                     bb = bb || bbox;
                     m.scale(t[1], t[tlen - 1], bb.x + bb.width / 2, bb.y + bb.height / 2);
-                    sx *= t[1];
-                    sy *= t[tlen - 1];
+                } else if (tlen == 4) {
+                    if (absolute) {
+                        x2 = inver.x(t[2], t[3]);
+                        y2 = inver.y(t[2], t[3]);
+                        m.scale(t[1], t[1], x2, y2);
+                    } else {
+                        m.scale(t[1], t[1], t[2], t[3]);
+                    }
                 } else if (tlen == 5) {
                     if (absolute) {
                         x2 = inver.x(t[3], t[4]);
@@ -1209,8 +1208,6 @@ function transform2matrix(tstr, bbox) {
                     } else {
                         m.scale(t[1], t[2], t[3], t[4]);
                     }
-                    sx *= t[1];
-                    sy *= t[2];
                 }
             } else if (command == "m" && tlen == 7) {
                 m.add(t[1], t[2], t[3], t[4], t[5], t[6]);
@@ -1235,12 +1232,15 @@ function extractTransform(el, tstr) {
         }
         tstr = svgTransform2string(tstr);
     } else {
-        el._.transform = tstr;
         if (!rgTransform.test(tstr)) {
             tstr = svgTransform2string(tstr);
         } else {
             tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
         }
+        if (is(tstr, "array")) {
+            tstr = Snap.path ? Snap.path.toString.call(tstr) : Str(tstr);
+        }
+        el._.transform = tstr;
     }
     var m = transform2matrix(tstr, el.getBBox(1));
     if (doReturn) {
