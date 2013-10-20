@@ -19,7 +19,7 @@ Snap.version = "0.1.0";
  * Snap
  [ method ]
  **
- * Creates a drawing surface or wraps existing SVG element
+ * Creates a drawing surface or wraps existing SVG element.
  **
  - width (number|string) width of surface
  - height (number|string) height of surface
@@ -2365,7 +2365,6 @@ function make(name, parent) {
     el.type = name;
     return el;
 }
-// SIERRA Is Paper() part of final interface, akin to Snap()? Document if so.
 function Paper(w, h) {
     var res,
         desc,
@@ -2944,6 +2943,23 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
             res = d.innerHTML;
             f.removeChild(f.firstChild);
             return res;
+        };
+        /*\
+         * Paper.clear
+         [ method ]
+         **
+         * Removes all child nodes of the paper, except <defs>.
+        \*/
+        proto.clear = function () {
+            var node = this.node.firstChild,
+                next;
+            while (node) {
+                next = node.nextSibling;
+                if (node.tagName != "defs") {
+                    node.parentNode.removeChild(node);
+                }
+                node = next;
+            }
         };
     }());
 }(Paper.prototype));
