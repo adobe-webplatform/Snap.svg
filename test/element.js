@@ -190,11 +190,6 @@ describe("Element methods", function () {
         var widthAsPx = rect.asPX("width");
         expect(widthAsPx).to.be(200);
     });
-    it("Element.asPX - from em", function() {
-        var rect = s.rect(0, 0, 10, '10em');
-        var heightAsPx = rect.asPX("height");
-        expect(heightAsPx).to.be(160); // assumes 1em = 16px, is this safe?
-    });
     it("Element.getBBox", function() {
         var rect = s.rect(10, 20, 30, 40);
         var bbox = rect.getBBox();
