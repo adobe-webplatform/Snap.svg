@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Tutorial</title>
+        <link rel="stylesheet" href="../../dist/fonts/stylesheet.css">
+        <link rel="stylesheet" href="../../dist/css/prism.css">
+        <style media="screen">
+            pre.code {
+                -moz-border-radius: 10px;
+                -webkit-border-radius: 10px;
+                border-radius: 10px;
+                padding: 10px;
+                height: 280px;
+                overflow: auto;
+                background: #181818;
+                border: solid 2px #181818;
+            }
+            #codelines {
+                display: none;
+            }
+            #svg {
+                -moz-border-radius: 10px;
+                -webkit-border-radius: 10px;
+                border-radius: 10px;
+                border: solid 2px #ccc;
+                width: 300px;
+                height: 300px;
+                float: left;
+                margin-right: 10px;
+                font: 1em source-sans-pro, Source Sans Pro, Helvetica, sans-serif;
+            }
+        </style>
+        <script src="../../dist/snap.svg-min.js"></script>
+        <script src="../../dist/js/prism.js"></script>
+        <script>
+        var S;
+        window.onload = function () {
+            var s = Snap(800, 50);
+            function chooser(s, count) {
+                var loop = "M35,65a30,30,0,0,0,0-60a30,30,0,0,0,0,60",
+                    line = "M35,65a30,30,0,0,0,0-60a30,30,0,0,0,0,60c30,0,60-60,90-60a30,30,0,0,1,0,60a30,30,0,0,1,0-60",
+                    l1 = Snap.path.getTotalLength(loop),
+                    l2 = Snap.path.getTotalLength(line),
+                    cur = 1,
+                    p = s.path({
+                        path: loop,
+                        fill: "none",
+                        stroke: "#f00",
+                        strokeWidth: 6,
+                        strokeLinecap: "round"
+                    });
+                for (var i = 1; i <= count; i++) {
+                    s.text(90 * i - 55, 49, i).attr({
+                        font: "45px source-sans-pro, Source Sans Pro, Helvetica, sans-serif",
+                        textAnchor: "middle"
+                    });
+                }
+                function frame(frame) {
+                    function anim() {
+                        cur++;
+                        if (cur > count) {
+                            return;
+                        }
+                        if (typeof frame == "function") {
+                            frame(cur);
+                        }
+                        Snap.animate(0, l2 - l1, function (val) {
+                            p.attr({
+                                path: Snap.path.getSubpath(line, val, val + l1)
+                            });
+                        }, 500, function () {
+                            p.attr({
+                                path: loop,
+                                transform: p.transform() + "t90,0"
+                            });
+                        });
+                    }
+                    if (typeof frame == "function") {
+                        return anim;
+                    } else {
+                        anim();
+                    }
+                }
+                return frame;
+            }
+            var g = s.g();
+            g.attr({
+                transform: "s.5,.5,0,0"
+            });
+            var str = "",
+                code = document.getElementById("code");
+            for (var i in code) {
+                if (~i.indexOf("scroll")) {
+                    console.log(i);
+                }
+            }    
+            var domcodelines = document.querySelectorAll("#codelines li"),
+                codelines = [],
+                replacers = {},
+                lines = [],
+                callback = function (i) {
+                    replacers[i - 1] && lines.pop();
+                    lines.push(codelines[i - 1]);
+                    Snap("#svg").clear();
+                    str = lines.join("\n");
+                    eval(str);
+                    code.innerHTML = Prism.highlight(str, Prism.languages.javascript);
+                    code.parentNode.scrollTop = 1e9;
+                };
+            for (var i = 0, ii = domcodelines.length; i < ii; i++) {
+                codelines[i] = domcodelines[i].innerText;
+                if (domcodelines[i].className == "replace") {
+                    replacers[i] = true;
+                }
+            }
+            callback(1);
+            window.onclick = chooser(g, codelines.length)(callback);
+        };
+        </script>
+    </head>
+    <body>
+        <ol id="codelines">
+<li>// First lets create our drawing surface out of existing SVG element
+// If you want to create new surface just provide dimensions
+// like s = Snap(800, 600);
+var s = Snap("#svg");</li>
+<li>// Lets create big circle in the middle:
+var bigCircle = s.circle(150, 150, 100);
+// By default its black, lets change its attributes</li>
+<li>bigCircle.attr({
+    fill: "#bada55",
+    stroke: "#000",
+    strokeWidth: 5
+});</li>
+<li>// Now lets create another small circle:
+var smallCircle = s.circle(100, 150, 70);</li>
+<li>// Lets put this small circle and another one into a group:
+var discs = s.group(smallCircle, s.circle(200, 150, 70));</li>
+<li>// Now we can change attributes for the whole group
+discs.attr({
+    fill: "#fff"
+});</li>
+<li>// Now more interesting stuff
+// Lets assign this group as a mask for our big circle
+bigCircle.attr({
+    mask: discs
+});</li>
+<li>// Despite our small circle now is a part of a group
+// and a part of a mask we could still access it:
+smallCircle.animate({r: 25}, 1000);</li>
+<li>// We don’t have reference for second small circle,
+// but we could easily grab it with CSS selectors:
+discs.select("circle:nth-child(2)").animate({r: 25}, 1000);</li>
+<li>// Now lets create pattern
+var p = s.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
+        fill: "none",
+        stroke: "#bada55",
+        strokeWidth: 5
+    });
+// To create pattern,
+// just specify dimensions in pattern method:
+p = p.pattern(0, 0, 10, 10);
+// Then use it as a fill on big circle
+bigCircle.attr({
+    fill: p
+});</li>
+<li>// We could also grab pattern from SVG
+// already embedded into our page
+discs.attr({
+    fill: Snap("#pattern")
+});</li>
+<li>// Lets change fill of circles to gradient
+// This string means relative radial gradient
+// from white to black
+discs.attr({fill: "r()#fff-#000"});
+// Note that you have two gradients for each circle</li>
+<li>// If we want them to share one gradient,
+// we need to use absolute gradient with capital R
+discs.attr({fill: "R(150, 150, 100)#fff-#000"});</li>
+<li>// Of course we could animate color as well
+p.select("path").animate({stroke: "#f00"}, 1000);</li>
+<li>// Now lets load external SVG file:
+Snap.load("mascot.svg", function (f) {
+    // Note that we traversre and change attr before SVG
+    // is even added to the page
+    f.select("polygon[fill='#09B39C']").attr({fill: "#bada55"});
+    g = f.select("g");
+    s.append(g);
+    // Making croc draggable. Go ahead drag it around!
+    g.drag();
+    // Obviously drag could take event handlers too
+    // Looks like our croc is made from more than one polygon...
+});</li>
+<li class="replace">// Now lets load external SVG file:
+Snap.load("mascot.svg", function (f) {
+    // Note that we traversre and change attr before SVG
+    // is even added to the page
+    f.selectAll("polygon[fill='#09B39C']").attr({fill: "#bada55"});
+    g = f.select("g");
+    s.append(g);
+    // Making croc draggable. Go ahead drag it around!
+    g.drag();
+    // Obviously drag could take event handlers too
+    // That’s better! selectAll for the rescue.
+});</li>
+<li>// Writing text as simple as:
+s.text(200, 100, "Snap.svg");</li>
+<li>// Provide an array of strings (or arrays), to generate tspans
+var t = s.text(200, 120, ["Snap", ".", "svg"]);
+t.selectAll("tspan:nth-child(3)").attr({
+    fill: "#900",
+    "font-size": "20px"
+});</li>
+        </ol>
+        <svg id="svg"></svg>
+        <pre class="javascript code"><code data-language="javascript" class="language-javascript" id="code"></code></pre>
+        <svg width="0" height="0">
+            <pattern id="pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10" viewBox="0 0 10 10">
+                <path d="M-5,0,10,15M0-5,15,10" stroke="white" stroke-width="5"/>
+            </pattern>
+        </svg>
+    </body>
+</html>
