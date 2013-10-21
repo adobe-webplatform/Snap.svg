@@ -2275,7 +2275,6 @@ function transform2matrix(tstr, bbox) {
                 if (tlen == 2) {
                     bb = bb || bbox;
                     m.rotate(t[1], bb.x + bb.width / 2, bb.y + bb.height / 2);
-                    deg += t[1];
                 } else if (tlen == 4) {
                     if (absolute) {
                         x2 = inver.x(t[2], t[3]);
