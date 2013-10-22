@@ -37,10 +37,10 @@
                 x = element[0].getBBox().x,
                 offset = x/2 + 25;
                 element[0].attr({
-                    transform: "translate("+offset+",80) scale(0.5, 0.5)"
+                    transform: "t"+offset+",80s0.5,0.5,0,0"
                 });
                 setTimeout(function() {
-                    element[0].animate({opacity:1,transform:""}, 500, mina.elastic);
+                    element[0].animate({opacity:1,transform:"t0,0s1,1,0,0"}, 500, mina.elastic);
                 }, 50);
                 element[1].animate({opacity:0.25}, 400);
                 setTimeout(function(){animating[key] = false}, 550);
