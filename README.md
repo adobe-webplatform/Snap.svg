@@ -1,25 +1,25 @@
 [Snap.svg](http://snapsvg.io)
 ======
 
-A JavaScript SVG library for the modern web
+A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://snapsvg.io).
 
-API Reference is in `dist/reference.html`
+API Reference is in `dist/reference.html`.
 
 ### Building
 
-Snap.svg uses [Grunt](http://gruntjs.com/) to build
+Snap.svg uses [Grunt](http://gruntjs.com/) to build.
 
-* Open the terminal from the Snap.svg directory
+* Open the terminal from the Snap.svg directory:
 
         cd Snap.svg
 
-* Install its command line interface (CLI) globally
+* Install its command line interface (CLI) globally:
 
         npm install -g grunt-cli
 
 _*You might need to use `sudo npm`, depending on your configuration._
 
-* Install dependencies with npm
+* Install dependencies with npm:
 
         npm install
 
