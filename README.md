@@ -3,9 +3,13 @@
 
 A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://snapsvg.io).
 
-Check out the [API Reference](http://snapsvg.io/docs/).
+### Learn
 
-### Building
+* [About Snap.svg](http://snapsvg.io/about/)
+* [Getting Started](http://snapsvg.io/start/)
+* [API Referece](http://snapsvg.io/docs/)
+
+### Build
 
 Snap.svg uses [Grunt](http://gruntjs.com/) to build.
 
@@ -29,7 +33,7 @@ _*Snap.svg uses Grunt 0.4.0. You might want to [read](http://gruntjs.com/getting
 * The results will be built into the release folder.
 * Alternatively type `grunt watch` to have the build run automatically when you make changes to source files.
 
-## Contributing
+### Contribute
 
 * [Fill out the CLA](http://snapsvg.io/page-contributions.html).
 * [Fork](https://help.github.com/articles/fork-a-repo) the repo.
