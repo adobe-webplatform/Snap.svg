@@ -3,7 +3,7 @@
 
 A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://snapsvg.io).
 
-API Reference is in `dist/reference.html`.
+Check out the [API Reference](http://snapsvg.io/docs/).
 
 ### Building
 
