@@ -3,6 +3,8 @@
 
 A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://snapsvg.io).
 
+[Follow us on Twitter.](https://twitter.com/snapsvg)
+
 ### Learn
 
 * [About Snap.svg](http://snapsvg.io/about/)
