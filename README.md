@@ -52,4 +52,6 @@ _*Snap.svg uses Grunt 0.4.0. You might want to [read](http://gruntjs.com/getting
 
         git push origin my_branch
 
-* Make a [pull request](https://help.github.com/articles/using-pull-requests).
+* Make a [pull request](https://help.github.com/articles/using-pull-requests) to `dev` branch.
+
+*Note:* Pull requests to other branches than `dev` or without filled CLA wouldn’t be accepted.
