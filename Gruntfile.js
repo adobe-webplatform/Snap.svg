@@ -30,7 +30,6 @@ module.exports = function(grunt) {
                     "./node_modules/eve/eve.js",
                     "./src/amd-banner.js",
                     "./src/mina.js",
-                    "./node_modules/elemental.js/elemental.js",
                     "./src/svg.js",
                     "./src/path.js",
                     "./src/set.js",

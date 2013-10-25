@@ -71,6 +71,7 @@ var has = "hasOwnProperty",
     objectToString = Object.prototype.toString,
     ISURL = /^url\(['"]?([^\)]+?)['"]?\)$/i,
     colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\))\s*$/i,
+    isnan = {"NaN": 1, "Infinity": 1, "-Infinity": 1},
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
     reURLValue = /^url\(#?([^)]+)\)$/,
     spaces = "\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029",
@@ -138,7 +139,7 @@ function getAttrs(el) {
 function is(o, type) {
     type = Str.prototype.toLowerCase.call(type);
     if (type == "finite") {
-        return isFinite(o);
+        return !isnan[has](+o);
     }
     if (type == "array" &&
         (o instanceof Array || Array.isArray && Array.isArray(o))) {
@@ -2291,24 +2292,16 @@ function arrayFirstValue(arr) {
 \*/
 Snap.parse = function (svg) {
     var f = glob.doc.createDocumentFragment(),
-        pointer = f;
-    eve.on("elemental.tag", function (data, extra, raw) {
-        var tag = $(data);
-        extra && $(tag, extra);
-        pointer.appendChild(tag);
-        pointer = tag;
-    });
-    eve.on("elemental.text", function (text) {
-        pointer.appendChild(glob.doc.createTextNode(text));
-    });
-    eve.on("elemental./tag", function () {
-        pointer = pointer.parentNode;
-    });
-    eve.on("elemental.eof", function () {
-        eve.off("elemental.*");
-        eve("snap.parsed", f);
-    });
-    elemental().parse(svg).end();
+        div = glob.doc.createElement("div");
+    svg = "<svg>" + svg + "</svg>";
+    div.innerHTML = svg;
+    svg = div.getElementsByTagName("svg")[0];
+    if (svg) {
+        while (svg.firstChild) {
+            f.appendChild(svg.firstChild);
+        }
+    }
+    div.innerHTML = E;
     return new Fragment(f);
 };
 function Fragment(frag) {
