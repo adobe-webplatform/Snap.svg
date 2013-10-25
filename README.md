@@ -11,6 +11,11 @@ A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://s
 * [Getting Started](http://snapsvg.io/start/)
 * [API Reference](http://snapsvg.io/docs/)
 
+### Use
+
+In your HTML5 file, load simply by: `<script src=snap.svg-min.js></script>`
+No other scripts are needed.  Both the minified and uncompressed (for development) versions are in the `/dist` folder.
+
 ### Build
 
 Snap.svg uses [Grunt](http://gruntjs.com/) to build.
