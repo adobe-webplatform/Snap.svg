@@ -1,5 +1,5 @@
 {
-  "name": "Snap.svg",
+  "name": "snapsvg",
   "version": "0.1.1",
   "description": "JavaScript Vector Library",
   "main": "Gruntfile.js",
