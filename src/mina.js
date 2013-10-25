@@ -43,7 +43,7 @@ var mina = (function (eve) {
             return a + dif * (bb - b);
         };
     },
-    timer = function () {
+    timer = Date.now || function () {
         return +new Date;
     },
     sta = function (val) {
