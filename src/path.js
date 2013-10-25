@@ -528,6 +528,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         },
         polygon: function (el) {
             return "M" + el.attr("points") + "z";
+        },
+        svg: function (el) {
+            var bbox = el.node.getBBox();
+            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
+        },
+        deflt: function (el) {
+            var bbox = el.node.getBBox();
+            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
         }
     };
     function pathToRelative(pathArray) {

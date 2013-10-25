@@ -71,7 +71,6 @@ var has = "hasOwnProperty",
     objectToString = Object.prototype.toString,
     ISURL = /^url\(['"]?([^\)]+?)['"]?\)$/i,
     colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\))\s*$/i,
-    isnan = {"NaN": 1, "Infinity": 1, "-Infinity": 1},
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
     reURLValue = /^url\(#?([^)]+)\)$/,
     spaces = "\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029",
@@ -139,7 +138,7 @@ function getAttrs(el) {
 function is(o, type) {
     type = Str.prototype.toLowerCase.call(type);
     if (type == "finite") {
-        return !isnan[has](+o);
+        return isFinite(o);
     }
     if (type == "array" &&
         (o instanceof Array || Array.isArray && Array.isArray(o))) {
@@ -1522,22 +1521,11 @@ function arrayFirstValue(arr) {
         }
         var _ = el._;
         if (isWithoutTransform) {
-            if (_.dirty || !_.bboxwt) {
-                el.realPath = Snap.path.get[el.type](el);
-                _.bboxwt = Snap.path.getBBox(el.realPath);
-                _.bboxwt.toString = x_y_w_h;
-                _.dirty = 0;
-            }
+            _.bboxwt = Snap.path.get[el.type] ? Snap.path.getBBox(el.realPath = Snap.path.get[el.type](el)) : Snap._.box(el.node.getBBox());
             return Snap._.box(_.bboxwt);
-        }
-        if (_.dirty || _.dirtyT || !_.bbox) {
-            if (_.dirty || !el.realPath) {
-                _.bboxwt = 0;
-                el.realPath = Snap.path.get[el.type](el);
-            }
+        } else {
+            el.realPath = (Snap.path.get[el.type] || Snap.path.get.deflt)(el);
             _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, el.matrix));
-            _.bbox.toString = x_y_w_h;
-            _.dirty = _.dirtyT = 0;
         }
         return Snap._.box(_.bbox);
     };
@@ -2292,16 +2280,24 @@ function arrayFirstValue(arr) {
 \*/
 Snap.parse = function (svg) {
     var f = glob.doc.createDocumentFragment(),
-        div = glob.doc.createElement("div");
-    svg = "<svg>" + svg + "</svg>";
-    div.innerHTML = svg;
-    svg = div.getElementsByTagName("svg")[0];
-    if (svg) {
-        while (svg.firstChild) {
-            f.appendChild(svg.firstChild);
-        }
-    }
-    div.innerHTML = E;
+        pointer = f;
+    eve.on("elemental.tag", function (data, extra, raw) {
+        var tag = $(data);
+        extra && $(tag, extra);
+        pointer.appendChild(tag);
+        pointer = tag;
+    });
+    eve.on("elemental.text", function (text) {
+        pointer.appendChild(glob.doc.createTextNode(text));
+    });
+    eve.on("elemental./tag", function () {
+        pointer = pointer.parentNode;
+    });
+    eve.on("elemental.eof", function () {
+        eve.off("elemental.*");
+        eve("snap.parsed", f);
+    });
+    elemental().parse(svg).end();
     return new Fragment(f);
 };
 function Fragment(frag) {
