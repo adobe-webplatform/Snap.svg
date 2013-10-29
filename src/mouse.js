@@ -430,14 +430,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
             drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
             eve.on("snap.drag.start." + this.id, function() {
-                if( onstart && (onstart.apply(this,arguments) === false) ) return;
+                onstart && onstart.apply(this,arguments);
                 origTransform = this.transform().local;
             });
             eve.on("snap.drag.move." + this.id, function(dx,dy) {
-                if( onmove && (onmove.apply(this,arguments) === false) ) return;
                 this.attr({
                     transform: origTransform + (origTransform ? "T" : "t") + [dx, dy]
                 });
+                onmove && onmove.apply(this,arguments);
             });
             onend && eve.on("snap.drag.end." + this.id, onend);
             eve("snap.drag.start." + this.id, start_scope || move_scope || this, e.clientX + scrollX, e.clientY + scrollY, e);
