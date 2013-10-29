@@ -420,16 +420,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
     elproto.drag = function (onmove, onstart, onend, move_scope, start_scope, end_scope) {
-        if (!arguments.length) {
-            var origTransform;
-            return this.drag(function (dx, dy) {
-                this.attr({
-                    transform: origTransform + (origTransform ? "T" : "t") + [dx, dy]
-                });
-            }, function () {
-                origTransform = this.transform().local;
-            });
-        }
         function start(e) {
             (e.originalEvent || e).preventDefault();
             var scrollY = getScroll("y"),
@@ -439,8 +429,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             this._drag.id = e.identifier;
             !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
             drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
-            onstart && eve.on("snap.drag.start." + this.id, onstart);
-            onmove && eve.on("snap.drag.move." + this.id, onmove);
+            eve.on("snap.drag.start." + this.id, function() {
+                onstart && onstart.apply(this,arguments);
+                origTransform = this.transform().local;
+            });
+            eve.on("snap.drag.move." + this.id, function(dx,dy) {
+                this.attr({
+                    transform: origTransform + (origTransform ? "T" : "t") + [dx, dy]
+                });
+                onmove && onmove.apply(this,arguments);
+            });
             onend && eve.on("snap.drag.end." + this.id, onend);
             eve("snap.drag.start." + this.id, start_scope || move_scope || this, e.clientX + scrollX, e.clientY + scrollY, e);
         }
