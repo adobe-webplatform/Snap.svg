@@ -1,6 +1,6 @@
 {
     "title": "Snap.svg",
-    "output": "dist/reference.html",
+    "output": "doc/reference.html",
     "scripts": ["snap.svg-min.js", "reference.js"],
     "files": [{
         "url": "src/svg.js",
