@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-10-29
+// build: 2013-10-30
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -4362,13 +4362,15 @@ availableAttributes.feFuncR = availableAttributes.feFuncG = availableAttributes.
     offset: 0
 };
 eve.on("snap.util.attr", function (value) {
-    var att = eve.nt();
+    var att = eve.nt(),
+        attr = {};
     att = att.substring(att.lastIndexOf(".") + 1);
+    attr[att] = value;
     var style = att.replace(/-(\w)/gi, function (all, letter) {
         return letter.toUpperCase();
     });
-    if (availableAttributes[has](this.type) && availableAttributes[this.type][has](att)) {
-        value == null ? this.node.removeAttribute(att) : this.node.setAttribute(att, value);
+    if (availableAttributes[has](this.type) && (availableAttributes[this.type][has](att) || att == "id")) {
+        $(this.node, attr);
     } else {
         this.node.style[style] = value == null ? E : value;
     }
