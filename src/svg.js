@@ -1124,7 +1124,7 @@ var parseTransformString = Snap.parseTransformString = function (TString) {
 function svgTransform2string(tstr) {
     var res = [];
     tstr = tstr.replace(/(?:^|\s)(\w+)\(([^)]+)\)/g, function (all, name, params) {
-        params = params.split(/\s*,\s*/);
+        params = params.split(/\s*,\s*|\s+/);
         if (name == "rotate" && params.length == 1) {
             params.push(0, 0);
         }

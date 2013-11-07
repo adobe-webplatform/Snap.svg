@@ -47,25 +47,35 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
                     f = function (e) {
                         var scrollY = getScroll("y"),
-                            scrollX = getScroll("x"),
-                            x = e.clientX + scrollX,
-                            y = e.clientY + scrollY;
-                    if (supportsTouch && touchMap[has](type)) {
-                        for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
-                            if (e.targetTouches[i].target == obj) {
-                                var olde = e;
-                                e = e.targetTouches[i];
-                                e.originalEvent = olde;
-                                e.preventDefault = preventTouch;
-                                e.stopPropagation = stopTouch;
-                                break;
+                            scrollX = getScroll("x");
+                        if (supportsTouch && touchMap[has](type)) {
+                            for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
+                                if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
+                                    var olde = e;
+                                    e = e.targetTouches[i];
+                                    e.originalEvent = olde;
+                                    e.preventDefault = preventTouch;
+                                    e.stopPropagation = stopTouch;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    return fn.call(element, e, x, y);
-                };
+                        var x = e.clientX + scrollX,
+                            y = e.clientY + scrollY;
+                        return fn.call(element, e, x, y);
+                    };
+
+                if (type !== realName) {
+                    obj.addEventListener(type, f, false);
+                }
+
                 obj.addEventListener(realName, f, false);
+
                 return function () {
+                    if (type !== realName) {
+                        obj.removeEventListener(type, f, false);
+                    }
+
                     obj.removeEventListener(realName, f, false);
                     return true;
                 };
@@ -102,11 +112,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         while (j--) {
             dragi = drag[j];
             if (supportsTouch) {
-                var i = e.touches.length,
+                var i = e.touches && e.touches.length,
                     touch;
                 while (i--) {
                     touch = e.touches[i];
-                    if (touch.identifier == dragi.el._drag.id) {
+                    if (touch.identifier == dragi.el._drag.id || dragi.el.node.contains(touch.target)) {
                         x = touch.clientX;
                         y = touch.clientY;
                         (e.originalEvent ? e.originalEvent : e).preventDefault();
@@ -430,19 +440,17 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 origTransform = this.transform().local;
             });
         }
-        function start(e) {
+        function start(e, x, y) {
             (e.originalEvent || e).preventDefault();
-            var scrollY = getScroll("y"),
-                scrollX = getScroll("x");
-            this._drag.x = e.clientX + scrollX;
-            this._drag.y = e.clientY + scrollY;
+            this._drag.x = x;
+            this._drag.y = y;
             this._drag.id = e.identifier;
             !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
             drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
             onstart && eve.on("snap.drag.start." + this.id, onstart);
             onmove && eve.on("snap.drag.move." + this.id, onmove);
             onend && eve.on("snap.drag.end." + this.id, onend);
-            eve("snap.drag.start." + this.id, start_scope || move_scope || this, e.clientX + scrollX, e.clientY + scrollY, e);
+            eve("snap.drag.start." + this.id, start_scope || move_scope || this, x, y, e);
         }
         this._drag = {};
         draggable.push({el: this, start: start});
