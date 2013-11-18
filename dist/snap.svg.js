@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-10-30
+// build: 2013-11-18
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -759,8 +759,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.1.0";
-// SIERRA: this method appears to be missing from HTML output
+Snap.version = "0.1.1";
 /*\
  * Snap
  [ method ]
@@ -833,6 +832,7 @@ var has = "hasOwnProperty",
         return idprefix + (idgen++).toString(36);
     },
     xlink = "http://www.w3.org/1999/xlink",
+    xmlns = "http://www.w3.org/2000/svg",
     hub = {};
 
 function $(el, attr) {
@@ -844,6 +844,9 @@ function $(el, attr) {
             if (attr.substring(0, 6) == "xlink:") {
                 return el.getAttributeNS(xlink, attr.substring(6));
             }
+            if (attr.substring(0, 4) == "xml:") {
+                return el.getAttributeNS(xmlns, attr.substring(4));
+            }
             return el.getAttribute(attr);
         }
         for (var key in attr) if (attr[has](key)) {
@@ -851,6 +854,8 @@ function $(el, attr) {
             if (val) {
                 if (key.substring(0, 6) == "xlink:") {
                     el.setAttributeNS(xlink, key.substring(6), val);
+                } else if (key.substring(0, 4) == "xml:") {
+                    el.setAttributeNS(xmlns, key.substring(4), val);
                 } else {
                     el.setAttribute(key, val);
                 }
@@ -859,7 +864,7 @@ function $(el, attr) {
             }
         }
     } else {
-        el = glob.doc.createElementNS("http://www.w3.org/2000/svg", el);
+        el = glob.doc.createElementNS(xmlns, el);
         // el.style && (el.style.webkitTapHighlightColor = "rgba(0,0,0,0)");
     }
     return el;
@@ -3025,26 +3030,18 @@ function arrayFirstValue(arr) {
  = (Fragment) the @Fragment
 \*/
 Snap.parse = function (svg) {
-    var f = glob.doc.createDocumentFragment(),
-        pointer = f;
-    eve.on("elemental.tag", function (data, extra, raw) {
-        var tag = $(data);
-        extra && $(tag, extra);
-        pointer.appendChild(tag);
-        pointer = tag;
-    });
-    eve.on("elemental.text", function (text) {
-        pointer.appendChild(glob.doc.createTextNode(text));
-    });
-    eve.on("elemental./tag", function () {
-        pointer = pointer.parentNode;
-    });
-    eve.on("elemental.eof", function () {
-        eve.off("elemental.*");
-        eve("snap.parsed", f);
-    });
-    elemental().parse(svg).end();
-    return new Fragment(f);
+    var f,
+        div = glob.doc.createElement("div");
+    svg = "<svg>" + svg + "</svg>";
+    div.innerHTML = svg;
+    svg = div.getElementsByTagName("svg")[0];
+    if (svg) {
+        f = new Fragment(svg);
+        div.innerHTML = E;
+        return f;
+    }
+    div.innerHTML = E;
+    return new Fragment(glob.doc.createDocumentFragment());
 };
 function Fragment(frag) {
     this.node = frag;
@@ -3130,7 +3127,7 @@ function Paper(w, h) {
             height: h,
             version: 1.1,
             width: w,
-            xmlns: "http://www.w3.org/2000/svg"
+            xmlns: xmlns
         });
     }
     return res;
@@ -3672,7 +3669,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
                 res;
             f.appendChild(d);
             d.appendChild(svg);
-            $(svg, {xmlns: "http://www.w3.org/2000/svg"});
+            $(svg, {xmlns: xmlns});
             res = d.innerHTML;
             f.removeChild(f.firstChild);
             return res;
@@ -3972,408 +3969,469 @@ eve.on("snap.util.attr.text", function (value) {
     eve.stop();
 })(-1);
 // default
-var availableAttributes = {
-    rect: {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        rx: 0,
-        ry: 0,
-        "class": 0
-    },
-    circle: {
-        cx: 0,
-        cy: 0,
-        r: 0,
-        "class": 0
-    },
-    ellipse: {
-        cx: 0,
-        cy: 0,
-        rx: 0,
-        ry: 0,
-        "class": 0
-    },
-    line: {
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        "class": 0
-    },
-    polyline: {
-        points: "",
-        "class": 0
-    },
-    polygon: {
-        points: "",
-        "class": 0
-    },
-    text: {
-        x: 0,
-        y: 0,
-        dx: 0,
-        dy: 0,
-        rotate: 0,
-        textLength: 0,
-        lengthAdjust: 0,
-        "class": 0
-    },
-    tspan: {
-        x: 0,
-        y: 0,
-        dx: 0,
-        dy: 0,
-        rotate: 0,
-        textLength: 0,
-        lengthAdjust: 0,
-        "class": 0
-    },
-    textPath: {
-        "xlink:href": 0,
-        startOffset: 0,
-        method: 0,
-        spacing: 0,
-        "class": 0
-    },
-    marker: {
-        viewBox: 0,
-        preserveAspectRatio: 0,
-        refX: 0,
-        refY: 0,
-        markerUnits: 0,
-        markerWidth: 0,
-        markerHeight: 0,
-        orient: 0,
-        "class": 0
-    },
-    use: {
-        "class": 0,
-        externalResourcesRequired: 0,
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        "xlink:href": 0
-    },
-    linearGradient: {
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        gradientUnits: 0,
-        gradientTransform: 0,
-        spreadMethod: 0,
-        "xlink:href": 0,
-        "class": 0
-    },
-    radialGradient: {
-        cx: 0,
-        cy: 0,
-        r: 0,
-        fx: 0,
-        fy: 0,
-        gradientUnits: 0,
-        gradientTransform: 0,
-        spreadMethod: 0,
-        "xlink:href": 0,
-        "class": 0
-    },
-    stop: {
-        offset: 0,
-        "class": 0
-    },
-    pattern: {
-        viewBox: 0,
-        preserveAspectRatio: 0,
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        patternUnits: 0,
-        patternContentUnits: 0,
-        patternTransform: 0,
-        "xlink:href": 0,
-        "class": 0
-    },
-    clipPath: {
-        transform: 0,
-        clipPathUnits: 0,
-        "class": 0
-    },
-    mask: {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        maskUnits: 0,
-        maskContentUnits: 0,
-        "class": 0
-    },
-    image: {
-        preserveAspectRatio: 0,
-        transform: 0,
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        "xlink:href": 0,
-        "class": 0
-    },
-    path: {
-        d: "",
-        "class": 0
-    },
-    g: {
-        "class": 0
-    },
-    feDistantLight: {
-        azimuth: 0,
-        elevation: 0
-    },
-    fePointLight: {
-        x: 0,
-        y: 0,
-        z: 0
-    },
-    feSpotLight: {
-        x: 0,
-        y: 0,
-        z: 0,
-        pointsAtX: 0,
-        pointsAtY: 0,
-        pointsAtZ: 0,
-        specularExponent: 0,
-        limitingConeAngle: 0
-    },
-    feBlend: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        in2: 0,
-        mode: 0
-    },
-    feColorMatrix: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        type: 0,
-        values: 0
-    },
-    feComponentTransfer: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0
-    },
-    feComposite: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        in2: 0,
-        operator: 0,
-        k1: 0,
-        k2: 0,
-        k3: 0,
-        k4: 0
-    },
-    feConvolveMatrix: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        order: 0,
-        kernelMatrix: 0,
-        divisor: 0,
-        bias: 0,
-        targetX: 0,
-        targetY: 0,
-        edgeMode: 0,
-        kernelUnitLength: 0,
-        preserveAlpha: 0
-    },
-    feDiffuseLighting: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        surfaceScale: 0,
-        diffuseConstant: 0,
-        kernelUnitLength: 0
-    },
-    feDisplacementMap: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        in2: 0,
-        scale: 0,
-        xChannelSelector: 0,
-        yChannelSelector: 0
-    },
-    feFlood: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "flood-color": 0,
-        "flood-opacity": 0
-    },
-    feGaussianBlur: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        stdDeviation: 0
-    },
-    feImage : {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        externalResourcesRequired: 0,
-        preserveAspectRatio: 0,
-        "xlink:href": 0
-    },
-    feMerge: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0
-    },
-    feMergeNode: {
-        "in": 0
-    },
-    feMorphology: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        operator: 0,
-        radius: 0
-    },
-    feOffset: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        dx: 0,
-        dy: 0
-    },
-    feSpecularLighting: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        surfaceScale: 0,
-        specularConstant: 0,
-        specularExponent: 0,
-        kernelUnitLength: 0
-    },
-    feTile: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0
-    },
-    feTurbulence: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        baseFrequency: 0,
-        numOctaves: 0,
-        seed: 0,
-        stitchTiles: 0,
-        type: 0
-    }
+var // availableAttributes = {
+//     rect: {
+//         x: 0,
+//         y: 0,
+//         width: 0,
+//         height: 0,
+//         rx: 0,
+//         ry: 0,
+//         "class": 0
+//     },
+//     circle: {
+//         cx: 0,
+//         cy: 0,
+//         r: 0,
+//         "class": 0
+//     },
+//     ellipse: {
+//         cx: 0,
+//         cy: 0,
+//         rx: 0,
+//         ry: 0,
+//         "class": 0
+//     },
+//     line: {
+//         x1: 0,
+//         y1: 0,
+//         x2: 0,
+//         y2: 0,
+//         "class": 0
+//     },
+//     polyline: {
+//         points: "",
+//         "class": 0
+//     },
+//     polygon: {
+//         points: "",
+//         "class": 0
+//     },
+//     text: {
+//         x: 0,
+//         y: 0,
+//         dx: 0,
+//         dy: 0,
+//         rotate: 0,
+//         textLength: 0,
+//         lengthAdjust: 0,
+//         "class": 0
+//     },
+//     tspan: {
+//         x: 0,
+//         y: 0,
+//         dx: 0,
+//         dy: 0,
+//         rotate: 0,
+//         textLength: 0,
+//         lengthAdjust: 0,
+//         "class": 0
+//     },
+//     textPath: {
+//         "xlink:href": 0,
+//         startOffset: 0,
+//         method: 0,
+//         spacing: 0,
+//         "class": 0
+//     },
+//     marker: {
+//         viewBox: 0,
+//         preserveAspectRatio: 0,
+//         refX: 0,
+//         refY: 0,
+//         markerUnits: 0,
+//         markerWidth: 0,
+//         markerHeight: 0,
+//         orient: 0,
+//         "class": 0
+//     },
+//     use: {
+//         externalResourcesRequired: 0,
+//         x: 0,
+//         y: 0,
+//         width: 0,
+//         height: 0,
+//         "xlink:href": 0
+//     },
+//     linearGradient: {
+//         x1: 0,
+//         y1: 0,
+//         x2: 0,
+//         y2: 0,
+//         gradientUnits: 0,
+//         gradientTransform: 0,
+//         spreadMethod: 0,
+//         "xlink:href": 0,
+//         "class": 0
+//     },
+//     radialGradient: {
+//         cx: 0,
+//         cy: 0,
+//         r: 0,
+//         fx: 0,
+//         fy: 0,
+//         gradientUnits: 0,
+//         gradientTransform: 0,
+//         spreadMethod: 0,
+//         "xlink:href": 0,
+//         "class": 0
+//     },
+//     stop: {
+//         offset: 0,
+//         "class": 0
+//     },
+//     pattern: {
+//         viewBox: 0,
+//         preserveAspectRatio: 0,
+//         x: 0,
+//         y: 0,
+//         width: 0,
+//         height: 0,
+//         patternUnits: 0,
+//         patternContentUnits: 0,
+//         patternTransform: 0,
+//         "xlink:href": 0,
+//         "class": 0
+//     },
+//     clipPath: {
+//         transform: 0,
+//         clipPathUnits: 0,
+//         "class": 0
+//     },
+//     mask: {
+//         x: 0,
+//         y: 0,
+//         width: 0,
+//         height: 0,
+//         maskUnits: 0,
+//         maskContentUnits: 0,
+//         "class": 0
+//     },
+//     image: {
+//         preserveAspectRatio: 0,
+//         transform: 0,
+//         x: 0,
+//         y: 0,
+//         width: 0,
+//         height: 0,
+//         "xlink:href": 0,
+//         "class": 0
+//     },
+//     path: {
+//         d: "",
+//         "class": 0
+//     },
+//     g: {
+//         "class": 0
+//     },
+//     feDistantLight: {
+//         azimuth: 0,
+//         elevation: 0
+//     },
+//     fePointLight: {
+//         x: 0,
+//         y: 0,
+//         z: 0
+//     },
+//     feSpotLight: {
+//         x: 0,
+//         y: 0,
+//         z: 0,
+//         pointsAtX: 0,
+//         pointsAtY: 0,
+//         pointsAtZ: 0,
+//         specularExponent: 0,
+//         limitingConeAngle: 0
+//     },
+//     feBlend: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         in2: 0,
+//         mode: 0
+//     },
+//     feColorMatrix: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         type: 0,
+//         values: 0
+//     },
+//     feComponentTransfer: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0
+//     },
+//     feComposite: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         in2: 0,
+//         operator: 0,
+//         k1: 0,
+//         k2: 0,
+//         k3: 0,
+//         k4: 0
+//     },
+//     feConvolveMatrix: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         order: 0,
+//         kernelMatrix: 0,
+//         divisor: 0,
+//         bias: 0,
+//         targetX: 0,
+//         targetY: 0,
+//         edgeMode: 0,
+//         kernelUnitLength: 0,
+//         preserveAlpha: 0
+//     },
+//     feDiffuseLighting: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         surfaceScale: 0,
+//         diffuseConstant: 0,
+//         kernelUnitLength: 0
+//     },
+//     feDisplacementMap: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         in2: 0,
+//         scale: 0,
+//         xChannelSelector: 0,
+//         yChannelSelector: 0
+//     },
+//     feFlood: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "flood-color": 0,
+//         "flood-opacity": 0
+//     },
+//     feGaussianBlur: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         stdDeviation: 0
+//     },
+//     feImage : {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         externalResourcesRequired: 0,
+//         preserveAspectRatio: 0,
+//         "xlink:href": 0
+//     },
+//     feMerge: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0
+//     },
+//     feMergeNode: {
+//         "in": 0
+//     },
+//     feMorphology: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         operator: 0,
+//         radius: 0
+//     },
+//     feOffset: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         dx: 0,
+//         dy: 0
+//     },
+//     feSpecularLighting: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0,
+//         surfaceScale: 0,
+//         specularConstant: 0,
+//         specularExponent: 0,
+//         kernelUnitLength: 0
+//     },
+//     feTile: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         "in": 0
+//     },
+//     feTurbulence: {
+//         height: 0,
+//         result: 0,
+//         width: 0,
+//         x: 0,
+//         y: 0,
+//         style: 0,
+//         baseFrequency: 0,
+//         numOctaves: 0,
+//         seed: 0,
+//         stitchTiles: 0,
+//         type: 0
+//     }
+// },
+// attr4all = {
+//   id: 0,
+//   "class": 0,
+//   "xml:space": 0,
+//   "shape-rendering": 0
+// },
+cssAttr = {
+    "alignment-baseline": 0,
+    "baseline-shift": 0,
+    "clip": 0,
+    "clip-path": 0,
+    "clip-rule": 0,
+    "color": 0,
+    "color-interpolation": 0,
+    "color-interpolation-filters": 0,
+    "color-profile": 0,
+    "color-rendering": 0,
+    "cursor": 0,
+    "direction": 0,
+    "display": 0,
+    "dominant-baseline": 0,
+    "enable-background": 0,
+    "fill": 0,
+    "fill-opacity": 0,
+    "fill-rule": 0,
+    "filter": 0,
+    "flood-color": 0,
+    "flood-opacity": 0,
+    "font": 0,
+    "font-family": 0,
+    "font-size": 0,
+    "font-size-adjust": 0,
+    "font-stretch": 0,
+    "font-style": 0,
+    "font-variant": 0,
+    "font-weight": 0,
+    "glyph-orientation-horizontal": 0,
+    "glyph-orientation-vertical": 0,
+    "image-rendering": 0,
+    "kerning": 0,
+    "letter-spacing": 0,
+    "lighting-color": 0,
+    "marker": 0,
+    "marker-end": 0,
+    "marker-mid": 0,
+    "marker-start": 0,
+    "mask": 0,
+    "opacity": 0,
+    "overflow": 0,
+    "pointer-events": 0,
+    "shape-rendering": 0,
+    "stop-color": 0,
+    "stop-opacity": 0,
+    "stroke": 0,
+    "stroke-dasharray": 0,
+    "stroke-dashoffset": 0,
+    "stroke-linecap": 0,
+    "stroke-linejoin": 0,
+    "stroke-miterlimit": 0,
+    "stroke-opacity": 0,
+    "stroke-width": 0,
+    "text-anchor": 0,
+    "text-decoration": 0,
+    "text-rendering": 0,
+    "unicode-bidi": 0,
+    "visibility": 0,
+    "word-spacing": 0,
+    "writing-mode": 0
 };
-availableAttributes.feFuncR = availableAttributes.feFuncG = availableAttributes.feFuncB = availableAttributes.feFuncA = {
-    type: 0,
-    tableValues: 0,
-    slope: 0,
-    intercept: 0,
-    amplitude: 0,
-    exponent: 0,
-    offset: 0
-};
+
+// availableAttributes.feFuncR = availableAttributes.feFuncG = availableAttributes.feFuncB = availableAttributes.feFuncA = {
+//     type: 0,
+//     tableValues: 0,
+//     slope: 0,
+//     intercept: 0,
+//     amplitude: 0,
+//     exponent: 0,
+//     offset: 0
+// };
 eve.on("snap.util.attr", function (value) {
     var att = eve.nt(),
         attr = {};
     att = att.substring(att.lastIndexOf(".") + 1);
     attr[att] = value;
     var style = att.replace(/-(\w)/gi, function (all, letter) {
-        return letter.toUpperCase();
-    });
-    if (availableAttributes[has](this.type) && (availableAttributes[this.type][has](att) || att == "id")) {
-        $(this.node, attr);
-    } else {
+            return letter.toUpperCase();
+        }),
+        css = att.replace(/[A-Z]/g, function (letter) {
+            return "-" + letter.toLowerCase();
+        });
+    if (cssAttr[has](css)) {
         this.node.style[style] = value == null ? E : value;
+    } else {
+        $(this.node, attr);
     }
+    // if (availableAttributes[has](this.type) && (availableAttributes[this.type][has](att) || att == "id")) {
+    //     $(this.node, attr);
+    // } else {
+    //     this.node.style[style] = value == null ? E : value;
+    // }
 });
 eve.on("snap.util.getattr.transform", function () {
     eve.stop();
@@ -4477,10 +4535,13 @@ eve.on("snap.util.getattr.path", function () {
 eve.on("snap.util.getattr", function () {
     var att = eve.nt();
     att = att.substring(att.lastIndexOf(".") + 1);
-    if (availableAttributes[has](this.type) && availableAttributes[this.type][has](att)) {
-        return this.node.getAttribute(att);
+    var css = att.replace(/[A-Z]/g, function (letter) {
+        return "-" + letter.toLowerCase();
+    });
+    if (cssAttr[has](css)) {
+        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(css);
     } else {
-        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(att);
+        return $(this.node, att);
     }
 });
 Snap.plugin = function (f) {
