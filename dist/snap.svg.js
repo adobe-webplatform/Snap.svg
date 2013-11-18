@@ -1999,9 +1999,30 @@ function extractTransform(el, tstr) {
     }
 }
 Snap._unit2px = unit2px;
+var contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
+    function (a, b) {
+        var adown = a.nodeType == 9 ? a.documentElement : a,
+            bup = b && b.parentNode;
+            return a == bup || !!(bup && bup.nodeType == 1 && (
+                adown.contains ?
+                    adown.contains(bup) :
+                    a.compareDocumentPosition && a.compareDocumentPosition(bup) & 16
+            ));
+    } :
+    function (a, b) {
+        if (b) {
+            while (b = b.parentNode) {
+                if (b == a) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
 function getSomeDefs(el) {
-    if (Snap._.someDefs) {
-        return Snap._.someDefs;
+    var cache = Snap._.someDefs;
+    if (cache && contains(cache.ownerDocument.documentElement, cache)) {
+        return cache;
     }
     var p = el.paper ||
             (el.node.parentNode && Snap(el.node.parentNode)) ||
@@ -3969,376 +3990,7 @@ eve.on("snap.util.attr.text", function (value) {
     eve.stop();
 })(-1);
 // default
-var // availableAttributes = {
-//     rect: {
-//         x: 0,
-//         y: 0,
-//         width: 0,
-//         height: 0,
-//         rx: 0,
-//         ry: 0,
-//         "class": 0
-//     },
-//     circle: {
-//         cx: 0,
-//         cy: 0,
-//         r: 0,
-//         "class": 0
-//     },
-//     ellipse: {
-//         cx: 0,
-//         cy: 0,
-//         rx: 0,
-//         ry: 0,
-//         "class": 0
-//     },
-//     line: {
-//         x1: 0,
-//         y1: 0,
-//         x2: 0,
-//         y2: 0,
-//         "class": 0
-//     },
-//     polyline: {
-//         points: "",
-//         "class": 0
-//     },
-//     polygon: {
-//         points: "",
-//         "class": 0
-//     },
-//     text: {
-//         x: 0,
-//         y: 0,
-//         dx: 0,
-//         dy: 0,
-//         rotate: 0,
-//         textLength: 0,
-//         lengthAdjust: 0,
-//         "class": 0
-//     },
-//     tspan: {
-//         x: 0,
-//         y: 0,
-//         dx: 0,
-//         dy: 0,
-//         rotate: 0,
-//         textLength: 0,
-//         lengthAdjust: 0,
-//         "class": 0
-//     },
-//     textPath: {
-//         "xlink:href": 0,
-//         startOffset: 0,
-//         method: 0,
-//         spacing: 0,
-//         "class": 0
-//     },
-//     marker: {
-//         viewBox: 0,
-//         preserveAspectRatio: 0,
-//         refX: 0,
-//         refY: 0,
-//         markerUnits: 0,
-//         markerWidth: 0,
-//         markerHeight: 0,
-//         orient: 0,
-//         "class": 0
-//     },
-//     use: {
-//         externalResourcesRequired: 0,
-//         x: 0,
-//         y: 0,
-//         width: 0,
-//         height: 0,
-//         "xlink:href": 0
-//     },
-//     linearGradient: {
-//         x1: 0,
-//         y1: 0,
-//         x2: 0,
-//         y2: 0,
-//         gradientUnits: 0,
-//         gradientTransform: 0,
-//         spreadMethod: 0,
-//         "xlink:href": 0,
-//         "class": 0
-//     },
-//     radialGradient: {
-//         cx: 0,
-//         cy: 0,
-//         r: 0,
-//         fx: 0,
-//         fy: 0,
-//         gradientUnits: 0,
-//         gradientTransform: 0,
-//         spreadMethod: 0,
-//         "xlink:href": 0,
-//         "class": 0
-//     },
-//     stop: {
-//         offset: 0,
-//         "class": 0
-//     },
-//     pattern: {
-//         viewBox: 0,
-//         preserveAspectRatio: 0,
-//         x: 0,
-//         y: 0,
-//         width: 0,
-//         height: 0,
-//         patternUnits: 0,
-//         patternContentUnits: 0,
-//         patternTransform: 0,
-//         "xlink:href": 0,
-//         "class": 0
-//     },
-//     clipPath: {
-//         transform: 0,
-//         clipPathUnits: 0,
-//         "class": 0
-//     },
-//     mask: {
-//         x: 0,
-//         y: 0,
-//         width: 0,
-//         height: 0,
-//         maskUnits: 0,
-//         maskContentUnits: 0,
-//         "class": 0
-//     },
-//     image: {
-//         preserveAspectRatio: 0,
-//         transform: 0,
-//         x: 0,
-//         y: 0,
-//         width: 0,
-//         height: 0,
-//         "xlink:href": 0,
-//         "class": 0
-//     },
-//     path: {
-//         d: "",
-//         "class": 0
-//     },
-//     g: {
-//         "class": 0
-//     },
-//     feDistantLight: {
-//         azimuth: 0,
-//         elevation: 0
-//     },
-//     fePointLight: {
-//         x: 0,
-//         y: 0,
-//         z: 0
-//     },
-//     feSpotLight: {
-//         x: 0,
-//         y: 0,
-//         z: 0,
-//         pointsAtX: 0,
-//         pointsAtY: 0,
-//         pointsAtZ: 0,
-//         specularExponent: 0,
-//         limitingConeAngle: 0
-//     },
-//     feBlend: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         in2: 0,
-//         mode: 0
-//     },
-//     feColorMatrix: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         type: 0,
-//         values: 0
-//     },
-//     feComponentTransfer: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0
-//     },
-//     feComposite: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         in2: 0,
-//         operator: 0,
-//         k1: 0,
-//         k2: 0,
-//         k3: 0,
-//         k4: 0
-//     },
-//     feConvolveMatrix: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         order: 0,
-//         kernelMatrix: 0,
-//         divisor: 0,
-//         bias: 0,
-//         targetX: 0,
-//         targetY: 0,
-//         edgeMode: 0,
-//         kernelUnitLength: 0,
-//         preserveAlpha: 0
-//     },
-//     feDiffuseLighting: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         surfaceScale: 0,
-//         diffuseConstant: 0,
-//         kernelUnitLength: 0
-//     },
-//     feDisplacementMap: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         in2: 0,
-//         scale: 0,
-//         xChannelSelector: 0,
-//         yChannelSelector: 0
-//     },
-//     feFlood: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "flood-color": 0,
-//         "flood-opacity": 0
-//     },
-//     feGaussianBlur: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         stdDeviation: 0
-//     },
-//     feImage : {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         externalResourcesRequired: 0,
-//         preserveAspectRatio: 0,
-//         "xlink:href": 0
-//     },
-//     feMerge: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0
-//     },
-//     feMergeNode: {
-//         "in": 0
-//     },
-//     feMorphology: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         operator: 0,
-//         radius: 0
-//     },
-//     feOffset: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         dx: 0,
-//         dy: 0
-//     },
-//     feSpecularLighting: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0,
-//         surfaceScale: 0,
-//         specularConstant: 0,
-//         specularExponent: 0,
-//         kernelUnitLength: 0
-//     },
-//     feTile: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         "in": 0
-//     },
-//     feTurbulence: {
-//         height: 0,
-//         result: 0,
-//         width: 0,
-//         x: 0,
-//         y: 0,
-//         style: 0,
-//         baseFrequency: 0,
-//         numOctaves: 0,
-//         seed: 0,
-//         stitchTiles: 0,
-//         type: 0
-//     }
-// },
-// attr4all = {
-//   id: 0,
-//   "class": 0,
-//   "xml:space": 0,
-//   "shape-rendering": 0
-// },
-cssAttr = {
+var cssAttr = {
     "alignment-baseline": 0,
     "baseline-shift": 0,
     "clip": 0,
@@ -4402,15 +4054,6 @@ cssAttr = {
     "writing-mode": 0
 };
 
-// availableAttributes.feFuncR = availableAttributes.feFuncG = availableAttributes.feFuncB = availableAttributes.feFuncA = {
-//     type: 0,
-//     tableValues: 0,
-//     slope: 0,
-//     intercept: 0,
-//     amplitude: 0,
-//     exponent: 0,
-//     offset: 0
-// };
 eve.on("snap.util.attr", function (value) {
     var att = eve.nt(),
         attr = {};
@@ -4427,11 +4070,6 @@ eve.on("snap.util.attr", function (value) {
     } else {
         $(this.node, attr);
     }
-    // if (availableAttributes[has](this.type) && (availableAttributes[this.type][has](att) || att == "id")) {
-    //     $(this.node, attr);
-    // } else {
-    //     this.node.style[style] = value == null ? E : value;
-    // }
 });
 eve.on("snap.util.getattr.transform", function () {
     eve.stop();

@@ -1253,9 +1253,30 @@ function extractTransform(el, tstr) {
     }
 }
 Snap._unit2px = unit2px;
+var contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
+    function (a, b) {
+        var adown = a.nodeType == 9 ? a.documentElement : a,
+            bup = b && b.parentNode;
+            return a == bup || !!(bup && bup.nodeType == 1 && (
+                adown.contains ?
+                    adown.contains(bup) :
+                    a.compareDocumentPosition && a.compareDocumentPosition(bup) & 16
+            ));
+    } :
+    function (a, b) {
+        if (b) {
+            while (b = b.parentNode) {
+                if (b == a) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
 function getSomeDefs(el) {
-    if (Snap._.someDefs) {
-        return Snap._.someDefs;
+    var cache = Snap._.someDefs;
+    if (cache && contains(cache.ownerDocument.documentElement, cache)) {
+        return cache;
     }
     var p = el.paper ||
             (el.node.parentNode && Snap(el.node.parentNode)) ||
