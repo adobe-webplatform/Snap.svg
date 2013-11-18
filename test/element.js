@@ -51,6 +51,13 @@ describe("Element methods", function () {
         expect(rect2.node.parentNode).to.be(s.node);
         expect(result).to.be(s);
     });
+    it("Element.appendTo", function() {
+        var rect = s.rect(10, 20, 30, 40);
+        var result = rect.appendTo(s);
+        expect(rect.node.parentNode).to.be(s.node);
+        expect(s.node.lastChild).to.be(rect.node);
+        expect(result).to.be(rect);
+    });
     it("Element.after", function() {
         var circle = s.circle(10, 20, 30);
         var rect = s.rect(10, 20, 30, 40);
@@ -69,6 +76,18 @@ describe("Element methods", function () {
         result = group.prepend(circle);
         expect(group.node.firstChild).to.be(circle.node);
         expect(result).to.be(group);
+    });
+    it("Element.prependTo", function() {
+        var rect = s.rect(10, 20, 30, 40);
+        var circle = s.circle(10, 20, 30);
+        var group = s.group();
+        s.append(group);
+        var result = rect.prependTo(group);
+        expect(group.node.firstChild).to.be(rect.node);
+        expect(result).to.be(rect);
+        result = circle.prependTo(group);
+        expect(group.node.firstChild).to.be(circle.node);
+        expect(result).to.be(circle);
     });
     it("Element.insertAfter", function() {
         var circle = s.circle(10, 20, 30);
