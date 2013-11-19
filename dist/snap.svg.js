@@ -2401,6 +2401,20 @@ function arrayFirstValue(arr) {
         return this;
     };
     /*\
+     * Element.appendTo
+     [ method ]
+     **
+     * Appends the current element to the given one
+     **
+     - el (Element) parent element to append to
+     = (Element) the child element
+    \*/
+    elproto.appendTo = function (el) {
+        el = wrap(el);
+        el.append(this);
+        return this;
+    };
+    /*\
      * Element.prepend
      [ method ]
      **
@@ -2413,6 +2427,20 @@ function arrayFirstValue(arr) {
         el = wrap(el);
         this.node.insertBefore(el.node, this.node.firstChild);
         el.paper = this.paper;
+        return this;
+    };
+    /*\
+     * Element.prependTo
+     [ method ]
+     **
+     * Prepends the current element to the given one
+     **
+     - el (Element) parent element to prepend to
+     = (Element) the child element
+    \*/
+    elproto.prependTo = function (el) {
+        el = wrap(el);
+        el.prepend(this);
         return this;
     };
     /*\
