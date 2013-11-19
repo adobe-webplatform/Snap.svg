@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-11-18
+// build: 2013-11-19
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2013,7 +2013,8 @@ var contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
     } :
     function (a, b) {
         if (b) {
-            while (b = b.parentNode) {
+            while (b) {
+                b = b.parentNode;
                 if (b == a) {
                     return true;
                 }
@@ -2187,13 +2188,7 @@ function Element(el) {
     this.type = el.tagName;
     this.anims = {};
     this._ = {
-        transform: [],
-        sx: 1,
-        sy: 1,
-        deg: 0,
-        dx: 0,
-        dy: 0,
-        dirty: 1
+        transform: []
     };
     el.snap = id;
     hub[id] = this;
@@ -2537,7 +2532,7 @@ function arrayFirstValue(arr) {
         if (value == null) {
             value = this.attr(attr);
         }
-        return unit2px(this, attr, value);
+        return +unit2px(this, attr, value);
     };
     // SIERRA Element.use(): I suggest adding a note about how to access the original element the returned <use> instantiates. It's a part of SVG with which ordinary web developers may be least familiar.
     /*\
@@ -4184,6 +4179,51 @@ eve.on("snap.util.getattr", function () {
         return $(this.node, att);
     }
 });
+var getOffset = function (elem) {
+    var box = elem.getBoundingClientRect(),
+        doc = elem.ownerDocument,
+        body = doc.body,
+        docElem = doc.documentElement,
+        clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
+        top  = box.top  + (g.win.pageYOffset || docElem.scrollTop || body.scrollTop ) - clientTop,
+        left = box.left + (g.win.pageXOffset || docElem.scrollLeft || body.scrollLeft) - clientLeft;
+    return {
+        y: top,
+        x: left
+    };
+};
+/*\
+ * Snap.getElementByPoint
+ [ method ]
+ **
+ * Returns you topmost element under given point.
+ **
+ = (object) Snap element object
+ - x (number) x coordinate from the top left corner of the window
+ - y (number) y coordinate from the top left corner of the window
+ > Usage
+ | Snap.getElementByPoint(mouseX, mouseY).attr({stroke: "#f00"});
+\*/
+Snap.getElementByPoint = function (x, y) {
+    var paper = this,
+        svg = paper.canvas,
+        target = glob.doc.elementFromPoint(x, y);
+    if (glob.win.opera && target.tagName == "svg") {
+        var so = getOffset(target),
+            sr = target.createSVGRect();
+        sr.x = x - so.x;
+        sr.y = y - so.y;
+        sr.width = sr.height = 1;
+        var hits = target.getIntersectionList(sr, null);
+        if (hits.length) {
+            target = hits[hits.length - 1];
+        }
+    }
+    if (!target) {
+        return null;
+    }
+    return wrap(target);
+};
 Snap.plugin = function (f) {
     f(Snap, Element, Paper, glob);
 };
