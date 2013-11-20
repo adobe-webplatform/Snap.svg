@@ -3076,18 +3076,21 @@ function arrayFirstValue(arr) {
  = (Fragment) the @Fragment
 \*/
 Snap.parse = function (svg) {
-    var f,
+    var f = glob.doc.createDocumentFragment(),
+        full = true,
         div = glob.doc.createElement("div");
-    svg = "<svg>" + svg + "</svg>";
+    svg = Str(svg);
+    if (!svg.match(/^\s*<\s*svg(?:\s|>)/)) {
+        svg = "<svg>" + svg + "</svg>";
+        full = false;
+    }
     div.innerHTML = svg;
     svg = div.getElementsByTagName("svg")[0];
-    if (svg) {
-        f = new Fragment(svg);
-        div.innerHTML = E;
-        return f;
+    while (svg && svg.firstChild) {
+        f.appendChild(svg.firstChild);
     }
     div.innerHTML = E;
-    return new Fragment(glob.doc.createDocumentFragment());
+    return new Fragment(f);
 };
 function Fragment(frag) {
     this.node = frag;
@@ -6518,11 +6521,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             filter = $("filter");
         $(filter, {
             id: id,
-            filterUnits: "userSpaceOnUse",
-            x: 0,
-            y: 0,
-            width: width,
-            height: height
+            filterUnits: "userSpaceOnUse"
         });
         filter.appendChild(f.node);
         paper.defs.appendChild(filter);

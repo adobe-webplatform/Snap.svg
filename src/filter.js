@@ -46,11 +46,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             filter = $("filter");
         $(filter, {
             id: id,
-            filterUnits: "userSpaceOnUse",
-            x: 0,
-            y: 0,
-            width: width,
-            height: height
+            filterUnits: "userSpaceOnUse"
         });
         filter.appendChild(f.node);
         paper.defs.appendChild(filter);
