@@ -3504,6 +3504,21 @@ Snap.getElementByPoint = function (x, y) {
     }
     return wrap(target);
 };
+/*\
+ * Snap.plugin
+ [ method ]
+ **
+ * Let you write plugins. You pass in a function with four arguments, like this:
+ | Snap.plugin(function (Snap, Element, Paper, global) {
+ |     Snap.newmethod = function () {};
+ |     Element.prototype.newmethod = function () {};
+ |     Paper.prototype.newmethod = function () {};
+ | });
+ * Inside the function you have access to all main objects (and their
+ * prototypes). This allow you to extend anything you want.
+ **
+ - f (function) your plugin body
+\*/
 Snap.plugin = function (f) {
     f(Snap, Element, Paper, glob);
 };

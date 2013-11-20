@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-11-19
+// build: 2013-11-20
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -4252,6 +4252,21 @@ Snap.getElementByPoint = function (x, y) {
     }
     return wrap(target);
 };
+/*\
+ * Snap.plugin
+ [ method ]
+ **
+ * Let you write plugins. You pass in a function with four arguments, like this:
+ | Snap.plugin(function (Snap, Element, Paper, global) {
+ |     Snap.newmethod = function () {};
+ |     Element.prototype.newmethod = function () {};
+ |     Paper.prototype.newmethod = function () {};
+ | });
+ * Inside the function you have access to all main objects (and their
+ * prototypes). This allow you to extend anything you want.
+ **
+ - f (function) your plugin body
+\*/
 Snap.plugin = function (f) {
     f(Snap, Element, Paper, glob);
 };
@@ -5689,6 +5704,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             if (callback.call(thisArg, this.items[i], i) === false) {
                 return this;
             }
+        }
+        return this;
+    };
+    setproto.remove = function () {
+        while (this.length) {
+            this.pop().remove();
         }
         return this;
     };

@@ -81,6 +81,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return this;
     };
+    setproto.remove = function () {
+        while (this.length) {
+            this.pop().remove();
+        }
+        return this;
+    };
     setproto.attr = function (value) {
         for (var i = 0, ii = this.items.length; i < ii; i++) {
             this.items[i].attr(value);

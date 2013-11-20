@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <base href="http://snapsvg.io">
+        <base href="http://snapsvg.io/docs/">
         <title>Snap.svg API Reference</title>
         <link rel="shortcut icon" href="/assets/favicon.ico?v=1">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -637,6 +637,10 @@
                               
                               <li class="dr-lvl2">
                                   <a href="#Snap.path.toRelative" class="dr-method"><span>Snap.path.toRelative()</span></a>
+                              </li>
+                              
+                              <li class="dr-lvl1">
+                                  <a href="#Snap.plugin" class="dr-method"><span>Snap.plugin()</span></a>
                               </li>
                               
                               <li class="dr-lvl1">
@@ -7526,6 +7530,76 @@ half the width, from black to white:
                           </section>
                       </article>
                       
+                      <article id="Snap.plugin">
+                          <header>
+                              <h3 class="dr-method">Snap.plugin(f)<a href="#Snap.plugin" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3522 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3522">&#x27ad;</a></h3>
+                          </header>
+                          <section>
+                              <div class="extra" id="Snap.plugin-extra"></div>
+                              <div class="dr-method">
+                                  
+                                  
+                                  
+                                  
+                                  <p>Let you write plugins. You pass in a function with four arguments, like this:
+</p>
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  <section class="code"><pre class="javascript code"><code data-language="javascript" class="language-javascript">Snap.plugin(function (Snap, Element, Paper, global) {
+    Snap.newmethod = function () {};
+    Element.prototype.newmethod = function () {};
+    Paper.prototype.newmethod = function () {};
+});</code></pre></section>
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  <p>Inside the function you have access to all main objects (and their
+prototypes). This allow you to extend anything you want.
+</p>
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  <div class="topcoat-list__container">
+                                      <h3 class="topcoat-list__header">Parameters</h3>
+                                      <ol class="topcoat-list">
+                                          <li class="topcoat-list__item"><span class="dr-param">f</span>
+                                              <span class="dr-type"><em class="dr-type-function">function</em> </span>
+                                              <span class="dr-description">your plugin body</span></li>
+                                          
+                                      </ol>
+                                  </div>
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                                  
+                              </div>
+                          </section>
+                      </article>
+                      
                       <article id="mina">
                           <header>
                               <h3 class="dr-method">mina(a, A, b, B, get, set, [easing])<a href="#mina" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 159 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#159">&#x27ad;</a></h3>
@@ -12434,7 +12508,7 @@ Converts path to a new path where all segments are cubic beziér curves
                       
                       <article id="Set.clear">
                           <header>
-                              <h3 class="dr-method">Set.clear()<a href="#Set.clear" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 96 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#96">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Set.clear()<a href="#Set.clear" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 102 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#102">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Set.clear-extra"></div>
@@ -12459,7 +12533,7 @@ Converts path to a new path where all segments are cubic beziér curves
                       
                       <article id="Set.splice">
                           <header>
-                              <h3 class="dr-method">Set.splice(index, count, [insertion…])<a href="#Set.splice" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 112 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#112">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Set.splice(index, count, [insertion…])<a href="#Set.splice" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 118 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#118">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Set.splice-extra"></div>
@@ -12525,7 +12599,7 @@ Converts path to a new path where all segments are cubic beziér curves
                       
                       <article id="Set.exclude">
                           <header>
-                              <h3 class="dr-method">Set.exclude(element)<a href="#Set.exclude" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 147 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#147">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Set.exclude(element)<a href="#Set.exclude" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 153 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#153">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Set.exclude-extra"></div>
