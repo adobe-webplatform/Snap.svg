@@ -137,7 +137,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         var aUnit = a.match(reUnit),
-            bUnit = b.match(reUnit);
+            bUnit = Str(b).match(reUnit);
         if (aUnit && aUnit == bUnit) {
             return {
                 from: parseFloat(a),

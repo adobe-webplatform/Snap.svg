@@ -2027,8 +2027,8 @@ function getSomeDefs(el) {
     if (cache && contains(cache.ownerDocument.documentElement, cache)) {
         return cache;
     }
-    var p = el.paper ||
-            (el.node.parentNode && Snap(el.node.parentNode)) ||
+    var p = (el.node.ownerSVGElement && wrap(el.node.ownerSVGElement)) ||
+            (el.node.parentNode && wrap(el.node.parentNode)) ||
             Snap.select("svg") ||
             Snap(0, 0),
         defs = p.select("defs").node;
@@ -3086,8 +3086,14 @@ Snap.parse = function (svg) {
     }
     div.innerHTML = svg;
     svg = div.getElementsByTagName("svg")[0];
-    while (svg && svg.firstChild) {
-        f.appendChild(svg.firstChild);
+    if (svg) {
+        if (full) {
+            f = svg;
+        } else {
+            while (svg.firstChild) {
+                f.appendChild(svg.firstChild);
+            }
+        }
     }
     div.innerHTML = E;
     return new Fragment(f);
@@ -5979,7 +5985,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         var aUnit = a.match(reUnit),
-            bUnit = b.match(reUnit);
+            bUnit = Str(b).match(reUnit);
         if (aUnit && aUnit == bUnit) {
             return {
                 from: parseFloat(a),
