@@ -2272,15 +2272,22 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
-    // SIERRA Element.toString(): Recommend renaming this _outerSVG_ to keep it consistent with HTML & innerSVG, and also to avoid confusing it with what textContent() does. Cross-reference with innerSVG.
+    /*\
+     * Element.outerSVG
+     [ method ]
+     **
+     * Returns SVG code for the element, equivalent to HTML's `outerHTML`.
+     *
+     * See also @Element.innerSVG
+     = (string) SVG code for the element
+    \*/
     /*\
      * Element.toString
      [ method ]
      **
-     * Returns SVG code for the element, equivalent to HTML's `outerHTML`
-     = (string) SVG code for the element
+     * See @Element.outerSVG
     \*/
-    elproto.toString = toString(1);
+    elproto.outerSVG = elproto.toString = toString(1);
     /*\
      * Element.innerSVG
      [ method ]
