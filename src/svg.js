@@ -1152,7 +1152,7 @@ function svgTransform2string(tstr) {
     });
     return res;
 }
-var rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d");
+var rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d", "i");
 function transform2matrix(tstr, bbox) {
     var tdata = parseTransformString(tstr),
         m = new Matrix;
