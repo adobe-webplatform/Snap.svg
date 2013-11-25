@@ -114,11 +114,11 @@ var mina = (function (eve) {
             if (isArray(a.start)) {
                 res = [];
                 for (var j = 0, jj = a.start.length; j < jj; j++) {
-                    res[j] = a.start[j] +
+                    res[j] = +a.start[j] +
                         (a.end[j] - a.start[j]) * a.easing(a.s);
                 }
             } else {
-                res = a.start + (a.end - a.start) * a.easing(a.s);
+                res = +a.start + (a.end - a.start) * a.easing(a.s);
             }
             a.set(res);
         }

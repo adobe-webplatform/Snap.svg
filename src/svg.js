@@ -528,9 +528,6 @@ function Matrix(a, b, c, d, e, f) {
         a[0] && (a[0] /= mag);
         a[1] && (a[1] /= mag);
     }
-// SIERRA Matrix.split(): HTML formatting for the return value is scrambled. It should appear _Returns: {OBJECT} in format:..._
-// SIERRA Matrix.split(): the _shear_ parameter needs to be detailed. Is it an angle? What does it affect?
-// SIERRA Matrix.split(): The idea of _simple_ transforms needs to be detailed and contrasted with any alternatives.
     /*\
      * Matrix.split
      [ method ]
@@ -580,7 +577,6 @@ function Matrix(a, b, c, d, e, f) {
         out.noRotation = !+out.shear.toFixed(9) && !out.rotate;
         return out;
     };
-// SIERRA Matrix.toTransformString(): The format of the string needs to be detailed.
     /*\
      * Matrix.toTransformString
      [ method ]
@@ -602,7 +598,6 @@ function Matrix(a, b, c, d, e, f) {
         }
     };
 })(Matrix.prototype);
-// SIERRA Unclear the difference between the two matrix formats ("parameters" vs svgMatrix). See my comment about Element.matrix().
 /*\
  * Snap.Matrix
  [ method ]
@@ -1152,7 +1147,8 @@ function svgTransform2string(tstr) {
     });
     return res;
 }
-var rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d", "i");
+Snap._.svgTransform2string = svgTransform2string;
+Snap._.rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d", "i");
 function transform2matrix(tstr, bbox) {
     var tdata = parseTransformString(tstr),
         m = new Matrix;
@@ -1168,9 +1164,7 @@ function transform2matrix(tstr, bbox) {
                 x2,
                 y2,
                 bb;
-            if (command == "t" && tlen == 2){
-                m.translate(t[1], 0);
-            } else if (command == "t" && tlen == 3) {
+            if (command == "t" && tlen == 3) {
                 if (absolute) {
                     x1 = inver.x(0, 0);
                     y1 = inver.y(0, 0);
@@ -1237,7 +1231,7 @@ function extractTransform(el, tstr) {
         }
         tstr = svgTransform2string(tstr);
     } else {
-        if (!rgTransform.test(tstr)) {
+        if (!Snap._.rgTransform.test(tstr)) {
             tstr = svgTransform2string(tstr);
         } else {
             tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
@@ -2586,6 +2580,12 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      |     cy: 10,
      |     r: 10
      | });
+     | // and the same as
+     | var c = paper.el("circle", {
+     |     cx: 10,
+     |     cy: 10,
+     |     r: 10
+     | });
     \*/
     proto.el = function (name, attr) {
         return make(name, this.node).attr(attr);
@@ -2611,27 +2611,25 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      | var c = paper.rect(40, 40, 50, 50, 10);
     \*/
     proto.rect = function (x, y, w, h, rx, ry) {
-        var el = make("rect", this.node);
+        var attr;
         if (ry == null) {
             ry = rx;
         }
         if (is(x, "object") && "x" in x) {
-            el.attr(x);
+            attr = x;
         } else if (x != null) {
-            el.attr({
+            attr = {
                 x: x,
                 y: y,
                 width: w,
                 height: h
-            });
+            };
             if (rx != null) {
-                el.attr({
-                    rx: rx,
-                    ry: ry
-                });
+                attr.rx = rx;
+                attr.ry = ry;
             }
         }
-        return el;
+        return this.el("rect", attr);
     };
     /*\
      * Paper.circle
@@ -2648,17 +2646,17 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      | var c = paper.circle(50, 50, 40);
     \*/
     proto.circle = function (cx, cy, r) {
-        var el = make("circle", this.node);
+        var attr;
         if (is(cx, "object") && "cx" in cx) {
-            el.attr(cx);
+            attr = cx;
         } else if (cx != null) {
-            el.attr({
+            attr = {
                 cx: cx,
                 cy: cy,
                 r: r
-            });
+            };
         }
-        return el;
+        return this.el("circle", attr);
     };
 
     /*\
@@ -2674,7 +2672,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - height (number) height of the image
      = (object) the `image` element
      * or
-     = (object) Raphaël element object with type `image`
+     = (object) Snap element object with type `image`
      **
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);

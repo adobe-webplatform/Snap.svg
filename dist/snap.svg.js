@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-11-21
+// build: 2013-11-25
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -516,11 +516,11 @@ var mina = (function (eve) {
             if (isArray(a.start)) {
                 res = [];
                 for (var j = 0, jj = a.start.length; j < jj; j++) {
-                    res[j] = a.start[j] +
+                    res[j] = +a.start[j] +
                         (a.end[j] - a.start[j]) * a.easing(a.s);
                 }
             } else {
-                res = a.start + (a.end - a.start) * a.easing(a.s);
+                res = +a.start + (a.end - a.start) * a.easing(a.s);
             }
             a.set(res);
         }
@@ -1276,9 +1276,6 @@ function Matrix(a, b, c, d, e, f) {
         a[0] && (a[0] /= mag);
         a[1] && (a[1] /= mag);
     }
-// SIERRA Matrix.split(): HTML formatting for the return value is scrambled. It should appear _Returns: {OBJECT} in format:..._
-// SIERRA Matrix.split(): the _shear_ parameter needs to be detailed. Is it an angle? What does it affect?
-// SIERRA Matrix.split(): The idea of _simple_ transforms needs to be detailed and contrasted with any alternatives.
     /*\
      * Matrix.split
      [ method ]
@@ -1328,7 +1325,6 @@ function Matrix(a, b, c, d, e, f) {
         out.noRotation = !+out.shear.toFixed(9) && !out.rotate;
         return out;
     };
-// SIERRA Matrix.toTransformString(): The format of the string needs to be detailed.
     /*\
      * Matrix.toTransformString
      [ method ]
@@ -1350,7 +1346,6 @@ function Matrix(a, b, c, d, e, f) {
         }
     };
 })(Matrix.prototype);
-// SIERRA Unclear the difference between the two matrix formats ("parameters" vs svgMatrix). See my comment about Element.matrix().
 /*\
  * Snap.Matrix
  [ method ]
@@ -1900,7 +1895,8 @@ function svgTransform2string(tstr) {
     });
     return res;
 }
-var rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d", "i");
+Snap._.svgTransform2string = svgTransform2string;
+Snap._.rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d", "i");
 function transform2matrix(tstr, bbox) {
     var tdata = parseTransformString(tstr),
         m = new Matrix;
@@ -1983,7 +1979,7 @@ function extractTransform(el, tstr) {
         }
         tstr = svgTransform2string(tstr);
     } else {
-        if (!rgTransform.test(tstr)) {
+        if (!Snap._.rgTransform.test(tstr)) {
             tstr = svgTransform2string(tstr);
         } else {
             tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
@@ -3020,15 +3016,22 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
-    // SIERRA Element.toString(): Recommend renaming this _outerSVG_ to keep it consistent with HTML & innerSVG, and also to avoid confusing it with what textContent() does. Cross-reference with innerSVG.
+    /*\
+     * Element.outerSVG
+     [ method ]
+     **
+     * Returns SVG code for the element, equivalent to HTML's `outerHTML`.
+     *
+     * See also @Element.innerSVG
+     = (string) SVG code for the element
+    \*/
     /*\
      * Element.toString
      [ method ]
      **
-     * Returns SVG code for the element, equivalent to HTML's `outerHTML`
-     = (string) SVG code for the element
+     * See @Element.outerSVG
     \*/
-    elproto.toString = toString(1);
+    elproto.outerSVG = elproto.toString = toString(1);
     /*\
      * Element.innerSVG
      [ method ]
@@ -3325,6 +3328,12 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      |     cy: 10,
      |     r: 10
      | });
+     | // and the same as
+     | var c = paper.el("circle", {
+     |     cx: 10,
+     |     cy: 10,
+     |     r: 10
+     | });
     \*/
     proto.el = function (name, attr) {
         return make(name, this.node).attr(attr);
@@ -3350,27 +3359,25 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      | var c = paper.rect(40, 40, 50, 50, 10);
     \*/
     proto.rect = function (x, y, w, h, rx, ry) {
-        var el = make("rect", this.node);
+        var attr;
         if (ry == null) {
             ry = rx;
         }
         if (is(x, "object") && "x" in x) {
-            el.attr(x);
+            attr = x;
         } else if (x != null) {
-            el.attr({
+            attr = {
                 x: x,
                 y: y,
                 width: w,
                 height: h
-            });
+            };
             if (rx != null) {
-                el.attr({
-                    rx: rx,
-                    ry: ry
-                });
+                attr.rx = rx;
+                attr.ry = ry;
             }
         }
-        return el;
+        return this.el("rect", attr);
     };
     /*\
      * Paper.circle
@@ -3387,17 +3394,17 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      | var c = paper.circle(50, 50, 40);
     \*/
     proto.circle = function (cx, cy, r) {
-        var el = make("circle", this.node);
+        var attr;
         if (is(cx, "object") && "cx" in cx) {
-            el.attr(cx);
+            attr = cx;
         } else if (cx != null) {
-            el.attr({
+            attr = {
                 cx: cx,
                 cy: cy,
                 r: r
-            });
+            };
         }
-        return el;
+        return this.el("circle", attr);
     };
 
     /*\
@@ -3413,7 +3420,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - height (number) height of the image
      = (object) the `image` element
      * or
-     = (object) Raphaël element object with type `image`
+     = (object) Snap element object with type `image`
      **
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);
@@ -5971,7 +5978,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
-            // TODO: b could be an SVG transform string or matrix
+            if (b instanceof Snap.Matrix) {
+                b = b.toTransformString();
+            }
+            if (!Snap._.rgTransform.test(b)) {
+                b = Snap._.svgTransform2string(b);
+            }
             return equaliseTransform(a, b, function () {
                 return el.getBBox(1);
             });
@@ -5982,6 +5994,23 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 from: path2array(A[0]),
                 to: path2array(A[1]),
                 f: getPath(A[0])
+            };
+        }
+        if (name == "points") {
+            A = Str(a).split(",");
+            B = Str(b).split(",");
+            // for (var i = 0, ii = Math.max(A.length, B.length); i < ii; i++) {
+            //     if (A[i]) {
+            //         A[i] = +A[i];
+            //     }
+            //     if (B[i]) {
+            //         B[i] = +B[i];
+            //     }
+            // }
+            return {
+                from: A,
+                to: B,
+                f: function (val) { return val; }
             };
         }
         var aUnit = a.match(reUnit),
