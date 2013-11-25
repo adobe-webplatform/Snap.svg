@@ -2241,6 +2241,10 @@ function arrayFirstValue(arr) {
     \*/
     elproto.data = function (key, value) {
         var data = eldata[this.id] = eldata[this.id] || {};
+        if (arguments.length == 0){
+            eve("snap.data.get." + this.id, this, data, null);
+            return data;
+        }
         if (arguments.length == 1) {
             if (Snap.is(key, "object")) {
                 for (var i in key) if (key[has](i)) {
