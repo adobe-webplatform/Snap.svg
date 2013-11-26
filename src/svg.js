@@ -1416,8 +1416,8 @@ function add2group(list) {
         }
     }
     var children = node.childNodes;
-    for (i = 0; i < children.length; i++) if (children[i].snap) {
-        this[j++] = hub[children[i].snap];
+    for (i = 0; i < children.length; i++) {
+        this[j++] = wrap(children[i]);
     }
 }
 function Element(el) {
@@ -1636,16 +1636,18 @@ function arrayFirstValue(arr) {
      * See @Element.append
     \*/
     elproto.append = elproto.add = function (el) {
-        if (el.type == "set") {
-            var it = this;
-            el.forEach(function (el) {
-                it.append(el);
-            });
-            return this;
+        if (el) {
+            if (el.type == "set") {
+                var it = this;
+                el.forEach(function (el) {
+                    it.add(el);
+                });
+                return this;
+            }
+            el = wrap(el);
+            this.node.appendChild(el.node);
+            el.paper = this.paper;
         }
-        el = wrap(el);
-        this.node.appendChild(el.node);
-        el.paper = this.paper;
         return this;
     };
     /*\
@@ -1658,8 +1660,10 @@ function arrayFirstValue(arr) {
      = (Element) the child element
     \*/
     elproto.appendTo = function (el) {
-        el = wrap(el);
-        el.append(this);
+        if (el) {
+            el = wrap(el);
+            el.append(this);
+        }
         return this;
     };
     /*\
@@ -1672,9 +1676,15 @@ function arrayFirstValue(arr) {
      = (Element) the parent element
     \*/
     elproto.prepend = function (el) {
-        el = wrap(el);
-        this.node.insertBefore(el.node, this.node.firstChild);
-        el.paper = this.paper;
+        if (el) {
+            el = wrap(el);
+            var parent = el.parent();
+            this.node.insertBefore(el.node, this.node.firstChild);
+            this.add && this.add();
+            el.paper = this.paper;
+            this.parent() && this.parent().add();
+            parent && parent.add();
+        }
         return this;
     };
     /*\
@@ -1700,10 +1710,22 @@ function arrayFirstValue(arr) {
      - el (Element) element to insert
      = (Element) the parent element
     \*/
-    // TODO make it work for sets too
     elproto.before = function (el) {
+        if (el.type == "set") {
+            var it = this;
+            el.forEach(function (el) {
+                var parent = el.parent();
+                it.node.parentNode.insertBefore(el.node, it.node);
+                parent && parent.add();
+            });
+            this.parent().add();
+            return this;
+        }
         el = wrap(el);
+        var parent = el.parent();
         this.node.parentNode.insertBefore(el.node, this.node);
+        this.parent() && this.parent().add();
+        parent && parent.add();
         el.paper = this.paper;
         return this;
     };
@@ -1718,7 +1740,14 @@ function arrayFirstValue(arr) {
     \*/
     elproto.after = function (el) {
         el = wrap(el);
-        this.node.parentNode.insertBefore(el.node, this.node.nextSibling);
+        var parent = el.parent();
+        if (this.node.nextSibling) {
+            this.node.parentNode.insertBefore(el.node, this.node.nextSibling);
+        } else {
+            this.node.parentNode.appendChild(el.node);
+        }
+        this.parent() && this.parent().add();
+        parent && parent.add();
         el.paper = this.paper;
         return this;
     };
@@ -1733,8 +1762,11 @@ function arrayFirstValue(arr) {
     \*/
     elproto.insertBefore = function (el) {
         el = wrap(el);
+        var parent = this.parent();
         el.node.parentNode.insertBefore(this.node, el.node);
         this.paper = el.paper;
+        parent && parent.add();
+        el.parent() && el.parent().add();
         return this;
     };
     /*\
@@ -1748,8 +1780,11 @@ function arrayFirstValue(arr) {
     \*/
     elproto.insertAfter = function (el) {
         el = wrap(el);
+        var parent = this.parent();
         el.node.parentNode.insertBefore(this.node, el.node.nextSibling);
         this.paper = el.paper;
+        parent && parent.add();
+        el.parent() && el.parent().add();
         return this;
     };
     /*\
@@ -1760,9 +1795,11 @@ function arrayFirstValue(arr) {
      = (Element) the detached element
     \*/
     elproto.remove = function () {
+        var parent = this.parent();
         this.node.parentNode && this.node.parentNode.removeChild(this.node);
         delete this.paper;
         this.removed = true;
+        parent && parent.add();
         return this;
     };
     /*\
