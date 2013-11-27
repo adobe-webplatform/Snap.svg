@@ -4851,6 +4851,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             var bbox = el.getBBox();
             return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
         },
+        line: function (el) {
+            return "M" + [el.attr("x1"), el.attr("y1"), el.attr("x2"), el.attr("y2")];
+        },
         polyline: function (el) {
             return "M" + el.attr("points");
         },
