@@ -2000,7 +2000,7 @@ function arrayFirstValue(arr) {
         if (x == null) {
             x = this.getBBox();
         }
-        if (x && "x" in x) {
+        if (is(x, "object") && "x" in x) {
             y = x.y;
             width = x.width;
             height = x.height;
@@ -2042,7 +2042,7 @@ function arrayFirstValue(arr) {
         if (x == null) {
             x = this.getBBox();
         }
-        if (x && "x" in x) {
+        if (is(x, "object") && "x" in x) {
             y = x.y;
             width = x.width;
             height = x.height;
