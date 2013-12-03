@@ -1,4 +1,4 @@
-// Snap.svg 0.0.1
+// Snap.svg 0.1.0
 // 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-10-21
+// build: 2013-12-03
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -445,7 +445,7 @@ var mina = (function (eve) {
             return a + dif * (bb - b);
         };
     },
-    timer = function () {
+    timer = Date.now || function () {
         return +new Date;
     },
     sta = function (val) {
@@ -488,12 +488,21 @@ var mina = (function (eve) {
     },
     resume = function () {
         var a = this;
-        if (!a.pdif) {
+        if (a.pdif !== 0 && !a.pdif) {
             return;
         }
         a.b = a.get() - a.pdif;
         delete a.pdif;
         animations[a.id] = a;
+
+        var len = 0, i;
+        for (i in animations) if (animations.hasOwnProperty(i)) {
+            len++;
+            if (len == 2) {
+                break;
+            }
+        }
+        len == 1 && requestAnimFrame(frame);
     },
     frame = function () {
         var len = 0;
@@ -1168,7 +1177,6 @@ var has = "hasOwnProperty",
     objectToString = Object.prototype.toString,
     ISURL = /^url\(['"]?([^\)]+?)['"]?\)$/i,
     colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\))\s*$/i,
-    isnan = {"NaN": 1, "Infinity": 1, "-Infinity": 1},
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
     reURLValue = /^url\(#?([^)]+)\)$/,
     spaces = "\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029",
@@ -1236,7 +1244,7 @@ function getAttrs(el) {
 function is(o, type) {
     type = Str.prototype.toLowerCase.call(type);
     if (type == "finite") {
-        return !isnan[has](+o);
+        return isFinite(o);
     }
     if (type == "array" &&
         (o instanceof Array || Array.isArray && Array.isArray(o))) {

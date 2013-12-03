@@ -86,12 +86,21 @@ var mina = (function (eve) {
     },
     resume = function () {
         var a = this;
-        if (!a.pdif) {
+        if (a.pdif !== 0 && !a.pdif) {
             return;
         }
         a.b = a.get() - a.pdif;
         delete a.pdif;
         animations[a.id] = a;
+
+        var len = 0, i;
+        for (i in animations) if (animations.hasOwnProperty(i)) {
+            len++;
+            if (len == 2) {
+                break;
+            }
+        }
+        len == 1 && requestAnimFrame(frame);
     },
     frame = function () {
         var len = 0;
