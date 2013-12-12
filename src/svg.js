@@ -1279,7 +1279,8 @@ function getSomeDefs(el) {
             (el.node.parentNode && wrap(el.node.parentNode)) ||
             Snap.select("svg") ||
             Snap(0, 0),
-        defs = p.select("defs").node;
+        pdefs = p.select("defs"),
+        defs  = pdefs == null ? false : pdefs.node;
     if (!defs) {
         defs = make("defs", p.node).node;
     }
