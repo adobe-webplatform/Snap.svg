@@ -1419,6 +1419,7 @@ function add2group(list) {
     for (i = 0; i < children.length; i++) {
         this[j++] = wrap(children[i]);
     }
+    return this;
 }
 function Element(el) {
     if (el.snap in hub) {
