@@ -1284,7 +1284,8 @@ function getSomeDefs(el) {
             (el.node.parentNode && wrap(el.node.parentNode)) ||
             Snap.select("svg") ||
             Snap(0, 0),
-        defs = p.select("defs").node;
+        pdefs = p.select("defs"),
+        defs  = pdefs == null ? false : pdefs.node;
     if (!defs) {
         defs = make("defs", p.node).node;
     }
@@ -1424,6 +1425,7 @@ function add2group(list) {
     for (i = 0; i < children.length; i++) {
         this[j++] = wrap(children[i]);
     }
+    return this;
 }
 function Element(el) {
     if (el.snap in hub) {
@@ -2278,6 +2280,10 @@ function arrayFirstValue(arr) {
     \*/
     elproto.data = function (key, value) {
         var data = eldata[this.id] = eldata[this.id] || {};
+        if (arguments.length == 0){
+            eve("snap.data.get." + this.id, this, data, null);
+            return data;
+        }
         if (arguments.length == 1) {
             if (Snap.is(key, "object")) {
                 for (var i in key) if (key[has](i)) {
