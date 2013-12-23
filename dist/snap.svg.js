@@ -1,4 +1,4 @@
-// Snap.svg 0.1.1
+// Snap.svg 0.2.0
 // 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-11-27
+// build: 2013-12-23
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -761,7 +761,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.1.1";
+Snap.version = "0.2.0";
 /*\
  * Snap
  [ method ]
@@ -835,7 +835,10 @@ var has = "hasOwnProperty",
     },
     xlink = "http://www.w3.org/1999/xlink",
     xmlns = "http://www.w3.org/2000/svg",
-    hub = {};
+    hub = {},
+    URL = Snap.url = function (url) {
+        return "url('#" + url + "')";
+    };
 
 function $(el, attr) {
     if (attr) {
@@ -1872,7 +1875,7 @@ var parseTransformString = Snap.parseTransformString = function (TString) {
 function svgTransform2string(tstr) {
     var res = [];
     tstr = tstr.replace(/(?:^|\s)(\w+)\(([^)]+)\)/g, function (all, name, params) {
-        params = params.split(/\s*,\s*/);
+        params = params.split(/\s*,\s*|\s+/);
         if (name == "rotate" && params.length == 1) {
             params.push(0, 0);
         }
@@ -1912,7 +1915,9 @@ function transform2matrix(tstr, bbox) {
                 x2,
                 y2,
                 bb;
-            if (command == "t" && tlen == 3) {
+            if (command == "t" && tlen == 2){
+                m.translate(t[1], 0);
+            } else if (command == "t" && tlen == 3) {
                 if (absolute) {
                     x1 = inver.x(0, 0);
                     y1 = inver.y(0, 0);
@@ -2205,7 +2210,6 @@ function arrayFirstValue(arr) {
     }
 }
 (function (elproto) {
-    // SIERRA Element.attr(): There appear to be two possible return values, one of which is blank. (Search the doc for _Returns:_ to identify problems.)
     /*\
      * Element.attr
      [ method ]
@@ -2651,7 +2655,7 @@ function arrayFirstValue(arr) {
             if (val) {
                 uses[val] = (uses[val] || []).concat(function (id) {
                     var attr = {};
-                    attr[name] = "url(#" + id + ")";
+                    attr[name] = URL(id);
                     $(it.node, attr);
                 });
             }
@@ -3614,6 +3618,11 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      > Usage
      | var t1 = paper.text(50, 50, "Snap");
      | var t2 = paper.text(50, 50, ["S","n","a","p"]);
+     | // Text path usage
+     | t1.attr({textpath: "M10,10L100,100"});
+     | // or
+     | var pth = paper.path("M10,10L100,100");
+     | t1.attr({textpath: pth});
     \*/
     proto.text = function (x, y, text) {
         var el = make("text", this.node);
@@ -3882,7 +3891,7 @@ eve.on("snap.util.attr.mask", function (value) {
             });
         }
         $(this.node, {
-            mask: "url(#" + mask.id + ")"
+            mask: URL(mask.id)
         });
     }
 });
@@ -3903,7 +3912,7 @@ eve.on("snap.util.attr.mask", function (value) {
             });
         }
         $(this.node, {
-            "clip-path": "url(#" + clip.id + ")"
+            "clip-path": URL(clip.id)
         });
     }
 }));
@@ -3926,7 +3935,7 @@ function fillStroke(name) {
                         id: value.id
                     });
                 }
-                var fill = "url(#" + value.node.id + ")";
+                var fill = URL(value.node.id);
             } else {
                 fill = value.attr(name);
             }
@@ -3940,7 +3949,7 @@ function fillStroke(name) {
                             id: grad.id
                         });
                     }
-                    fill = "url(#" + grad.node.id + ")";
+                    fill = URL(grad.node.id);
                 } else {
                     fill = value;
                 }
@@ -4039,6 +4048,53 @@ eve.on("snap.util.attr.r", function (value) {
             rx: value,
             ry: value
         });
+    }
+})(-1);
+eve.on("snap.util.attr.textpath", function (value) {
+    eve.stop();
+    if (this.type == "text") {
+        var id, tp, node;
+        if (!value && this.textPath) {
+            tp = this.textPath;
+            while (tp.node.firstChild) {
+                this.node.appendChild(tp.node.firstChild);
+            }
+            tp.remove();
+            delete this.textPath;
+            return;
+        }
+        if (is(value, "string")) {
+            var defs = getSomeDefs(this),
+                path = wrap(defs.parentNode).path(value);
+            defs.appendChild(path.node);
+            id = path.id;
+            path.attr({id: id});
+        } else {
+            value = wrap(value);
+            if (value instanceof Element) {
+                id = value.attr("id");
+                if (!id) {
+                    id = value.id;
+                    value.attr({id: id});
+                }
+            }
+        }
+        if (id) {
+            tp = this.textPath;
+            node = this.node;
+            if (tp) {
+                tp.attr({"xlink:href": "#" + id});
+            } else {
+                tp = $("textPath", {
+                    "xlink:href": "#" + id
+                });
+                while (node.firstChild) {
+                    tp.appendChild(node.firstChild);
+                }
+                node.appendChild(tp);
+                this.textPath = wrap(tp);
+            }
+        }
     }
 })(-1);
 eve.on("snap.util.attr.text", function (value) {
@@ -4153,6 +4209,10 @@ eve.on("snap.util.getattr.transform", function () {
     eve.stop();
     return this.transform();
 })(-1);
+eve.on("snap.util.getattr.textpath", function () {
+    eve.stop();
+    return this.textPath;
+})(-1);
 // Markers
 (function () {
     function getter(end) {
@@ -4179,7 +4239,7 @@ eve.on("snap.util.getattr.transform", function () {
                 if (!id) {
                     $(value.node, {id: value.id});
                 }
-                this.node.style[name] = "url(#" + id + ")";
+                this.node.style[name] = URL(id);
                 return;
             }
         };
@@ -6111,25 +6171,35 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
                     f = function (e) {
                         var scrollY = getScroll("y"),
-                            scrollX = getScroll("x"),
-                            x = e.clientX + scrollX,
-                            y = e.clientY + scrollY;
-                    if (supportsTouch && touchMap[has](type)) {
-                        for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
-                            if (e.targetTouches[i].target == obj) {
-                                var olde = e;
-                                e = e.targetTouches[i];
-                                e.originalEvent = olde;
-                                e.preventDefault = preventTouch;
-                                e.stopPropagation = stopTouch;
-                                break;
+                            scrollX = getScroll("x");
+                        if (supportsTouch && touchMap[has](type)) {
+                            for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
+                                if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
+                                    var olde = e;
+                                    e = e.targetTouches[i];
+                                    e.originalEvent = olde;
+                                    e.preventDefault = preventTouch;
+                                    e.stopPropagation = stopTouch;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    return fn.call(element, e, x, y);
-                };
+                        var x = e.clientX + scrollX,
+                            y = e.clientY + scrollY;
+                        return fn.call(element, e, x, y);
+                    };
+
+                if (type !== realName) {
+                    obj.addEventListener(type, f, false);
+                }
+
                 obj.addEventListener(realName, f, false);
+
                 return function () {
+                    if (type !== realName) {
+                        obj.removeEventListener(type, f, false);
+                    }
+
                     obj.removeEventListener(realName, f, false);
                     return true;
                 };
@@ -6166,11 +6236,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         while (j--) {
             dragi = drag[j];
             if (supportsTouch) {
-                var i = e.touches.length,
+                var i = e.touches && e.touches.length,
                     touch;
                 while (i--) {
                     touch = e.touches[i];
-                    if (touch.identifier == dragi.el._drag.id) {
+                    if (touch.identifier == dragi.el._drag.id || dragi.el.node.contains(touch.target)) {
                         x = touch.clientX;
                         y = touch.clientY;
                         (e.originalEvent ? e.originalEvent : e).preventDefault();
@@ -6494,19 +6564,17 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 origTransform = this.transform().local;
             });
         }
-        function start(e) {
+        function start(e, x, y) {
             (e.originalEvent || e).preventDefault();
-            var scrollY = getScroll("y"),
-                scrollX = getScroll("x");
-            this._drag.x = e.clientX + scrollX;
-            this._drag.y = e.clientY + scrollY;
+            this._drag.x = x;
+            this._drag.y = y;
             this._drag.id = e.identifier;
             !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
             drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
             onstart && eve.on("snap.drag.start." + this.id, onstart);
             onmove && eve.on("snap.drag.move." + this.id, onmove);
             onend && eve.on("snap.drag.end." + this.id, onend);
-            eve("snap.drag.start." + this.id, start_scope || move_scope || this, e.clientX + scrollX, e.clientY + scrollY, e);
+            eve("snap.drag.start." + this.id, start_scope || move_scope || this, x, y, e);
         }
         this._drag = {};
         draggable.push({el: this, start: start});
@@ -6612,7 +6680,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 id = value.id;
             }
             $(this.node, {
-                filter: "url(#" + id + ")"
+                filter: Snap.url(id)
             });
         }
         if (!value || value == "none") {
@@ -6620,8 +6688,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             this.node.removeAttribute("filter");
         }
     });
-    // SIERRA Would help to clarify when various Snap.filter.* matches the behavior of CSS filter property keyword functions. E.g., I don't think CSS's blur() accepts a second parameter for y axis.
-    // SIERRA Would also be useful to illustrate a chain of >1 filter as a code snippet.
     /*\
      * Snap.filter.blur
      [ method ]

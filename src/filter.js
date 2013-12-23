@@ -70,7 +70,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 id = value.id;
             }
             $(this.node, {
-                filter: "url(#" + id + ")"
+                filter: Snap.url(id)
             });
         }
         if (!value || value == "none") {
@@ -78,8 +78,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             this.node.removeAttribute("filter");
         }
     });
-    // SIERRA Would help to clarify when various Snap.filter.* matches the behavior of CSS filter property keyword functions. E.g., I don't think CSS's blur() accepts a second parameter for y axis.
-    // SIERRA Would also be useful to illustrate a chain of >1 filter as a code snippet.
     /*\
      * Snap.filter.blur
      [ method ]
