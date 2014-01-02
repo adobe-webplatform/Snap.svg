@@ -2320,9 +2320,6 @@ function arrayFirstValue(arr) {
     var propString = function () {
         return this.string;
     };
-// SIERRA Element.transform(): seems to allow two return values, one of which (_Element_) is undefined.
-// SIERRA Element.transform(): if this only accepts one argument, it's unclear how it can both _get_ and _set_ a transform.
-// SIERRA Element.transform(): Unclear how Snap transform string format differs from SVG's.
     /*\
      * Element.transform
      [ method ]
@@ -4861,7 +4858,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     function rectPath(x, y, w, h, r) {
         if (r) {
             return [
-                ["M", x + r, y],
+                ["M", +x + (+r), y],
                 ["l", w - r * 2, 0],
                 ["a", r, r, 0, 0, 1, r, r],
                 ["l", 0, h - r * 2],
@@ -4881,6 +4878,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         if (a == null && ry == null) {
             ry = rx;
         }
+        x = +x;
+        y = +y;
+        rx = +rx;
+        ry = +ry;
         if (a != null) {
             var rad = Math.PI / 180,
                 x1 = x + rx * Math.cos(-ry * rad),
@@ -5074,8 +5075,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                         r[3] = pa[3];
                         r[4] = pa[4];
                         r[5] = pa[5];
-                        r[6] = +(pa[6] + x);
-                        r[7] = +(pa[7] + y);
+                        r[6] = +pa[6] + x;
+                        r[7] = +pa[7] + y;
                         break;
                     case "V":
                         r[1] = +pa[1] + y;
@@ -5134,8 +5135,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             if (pa0 != "O") {
                 switch (r[0]) {
                     case "Z":
-                        x = mx;
-                        y = my;
+                        x = +mx;
+                        y = +my;
                         break;
                     case "H":
                         x = r[1];

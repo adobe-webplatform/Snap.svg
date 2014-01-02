@@ -1,23 +1,65 @@
----
-layout: empty
-title: API References
-permalink: /docs/
-stylesheets:
-- /assets/docs/fonts/stylesheet.css
-- /assets/docs/css/topcoat-desktop-light.css
-- /assets/docs/css/main.css
-- /assets/docs/css/dr.css
-- /assets/docs/css/prism.css
-- /assets/style/docs-header.css
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <base href="http://snapsvg.io/docs/">
+        <title>Snap.svg API Reference</title>
+        <link rel="shortcut icon" href="/assets/favicon.ico?v=1">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" href="/assets/docs/fonts/stylesheet.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/docs/css/topcoat-desktop-light.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/docs/css/main.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/docs/css/dr.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/docs/css/prism.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/style/docs-header.css?v=201311041519">
+        <script>
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-44948757-1']);
+            _gaq.push(['_trackPageview']);
 
----
-{% include header.html %}
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+            function trackOutboundLink(link, category, action) { 
+                try { 
+                    _gaq.push(['_trackEvent', category , action]); 
+                } catch(err){}
+
+                setTimeout(function() {
+                    document.location.href = link.href;
+                }, 100);
+            }
+        </script>
+    </head>
+    <body class="light">
+
+        <header id="header">
+            <div class="wrap">
+                <a href="/" class="logo">
+                    <img src="/assets/images/logo.svg" alt=""/>
+                    <span class="header">Snap.svg</span>
+                </a>
+                <nav>
+                    <a href="/">Home</a>
+                    <a href="/about/">Why Snap</a>
+                    <a href="/start/" class="mobile-hide">Getting Started</a>
+                    <a href="/docs/" class="mobile-hide selected">Docs</a>
+                    <a href="/support/">Support</a>
+                    <a href="/demos/" class="mobile-hide">Demos</a>
+                    <a class="bt" href="/assets/downloads/Snap.svg-0.1.0.zip" onclick="trackOutboundLink(this, 'Download', '0.1');return false;">Download</a>
+                </nav>
+            </div>
+        </header>
 
 <!--[if lt IE 9]>
 <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
-          <div id="wrapper">
-              <div class="max-width">
+        <div id="wrapper">
+            <div class="max-width">
                   <div id="sideNav">
                       <div class="combo">
                           <input type="search" id="dr-filter" value="" placeholder="search" class="topcoat-search-input">
@@ -3704,7 +3746,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.transform">
                           <header>
-                              <h3 class="dr-method">Element.transform(tstr)<a href="#Element.transform" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1598 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1598">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.transform(tstr)<a href="#Element.transform" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1595 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1595">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.transform-extra"></div>
@@ -3868,7 +3910,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.parent">
                           <header>
-                              <h3 class="dr-method">Element.parent()<a href="#Element.parent" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1642 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1642">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.parent()<a href="#Element.parent" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1639 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1639">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.parent-extra"></div>
@@ -3910,7 +3952,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.append">
                           <header>
-                              <h3 class="dr-method">Element.append(el)<a href="#Element.append" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1654 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1654">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.append(el)<a href="#Element.append" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1651 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1651">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.append-extra"></div>
@@ -3970,7 +4012,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.add">
                           <header>
-                              <h3 class="dr-method">Element.add()<a href="#Element.add" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1660 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1660">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.add()<a href="#Element.add" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1657 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1657">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.add-extra"></div>
@@ -3995,7 +4037,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.appendTo">
                           <header>
-                              <h3 class="dr-method">Element.appendTo(el)<a href="#Element.appendTo" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1684 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1684">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.appendTo(el)<a href="#Element.appendTo" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1681 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1681">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.appendTo-extra"></div>
@@ -4055,7 +4097,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.prepend">
                           <header>
-                              <h3 class="dr-method">Element.prepend(el)<a href="#Element.prepend" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1700 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1700">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.prepend(el)<a href="#Element.prepend" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1697 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1697">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.prepend-extra"></div>
@@ -4115,7 +4157,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.prependTo">
                           <header>
-                              <h3 class="dr-method">Element.prependTo(el)<a href="#Element.prependTo" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1721 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1721">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.prependTo(el)<a href="#Element.prependTo" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1718 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1718">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.prependTo-extra"></div>
@@ -4175,7 +4217,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.before">
                           <header>
-                              <h3 class="dr-method">Element.before(el)<a href="#Element.before" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1735 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1735">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.before(el)<a href="#Element.before" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1732 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1732">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.before-extra"></div>
@@ -4235,7 +4277,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.after">
                           <header>
-                              <h3 class="dr-method">Element.after(el)<a href="#Element.after" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1763 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1763">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.after(el)<a href="#Element.after" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1760 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1760">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.after-extra"></div>
@@ -4295,7 +4337,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.insertBefore">
                           <header>
-                              <h3 class="dr-method">Element.insertBefore(el)<a href="#Element.insertBefore" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1785 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1785">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.insertBefore(el)<a href="#Element.insertBefore" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1782 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1782">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.insertBefore-extra"></div>
@@ -4355,7 +4397,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.insertAfter">
                           <header>
-                              <h3 class="dr-method">Element.insertAfter(el)<a href="#Element.insertAfter" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1803 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1803">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.insertAfter(el)<a href="#Element.insertAfter" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1800 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1800">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.insertAfter-extra"></div>
@@ -4415,7 +4457,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.remove">
                           <header>
-                              <h3 class="dr-method">Element.remove()<a href="#Element.remove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1819 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1819">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.remove()<a href="#Element.remove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1816 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1816">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.remove-extra"></div>
@@ -4457,7 +4499,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.select">
                           <header>
-                              <h3 class="dr-method">Element.select(query)<a href="#Element.select" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1836 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1836">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.select(query)<a href="#Element.select" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1833 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1833">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.select-extra"></div>
@@ -4517,7 +4559,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.selectAll">
                           <header>
-                              <h3 class="dr-method">Element.selectAll(query)<a href="#Element.selectAll" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1848 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1848">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.selectAll(query)<a href="#Element.selectAll" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1845 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1845">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.selectAll-extra"></div>
@@ -4579,7 +4621,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.asPX">
                           <header>
-                              <h3 class="dr-method">Element.asPX(attr, [value])<a href="#Element.asPX" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1866 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1866">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.asPX(attr, [value])<a href="#Element.asPX" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1863 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1863">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.asPX-extra"></div>
@@ -4642,7 +4684,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.use">
                           <header>
-                              <h3 class="dr-method">Element.use()<a href="#Element.use" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1881 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1881">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.use()<a href="#Element.use" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1878 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1878">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.use-extra"></div>
@@ -4684,7 +4726,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.clone">
                           <header>
-                              <h3 class="dr-method">Element.clone()<a href="#Element.clone" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1910 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1910">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.clone()<a href="#Element.clone" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1907 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1907">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.clone-extra"></div>
@@ -4726,7 +4768,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.toDefs">
                           <header>
-                              <h3 class="dr-method">Element.toDefs()<a href="#Element.toDefs" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1990 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1990">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.toDefs()<a href="#Element.toDefs" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1987 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1987">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.toDefs-extra"></div>
@@ -4768,7 +4810,7 @@ console.log(el.attr("fill")); // #fc0</code></pre></section>
                       
                       <article id="Element.pattern">
                           <header>
-                              <h3 class="dr-method">Element.pattern(x, y, width, height)<a href="#Element.pattern" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2020 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2020">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.pattern(x, y, width, height)<a href="#Element.pattern" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2017 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2017">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.pattern-extra"></div>
@@ -4868,7 +4910,7 @@ c.attr({
                       
                       <article id="Element.marker">
                           <header>
-                              <h3 class="dr-method">Element.marker(x, y, width, height, refX, refY)<a href="#Element.marker" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2061 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2061">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.marker(x, y, width, height, refX, refY)<a href="#Element.marker" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2058 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2058">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.marker-extra"></div>
@@ -4955,7 +4997,7 @@ To create a marker you have to specify the bounding rect and reference point:
                       
                       <article id="Snap.animation">
                           <header>
-                              <h3 class="dr-method">Snap.animation(attr, duration, [easing], [callback])<a href="#Snap.animation" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2120 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2120">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.animation(attr, duration, [easing], [callback])<a href="#Snap.animation" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2117 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2117">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.animation-extra"></div>
@@ -5024,7 +5066,7 @@ To create a marker you have to specify the bounding rect and reference point:
                       
                       <article id="Element.inAnim">
                           <header>
-                              <h3 class="dr-method">Element.inAnim()<a href="#Element.inAnim" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2137 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2137">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.inAnim()<a href="#Element.inAnim" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2134 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2134">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.inAnim-extra"></div>
@@ -5118,7 +5160,7 @@ To create a marker you have to specify the bounding rect and reference point:
                       
                       <article id="Snap.animate">
                           <header>
-                              <h3 class="dr-method">Snap.animate(from, to, setter, duration, [easing], [callback])<a href="#Snap.animate" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2186 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2186">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.animate(from, to, setter, duration, [easing], [callback])<a href="#Snap.animate" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2183 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2183">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.animate-extra"></div>
@@ -5279,7 +5321,7 @@ rect.animate({x: 10}, 1000);</code></pre></section>
                       
                       <article id="Element.stop">
                           <header>
-                              <h3 class="dr-method">Element.stop()<a href="#Element.stop" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2204 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2204">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.stop()<a href="#Element.stop" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2201 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2201">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.stop-extra"></div>
@@ -5321,7 +5363,7 @@ rect.animate({x: 10}, 1000);</code></pre></section>
                       
                       <article id="Element.animate">
                           <header>
-                              <h3 class="dr-method">Element.animate(attrs, duration, [easing], [callback])<a href="#Element.animate" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2225 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2225">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.animate(attrs, duration, [easing], [callback])<a href="#Element.animate" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2222 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2222">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.animate-extra"></div>
@@ -5390,7 +5432,7 @@ rect.animate({x: 10}, 1000);</code></pre></section>
                       
                       <article id="Element.data">
                           <header>
-                              <h3 class="dr-method">Element.data(key, [value])<a href="#Element.data" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2297 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2297">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.data(key, [value])<a href="#Element.data" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2294 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2294">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.data-extra"></div>
@@ -5512,7 +5554,7 @@ with <code>data-</code> attributes)
                       
                       <article id="Element.removeData">
                           <header>
-                              <h3 class="dr-method">Element.removeData([key])<a href="#Element.removeData" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2326 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2326">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.removeData([key])<a href="#Element.removeData" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2323 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2323">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.removeData-extra"></div>
@@ -5573,7 +5615,7 @@ If key is not provided, removes all the data of the element.
                       
                       <article id="Element.outerSVG">
                           <header>
-                              <h3 class="dr-method">Element.outerSVG()<a href="#Element.outerSVG" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2343 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2343">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.outerSVG()<a href="#Element.outerSVG" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2340 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2340">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.outerSVG-extra"></div>
@@ -5616,7 +5658,7 @@ If key is not provided, removes all the data of the element.
                       
                       <article id="undefined">
                           <header>
-                              <h3 class="dr-method">undefined<a href="#undefined" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2349 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2349">&#x27ad;</a></h3>
+                              <h3 class="dr-method">undefined<a href="#undefined" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2346 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2346">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="undefined-extra"></div>
@@ -5641,7 +5683,7 @@ If key is not provided, removes all the data of the element.
                       
                       <article id="Element.innerSVG">
                           <header>
-                              <h3 class="dr-method">Element.innerSVG()<a href="#Element.innerSVG" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2357 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2357">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.innerSVG()<a href="#Element.innerSVG" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2354 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2354">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.innerSVG-extra"></div>
@@ -5683,7 +5725,7 @@ If key is not provided, removes all the data of the element.
                       
                       <article id="Snap.parse">
                           <header>
-                              <h3 class="dr-method">Snap.parse(svg)<a href="#Snap.parse" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2396 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2396">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.parse(svg)<a href="#Snap.parse" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2393 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2393">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.parse-extra"></div>
@@ -5743,7 +5785,7 @@ If key is not provided, removes all the data of the element.
                       
                       <article id="Fragment.select">
                           <header>
-                              <h3 class="dr-method">Fragment.select()<a href="#Fragment.select" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2428 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2428">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Fragment.select()<a href="#Fragment.select" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2425 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2425">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Fragment.select-extra"></div>
@@ -5768,7 +5810,7 @@ If key is not provided, removes all the data of the element.
                       
                       <article id="Fragment.selectAll">
                           <header>
-                              <h3 class="dr-method">Fragment.selectAll()<a href="#Fragment.selectAll" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2435 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2435">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Fragment.selectAll()<a href="#Fragment.selectAll" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2432 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2432">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Fragment.selectAll-extra"></div>
@@ -5793,7 +5835,7 @@ If key is not provided, removes all the data of the element.
                       
                       <article id="Snap.fragment">
                           <header>
-                              <h3 class="dr-method">Snap.fragment(varargs)<a href="#Snap.fragment" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2446 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2446">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.fragment(varargs)<a href="#Snap.fragment" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2443 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2443">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.fragment-extra"></div>
@@ -5853,7 +5895,7 @@ If key is not provided, removes all the data of the element.
                       
                       <article id="Paper.el">
                           <header>
-                              <h3 class="dr-method">Paper.el(name, attr)<a href="#Paper.el" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2653 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2653">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.el(name, attr)<a href="#Paper.el" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2650 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2650">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.el-extra"></div>
@@ -5949,7 +5991,7 @@ var c = paper.el("circle", {
                       
                       <article id="Paper.rect">
                           <header>
-                              <h3 class="dr-method">Paper.rect(x, y, width, height, [rx], [ry])<a href="#Paper.rect" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2676 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2676">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.rect(x, y, width, height, [rx], [ry])<a href="#Paper.rect" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2673 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2673">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.rect-extra"></div>
@@ -6049,7 +6091,7 @@ var c = paper.rect(40, 40, 50, 50, 10);</code></pre></section>
                       
                       <article id="Paper.circle">
                           <header>
-                              <h3 class="dr-method">Paper.circle(x, y, r)<a href="#Paper.circle" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2711 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2711">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.circle(x, y, r)<a href="#Paper.circle" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2708 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2708">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.circle-extra"></div>
@@ -6137,7 +6179,7 @@ var c = paper.rect(40, 40, 50, 50, 10);</code></pre></section>
                       
                       <article id="Paper.image">
                           <header>
-                              <h3 class="dr-method">Paper.image(src, x, y, width, height)<a href="#Paper.image" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2743 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2743">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.image(src, x, y, width, height)<a href="#Paper.image" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2740 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2740">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.image-extra"></div>
@@ -6259,7 +6301,7 @@ var c = paper.rect(40, 40, 50, 50, 10);</code></pre></section>
                       
                       <article id="Paper.ellipse">
                           <header>
-                              <h3 class="dr-method">Paper.ellipse(x, y, rx, ry)<a href="#Paper.ellipse" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2786 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2786">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.ellipse(x, y, rx, ry)<a href="#Paper.ellipse" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2783 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2783">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.ellipse-extra"></div>
@@ -6350,7 +6392,7 @@ var c = paper.rect(40, 40, 50, 50, 10);</code></pre></section>
                       
                       <article id="Paper.path">
                           <header>
-                              <h3 class="dr-method">Paper.path([pathString])<a href="#Paper.path" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2831 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2831">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.path([pathString])<a href="#Paper.path" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2828 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2828">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.path-extra"></div>
@@ -6618,7 +6660,7 @@ Note: there is a special case when a path consists of only three commands: <code
                       
                       <article id="Paper.g">
                           <header>
-                              <h3 class="dr-method">Paper.g([varargs])<a href="#Paper.g" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2862 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2862">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.g([varargs])<a href="#Paper.g" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2859 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2859">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.g-extra"></div>
@@ -6727,7 +6769,7 @@ g.add(c2, c1);</code></pre></section>
                       
                       <article id="Paper.group">
                           <header>
-                              <h3 class="dr-method">Paper.group()<a href="#Paper.group" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2868 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2868">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.group()<a href="#Paper.group" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2865 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2865">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.group-extra"></div>
@@ -6752,7 +6794,7 @@ g.add(c2, c1);</code></pre></section>
                       
                       <article id="Paper.text">
                           <header>
-                              <h3 class="dr-method">Paper.text(x, y, text)<a href="#Paper.text" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2901 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2901">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.text(x, y, text)<a href="#Paper.text" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2898 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2898">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.text-extra"></div>
@@ -6846,7 +6888,7 @@ t1.attr({textpath: pth});</code></pre></section>
                       
                       <article id="Paper.line">
                           <header>
-                              <h3 class="dr-method">Paper.line(x1, y1, x2, y2)<a href="#Paper.line" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2929 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2929">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.line(x1, y1, x2, y2)<a href="#Paper.line" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2926 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2926">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.line-extra"></div>
@@ -6937,7 +6979,7 @@ t1.attr({textpath: pth});</code></pre></section>
                       
                       <article id="Paper.polyline">
                           <header>
-                              <h3 class="dr-method">Paper.polyline(…)<a href="#Paper.polyline" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2958 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2958">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.polyline(…)<a href="#Paper.polyline" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2955 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2955">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.polyline-extra"></div>
@@ -7049,7 +7091,7 @@ var p2 = paper.polyline(10, 10, 100, 100);</code></pre></section>
                       
                       <article id="Paper.polygon">
                           <header>
-                              <h3 class="dr-method">Paper.polygon()<a href="#Paper.polygon" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2978 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2978">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.polygon()<a href="#Paper.polygon" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2975 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#2975">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.polygon-extra"></div>
@@ -7074,7 +7116,7 @@ var p2 = paper.polyline(10, 10, 100, 100);</code></pre></section>
                       
                       <article id="Paper.gradient">
                           <header>
-                              <h3 class="dr-method">Paper.gradient(gradient)<a href="#Paper.gradient" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3031 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3031">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.gradient(gradient)<a href="#Paper.gradient" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3028 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3028">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.gradient-extra"></div>
@@ -7272,7 +7314,7 @@ half the width, from black to white:
                       
                       <article id="Paper.toString">
                           <header>
-                              <h3 class="dr-method">Paper.toString()<a href="#Paper.toString" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3047 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3047">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.toString()<a href="#Paper.toString" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3044 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3044">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.toString-extra"></div>
@@ -7314,7 +7356,7 @@ half the width, from black to white:
                       
                       <article id="Paper.clear">
                           <header>
-                              <h3 class="dr-method">Paper.clear()<a href="#Paper.clear" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3065 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3065">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.clear()<a href="#Paper.clear" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3062 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3062">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.clear-extra"></div>
@@ -7339,7 +7381,7 @@ half the width, from black to white:
                       
                       <article id="Snap.ajax">
                           <header>
-                              <h3 class="dr-method">Snap.ajax(…)<a href="#Snap.ajax" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3096 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3096">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.ajax(…)<a href="#Snap.ajax" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3093 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3093">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.ajax-extra"></div>
@@ -7443,7 +7485,7 @@ half the width, from black to white:
                       
                       <article id="Snap.load">
                           <header>
-                              <h3 class="dr-method">Snap.load(url, callback, [scope])<a href="#Snap.load" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3142 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3142">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.load(url, callback, [scope])<a href="#Snap.load" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3139 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3139">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.load-extra"></div>
@@ -7492,7 +7534,7 @@ half the width, from black to white:
                       
                       <article id="Snap.getElementByPoint">
                           <header>
-                              <h3 class="dr-method">Snap.getElementByPoint(x, y)<a href="#Snap.getElementByPoint" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3622 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3622">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.getElementByPoint(x, y)<a href="#Snap.getElementByPoint" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3619 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3619">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.getElementByPoint-extra"></div>
@@ -7577,7 +7619,7 @@ half the width, from black to white:
                       
                       <article id="Snap.plugin">
                           <header>
-                              <h3 class="dr-method">Snap.plugin(f)<a href="#Snap.plugin" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3657 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3657">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.plugin(f)<a href="#Snap.plugin" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 3654 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#3654">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.plugin-extra"></div>
@@ -10829,7 +10871,7 @@ prototypes). This allow you to extend anything you want.
                       
                       <article id="Snap.path.getTotalLength">
                           <header>
-                              <h3 class="dr-method">Snap.path.getTotalLength(path)<a href="#Snap.path.getTotalLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1072 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1072">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.getTotalLength(path)<a href="#Snap.path.getTotalLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1076 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1076">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.getTotalLength-extra"></div>
@@ -10889,7 +10931,7 @@ prototypes). This allow you to extend anything you want.
                       
                       <article id="Snap.path.getPointAtLength">
                           <header>
-                              <h3 class="dr-method">Snap.path.getPointAtLength(path, length)<a href="#Snap.path.getPointAtLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1089 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1089">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.getPointAtLength(path, length)<a href="#Snap.path.getPointAtLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1093 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1093">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.getPointAtLength-extra"></div>
@@ -10996,7 +11038,7 @@ prototypes). This allow you to extend anything you want.
                       
                       <article id="Snap.path.getSubpath">
                           <header>
-                              <h3 class="dr-method">Snap.path.getSubpath(path, from, to)<a href="#Snap.path.getSubpath" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1102 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1102">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.getSubpath(path, from, to)<a href="#Snap.path.getSubpath" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1106 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1106">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.getSubpath-extra"></div>
@@ -11062,7 +11104,7 @@ prototypes). This allow you to extend anything you want.
                       
                       <article id="Element.getTotalLength">
                           <header>
-                              <h3 class="dr-method">Element.getTotalLength()<a href="#Element.getTotalLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1116 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1116">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.getTotalLength()<a href="#Element.getTotalLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1120 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1120">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.getTotalLength-extra"></div>
@@ -11104,7 +11146,7 @@ prototypes). This allow you to extend anything you want.
                       
                       <article id="Element.getPointAtLength">
                           <header>
-                              <h3 class="dr-method">Element.getPointAtLength(length)<a href="#Element.getPointAtLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1137 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1137">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.getPointAtLength(length)<a href="#Element.getPointAtLength" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1141 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1141">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.getPointAtLength-extra"></div>
@@ -11208,7 +11250,7 @@ prototypes). This allow you to extend anything you want.
                       
                       <article id="Element.getSubpath">
                           <header>
-                              <h3 class="dr-method">Element.getSubpath(from, to)<a href="#Element.getSubpath" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1152 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1152">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Element.getSubpath(from, to)<a href="#Element.getSubpath" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1156 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1156">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.getSubpath-extra"></div>
@@ -11271,7 +11313,7 @@ prototypes). This allow you to extend anything you want.
                       
                       <article id="Snap.path.findDotsAtSegment">
                           <header>
-                              <h3 class="dr-method">Snap.path.findDotsAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t)<a href="#Snap.path.findDotsAtSegment" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1195 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1195">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.findDotsAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t)<a href="#Snap.path.findDotsAtSegment" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1199 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1199">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.findDotsAtSegment-extra"></div>
@@ -11496,7 +11538,7 @@ Finds dot coordinates on the given cubic beziér curve at the given t
                       
                       <article id="Snap.path.bezierBBox">
                           <header>
-                              <h3 class="dr-method">Snap.path.bezierBBox(…)<a href="#Snap.path.bezierBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1223 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1223">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.bezierBBox(…)<a href="#Snap.path.bezierBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1227 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1227">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.bezierBBox-extra"></div>
@@ -11675,7 +11717,7 @@ Returns the bounding box of a given cubic beziér curve
                       
                       <article id="Snap.path.isPointInsideBBox">
                           <header>
-                              <h3 class="dr-method">Snap.path.isPointInsideBBox(bbox, x, y)<a href="#Snap.path.isPointInsideBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1236 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1236">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.isPointInsideBBox(bbox, x, y)<a href="#Snap.path.isPointInsideBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1240 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1240">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.isPointInsideBBox-extra"></div>
@@ -11742,7 +11784,7 @@ Returns <code>true</code> if given point is inside bounding box
                       
                       <article id="Snap.path.isBBoxIntersect">
                           <header>
-                              <h3 class="dr-method">Snap.path.isBBoxIntersect(bbox1, bbox2)<a href="#Snap.path.isBBoxIntersect" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1248 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1248">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.isBBoxIntersect(bbox1, bbox2)<a href="#Snap.path.isBBoxIntersect" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1252 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1252">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.isBBoxIntersect-extra"></div>
@@ -11806,7 +11848,7 @@ Returns <code>true</code> if two bounding boxes intersect
                       
                       <article id="Snap.path.intersection">
                           <header>
-                              <h3 class="dr-method">Snap.path.intersection(path1, path2)<a href="#Snap.path.intersection" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1272 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1272">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.intersection(path1, path2)<a href="#Snap.path.intersection" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1276 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1276">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.intersection-extra"></div>
@@ -11962,7 +12004,7 @@ Finds intersections of two paths
                       
                       <article id="Snap.path.isPointInside">
                           <header>
-                              <h3 class="dr-method">Snap.path.isPointInside(path, x, y)<a href="#Snap.path.isPointInside" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1288 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1288">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.isPointInside(path, x, y)<a href="#Snap.path.isPointInside" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1292 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1292">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.isPointInside-extra"></div>
@@ -12030,7 +12072,7 @@ Returns <code>true</code> if given point is inside a given closed path.
                       
                       <article id="Snap.path.getBBox">
                           <header>
-                              <h3 class="dr-method">Snap.path.getBBox(path)<a href="#Snap.path.getBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1307 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1307">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.getBBox(path)<a href="#Snap.path.getBBox" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1311 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1311">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.getBBox-extra"></div>
@@ -12159,7 +12201,7 @@ Returns the bounding box of a given path
                       
                       <article id="Snap.path.toRelative">
                           <header>
-                              <h3 class="dr-method">Snap.path.toRelative(path)<a href="#Snap.path.toRelative" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1319 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1319">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.toRelative(path)<a href="#Snap.path.toRelative" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1323 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1323">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.toRelative-extra"></div>
@@ -12220,7 +12262,7 @@ Converts path coordinates into relative values
                       
                       <article id="Snap.path.toAbsolute">
                           <header>
-                              <h3 class="dr-method">Snap.path.toAbsolute(path)<a href="#Snap.path.toAbsolute" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1330 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1330">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.toAbsolute(path)<a href="#Snap.path.toAbsolute" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1334 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1334">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.toAbsolute-extra"></div>
@@ -12281,7 +12323,7 @@ Converts path coordinates into absolute values
                       
                       <article id="Snap.path.toCubic">
                           <header>
-                              <h3 class="dr-method">Snap.path.toCubic(pathString)<a href="#Snap.path.toCubic" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1341 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1341">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.toCubic(pathString)<a href="#Snap.path.toCubic" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1345 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1345">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.toCubic-extra"></div>
@@ -12342,7 +12384,7 @@ Converts path to a new path where all segments are cubic beziér curves
                       
                       <article id="Snap.path.map">
                           <header>
-                              <h3 class="dr-method">Snap.path.map(path, matrix)<a href="#Snap.path.map" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1351 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1351">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Snap.path.map(path, matrix)<a href="#Snap.path.map" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1355 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#1355">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Snap.path.map-extra"></div>
