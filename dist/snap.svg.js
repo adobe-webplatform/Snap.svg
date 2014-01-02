@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-12-23
+// build: 2014-01-02
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -761,7 +761,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.2.0";
+Snap.version = "0.2.1";
 /*\
  * Snap
  [ method ]
@@ -1280,6 +1280,16 @@ function Matrix(a, b, c, d, e, f) {
         a[1] && (a[1] /= mag);
     }
     /*\
+     * Matrix.determinant
+     [ method ]
+     **
+     * Finds determinant of the given matrix.
+     = (number) determinant
+    \*/
+    matrixproto.determinant = function () {
+        return this.a * this.d - this.b * this.c;
+    };
+    /*\
      * Matrix.split
      [ method ]
      **
@@ -1311,6 +1321,10 @@ function Matrix(a, b, c, d, e, f) {
         normalize(row[1]);
         out.shear /= out.scaley;
 
+        if (this.determinant() < 0) {
+            out.scalex = -out.scalex;
+        }
+
         // rotation
         var sin = -row[0][1],
             cos = row[1][1];
@@ -1337,7 +1351,7 @@ function Matrix(a, b, c, d, e, f) {
     \*/
     matrixproto.toTransformString = function (shorter) {
         var s = shorter || this.split();
-        if (s.isSimple) {
+        if (!+s.shear.toFixed(9)) {
             s.scalex = +s.scalex.toFixed(4);
             s.scaley = +s.scaley.toFixed(4);
             s.rotate = +s.rotate.toFixed(4);
@@ -1886,6 +1900,9 @@ function svgTransform2string(tstr) {
             if (params.length == 1) {
                 params.push(params[0], 0, 0);
             }
+            if (params.length > 2) {
+                params = params.slice(0, 2);
+            }
         }
         if (name == "skewX") {
             res.push(["m", 1, 0, math.tan(rad(params[0])), 1, 0, 0]);
@@ -2345,11 +2362,10 @@ function arrayFirstValue(arr) {
             };
         }
         if (tstr instanceof Matrix) {
-            // may be need to apply it directly
-            // TODO: investigate
-            tstr = tstr.toTransformString();
+            this.matrix = tstr;
+        } else {
+            extractTransform(this, tstr);
         }
-        extractTransform(this, tstr);
 
         if (this.node) {
             if (this.type == "linearGradient" || this.type == "radialGradient") {
