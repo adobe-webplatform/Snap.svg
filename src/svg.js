@@ -3015,7 +3015,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
          * Linear gradient, absolute from (0, 0) to (100, 100), from black
          * through red at 25% to white:
-         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
+         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25-#fff");
          * Radial gradient, relative from the center of the element with radius
          * half the width, from black to white:
          | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
@@ -3259,7 +3259,7 @@ eve.on("snap.util.grad.parse", function parseGrad(string) {
             color: el[0]
         };
         if (el[1]) {
-            out.offset = el[1];
+            out.offset = parseFloat(el[1]);
         }
         return out;
     });
