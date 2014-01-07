@@ -1,4 +1,4 @@
-// Snap.svg 0.2.0
+// Snap.svg 0.2.1
 // 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-01-03
+// build: 2014-01-07
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -488,12 +488,21 @@ var mina = (function (eve) {
     },
     resume = function () {
         var a = this;
-        if (!a.pdif) {
+        if (a.pdif !== 0 && !a.pdif) {
             return;
         }
         a.b = a.get() - a.pdif;
         delete a.pdif;
         animations[a.id] = a;
+
+        var len = 0, i;
+        for (i in animations) if (animations.hasOwnProperty(i)) {
+            len++;
+            if (len == 2) {
+                break;
+            }
+        }
+        len == 1 && requestAnimFrame(frame);
     },
     frame = function () {
         var len = 0;
