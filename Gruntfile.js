@@ -17,7 +17,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: "<%= concat.target.dest %>",
-                dest: "dist/" + pkg.name.toLowerCase() + "-min.js"
+                dest: "dist/snap.svg-min.js"
             }
         },
         concat: {
@@ -25,12 +25,11 @@ module.exports = function(grunt) {
                 banner: "<%= banner %>"
             },
             target: {
-                dest: "dist/" + pkg.name.toLowerCase() + ".js",
+                dest: "dist/snap.svg.js",
                 src: [
                     "./node_modules/eve/eve.js",
                     "./src/amd-banner.js",
                     "./src/mina.js",
-                    "./node_modules/elemental.js/elemental.js",
                     "./src/svg.js",
                     "./src/path.js",
                     "./src/set.js",

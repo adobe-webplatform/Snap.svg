@@ -123,7 +123,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
-            // TODO: b could be an SVG transform string or matrix
+            if (b instanceof Snap.Matrix) {
+                b = b.toTransformString();
+            }
+            if (!Snap._.rgTransform.test(b)) {
+                b = Snap._.svgTransform2string(b);
+            }
             return equaliseTransform(a, b, function () {
                 return el.getBBox(1);
             });
@@ -136,8 +141,17 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: getPath(A[0])
             };
         }
+        if (name == "points") {
+            A = Str(a).split(",");
+            B = Str(b).split(",");
+            return {
+                from: A,
+                to: B,
+                f: function (val) { return val; }
+            };
+        }
         var aUnit = a.match(reUnit),
-            bUnit = b.match(reUnit);
+            bUnit = Str(b).match(reUnit);
         if (aUnit && aUnit == bUnit) {
             return {
                 from: parseFloat(a),

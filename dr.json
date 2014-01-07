@@ -1,7 +1,7 @@
 {
     "title": "Snap.svg",
-    "output": "dist/reference.html",
-    "scripts": ["snap.svg-min.js", "reference.js"],
+    "output": "doc/reference.html",
+    "template": "template.dot",
     "files": [{
         "url": "src/svg.js",
         "link": "https://github.com/adobe-webplatform/savage/blob/master/src/svg.js"

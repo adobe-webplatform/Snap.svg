@@ -103,4 +103,12 @@ describe("Paper methods", function () {
         var str = paper.toString();
         expect(str).to.match(/.*?<svg.*?>.*?<circle.*?<\/svg>/);
     });
+    it("Paper.getBBox", function() {
+        paper.circle(50, 50, 30);
+        var bb = paper.getBBox();
+        expect(bb.x).to.be(20);
+        expect(bb.y).to.be(20);
+        expect(bb.width).to.be(60);
+        expect(bb.height).to.be(60);
+    });
 });

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Snap.svg 0.1.0
+=======
+// Snap.svg 0.2.0
+>>>>>>> master
 // 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -14,7 +18,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-12-03
+<<<<<<< HEAD
+// build: 2013-12-12
+=======
+// build: 2013-12-23
+>>>>>>> master
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -478,6 +486,11 @@ var mina = (function (eve) {
         delete animations[a.id];
         eve("mina.stop." + a.id, a);
     },
+    seek = function(val) {
+        var a = this;
+        delete animations[a.id];
+        a.pdif = a.get() - val;
+    },
     pause = function () {
         var a = this;
         if (a.pdif) {
@@ -516,20 +529,22 @@ var mina = (function (eve) {
                 delete animations[i];
                 a.s = 1;
                 len--;
+                (function (a) {
+                    setTimeout(function () {
+                        eve("mina.finish." + a.id, a);
+                    });
+                }(a));
             }
             if (isArray(a.start)) {
                 res = [];
                 for (var j = 0, jj = a.start.length; j < jj; j++) {
-                    res[j] = a.start[j] +
+                    res[j] = +a.start[j] +
                         (a.end[j] - a.start[j]) * a.easing(a.s);
                 }
             } else {
-                res = a.start + (a.end - a.start) * a.easing(a.s);
+                res = +a.start + (a.end - a.start) * a.easing(a.s);
             }
             a.set(res);
-            if (a.s == 1) {
-                eve("mina.finish." + a.id, a);
-            }
         }
         len && requestAnimFrame(frame);
     },
@@ -542,7 +557,7 @@ var mina = (function (eve) {
      **
      - a (number) start _slave_ number
      - A (number) end _slave_ number
-     - b (number) start _master_ number (start time in gereal case)
+     - b (number) start _master_ number (start time in general case)
      - B (number) end _master_ number (end time in gereal case)
      - get (function) getter of _master_ number (see @mina.time)
      - set (function) setter of _slave_ number
@@ -753,357 +768,6 @@ var mina = (function (eve) {
     window.mina = mina;
     return mina;
 })(typeof eve == "undefined" ? function () {} : eve);
-/*
- * Elemental 0.2.4 - Simple JavaScript Tag Parser
- *
- * Copyright (c) 2010 - 2013 Dmitry Baranovskiy (http://dmitry.baranovskiy.com/)
- * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
- */
- 
-(function () {
-    function parse(s) {
-        s = s || Object(s);
-        var pos = 1,
-            len = s.length + 1,
-            p, c, n = at(s, 0);
-        for (;pos < len; pos++) {
-            p = c;
-            c = n;
-            n = at(s, pos);
-            this.raw += c;
-            step.call(this, c, n, p);
-        }
-        this._beforeEnd = function () {
-            step.call(this, "", "", c);
-        };
-        return this;
-    }
-
-    function at(s, i) {
-        return s && (s.charAt ? s.charAt(i) : s[i]);
-    }
-
-    function on(name, f) {
-        this.events = this.events || {};
-        this.events[name] = this.events[name] || [];
-        this.events[name].push(f);
-    }
-
-    function event(name, data, extra) {
-        if (typeof eve == "function") {
-            eve("elemental." + name + (data ? "." + data : ""), null, data, extra || "", this.raw);
-        }
-        var a = this.events && this.events[name],
-            i = a && a.length;
-        while (i--) try {
-            this.events[name][i](data, extra || "", this.raw);
-        } catch (e) {}
-        this.raw = "";
-    }
-
-    function end() {
-        step.call(this, "eof");
-        this.event("eof");
-    }
-
-    var entities = {
-            "lt": 60,
-            "lt;": 60,
-            "AMP;": 38,
-            "AMP": 38,
-            "GT;": 62,
-            "GT": 62,
-            "QUOT;": 34,
-            "QUOT": 34,
-            "apos;": 39,
-            "bull;": 8226,
-            "bullet;": 8226,
-            "copy;": 169,
-            "copy": 169,
-            "deg;": 176,
-            "deg": 176
-        },
-        whitespace = /[\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000]/,
-        notEntity = /[#\da-z]/i,
-        entity2text = function (entity) {
-            var code;
-            if (entity.charAt() == "#") {
-                if (entity.charAt(1).toLowerCase() == "x") {
-                    code = parseInt(entity.substring(2), 16);
-                } else {
-                    code = parseInt(entity.substring(1), 10);
-                }
-            }
-            code = entities[entity];
-            return code ? String.fromCharCode(code) : ("&" + entity);
-        },
-        fireAttrEvent = function () {
-            for (var key in this.attr) if (this.attr.hasOwnProperty(key)) {
-                this.event("attr", key, {
-                    value: this.attr[key],
-                    tagname: this.tagname,
-                    attr: this.attr
-                });
-            }
-        },
-        act = {
-            text: function (c, n, p) {
-                switch (c) {
-                    case "<":
-                    case "eof":
-                        this.nodename = "";
-                        this.attr = {};
-                        this.mode = "tag name start";
-                        this.raw = this.raw.slice(0, -1);
-                        this.textchunk && this.event("text", this.textchunk);
-                        this.raw += c;
-                        this.textchunk = "";
-                    break;
-                    case "&":
-                        this.mode = "entity";
-                        this.entity = "";
-                    break;
-                    default:
-                        this.textchunk += c;
-                    break;
-                }
-            },
-            entity: function (c, n, p) {
-                if (whitespace.test(c)) {
-                    this.textchunk += entity2text(this.entity);
-                    this.mode = "text";
-                } else if (c == ";") {
-                    this.textchunk += entity2text(this.entity + c);
-                    this.mode = "text";
-                } else {
-                    this.entity += c;
-                }
-            },
-            special: function (c, n, p) {
-                if (p == "!" && c == "-" && n == "-") {
-                    this.mode = "comment start";
-                    return;
-                }
-                if (this.textchunk == "[CDATA" && c == "[") {
-                    this.mode = "cdata";
-                    this.textchunk = "";
-                    return;
-                }
-                if (c == ">" || c == "eof") {
-                    this.event("special", this.textchunk);
-                    this.mode = "text";
-                    this.textchunk = "";
-                    return;
-                }
-                this.textchunk += c;
-            },
-            cdata: function (c, n, p) {
-                if (p == "]" && c == "]" && n == ">") {
-                    this.mode = "cdata end";
-                    this.textchunk = this.textchunk.slice(0, -1);
-                    return;
-                }
-                if (c == "eof") {
-                    act["cdata end"].call(this);
-                }
-                this.textchunk += c;
-            },
-            "cdata end": function (c, n, p) {
-                this.event("cdata", this.textchunk);
-                this.textchunk = "";
-                this.mode = "text";
-            },
-            "comment start": function (c, n, p) {
-                if (n == ">" || c == "eof") {
-                    this.event("comment", "");
-                    this.mode = "skip";
-                } else {
-                    this.mode = "comment";
-                }
-            },
-            "skip": function (c, n, p) {
-                this.mode = "text";
-            },
-            comment: function (c, n, p) {
-                if (c == "-" && p == "-" && n == ">") {
-                    this.mode = "comment end";
-                    this.textchunk = this.textchunk.slice(0, -1);
-                } else if (c == "eof") {
-                    this.event("comment", this.textchunk);
-                } else {
-                    this.textchunk += c;
-                }
-            },
-            "comment end": function (c, n, p) {
-                this.event("comment", this.textchunk);
-                this.textchunk = "";
-                this.mode = "text";
-            },
-            declaration: function (c, n, p) {
-                if (c == "?" && n == ">") {
-                    this.mode = "declaration end";
-                    return;
-                }
-                if (c == "eof") {
-                    this.event("comment", this.textchunk);
-                }
-                this.textchunk += c;
-            },
-            "declaration end": function (c, n, p) {
-                this.event("comment", this.textchunk);
-                this.textchunk = "";
-                this.mode = "text";
-            },
-            "tag name start": function (c, n, p) {
-                if (c == "eof") {
-                    this.event("text", "<");
-                    return;
-                }
-                if (!whitespace.test(c)) {
-                    this.mode = "tag name";
-                    if (c == "/") {
-                        this.mode = "close tag name start";
-                        return;
-                    } else if (c == "!") {
-                        this.mode = "special";
-                        this.textchunk = "";
-                        return;
-                    } else if (c == "?") {
-                        this.mode = "declaration";
-                        return;
-                    }
-                    act[this.mode].call(this, c, n, p);
-                }
-            },
-            "close tag name start": function (c, n, p) {
-                if (!whitespace.test(c)) {
-                    this.mode = "close tag name";
-                    this.tagname = "";
-                    this.nodename = "";
-                    act[this.mode].call(this, c, n, p);
-                }
-            },
-            "close tag name": function (c, n, p) {
-                if (whitespace.test(c)) {
-                    this.tagname = this.nodename;
-                } else switch (c) {
-                    case ">":
-                        this.event("/tag", (this.tagname || this.nodename));
-                        this.mode = "text";
-                    break;
-                    default:
-                        !this.tagname && (this.nodename += c);
-                    break;
-                }
-            },
-            "tag name": function (c, n, p) {
-                if (whitespace.test(c)) {
-                    this.tagname = this.nodename;
-                    this.nodename = "";
-                    this.mode = "attr start";
-                } else switch (c) {
-                    case ">":
-                        this.event("tag", this.nodename);
-                        this.mode = "text";
-                    break;
-                    case "/":
-                        this.raw += n;
-                        this.event("tag", this.nodename);
-                        this.event("/tag", this.nodename);
-                        this.mode = "skip";
-                    break;
-                    default:
-                        this.nodename += c;
-                    break;
-                }
-            },
-            "attr start": function (c, n, p) {
-                if (!whitespace.test(c)) {
-                    this.mode = "attr";
-                    this.nodename = "";
-                    act[this.mode].call(this, c, n, p);
-                }
-            },
-            attr: function (c, n, p) {
-                if (whitespace.test(c) || c == "=") {
-                    this.attr[this.nodename] = "";
-                    this.mode = "attr value start";
-                } else switch (c) {
-                    case ">":
-                        if (this.nodename == "/") {
-                            delete this.attr["/"];
-                            this.event("tag", this.tagname, this.attr);
-                            fireAttrEvent.call(this);
-                            this.event("/tag", this.tagname, true);
-                        } else {
-                            this.nodename && (this.attr[this.nodename] = "");
-                            this.event("tag", this.tagname, this.attr);
-                            fireAttrEvent.call(this);
-                        }
-                        this.mode = "text";
-                    break;
-                    default:
-                        this.nodename += c;
-                    break;
-                }
-            },
-            "attr value start": function (c, n, p) {
-                if (!whitespace.test(c)) {
-                    this.mode = "attr value";
-                    this.quote = false;
-                    if (c == "'" || c == '"') {
-                        this.quote = c;
-                        return;
-                    }
-                    act[this.mode].call(this, c, n, p);
-                }
-            },
-            "attr value": function (c, n, p) {
-                if (whitespace.test(c) && !this.quote) {
-                    this.mode = "attr start";
-                } else if (c == ">" && !this.quote) {
-                    this.event("tag", this.tagname, this.attr);
-                    this.mode = "text";
-                } else switch (c) {
-                    case '"':
-                    case "'":
-                        if (this.quote == c && p != "\\") {
-                            this.mode = "attr start";
-                        }
-                    break;
-                    default:
-                        this.attr[this.nodename] += c;
-                    break;
-                }
-            }
-        };
-
-    function step(c, n, p) {
-        c == "\n" && this.event("newline");
-        act[this.mode].call(this, c, n, p);
-    }
-
-    function elemental(type, ent) {
-        var out = function (s) {
-            out.parse(s);
-        };
-        out.mode = "text";
-        out.type = String(type || "html").toLowerCase();
-        out.textchunk = "";
-        out.raw = "";
-        out.parse = parse;
-        out.on = on;
-        out.event = event;
-        out.end = end;
-        if (ent) {
-            entities = ent;
-        }
-        return out;
-    }
-    elemental.version = "0.2.4";
-
-    (typeof exports == "undefined" ? this : exports).elemental = elemental;
-})();
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1119,8 +783,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.1.0";
-// SIERRA: this method appears to be missing from HTML output
+Snap.version = "0.2.0";
 /*\
  * Snap
  [ method ]
@@ -1193,7 +856,11 @@ var has = "hasOwnProperty",
         return idprefix + (idgen++).toString(36);
     },
     xlink = "http://www.w3.org/1999/xlink",
-    hub = {};
+    xmlns = "http://www.w3.org/2000/svg",
+    hub = {},
+    URL = Snap.url = function (url) {
+        return "url('#" + url + "')";
+    };
 
 function $(el, attr) {
     if (attr) {
@@ -1204,6 +871,9 @@ function $(el, attr) {
             if (attr.substring(0, 6) == "xlink:") {
                 return el.getAttributeNS(xlink, attr.substring(6));
             }
+            if (attr.substring(0, 4) == "xml:") {
+                return el.getAttributeNS(xmlns, attr.substring(4));
+            }
             return el.getAttribute(attr);
         }
         for (var key in attr) if (attr[has](key)) {
@@ -1211,6 +881,8 @@ function $(el, attr) {
             if (val) {
                 if (key.substring(0, 6) == "xlink:") {
                     el.setAttributeNS(xlink, key.substring(6), val);
+                } else if (key.substring(0, 4) == "xml:") {
+                    el.setAttributeNS(xmlns, key.substring(4), val);
                 } else {
                     el.setAttribute(key, val);
                 }
@@ -1219,7 +891,7 @@ function $(el, attr) {
             }
         }
     } else {
-        el = glob.doc.createElementNS("http://www.w3.org/2000/svg", el);
+        el = glob.doc.createElementNS(xmlns, el);
         // el.style && (el.style.webkitTapHighlightColor = "rgba(0,0,0,0)");
     }
     return el;
@@ -1629,9 +1301,6 @@ function Matrix(a, b, c, d, e, f) {
         a[0] && (a[0] /= mag);
         a[1] && (a[1] /= mag);
     }
-// SIERRA Matrix.split(): HTML formatting for the return value is scrambled. It should appear _Returns: {OBJECT} in format:..._
-// SIERRA Matrix.split(): the _shear_ parameter needs to be detailed. Is it an angle? What does it affect?
-// SIERRA Matrix.split(): The idea of _simple_ transforms needs to be detailed and contrasted with any alternatives.
     /*\
      * Matrix.split
      [ method ]
@@ -1681,7 +1350,6 @@ function Matrix(a, b, c, d, e, f) {
         out.noRotation = !+out.shear.toFixed(9) && !out.rotate;
         return out;
     };
-// SIERRA Matrix.toTransformString(): The format of the string needs to be detailed.
     /*\
      * Matrix.toTransformString
      [ method ]
@@ -1703,7 +1371,6 @@ function Matrix(a, b, c, d, e, f) {
         }
     };
 })(Matrix.prototype);
-// SIERRA Unclear the difference between the two matrix formats ("parameters" vs svgMatrix). See my comment about Element.matrix().
 /*\
  * Snap.Matrix
  [ method ]
@@ -2230,7 +1897,7 @@ var parseTransformString = Snap.parseTransformString = function (TString) {
 function svgTransform2string(tstr) {
     var res = [];
     tstr = tstr.replace(/(?:^|\s)(\w+)\(([^)]+)\)/g, function (all, name, params) {
-        params = params.split(/\s*,\s*/);
+        params = params.split(/\s*,\s*|\s+/);
         if (name == "rotate" && params.length == 1) {
             params.push(0, 0);
         }
@@ -2253,7 +1920,8 @@ function svgTransform2string(tstr) {
     });
     return res;
 }
-var rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d");
+Snap._.svgTransform2string = svgTransform2string;
+Snap._.rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d", "i");
 function transform2matrix(tstr, bbox) {
     var tdata = parseTransformString(tstr),
         m = new Matrix;
@@ -2269,7 +1937,9 @@ function transform2matrix(tstr, bbox) {
                 x2,
                 y2,
                 bb;
-            if (command == "t" && tlen == 3) {
+            if (command == "t" && tlen == 2){
+                m.translate(t[1], 0);
+            } else if (command == "t" && tlen == 3) {
                 if (absolute) {
                     x1 = inver.x(0, 0);
                     y1 = inver.y(0, 0);
@@ -2336,7 +2006,7 @@ function extractTransform(el, tstr) {
         }
         tstr = svgTransform2string(tstr);
     } else {
-        if (!rgTransform.test(tstr)) {
+        if (!Snap._.rgTransform.test(tstr)) {
             tstr = svgTransform2string(tstr);
         } else {
             tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
@@ -2354,15 +2024,38 @@ function extractTransform(el, tstr) {
     }
 }
 Snap._unit2px = unit2px;
+var contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
+    function (a, b) {
+        var adown = a.nodeType == 9 ? a.documentElement : a,
+            bup = b && b.parentNode;
+            return a == bup || !!(bup && bup.nodeType == 1 && (
+                adown.contains ?
+                    adown.contains(bup) :
+                    a.compareDocumentPosition && a.compareDocumentPosition(bup) & 16
+            ));
+    } :
+    function (a, b) {
+        if (b) {
+            while (b) {
+                b = b.parentNode;
+                if (b == a) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
 function getSomeDefs(el) {
-    if (Snap._.someDefs) {
-        return Snap._.someDefs;
+    var cache = Snap._.someDefs;
+    if (cache && contains(cache.ownerDocument.documentElement, cache)) {
+        return cache;
     }
-    var p = el.paper ||
-            (el.node.parentNode && Snap(el.node.parentNode)) ||
+    var p = (el.node.ownerSVGElement && wrap(el.node.ownerSVGElement)) ||
+            (el.node.parentNode && wrap(el.node.parentNode)) ||
             Snap.select("svg") ||
             Snap(0, 0),
-        defs = p.select("defs").node;
+        pdefs = p.select("defs"),
+        defs  = pdefs == null ? false : pdefs.node;
     if (!defs) {
         defs = make("defs", p.node).node;
     }
@@ -2499,9 +2192,10 @@ function add2group(list) {
         }
     }
     var children = node.childNodes;
-    for (i = 0; i < children.length; i++) if (children[i].snap) {
-        this[j++] = hub[children[i].snap];
+    for (i = 0; i < children.length; i++) {
+        this[j++] = wrap(children[i]);
     }
+    return this;
 }
 function Element(el) {
     if (el.snap in hub) {
@@ -2519,13 +2213,7 @@ function Element(el) {
     this.type = el.tagName;
     this.anims = {};
     this._ = {
-        transform: [],
-        sx: 1,
-        sy: 1,
-        deg: 0,
-        dx: 0,
-        dy: 0,
-        dirty: 1
+        transform: []
     };
     el.snap = id;
     hub[id] = this;
@@ -2546,7 +2234,6 @@ function arrayFirstValue(arr) {
     }
 }
 (function (elproto) {
-    // SIERRA Element.attr(): There appear to be two possible return values, one of which is blank. (Search the doc for _Returns:_ to identify problems.)
     /*\
      * Element.attr
      [ method ]
@@ -2627,22 +2314,11 @@ function arrayFirstValue(arr) {
         }
         var _ = el._;
         if (isWithoutTransform) {
-            if (_.dirty || !_.bboxwt) {
-                el.realPath = Snap.path.get[el.type](el);
-                _.bboxwt = Snap.path.getBBox(el.realPath);
-                _.bboxwt.toString = x_y_w_h;
-                _.dirty = 0;
-            }
+            _.bboxwt = Snap.path.get[el.type] ? Snap.path.getBBox(el.realPath = Snap.path.get[el.type](el)) : Snap._.box(el.node.getBBox());
             return Snap._.box(_.bboxwt);
-        }
-        if (_.dirty || _.dirtyT || !_.bbox) {
-            if (_.dirty || !el.realPath) {
-                _.bboxwt = 0;
-                el.realPath = Snap.path.get[el.type](el);
-            }
+        } else {
+            el.realPath = (Snap.path.get[el.type] || Snap.path.get.deflt)(el);
             _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, el.matrix));
-            _.bbox.toString = x_y_w_h;
-            _.dirty = _.dirtyT = 0;
         }
         return Snap._.box(_.bbox);
     };
@@ -2736,16 +2412,34 @@ function arrayFirstValue(arr) {
      * See @Element.append
     \*/
     elproto.append = elproto.add = function (el) {
-        if (el.type == "set") {
-            var it = this;
-            el.forEach(function (el) {
-                it.append(el);
-            });
-            return this;
+        if (el) {
+            if (el.type == "set") {
+                var it = this;
+                el.forEach(function (el) {
+                    it.add(el);
+                });
+                return this;
+            }
+            el = wrap(el);
+            this.node.appendChild(el.node);
+            el.paper = this.paper;
         }
-        el = wrap(el);
-        this.node.appendChild(el.node);
-        el.paper = this.paper;
+        return this;
+    };
+    /*\
+     * Element.appendTo
+     [ method ]
+     **
+     * Appends the current element to the given one
+     **
+     - el (Element) parent element to append to
+     = (Element) the child element
+    \*/
+    elproto.appendTo = function (el) {
+        if (el) {
+            el = wrap(el);
+            el.append(this);
+        }
         return this;
     };
     /*\
@@ -2758,9 +2452,29 @@ function arrayFirstValue(arr) {
      = (Element) the parent element
     \*/
     elproto.prepend = function (el) {
+        if (el) {
+            el = wrap(el);
+            var parent = el.parent();
+            this.node.insertBefore(el.node, this.node.firstChild);
+            this.add && this.add();
+            el.paper = this.paper;
+            this.parent() && this.parent().add();
+            parent && parent.add();
+        }
+        return this;
+    };
+    /*\
+     * Element.prependTo
+     [ method ]
+     **
+     * Prepends the current element to the given one
+     **
+     - el (Element) parent element to prepend to
+     = (Element) the child element
+    \*/
+    elproto.prependTo = function (el) {
         el = wrap(el);
-        this.node.insertBefore(el.node, this.node.firstChild);
-        el.paper = this.paper;
+        el.prepend(this);
         return this;
     };
     /*\
@@ -2772,10 +2486,22 @@ function arrayFirstValue(arr) {
      - el (Element) element to insert
      = (Element) the parent element
     \*/
-    // TODO make it work for sets too
     elproto.before = function (el) {
+        if (el.type == "set") {
+            var it = this;
+            el.forEach(function (el) {
+                var parent = el.parent();
+                it.node.parentNode.insertBefore(el.node, it.node);
+                parent && parent.add();
+            });
+            this.parent().add();
+            return this;
+        }
         el = wrap(el);
+        var parent = el.parent();
         this.node.parentNode.insertBefore(el.node, this.node);
+        this.parent() && this.parent().add();
+        parent && parent.add();
         el.paper = this.paper;
         return this;
     };
@@ -2790,7 +2516,14 @@ function arrayFirstValue(arr) {
     \*/
     elproto.after = function (el) {
         el = wrap(el);
-        this.node.parentNode.insertBefore(el.node, this.node.nextSibling);
+        var parent = el.parent();
+        if (this.node.nextSibling) {
+            this.node.parentNode.insertBefore(el.node, this.node.nextSibling);
+        } else {
+            this.node.parentNode.appendChild(el.node);
+        }
+        this.parent() && this.parent().add();
+        parent && parent.add();
         el.paper = this.paper;
         return this;
     };
@@ -2805,8 +2538,11 @@ function arrayFirstValue(arr) {
     \*/
     elproto.insertBefore = function (el) {
         el = wrap(el);
+        var parent = this.parent();
         el.node.parentNode.insertBefore(this.node, el.node);
         this.paper = el.paper;
+        parent && parent.add();
+        el.parent() && el.parent().add();
         return this;
     };
     /*\
@@ -2820,8 +2556,11 @@ function arrayFirstValue(arr) {
     \*/
     elproto.insertAfter = function (el) {
         el = wrap(el);
+        var parent = this.parent();
         el.node.parentNode.insertBefore(this.node, el.node.nextSibling);
         this.paper = el.paper;
+        parent && parent.add();
+        el.parent() && el.parent().add();
         return this;
     };
     /*\
@@ -2832,9 +2571,11 @@ function arrayFirstValue(arr) {
      = (Element) the detached element
     \*/
     elproto.remove = function () {
+        var parent = this.parent();
         this.node.parentNode && this.node.parentNode.removeChild(this.node);
         delete this.paper;
         this.removed = true;
+        parent && parent.add();
         return this;
     };
     /*\
@@ -2880,7 +2621,7 @@ function arrayFirstValue(arr) {
         if (value == null) {
             value = this.attr(attr);
         }
-        return unit2px(this, attr, value);
+        return +unit2px(this, attr, value);
     };
     // SIERRA Element.use(): I suggest adding a note about how to access the original element the returned <use> instantiates. It's a part of SVG with which ordinary web developers may be least familiar.
     /*\
@@ -2938,7 +2679,7 @@ function arrayFirstValue(arr) {
             if (val) {
                 uses[val] = (uses[val] || []).concat(function (id) {
                     var attr = {};
-                    attr[name] = "url(#" + id + ")";
+                    attr[name] = URL(id);
                     $(it.node, attr);
                 });
             }
@@ -3035,7 +2776,7 @@ function arrayFirstValue(arr) {
         if (x == null) {
             x = this.getBBox();
         }
-        if (x && "x" in x) {
+        if (is(x, "object") && "x" in x) {
             y = x.y;
             width = x.width;
             height = x.height;
@@ -3077,7 +2818,7 @@ function arrayFirstValue(arr) {
         if (x == null) {
             x = this.getBBox();
         }
-        if (x && "x" in x) {
+        if (is(x, "object") && "x" in x) {
             y = x.y;
             width = x.width;
             height = x.height;
@@ -3309,6 +3050,10 @@ function arrayFirstValue(arr) {
     \*/
     elproto.data = function (key, value) {
         var data = eldata[this.id] = eldata[this.id] || {};
+        if (arguments.length == 0){
+            eve("snap.data.get." + this.id, this, data, null);
+            return data;
+        }
         if (arguments.length == 1) {
             if (Snap.is(key, "object")) {
                 for (var i in key) if (key[has](i)) {
@@ -3340,15 +3085,22 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
-    // SIERRA Element.toString(): Recommend renaming this _outerSVG_ to keep it consistent with HTML & innerSVG, and also to avoid confusing it with what textContent() does. Cross-reference with innerSVG.
+    /*\
+     * Element.outerSVG
+     [ method ]
+     **
+     * Returns SVG code for the element, equivalent to HTML's `outerHTML`.
+     *
+     * See also @Element.innerSVG
+     = (string) SVG code for the element
+    \*/
     /*\
      * Element.toString
      [ method ]
      **
-     * Returns SVG code for the element, equivalent to HTML's `outerHTML`
-     = (string) SVG code for the element
+     * See @Element.outerSVG
     \*/
-    elproto.toString = toString(1);
+    elproto.outerSVG = elproto.toString = toString(1);
     /*\
      * Element.innerSVG
      [ method ]
@@ -3397,24 +3149,25 @@ function arrayFirstValue(arr) {
 \*/
 Snap.parse = function (svg) {
     var f = glob.doc.createDocumentFragment(),
-        pointer = f;
-    eve.on("elemental.tag", function (data, extra, raw) {
-        var tag = $(data);
-        extra && $(tag, extra);
-        pointer.appendChild(tag);
-        pointer = tag;
-    });
-    eve.on("elemental.text", function (text) {
-        pointer.appendChild(glob.doc.createTextNode(text));
-    });
-    eve.on("elemental./tag", function () {
-        pointer = pointer.parentNode;
-    });
-    eve.on("elemental.eof", function () {
-        eve.off("elemental.*");
-        eve("snap.parsed", f);
-    });
-    elemental().parse(svg).end();
+        full = true,
+        div = glob.doc.createElement("div");
+    svg = Str(svg);
+    if (!svg.match(/^\s*<\s*svg(?:\s|>)/)) {
+        svg = "<svg>" + svg + "</svg>";
+        full = false;
+    }
+    div.innerHTML = svg;
+    svg = div.getElementsByTagName("svg")[0];
+    if (svg) {
+        if (full) {
+            f = svg;
+        } else {
+            while (svg.firstChild) {
+                f.appendChild(svg.firstChild);
+            }
+        }
+    }
+    div.innerHTML = E;
     return new Fragment(f);
 };
 function Fragment(frag) {
@@ -3501,7 +3254,7 @@ function Paper(w, h) {
             height: h,
             version: 1.1,
             width: w,
-            xmlns: "http://www.w3.org/2000/svg"
+            xmlns: xmlns
         });
     }
     return res;
@@ -3644,6 +3397,12 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      |     cy: 10,
      |     r: 10
      | });
+     | // and the same as
+     | var c = paper.el("circle", {
+     |     cx: 10,
+     |     cy: 10,
+     |     r: 10
+     | });
     \*/
     proto.el = function (name, attr) {
         return make(name, this.node).attr(attr);
@@ -3669,27 +3428,25 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      | var c = paper.rect(40, 40, 50, 50, 10);
     \*/
     proto.rect = function (x, y, w, h, rx, ry) {
-        var el = make("rect", this.node);
+        var attr;
         if (ry == null) {
             ry = rx;
         }
         if (is(x, "object") && "x" in x) {
-            el.attr(x);
+            attr = x;
         } else if (x != null) {
-            el.attr({
+            attr = {
                 x: x,
                 y: y,
                 width: w,
                 height: h
-            });
+            };
             if (rx != null) {
-                el.attr({
-                    rx: rx,
-                    ry: ry
-                });
+                attr.rx = rx;
+                attr.ry = ry;
             }
         }
-        return el;
+        return this.el("rect", attr);
     };
     /*\
      * Paper.circle
@@ -3706,17 +3463,17 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      | var c = paper.circle(50, 50, 40);
     \*/
     proto.circle = function (cx, cy, r) {
-        var el = make("circle", this.node);
+        var attr;
         if (is(cx, "object") && "cx" in cx) {
-            el.attr(cx);
+            attr = cx;
         } else if (cx != null) {
-            el.attr({
+            attr = {
                 cx: cx,
                 cy: cy,
                 r: r
-            });
+            };
         }
-        return el;
+        return this.el("circle", attr);
     };
 
     /*\
@@ -3732,7 +3489,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      - height (number) height of the image
      = (object) the `image` element
      * or
-     = (object) Raphaël element object with type `image`
+     = (object) Snap element object with type `image`
      **
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);
@@ -3889,6 +3646,11 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      > Usage
      | var t1 = paper.text(50, 50, "Snap");
      | var t2 = paper.text(50, 50, ["S","n","a","p"]);
+     | // Text path usage
+     | t1.attr({textpath: "M10,10L100,100"});
+     | // or
+     | var pth = paper.path("M10,10L100,100");
+     | t1.attr({textpath: pth});
     \*/
     proto.text = function (x, y, text) {
         var el = make("text", this.node);
@@ -4043,7 +3805,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
                 res;
             f.appendChild(d);
             d.appendChild(svg);
-            $(svg, {xmlns: "http://www.w3.org/2000/svg"});
+            $(svg, {xmlns: xmlns});
             res = d.innerHTML;
             f.removeChild(f.firstChild);
             return res;
@@ -4157,7 +3919,7 @@ eve.on("snap.util.attr.mask", function (value) {
             });
         }
         $(this.node, {
-            mask: "url(#" + mask.id + ")"
+            mask: URL(mask.id)
         });
     }
 });
@@ -4178,7 +3940,7 @@ eve.on("snap.util.attr.mask", function (value) {
             });
         }
         $(this.node, {
-            "clip-path": "url(#" + clip.id + ")"
+            "clip-path": URL(clip.id)
         });
     }
 }));
@@ -4201,7 +3963,7 @@ function fillStroke(name) {
                         id: value.id
                     });
                 }
-                var fill = "url(#" + value.node.id + ")";
+                var fill = URL(value.node.id);
             } else {
                 fill = value.attr(name);
             }
@@ -4215,7 +3977,7 @@ function fillStroke(name) {
                             id: grad.id
                         });
                     }
-                    fill = "url(#" + grad.node.id + ")";
+                    fill = URL(grad.node.id);
                 } else {
                     fill = value;
                 }
@@ -4316,6 +4078,53 @@ eve.on("snap.util.attr.r", function (value) {
         });
     }
 })(-1);
+eve.on("snap.util.attr.textpath", function (value) {
+    eve.stop();
+    if (this.type == "text") {
+        var id, tp, node;
+        if (!value && this.textPath) {
+            tp = this.textPath;
+            while (tp.node.firstChild) {
+                this.node.appendChild(tp.node.firstChild);
+            }
+            tp.remove();
+            delete this.textPath;
+            return;
+        }
+        if (is(value, "string")) {
+            var defs = getSomeDefs(this),
+                path = wrap(defs.parentNode).path(value);
+            defs.appendChild(path.node);
+            id = path.id;
+            path.attr({id: id});
+        } else {
+            value = wrap(value);
+            if (value instanceof Element) {
+                id = value.attr("id");
+                if (!id) {
+                    id = value.id;
+                    value.attr({id: id});
+                }
+            }
+        }
+        if (id) {
+            tp = this.textPath;
+            node = this.node;
+            if (tp) {
+                tp.attr({"xlink:href": "#" + id});
+            } else {
+                tp = $("textPath", {
+                    "xlink:href": "#" + id
+                });
+                while (node.firstChild) {
+                    tp.appendChild(node.firstChild);
+                }
+                node.appendChild(tp);
+                this.textPath = wrap(tp);
+            }
+        }
+    }
+})(-1);
 eve.on("snap.util.attr.text", function (value) {
     if (this.type == "text") {
         var i = 0,
@@ -4343,410 +4152,94 @@ eve.on("snap.util.attr.text", function (value) {
     eve.stop();
 })(-1);
 // default
-var availableAttributes = {
-    rect: {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        rx: 0,
-        ry: 0,
-        "class": 0
-    },
-    circle: {
-        cx: 0,
-        cy: 0,
-        r: 0,
-        "class": 0
-    },
-    ellipse: {
-        cx: 0,
-        cy: 0,
-        rx: 0,
-        ry: 0,
-        "class": 0
-    },
-    line: {
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        "class": 0
-    },
-    polyline: {
-        points: "",
-        "class": 0
-    },
-    polygon: {
-        points: "",
-        "class": 0
-    },
-    text: {
-        x: 0,
-        y: 0,
-        dx: 0,
-        dy: 0,
-        rotate: 0,
-        textLength: 0,
-        lengthAdjust: 0,
-        "class": 0
-    },
-    tspan: {
-        x: 0,
-        y: 0,
-        dx: 0,
-        dy: 0,
-        rotate: 0,
-        textLength: 0,
-        lengthAdjust: 0,
-        "class": 0
-    },
-    textPath: {
-        "xlink:href": 0,
-        startOffset: 0,
-        method: 0,
-        spacing: 0,
-        "class": 0
-    },
-    marker: {
-        viewBox: 0,
-        preserveAspectRatio: 0,
-        refX: 0,
-        refY: 0,
-        markerUnits: 0,
-        markerWidth: 0,
-        markerHeight: 0,
-        orient: 0,
-        "class": 0
-    },
-    use: {
-        "class": 0,
-        externalResourcesRequired: 0,
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        "xlink:href": 0
-    },
-    linearGradient: {
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        gradientUnits: 0,
-        gradientTransform: 0,
-        spreadMethod: 0,
-        "xlink:href": 0,
-        "class": 0
-    },
-    radialGradient: {
-        cx: 0,
-        cy: 0,
-        r: 0,
-        fx: 0,
-        fy: 0,
-        gradientUnits: 0,
-        gradientTransform: 0,
-        spreadMethod: 0,
-        "xlink:href": 0,
-        "class": 0
-    },
-    stop: {
-        offset: 0,
-        "class": 0
-    },
-    pattern: {
-        viewBox: 0,
-        preserveAspectRatio: 0,
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        patternUnits: 0,
-        patternContentUnits: 0,
-        patternTransform: 0,
-        "xlink:href": 0,
-        "class": 0
-    },
-    clipPath: {
-        transform: 0,
-        clipPathUnits: 0,
-        "class": 0
-    },
-    mask: {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        maskUnits: 0,
-        maskContentUnits: 0,
-        "class": 0
-    },
-    image: {
-        preserveAspectRatio: 0,
-        transform: 0,
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        "xlink:href": 0,
-        "class": 0
-    },
-    path: {
-        d: "",
-        "class": 0
-    },
-    g: {
-        "class": 0
-    },
-    feDistantLight: {
-        azimuth: 0,
-        elevation: 0
-    },
-    fePointLight: {
-        x: 0,
-        y: 0,
-        z: 0
-    },
-    feSpotLight: {
-        x: 0,
-        y: 0,
-        z: 0,
-        pointsAtX: 0,
-        pointsAtY: 0,
-        pointsAtZ: 0,
-        specularExponent: 0,
-        limitingConeAngle: 0
-    },
-    feBlend: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        in2: 0,
-        mode: 0
-    },
-    feColorMatrix: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        type: 0,
-        values: 0
-    },
-    feComponentTransfer: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0
-    },
-    feComposite: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        in2: 0,
-        operator: 0,
-        k1: 0,
-        k2: 0,
-        k3: 0,
-        k4: 0
-    },
-    feConvolveMatrix: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        order: 0,
-        kernelMatrix: 0,
-        divisor: 0,
-        bias: 0,
-        targetX: 0,
-        targetY: 0,
-        edgeMode: 0,
-        kernelUnitLength: 0,
-        preserveAlpha: 0
-    },
-    feDiffuseLighting: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        surfaceScale: 0,
-        diffuseConstant: 0,
-        kernelUnitLength: 0
-    },
-    feDisplacementMap: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        in2: 0,
-        scale: 0,
-        xChannelSelector: 0,
-        yChannelSelector: 0
-    },
-    feFlood: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "flood-color": 0,
-        "flood-opacity": 0
-    },
-    feGaussianBlur: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        stdDeviation: 0
-    },
-    feImage : {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        externalResourcesRequired: 0,
-        preserveAspectRatio: 0,
-        "xlink:href": 0
-    },
-    feMerge: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0
-    },
-    feMergeNode: {
-        "in": 0
-    },
-    feMorphology: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        operator: 0,
-        radius: 0
-    },
-    feOffset: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        dx: 0,
-        dy: 0
-    },
-    feSpecularLighting: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0,
-        surfaceScale: 0,
-        specularConstant: 0,
-        specularExponent: 0,
-        kernelUnitLength: 0
-    },
-    feTile: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        "in": 0
-    },
-    feTurbulence: {
-        height: 0,
-        result: 0,
-        width: 0,
-        x: 0,
-        y: 0,
-        "class": 0,
-        style: 0,
-        baseFrequency: 0,
-        numOctaves: 0,
-        seed: 0,
-        stitchTiles: 0,
-        type: 0
-    }
+var cssAttr = {
+    "alignment-baseline": 0,
+    "baseline-shift": 0,
+    "clip": 0,
+    "clip-path": 0,
+    "clip-rule": 0,
+    "color": 0,
+    "color-interpolation": 0,
+    "color-interpolation-filters": 0,
+    "color-profile": 0,
+    "color-rendering": 0,
+    "cursor": 0,
+    "direction": 0,
+    "display": 0,
+    "dominant-baseline": 0,
+    "enable-background": 0,
+    "fill": 0,
+    "fill-opacity": 0,
+    "fill-rule": 0,
+    "filter": 0,
+    "flood-color": 0,
+    "flood-opacity": 0,
+    "font": 0,
+    "font-family": 0,
+    "font-size": 0,
+    "font-size-adjust": 0,
+    "font-stretch": 0,
+    "font-style": 0,
+    "font-variant": 0,
+    "font-weight": 0,
+    "glyph-orientation-horizontal": 0,
+    "glyph-orientation-vertical": 0,
+    "image-rendering": 0,
+    "kerning": 0,
+    "letter-spacing": 0,
+    "lighting-color": 0,
+    "marker": 0,
+    "marker-end": 0,
+    "marker-mid": 0,
+    "marker-start": 0,
+    "mask": 0,
+    "opacity": 0,
+    "overflow": 0,
+    "pointer-events": 0,
+    "shape-rendering": 0,
+    "stop-color": 0,
+    "stop-opacity": 0,
+    "stroke": 0,
+    "stroke-dasharray": 0,
+    "stroke-dashoffset": 0,
+    "stroke-linecap": 0,
+    "stroke-linejoin": 0,
+    "stroke-miterlimit": 0,
+    "stroke-opacity": 0,
+    "stroke-width": 0,
+    "text-anchor": 0,
+    "text-decoration": 0,
+    "text-rendering": 0,
+    "unicode-bidi": 0,
+    "visibility": 0,
+    "word-spacing": 0,
+    "writing-mode": 0
 };
-availableAttributes.feFuncR = availableAttributes.feFuncG = availableAttributes.feFuncB = availableAttributes.feFuncA = {
-    type: 0,
-    tableValues: 0,
-    slope: 0,
-    intercept: 0,
-    amplitude: 0,
-    exponent: 0,
-    offset: 0
-};
+
 eve.on("snap.util.attr", function (value) {
-    var att = eve.nt();
+    var att = eve.nt(),
+        attr = {};
     att = att.substring(att.lastIndexOf(".") + 1);
+    attr[att] = value;
     var style = att.replace(/-(\w)/gi, function (all, letter) {
-        return letter.toUpperCase();
-    });
-    if (availableAttributes[has](this.type) && availableAttributes[this.type][has](att)) {
-        value == null ? this.node.removeAttribute(att) : this.node.setAttribute(att, value);
-    } else {
+            return letter.toUpperCase();
+        }),
+        css = att.replace(/[A-Z]/g, function (letter) {
+            return "-" + letter.toLowerCase();
+        });
+    if (cssAttr[has](css)) {
         this.node.style[style] = value == null ? E : value;
+    } else {
+        $(this.node, attr);
     }
 });
 eve.on("snap.util.getattr.transform", function () {
     eve.stop();
     return this.transform();
+})(-1);
+eve.on("snap.util.getattr.textpath", function () {
+    eve.stop();
+    return this.textPath;
 })(-1);
 // Markers
 (function () {
@@ -4774,7 +4267,7 @@ eve.on("snap.util.getattr.transform", function () {
                 if (!id) {
                     $(value.node, {id: value.id});
                 }
-                this.node.style[name] = "url(#" + id + ")";
+                this.node.style[name] = URL(id);
                 return;
             }
         };
@@ -4846,12 +4339,75 @@ eve.on("snap.util.getattr.path", function () {
 eve.on("snap.util.getattr", function () {
     var att = eve.nt();
     att = att.substring(att.lastIndexOf(".") + 1);
-    if (availableAttributes[has](this.type) && availableAttributes[this.type][has](att)) {
-        return this.node.getAttribute(att);
+    var css = att.replace(/[A-Z]/g, function (letter) {
+        return "-" + letter.toLowerCase();
+    });
+    if (cssAttr[has](css)) {
+        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(css);
     } else {
-        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(att);
+        return $(this.node, att);
     }
 });
+var getOffset = function (elem) {
+    var box = elem.getBoundingClientRect(),
+        doc = elem.ownerDocument,
+        body = doc.body,
+        docElem = doc.documentElement,
+        clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
+        top  = box.top  + (g.win.pageYOffset || docElem.scrollTop || body.scrollTop ) - clientTop,
+        left = box.left + (g.win.pageXOffset || docElem.scrollLeft || body.scrollLeft) - clientLeft;
+    return {
+        y: top,
+        x: left
+    };
+};
+/*\
+ * Snap.getElementByPoint
+ [ method ]
+ **
+ * Returns you topmost element under given point.
+ **
+ = (object) Snap element object
+ - x (number) x coordinate from the top left corner of the window
+ - y (number) y coordinate from the top left corner of the window
+ > Usage
+ | Snap.getElementByPoint(mouseX, mouseY).attr({stroke: "#f00"});
+\*/
+Snap.getElementByPoint = function (x, y) {
+    var paper = this,
+        svg = paper.canvas,
+        target = glob.doc.elementFromPoint(x, y);
+    if (glob.win.opera && target.tagName == "svg") {
+        var so = getOffset(target),
+            sr = target.createSVGRect();
+        sr.x = x - so.x;
+        sr.y = y - so.y;
+        sr.width = sr.height = 1;
+        var hits = target.getIntersectionList(sr, null);
+        if (hits.length) {
+            target = hits[hits.length - 1];
+        }
+    }
+    if (!target) {
+        return null;
+    }
+    return wrap(target);
+};
+/*\
+ * Snap.plugin
+ [ method ]
+ **
+ * Let you write plugins. You pass in a function with four arguments, like this:
+ | Snap.plugin(function (Snap, Element, Paper, global) {
+ |     Snap.newmethod = function () {};
+ |     Element.prototype.newmethod = function () {};
+ |     Paper.prototype.newmethod = function () {};
+ | });
+ * Inside the function you have access to all main objects (and their
+ * prototypes). This allow you to extend anything you want.
+ **
+ - f (function) your plugin body
+\*/
 Snap.plugin = function (f) {
     f(Snap, Element, Paper, glob);
 };
@@ -5383,11 +4939,22 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             var bbox = el.getBBox();
             return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
         },
+        line: function (el) {
+            return "M" + [el.attr("x1"), el.attr("y1"), el.attr("x2"), el.attr("y2")];
+        },
         polyline: function (el) {
             return "M" + el.attr("points");
         },
         polygon: function (el) {
             return "M" + el.attr("points") + "z";
+        },
+        svg: function (el) {
+            var bbox = el.node.getBBox();
+            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
+        },
+        deflt: function (el) {
+            var bbox = el.node.getBBox();
+            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
         }
     };
     function pathToRelative(pathArray) {
@@ -6284,6 +5851,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return this;
     };
+    setproto.remove = function () {
+        while (this.length) {
+            this.pop().remove();
+        }
+        return this;
+    };
     setproto.attr = function (value) {
         for (var i = 0, ii = this.items.length; i < ii; i++) {
             this.items[i].attr(value);
@@ -6533,7 +6106,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
-            // TODO: b could be an SVG transform string or matrix
+            if (b instanceof Snap.Matrix) {
+                b = b.toTransformString();
+            }
+            if (!Snap._.rgTransform.test(b)) {
+                b = Snap._.svgTransform2string(b);
+            }
             return equaliseTransform(a, b, function () {
                 return el.getBBox(1);
             });
@@ -6546,8 +6124,17 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: getPath(A[0])
             };
         }
+        if (name == "points") {
+            A = Str(a).split(",");
+            B = Str(b).split(",");
+            return {
+                from: A,
+                to: B,
+                f: function (val) { return val; }
+            };
+        }
         var aUnit = a.match(reUnit),
-            bUnit = b.match(reUnit);
+            bUnit = Str(b).match(reUnit);
         if (aUnit && aUnit == bUnit) {
             return {
                 from: parseFloat(a),
@@ -6612,25 +6199,35 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
                     f = function (e) {
                         var scrollY = getScroll("y"),
-                            scrollX = getScroll("x"),
-                            x = e.clientX + scrollX,
-                            y = e.clientY + scrollY;
-                    if (supportsTouch && touchMap[has](type)) {
-                        for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
-                            if (e.targetTouches[i].target == obj) {
-                                var olde = e;
-                                e = e.targetTouches[i];
-                                e.originalEvent = olde;
-                                e.preventDefault = preventTouch;
-                                e.stopPropagation = stopTouch;
-                                break;
+                            scrollX = getScroll("x");
+                        if (supportsTouch && touchMap[has](type)) {
+                            for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
+                                if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
+                                    var olde = e;
+                                    e = e.targetTouches[i];
+                                    e.originalEvent = olde;
+                                    e.preventDefault = preventTouch;
+                                    e.stopPropagation = stopTouch;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    return fn.call(element, e, x, y);
-                };
+                        var x = e.clientX + scrollX,
+                            y = e.clientY + scrollY;
+                        return fn.call(element, e, x, y);
+                    };
+
+                if (type !== realName) {
+                    obj.addEventListener(type, f, false);
+                }
+
                 obj.addEventListener(realName, f, false);
+
                 return function () {
+                    if (type !== realName) {
+                        obj.removeEventListener(type, f, false);
+                    }
+
                     obj.removeEventListener(realName, f, false);
                     return true;
                 };
@@ -6667,11 +6264,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         while (j--) {
             dragi = drag[j];
             if (supportsTouch) {
-                var i = e.touches.length,
+                var i = e.touches && e.touches.length,
                     touch;
                 while (i--) {
                     touch = e.touches[i];
-                    if (touch.identifier == dragi.el._drag.id) {
+                    if (touch.identifier == dragi.el._drag.id || dragi.el.node.contains(touch.target)) {
                         x = touch.clientX;
                         y = touch.clientY;
                         (e.originalEvent ? e.originalEvent : e).preventDefault();
@@ -6995,19 +6592,17 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 origTransform = this.transform().local;
             });
         }
-        function start(e) {
+        function start(e, x, y) {
             (e.originalEvent || e).preventDefault();
-            var scrollY = getScroll("y"),
-                scrollX = getScroll("x");
-            this._drag.x = e.clientX + scrollX;
-            this._drag.y = e.clientY + scrollY;
+            this._drag.x = x;
+            this._drag.y = y;
             this._drag.id = e.identifier;
             !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
             drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
             onstart && eve.on("snap.drag.start." + this.id, onstart);
             onmove && eve.on("snap.drag.move." + this.id, onmove);
             onend && eve.on("snap.drag.end." + this.id, onend);
-            eve("snap.drag.start." + this.id, start_scope || move_scope || this, e.clientX + scrollX, e.clientY + scrollY, e);
+            eve("snap.drag.start." + this.id, start_scope || move_scope || this, x, y, e);
         }
         this._drag = {};
         draggable.push({el: this, start: start});
@@ -7089,11 +6684,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             filter = $("filter");
         $(filter, {
             id: id,
-            filterUnits: "userSpaceOnUse",
-            x: 0,
-            y: 0,
-            width: width,
-            height: height
+            filterUnits: "userSpaceOnUse"
         });
         filter.appendChild(f.node);
         paper.defs.appendChild(filter);
@@ -7117,7 +6708,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 id = value.id;
             }
             $(this.node, {
-                filter: "url(#" + id + ")"
+                filter: Snap.url(id)
             });
         }
         if (!value || value == "none") {
@@ -7125,8 +6716,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             this.node.removeAttribute("filter");
         }
     });
-    // SIERRA Would help to clarify when various Snap.filter.* matches the behavior of CSS filter property keyword functions. E.g., I don't think CSS's blur() accepts a second parameter for y axis.
-    // SIERRA Would also be useful to illustrate a chain of >1 filter as a code snippet.
     /*\
      * Snap.filter.blur
      [ method ]

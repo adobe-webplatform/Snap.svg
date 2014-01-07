@@ -27,6 +27,18 @@ describe("Set methods", function () {
         expect(set.length).to.be(2);
         expect(excluded).to.be(false);
     });
+    it("Set.remove", function() {
+        var rect1 = s.rect(10, 20, 30, 40);
+        var rect2 = s.rect(10, 20, 30, 40);
+        var rect3 = s.rect(10, 20, 30, 40);
+        var set = Snap.set(rect1, rect2, rect3);
+        expect(set.length).to.be(3);
+        set.remove();
+        expect(set.length).to.be(0);
+        expect(rect1.removed).to.be(true);
+        expect(rect2.removed).to.be(true);
+        expect(rect3.removed).to.be(true);
+    });
     it("Set.forEach", function() {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);

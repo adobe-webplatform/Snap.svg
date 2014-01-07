@@ -42,6 +42,13 @@ describe("Element methods", function () {
         expect(s.node.lastChild).to.be(rect.node);
         expect(result).to.be(s);
     });
+    it("Element.appendTo (for Element)", function () {
+        var rect = s.rect(10, 20, 30, 40);
+        var result = rect.appendTo(s);
+        expect(rect.node.parentNode).to.be(s.node);
+        expect(s.node.lastChild).to.be(rect.node);
+        expect(result).to.be(rect);
+    });
     it("Element.append (for Set)", function () {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
@@ -69,6 +76,18 @@ describe("Element methods", function () {
         result = group.prepend(circle);
         expect(group.node.firstChild).to.be(circle.node);
         expect(result).to.be(group);
+    });
+    it("Element.prependTo", function() {
+        var rect = s.rect(10, 20, 30, 40);
+        var circle = s.circle(10, 20, 30);
+        var group = s.group();
+        s.append(group);
+        var result = rect.prependTo(group);
+        expect(group.node.firstChild).to.be(rect.node);
+        expect(result).to.be(rect);
+        result = circle.prependTo(group);
+        expect(group.node.firstChild).to.be(circle.node);
+        expect(result).to.be(circle);
     });
     it("Element.insertAfter", function() {
         var circle = s.circle(10, 20, 30);
@@ -152,6 +171,17 @@ describe("Element methods", function () {
         group.attr({'class': 'myclass'});
         expect(group.node.getAttribute('class')).to.be('myclass');
     });
+    it("Element.attr - textPath", function() {
+        var txt = s.text(20, 20, "test");
+        txt.attr({textpath: "M10,20L100,100"});
+        expect(txt.node.firstChild.tagName).to.be("textPath");
+    });
+    it("Element.attr - textPath", function() {
+        var txt = s.text(20, 20, "test"),
+            pth = s.path("M10,20L100,100");
+        txt.attr({textpath: pth});
+        expect(txt.node.firstChild.tagName).to.be("textPath");
+    });
     it("Element.data", function() {
         var circle = s.circle(10, 20, 30);
         circle.data("foo", "bar");
@@ -185,15 +215,17 @@ describe("Element methods", function () {
         expect(circle.data("my-number")).to.be(undefined);
     });
     it("Element.asPX - from %", function() {
-        s.attr({width: "200"}); // NOTE: This is only working with "200" as string, fails as number
-        var rect = s.rect(0, 0, '100%', 10);
+        s.attr({width: 200});
+        var rect = s.rect(0, 0, "100%", 10);
         var widthAsPx = rect.asPX("width");
         expect(widthAsPx).to.be(200);
     });
     it("Element.getBBox", function() {
-        var rect = s.rect(10, 20, 30, 40);
-        var bbox = rect.getBBox();
-        
+        var rect = s.rect(10, 20, 30, 40),
+            bbox = rect.getBBox(),
+            line = s.line(10, 20, 40, 60),
+            lbbx = line.getBBox();
+
         expect(bbox.x).to.eql(10);
         expect(bbox.y).to.eql(20);
         expect(bbox.w).to.eql(30);
@@ -204,6 +236,7 @@ describe("Element methods", function () {
         expect(bbox.cx).to.eql(10 + 30 / 2);
         expect(bbox.cy).to.eql(20 + 40 / 2);
         expect(bbox.y2).to.eql(20 + 40);
+        expect(bbox).to.eql(lbbx);
     });
     
     it("Element.getPointAtLength", function() {
@@ -398,7 +431,12 @@ describe("Element methods", function () {
     it("Element.marker", function() {
         var line = s.line(0, 0, 10, 10);
         var marker = line.marker(0, 0, 5, 5, 0, 0);
-        expect(marker.node.nodeName).to.be('marker');
+        expect(marker.node.nodeName).to.be("marker");
+        expect(marker.node.getAttribute("viewBox")).to.be("0 0 5 5");
+        expect(marker.node.getAttribute("markerWidth")).to.be("5");
+        expect(marker.node.getAttribute("markerHeight")).to.be("5");
+        expect(marker.node.getAttribute("refX")).to.be("0");
+        expect(marker.node.getAttribute("refY")).to.be("0");
     });
     it("Element.pattern", function() {
         var circle = s.circle(10, 20, 30);
@@ -423,6 +461,12 @@ describe("Element methods", function () {
         transform = circle.transform();
         expect(transform.local).to.be("r90,0,0");
         expect(result).to.be(circle);
+        circle.transform("translate(10)");
+        matrix = {
+            a: 1, b: 0, c: 0, d: 1, e: 10, f: 0
+        };
+        transform = circle.transform();
+        expect(transform.globalMatrix).to.eql(matrix);
     });
     it("Element.use", function() {
         var circle = s.circle(10, 20, 30);
@@ -660,5 +704,11 @@ describe("Element methods", function () {
         expect(eventOut).to.be(1);
         expect(result2).to.be(circle);
     });
-    
+    it("Snap.getElementByPoint", function() {
+        var rect = s.rect(10, 10, 30, 30).attr({id: "id"});
+        var res1 = Snap.getElementByPoint(15, 15);
+        var res2 = Snap.getElementByPoint(45, 45);
+        expect(res1.node.id).to.be("id");
+        expect(res2.node.id).to.not.be("id");
+    });
 });

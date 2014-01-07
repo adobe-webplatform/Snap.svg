@@ -1,6 +1,6 @@
 {
-  "name": "Snap.svg",
-  "version": "0.1.0",
+  "name": "snapsvg",
+  "version": "0.2.0",
   "description": "JavaScript Vector Library",
   "main": "Gruntfile.js",
   "repository": {
@@ -17,7 +17,6 @@
     "mocha": "*",
     "expect.js": "*",
     "eve": "*",
-    "elemental.js": "~0.2.4",
-    "dr.js": "~0.0.10"
+    "dr.js": "~0.1.0"
   }
 }

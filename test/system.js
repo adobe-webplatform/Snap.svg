@@ -8,7 +8,4 @@ describe("System check", function () {
     it("mina exists", function () {
         expect(mina).to.be.a("function");
     });
-    it("elemental exists", function () {
-        expect(elemental).to.be.a("function");
-    });
 });

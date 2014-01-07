@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <base href="http://snapsvg.io/docs/">
+        <title>Snap.svg API Reference</title>
+        <link rel="shortcut icon" href="/assets/favicon.ico?v=1">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" href="/assets/docs/fonts/stylesheet.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/docs/css/topcoat-desktop-light.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/docs/css/main.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/docs/css/dr.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/docs/css/prism.css?v=201311041519">
+        <link rel="stylesheet" href="/assets/style/docs-header.css?v=201311041519">
+        <script>
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-44948757-1']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+            function trackOutboundLink(link, category, action) { 
+                try { 
+                    _gaq.push(['_trackEvent', category , action]); 
+                } catch(err){}
+
+                setTimeout(function() {
+                    document.location.href = link.href;
+                }, 100);
+            }
+        </script>
+    </head>
+    <body class="light">
+
+        <header id="header">
+            <div class="wrap">
+                <a href="/" class="logo">
+                    <img src="/assets/images/logo.svg" alt=""/>
+                    <span class="header">Snap.svg</span>
+                </a>
+                <nav>
+                    <a href="/">Home</a>
+                    <a href="/about/">Why Snap</a>
+                    <a href="/start/" class="mobile-hide">Getting Started</a>
+                    <a href="/docs/" class="mobile-hide selected">Docs</a>
+                    <a href="/support/">Support</a>
+                    <a href="/demos/" class="mobile-hide">Demos</a>
+                    <a class="bt" href="/assets/downloads/Snap.svg-0.1.0.zip" onclick="trackOutboundLink(this, 'Download', '0.1');return false;">Download</a>
+                </nav>
+            </div>
+        </header>
+
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+        <div id="wrapper">
+            <div class="max-width">
+                  <div id="sideNav">
+                      <div class="combo">
+                          <input type="search" id="dr-filter" value="" placeholder="search" class="topcoat-search-input">
+                      </div>
+                      <div id="pageNav">
+                          <ol id="dr-toc">
+                              {{ for (var i = 0; i < it.toc.length; i++) { }}
+                              <li class="dr-lvl{{=it.toc[i].indent}}">
+                                  <a href="#{{=it.toc[i].name}}" class="{{=it.toc[i].clas}}"><span>{{=it.toc[i].name}}{{=it.toc[i].brackets}}</span></a>
+                              </li>
+                              {{ } }}
+                          </ol>
+                      </div>
+                  </div>
+              </div>
+              <div id="site">
+                  <div id="content" class="max-width">
+                      {{~it.out :item:index}}
+                      <article id="{{=item[0].title}}">
+                          <header>
+                              <h3 class="{{=item[0].clas}}">{{=item[0].name}}<a href="#{{=item[0].title}}" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line {{=item[0].line}} in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#{{=item[0].line}}">&#x27ad;</a></h3>
+                          </header>
+                          <section>
+                              <div class="extra" id="{{=item[0].title}}-extra"></div>
+                              <div class="{{=item[0].clas}}">
+                                  {{~item :line:i}}
+                                  {{ if (i > 0) { }}
+                                  {{ if (line.text) { }}<p>{{=line.text.join("</p><p>")}}</p>{{ } }}
+                                  {{ if (line.attr) { }}<div class="topcoat-list__container">
+                                      <h3 class="topcoat-list__header">Parameters</h3>
+                                      <ol class="topcoat-list">
+                                          {{~line.attr :attr:j}}<li class="topcoat-list__item"><span class="dr-param">{{=attr.name}}</span>
+                                              <span class="dr-type">{{~attr.type :type:k}}<em class="dr-type-{{=type}}">{{=type}}</em> {{~}}</span>
+                                              <span class="dr-description">{{=attr.desc}}</span></li>
+                                          {{~}}
+                                      </ol>
+                                  </div>{{ } }}
+                                  {{ if (line.html) { }}{{=line.html}}
+                                  {{ } }}
+                                  {{ if (line.head) { }}<h3>{{=line.head}}</h3>
+                                  {{ } }}
+                                  {{ if (line.code) { }}<section class="code"><pre class="javascript code"><code data-language="javascript" class="language-javascript">{{=line.code.join("\n")}}</code></pre></section>
+                                  {{ } }}
+                                  {{ if (line.rtrn) { }}<p class="dr-returns">
+                                      <strong class="dr-title">Returns:</strong>
+                                      {{~line.rtrn.type :type:k}}
+                                      <em class="dr-type-{{=type}}">{{=type}}</em>
+                                      {{~}}
+                                      <span class="dr-description">{{=line.rtrn.desc}}</span>
+                                  </p>
+                                  {{ } }}
+                                  {{ if (line.json) { }}<ol class="dr-json">
+                                      {{~line.json :a:j}}
+                                      {{ if (a.key) { }}
+                                      <li>
+                                          <span class="dr-json-key">{{=a.key}}</span>
+                                          <span class="dr-type">{{~a.type :type:k}}<em class="dr-type-{{=type}}">{{=type}}</em> {{~}}</span>
+                                          <span class="dr-json-description">{{=a.desc}}</span>
+                                      </li>
+                                      {{ } else if (a.start) { }}
+                                      <li>{{=a.start}}<ol class="dr-json">
+                                      {{ } else if (a.end) { }}
+                                      </ol></li><li>{{=a.end}}</li>
+                                      {{ } else { }}
+                                      <li>{{=a}}</li>
+                                      {{ } }}
+                                      {{~}}
+                                  </ol>{{ } }}
+                                  {{ } }}
+                                  {{~}}
+                              </div>
+                          </section>
+                      </article>
+                      {{~}}
+                  </div>
+        <footer></footer>
+      </div>
+    </div>
+    <!-- <script src="//use.edgefonts.net/source-sans-pro:n3,n4,n6;source-code-pro:n3.js"></script> -->
+    <script src="/assets/docs/js/prism.js"></script>
+<script>!function(e){if(e){for(var t=function(e,t){var n=t.toUpperCase().split(""),r=n.shift(),a=RegExp("^["+r.toLowerCase()+r+"][a-z]*"+n.join("[a-z]*")+"[a-z]*$")
+return!!(e+"").match(a)},n=function(e,n){e+="",n+=""
+var r,a=0
+if(e==n)return 1
+if(!e||!n)return 0
+if(t(e,n))return.9
+a=0,r=e.toLowerCase()
+for(var i,o=0,l=n.length;l>o;o++)i=r.indexOf(n.charAt(o)),~i&&(r=r.substring(i+1),a+=1/(i+1))
+return a=Math.max(a/l-Math.abs(e.length-l)/e.length/2,0)},r=e.getElementsByTagName("span"),a=[],i=/[^\.\(]*(?=(\(\))?$)/,o=0,l=r.length;l>o;o++)a[o]={li:r[o].parentNode.parentNode,text:r[o].innerHTML.match(i)[0]}
+var h=document.getElementById("dr-filter"),f=function(e,t){return t.weight-e.weight}
+h.onclick=h.onchange=h.onkeydown=h.onkeyup=function(){var t=h.value,r=[]
+if(t.length>1){for(var i=0,o=a.length;o>i;i++)r[i]={li:a[i].li,weight:n(a[i].text,t)}
+r.sort(f)}else r=a
+for(i=0,o=r.length;o>i;i++)e.appendChild(r[i].li)}}}(document.getElementById("dr-toc"))</script>
+</body></html>

@@ -1,0 +1,13 @@
+{
+  "name": "Snap.svg",
+  "repo": "adobe-webplatform/Snap.svg",
+  "description": "The JavaScript library for modern SVG graphics.",
+  "version": "0.1.1",
+  "keywords": ["svg", "snap", "js", "javascript"],
+  "dependencies": {},
+  "development": {},
+  "main": "dist/snap.svg-min.js",
+  "scripts": [
+    "dist/snap.svg-min.js"
+  ]
+}
