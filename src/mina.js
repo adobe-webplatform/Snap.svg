@@ -76,11 +76,6 @@ var mina = (function (eve) {
         delete animations[a.id];
         eve("mina.stop." + a.id, a);
     },
-    seek = function(val) {
-        var a = this;
-        delete animations[a.id];
-        a.pdif = a.get() - val;
-    },
     pause = function () {
         var a = this;
         if (a.pdif) {
