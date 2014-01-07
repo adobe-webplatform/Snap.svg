@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.2.0";
+Snap.version = "0.2.1";
 /*\
  * Snap
  [ method ]
@@ -532,6 +532,16 @@ function Matrix(a, b, c, d, e, f) {
         a[1] && (a[1] /= mag);
     }
     /*\
+     * Matrix.determinant
+     [ method ]
+     **
+     * Finds determinant of the given matrix.
+     = (number) determinant
+    \*/
+    matrixproto.determinant = function () {
+        return this.a * this.d - this.b * this.c;
+    };
+    /*\
      * Matrix.split
      [ method ]
      **
@@ -563,6 +573,10 @@ function Matrix(a, b, c, d, e, f) {
         normalize(row[1]);
         out.shear /= out.scaley;
 
+        if (this.determinant() < 0) {
+            out.scalex = -out.scalex;
+        }
+
         // rotation
         var sin = -row[0][1],
             cos = row[1][1];
@@ -589,7 +603,7 @@ function Matrix(a, b, c, d, e, f) {
     \*/
     matrixproto.toTransformString = function (shorter) {
         var s = shorter || this.split();
-        if (s.isSimple) {
+        if (!+s.shear.toFixed(9)) {
             s.scalex = +s.scalex.toFixed(4);
             s.scaley = +s.scaley.toFixed(4);
             s.rotate = +s.rotate.toFixed(4);
@@ -1138,6 +1152,9 @@ function svgTransform2string(tstr) {
             if (params.length == 1) {
                 params.push(params[0], 0, 0);
             }
+            if (params.length > 2) {
+                params = params.slice(0, 2);
+            }
         }
         if (name == "skewX") {
             res.push(["m", 1, 0, math.tan(rad(params[0])), 1, 0, 0]);
@@ -1555,9 +1572,6 @@ function arrayFirstValue(arr) {
     var propString = function () {
         return this.string;
     };
-// SIERRA Element.transform(): seems to allow two return values, one of which (_Element_) is undefined.
-// SIERRA Element.transform(): if this only accepts one argument, it's unclear how it can both _get_ and _set_ a transform.
-// SIERRA Element.transform(): Unclear how Snap transform string format differs from SVG's.
     /*\
      * Element.transform
      [ method ]
@@ -1597,11 +1611,10 @@ function arrayFirstValue(arr) {
             };
         }
         if (tstr instanceof Matrix) {
-            // may be need to apply it directly
-            // TODO: investigate
-            tstr = tstr.toTransformString();
+            this.matrix = tstr;
+        } else {
+            extractTransform(this, tstr);
         }
-        extractTransform(this, tstr);
 
         if (this.node) {
             if (this.type == "linearGradient" || this.type == "radialGradient") {
@@ -3002,7 +3015,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
          * Linear gradient, absolute from (0, 0) to (100, 100), from black
          * through red at 25% to white:
-         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
+         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25-#fff");
          * Radial gradient, relative from the center of the element with radius
          * half the width, from black to white:
          | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
@@ -3246,7 +3259,7 @@ eve.on("snap.util.grad.parse", function parseGrad(string) {
             color: el[0]
         };
         if (el[1]) {
-            out.offset = el[1];
+            out.offset = parseFloat(el[1]);
         }
         return out;
     });
