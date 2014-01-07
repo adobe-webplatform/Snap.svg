@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Snap.svg API Reference</title>
+    <meta name="viewport" content="user-scalable=no,initial-scale = 1.0,maximum-scale = 1.0">
+    <link rel="stylesheet" href="fonts/stylesheet.css"><link rel="stylesheet" href="css/topcoat-desktop-light.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dr.css">
+    <link rel="stylesheet" href="css/prism.css"><!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  </head>
+  <body class="light">
+    <div id="wrapper">
+      <div class="max-width">
+        <div id="sideNav">
+          <div class="combo">
+              <input type="search" id="dr-filter" value="" placeholder="search" class="topcoat-search-input">
+          </div>
+          <div id="pageNav"><ol id="dr-toc"><li class="dr-lvl0"><a href="#" class="{clas}"><span></span></a></li><li class="dr-lvl0"><a href="#Element" class="{clas}"><span>Element</span></a></li><li class="dr-lvl1"><a href="#Element.click" class="dr-method"><span>Element.click()</span></a></li><li class="dr-lvl1"><a href="#Element.dblclick" class="dr-method"><span>Element.dblclick()</span></a></li><li class="dr-lvl1"><a href="#Element.drag" class="dr-method"><span>Element.drag()</span></a></li><li class="dr-lvl1"><a href="#Element.hover" class="dr-method"><span>Element.hover()</span></a></li><li class="dr-lvl1"><a href="#Element.mousedown" class="dr-method"><span>Element.mousedown()</span></a></li><li class="dr-lvl1"><a href="#Element.mousemove" class="dr-method"><span>Element.mousemove()</span></a></li><li class="dr-lvl1"><a href="#Element.mouseout" class="dr-method"><span>Element.mouseout()</span></a></li><li class="dr-lvl1"><a href="#Element.mouseover" class="dr-method"><span>Element.mouseover()</span></a></li><li class="dr-lvl1"><a href="#Element.mouseup" class="dr-method"><span>Element.mouseup()</span></a></li><li class="dr-lvl1"><a href="#Element.touchcancel" class="dr-method"><span>Element.touchcancel()</span></a></li><li class="dr-lvl1"><a href="#Element.touchend" class="dr-method"><span>Element.touchend()</span></a></li><li class="dr-lvl1"><a href="#Element.touchmove" class="dr-method"><span>Element.touchmove()</span></a></li><li class="dr-lvl1"><a href="#Element.touchstart" class="dr-method"><span>Element.touchstart()</span></a></li><li class="dr-lvl1"><a href="#Element.unclick" class="dr-method"><span>Element.unclick()</span></a></li><li class="dr-lvl1"><a href="#Element.undblclick" class="dr-method"><span>Element.undblclick()</span></a></li><li class="dr-lvl1"><a href="#Element.undrag" class="dr-method"><span>Element.undrag()</span></a></li><li class="dr-lvl1"><a href="#Element.unhover" class="dr-method"><span>Element.unhover()</span></a></li><li class="dr-lvl1"><a href="#Element.unmousedown" class="dr-method"><span>Element.unmousedown()</span></a></li><li class="dr-lvl1"><a href="#Element.unmousemove" class="dr-method"><span>Element.unmousemove()</span></a></li><li class="dr-lvl1"><a href="#Element.unmouseout" class="dr-method"><span>Element.unmouseout()</span></a></li><li class="dr-lvl1"><a href="#Element.unmouseover" class="dr-method"><span>Element.unmouseover()</span></a></li><li class="dr-lvl1"><a href="#Element.unmouseup" class="dr-method"><span>Element.unmouseup()</span></a></li><li class="dr-lvl1"><a href="#Element.untouchcancel" class="dr-method"><span>Element.untouchcancel()</span></a></li><li class="dr-lvl1"><a href="#Element.untouchend" class="dr-method"><span>Element.untouchend()</span></a></li><li class="dr-lvl1"><a href="#Element.untouchmove" class="dr-method"><span>Element.untouchmove()</span></a></li><li class="dr-lvl1"><a href="#Element.untouchstart" class="dr-method"><span>Element.untouchstart()</span></a></li></ol></div>
+        </div>
+      </div>
+      <div id="site">
+        <header id="main-header">
+          <div class="max-width">
+            <hgroup>
+              <h1>Snap.svg</h1>
+              <p>API Reference</p>
+            </hgroup>
+          </div>
+        </header>
+        <div id="content" class="max-width"><article id="" class="-section"><header><h2 id="" class="undefined"><a href="#" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 2828 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/svg.js#L2828">&#x27ad;</a></h2></header>
+<section><div class="extra" id="-extra"></div></section></article><article id="Element" class="Element-section"><header><h2 id="Element" class="undefined">Element<a href="#Element" title="Link to this section" class="dr-hash">&#x2693;</a></h2></header>
+<section><div class="extra" id="Element-extra"></div></section></article><article id="Element.click" class="Element-click-section"><header><h3 id="Element.click" class="dr-method">Element.click(handler)<a href="#Element.click" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 165 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L165">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.click-extra"></div><div class="dr-method"><p>Adds a click event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.dblclick" class="Element-dblclick-section"><header><h3 id="Element.dblclick" class="dr-method">Element.dblclick(handler)<a href="#Element.dblclick" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 182 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L182">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.dblclick-extra"></div><div class="dr-method"><p>Adds a double click event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.drag" class="Element-drag-section"><header><h3 id="Element.drag" class="dr-method">Element.drag(onmove, onstart, onend, [mcontext], [scontext], [econtext])<a href="#Element.drag" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 467 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L467">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.drag-extra"></div><div class="dr-method"><p>Adds event handlers for an element&#39;s drag gesture
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">onmove</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for moving</span></li>
+<li class="topcoat-list__item"><span class="dr-param">onstart</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for drag start</span></li>
+<li class="topcoat-list__item"><span class="dr-param">onend</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for drag end</span></li>
+<li class="topcoat-list__item"><span class="dr-param optional">mcontext</span>
+<span class="dr-optional">optional</span>
+<span class="dr-type"><em class="dr-type-object">object</em></span>
+<span class="dr-description">context for moving handler</span></li>
+<li class="topcoat-list__item"><span class="dr-param optional">scontext</span>
+<span class="dr-optional">optional</span>
+<span class="dr-type"><em class="dr-type-object">object</em></span>
+<span class="dr-description">context for drag start handler</span></li>
+<li class="topcoat-list__item"><span class="dr-param optional">econtext</span>
+<span class="dr-optional">optional</span>
+<span class="dr-type"><em class="dr-type-object">object</em></span>
+<span class="dr-description">context for drag end handler</span></li>
+</ol></div>
+<p>Additionaly following <code>drag</code> events are triggered: <code>drag.start.&lt;id&gt;</code> on start, 
+<code>drag.end.&lt;id&gt;</code> on end and <code>drag.move.&lt;id&gt;</code> on every move. When element is dragged over another element 
+<code>drag.over.&lt;id&gt;</code> fires as well.
+</p>
+<p>Start event and start handler are called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">x</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x position of the mouse</span>
+<li><span class="dr-json-key">y</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y position of the mouse</span>
+<li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p>Move event and move handler are called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">dx</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">shift by x from the start point</span>
+<li><span class="dr-json-key">dy</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">shift by y from the start point</span>
+<li><span class="dr-json-key">x</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x position of the mouse</span>
+<li><span class="dr-json-key">y</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y position of the mouse</span>
+<li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p>End event and end handler are called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div><div class="dr-method"><p>Adds event handlers for an element&#39;s drag gesture
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">onmove</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for moving</span></li>
+<li class="topcoat-list__item"><span class="dr-param">onstart</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for drag start</span></li>
+<li class="topcoat-list__item"><span class="dr-param">onend</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for drag end</span></li>
+<li class="topcoat-list__item"><span class="dr-param optional">mcontext</span>
+<span class="dr-optional">optional</span>
+<span class="dr-type"><em class="dr-type-object">object</em></span>
+<span class="dr-description">context for moving handler</span></li>
+<li class="topcoat-list__item"><span class="dr-param optional">scontext</span>
+<span class="dr-optional">optional</span>
+<span class="dr-type"><em class="dr-type-object">object</em></span>
+<span class="dr-description">context for drag start handler</span></li>
+<li class="topcoat-list__item"><span class="dr-param optional">econtext</span>
+<span class="dr-optional">optional</span>
+<span class="dr-type"><em class="dr-type-object">object</em></span>
+<span class="dr-description">context for drag end handler</span></li>
+</ol></div>
+<p>Additionaly following <code>drag</code> events are triggered: <code>drag.start.&lt;id&gt;</code> on start, 
+<code>drag.end.&lt;id&gt;</code> on end and <code>drag.move.&lt;id&gt;</code> on every move. When element is dragged over another element 
+<code>drag.over.&lt;id&gt;</code> fires as well.
+</p>
+<p>Start event and start handler are called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">x</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x position of the mouse</span>
+<li><span class="dr-json-key">y</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y position of the mouse</span>
+<li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p>Move event and move handler are called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">dx</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">shift by x from the start point</span>
+<li><span class="dr-json-key">dy</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">shift by y from the start point</span>
+<li><span class="dr-json-key">x</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">x position of the mouse</span>
+<li><span class="dr-json-key">y</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">y position of the mouse</span>
+<li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p>End event and end handler are called in specified context or in context of the element with following parameters:
+</p>
+<ol class="dr-json"><li><span class="dr-json-key">event</span><span class="dr-type"><em class="dr-type-object">object</em></span><span class="dr-json-description">DOM event object</span>
+</ol>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.hover" class="Element-hover-section"><header><h3 id="Element.hover" class="dr-method">Element.hover(f_in, f_out, [icontext], [ocontext])<a href="#Element.hover" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 382 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L382">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.hover-extra"></div><div class="dr-method"><p>Adds hover event handlers to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">f_in</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for hover in</span></li>
+<li class="topcoat-list__item"><span class="dr-param">f_out</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for hover out</span></li>
+<li class="topcoat-list__item"><span class="dr-param optional">icontext</span>
+<span class="dr-optional">optional</span>
+<span class="dr-type"><em class="dr-type-object">object</em></span>
+<span class="dr-description">context for hover in handler</span></li>
+<li class="topcoat-list__item"><span class="dr-param optional">ocontext</span>
+<span class="dr-optional">optional</span>
+<span class="dr-type"><em class="dr-type-object">object</em></span>
+<span class="dr-description">context for hover out handler</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.mousedown" class="Element-mousedown-section"><header><h3 id="Element.mousedown" class="dr-method">Element.mousedown(handler)<a href="#Element.mousedown" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 199 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L199">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.mousedown-extra"></div><div class="dr-method"><p>Adds a mousedown event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.mousemove" class="Element-mousemove-section"><header><h3 id="Element.mousemove" class="dr-method">Element.mousemove(handler)<a href="#Element.mousemove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 216 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L216">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.mousemove-extra"></div><div class="dr-method"><p>Adds a mousemove event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.mouseout" class="Element-mouseout-section"><header><h3 id="Element.mouseout" class="dr-method">Element.mouseout(handler)<a href="#Element.mouseout" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 233 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L233">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.mouseout-extra"></div><div class="dr-method"><p>Adds a mouseout event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.mouseover" class="Element-mouseover-section"><header><h3 id="Element.mouseover" class="dr-method">Element.mouseover(handler)<a href="#Element.mouseover" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 250 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L250">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.mouseover-extra"></div><div class="dr-method"><p>Adds a mouseover event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.mouseup" class="Element-mouseup-section"><header><h3 id="Element.mouseup" class="dr-method">Element.mouseup(handler)<a href="#Element.mouseup" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 267 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L267">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.mouseup-extra"></div><div class="dr-method"><p>Adds a mouseup event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.touchcancel" class="Element-touchcancel-section"><header><h3 id="Element.touchcancel" class="dr-method">Element.touchcancel(handler)<a href="#Element.touchcancel" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 335 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L335">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.touchcancel-extra"></div><div class="dr-method"><p>Adds a touchcancel event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.touchend" class="Element-touchend-section"><header><h3 id="Element.touchend" class="dr-method">Element.touchend(handler)<a href="#Element.touchend" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 318 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L318">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.touchend-extra"></div><div class="dr-method"><p>Adds a touchend event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.touchmove" class="Element-touchmove-section"><header><h3 id="Element.touchmove" class="dr-method">Element.touchmove(handler)<a href="#Element.touchmove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 301 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L301">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.touchmove-extra"></div><div class="dr-method"><p>Adds a touchmove event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.touchstart" class="Element-touchstart-section"><header><h3 id="Element.touchstart" class="dr-method">Element.touchstart(handler)<a href="#Element.touchstart" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 284 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L284">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.touchstart-extra"></div><div class="dr-method"><p>Adds a touchstart event handler to the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.unclick" class="Element-unclick-section"><header><h3 id="Element.unclick" class="dr-method">Element.unclick(handler)<a href="#Element.unclick" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 173 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L173">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.unclick-extra"></div><div class="dr-method"><p>Removes a click event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.undblclick" class="Element-undblclick-section"><header><h3 id="Element.undblclick" class="dr-method">Element.undblclick(handler)<a href="#Element.undblclick" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 190 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L190">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.undblclick-extra"></div><div class="dr-method"><p>Removes a double click event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.undrag" class="Element-undrag-section"><header><h3 id="Element.undrag" class="dr-method">Element.undrag()<a href="#Element.undrag" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 476 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L476">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.undrag-extra"></div><div class="dr-method"><p>Removes all drag event handlers from the given element
+</p>
+</div></section></article><article id="Element.unhover" class="Element-unhover-section"><header><h3 id="Element.unhover" class="dr-method">Element.unhover(f_in, f_out)<a href="#Element.unhover" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 394 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L394">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.unhover-extra"></div><div class="dr-method"><p>Removes hover event handlers from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">f_in</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for hover in</span></li>
+<li class="topcoat-list__item"><span class="dr-param">f_out</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for hover out</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.unmousedown" class="Element-unmousedown-section"><header><h3 id="Element.unmousedown" class="dr-method">Element.unmousedown(handler)<a href="#Element.unmousedown" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 207 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L207">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.unmousedown-extra"></div><div class="dr-method"><p>Removes a mousedown event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.unmousemove" class="Element-unmousemove-section"><header><h3 id="Element.unmousemove" class="dr-method">Element.unmousemove(handler)<a href="#Element.unmousemove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 224 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L224">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.unmousemove-extra"></div><div class="dr-method"><p>Removes a mousemove event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.unmouseout" class="Element-unmouseout-section"><header><h3 id="Element.unmouseout" class="dr-method">Element.unmouseout(handler)<a href="#Element.unmouseout" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 241 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L241">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.unmouseout-extra"></div><div class="dr-method"><p>Removes a mouseout event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.unmouseover" class="Element-unmouseover-section"><header><h3 id="Element.unmouseover" class="dr-method">Element.unmouseover(handler)<a href="#Element.unmouseover" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 258 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L258">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.unmouseover-extra"></div><div class="dr-method"><p>Removes a mouseover event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.unmouseup" class="Element-unmouseup-section"><header><h3 id="Element.unmouseup" class="dr-method">Element.unmouseup(handler)<a href="#Element.unmouseup" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 275 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L275">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.unmouseup-extra"></div><div class="dr-method"><p>Removes a mouseup event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.untouchcancel" class="Element-untouchcancel-section"><header><h3 id="Element.untouchcancel" class="dr-method">Element.untouchcancel(handler)<a href="#Element.untouchcancel" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 343 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L343">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.untouchcancel-extra"></div><div class="dr-method"><p>Removes a touchcancel event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.untouchend" class="Element-untouchend-section"><header><h3 id="Element.untouchend" class="dr-method">Element.untouchend(handler)<a href="#Element.untouchend" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 326 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L326">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.untouchend-extra"></div><div class="dr-method"><p>Removes a touchend event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.untouchmove" class="Element-untouchmove-section"><header><h3 id="Element.untouchmove" class="dr-method">Element.untouchmove(handler)<a href="#Element.untouchmove" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 309 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L309">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.untouchmove-extra"></div><div class="dr-method"><p>Removes a touchmove event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article><article id="Element.untouchstart" class="Element-untouchstart-section"><header><h3 id="Element.untouchstart" class="dr-method">Element.untouchstart(handler)<a href="#Element.untouchstart" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 292 in the source" href="https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js#L292">&#x27ad;</a></h3></header>
+<section><div class="extra" id="Element.untouchstart-extra"></div><div class="dr-method"><p>Removes a touchstart event handler from the element
+</p>
+<div class="topcoat-list__container"><h3 class="topcoat-list__header">Parameters</h3><ol class="topcoat-list"><li class="topcoat-list__item"><span class="dr-param">handler</span>
+<span class="dr-type"><em class="dr-type-function">function</em></span>
+<span class="dr-description">handler for the event</span></li>
+</ol></div>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description"><a href="#Element" class="dr-link">Element</a></span></p>
+</div></section></article></div>
+        <footer></footer>
+      </div>
+    </div>
+    <script src="//use.edgefonts.net/source-sans-pro:n3,n4,n6;source-code-pro:n3.js"></script>
+    <script src="js/prism.js"></script>
+<script>!function(e){if(e){for(var t=function(e,t){var n=t.toUpperCase().split(""),r=n.shift(),a=RegExp("^["+r.toLowerCase()+r+"][a-z]*"+n.join("[a-z]*")+"[a-z]*$")
+return!!(e+"").match(a)},n=function(e,n){e+="",n+=""
+var r,a=0
+if(e==n)return 1
+if(!e||!n)return 0
+if(t(e,n))return.9
+a=0,r=e.toLowerCase()
+for(var i,o=0,l=n.length;l>o;o++)i=r.indexOf(n.charAt(o)),~i&&(r=r.substring(i+1),a+=1/(i+1))
+return a=Math.max(a/l-Math.abs(e.length-l)/e.length/2,0)},r=e.getElementsByTagName("span"),a=[],i=/[^\.\(]*(?=(\(\))?$)/,o=0,l=r.length;l>o;o++)a[o]={li:r[o].parentNode.parentNode,text:r[o].innerHTML.match(i)[0]}
+var h=document.getElementById("dr-filter"),f=function(e,t){return t.weight-e.weight}
+h.onclick=h.onchange=h.onkeydown=h.onkeyup=function(){var t=h.value,r=[]
+if(t.length>1){for(var i=0,o=a.length;o>i;i++)r[i]={li:a[i].li,weight:n(a[i].text,t)}
+r.sort(f)}else r=a
+for(i=0,o=r.length;o>i;i++)e.appendChild(r[i].li)}}}(document.getElementById("dr-toc"))</script>
+</body></html>
