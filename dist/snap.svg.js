@@ -1,4 +1,4 @@
-// Snap.svg 0.2.0
+// Snap.svg 0.2.1
 // 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-01-03
+// build: 2014-01-08
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2201,10 +2201,28 @@ function Element(el) {
     try {
         svg = el.ownerSVGElement;
     } catch(e) {}
+    /*\
+     * Element.node
+     [ property (object) ]
+     **
+     * Gives you a reference to the DOM object, so you can assign event handlers or just mess around.
+     > Usage
+     | // draw a circle at coordinate 10,10 with radius of 10
+     | var c = paper.circle(10, 10, 10);
+     | c.node.onclick = function () {
+     |     c.attr("fill", "red");
+     | };
+    \*/
     this.node = el;
     if (svg) {
         this.paper = new Paper(svg);
     }
+    /*\
+     * Element.type
+     [ property (string) ]
+     **
+     * SVG tag name of the given element.
+    \*/
     this.type = el.tagName;
     this.anims = {};
     this._ = {
@@ -4326,6 +4344,12 @@ eve.on("snap.util.getattr.path", function () {
     eve.stop();
     return p;
 });
+function getFontSize() {
+    eve.stop();
+    return this.node.style.fontSize;
+}
+eve.on("snap.util.getattr.fontSize", getFontSize)(-1);
+eve.on("snap.util.getattr.font-size", getFontSize)(-1);
 // default
 eve.on("snap.util.getattr", function () {
     var att = eve.nt();
