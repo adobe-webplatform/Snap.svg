@@ -5,9 +5,13 @@
         define(["eve"], function( eve ) {
             return factory(glob, eve);
         });
+    } else if (typeof exports !== 'undefined') {
+        // Next for Node.js or CommonJS
+        var eve = require('eve');
+        module.exports = factory(glob, eve);
     } else {
         // Browser globals (glob is window)
         // Snap adds itself to window
         factory(glob, glob.eve);
     }
-}(this, function (window, eve) {
+}(window || this, function (window, eve) {
