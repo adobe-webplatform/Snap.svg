@@ -111,10 +111,20 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the shadow filter
      **
-     - dx (number) horizontal shift of the shadow, in pixels
-     - dy (number) vertical shift of the shadow, in pixels
+     - dx (number) #optional horizontal shift of the shadow, in pixels
+     - dy (number) #optional vertical shift of the shadow, in pixels
      - blur (number) #optional amount of blur
      - color (string) #optional color of the shadow
+     - opacity (number) #optional `0..1` opacity of the shadow
+     * or
+     - dx (number) #optional horizontal shift of the shadow, in pixels
+     - dy (number) #optional vertical shift of the shadow, in pixels
+     - color (string) #optional color of the shadow
+     - opacity (number) #optional `0..1` opacity of the shadow
+     * which makes blur default to `4`. Or
+     - dx (number) #optional horizontal shift of the shadow, in pixels
+     - dy (number) #optional vertical shift of the shadow, in pixels
+     - opacity (number) #optional `0..1` opacity of the shadow
      = (string) filter representation
      > Usage
      | var f = paper.filter(Snap.filter.shadow(0, 2, 3)),
@@ -122,14 +132,22 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      |         filter: f
      |     });
     \*/
-    Snap.filter.shadow = function (dx, dy, blur, color) {
+    Snap.filter.shadow = function (dx, dy, blur, color, opacity) {
+        if (typeof blur == "string") {
+            color = blur;
+            opacity = color;
+            blur = 4;
+        }
+        if (typeof color != "string") {
+            opacity = color;
+            color = "#000";
+        }
         color = color || "#000";
         if (blur == null) {
             blur = 4;
         }
-        if (typeof blur == "string") {
-            color = blur;
-            blur = 4;
+        if (opacity == null) {
+            opacity = 1;
         }
         if (dx == null) {
             dx = 0;
@@ -139,11 +157,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             dy = dx;
         }
         color = Snap.color(color);
-        return Snap.format('<feGaussianBlur in="SourceAlpha" stdDeviation="{blur}"/><feOffset dx="{dx}" dy="{dy}" result="offsetblur"/><feFlood flood-color="{color}"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>', {
+        return Snap.format('<feGaussianBlur in="SourceAlpha" stdDeviation="{blur}"/><feOffset dx="{dx}" dy="{dy}" result="offsetblur"/><feFlood flood-color="{color}"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="{opacity}"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>', {
             color: color,
             dx: dx,
             dy: dy,
-            blur: blur
+            blur: blur,
+            opacity: opacity
         });
     };
     Snap.filter.shadow.toString = function () {
