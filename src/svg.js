@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var Snap = (function() {
+var Snap = (function(root) {
 Snap.version = "0.3.0";
 /*\
  * Snap
@@ -55,8 +55,8 @@ Snap.toString = function () {
 };
 Snap._ = {};
 var glob = {
-    win: window,
-    doc: window.document
+    win: root.window,
+    doc: root.window.document
 };
 Snap._.glob = glob;
 var has = "hasOwnProperty",
@@ -1612,4 +1612,4 @@ Snap.plugin = function (f) {
 };
 glob.win.Snap = Snap;
 return Snap;
-}());
+}(window || this));
