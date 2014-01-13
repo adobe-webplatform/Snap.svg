@@ -2,7 +2,7 @@
   "name": "snapsvg",
   "version": "0.2.0",
   "description": "JavaScript Vector Library",
-  "main": "Gruntfile.js",
+  "main": "dist/snap.svg.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:adobe-webplatform/Snap.svg.git"
