@@ -14,7 +14,7 @@
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
         pproto = Paper.prototype,
-        rgurl = /^\s*url\((.+)\)/,
+        rgurl = /^\s*url\(['"]?(^[\)'"]+)\)/,
         Str = String,
         $ = Snap._.$;
     Snap.filter = {};
