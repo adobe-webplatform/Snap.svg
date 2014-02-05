@@ -1582,7 +1582,9 @@ function arrayFirstValue(arr) {
             _.bboxwt = Snap.path.get[el.type] ? Snap.path.getBBox(el.realPath = Snap.path.get[el.type](el)) : Snap._.box(el.node.getBBox());
             return Snap._.box(_.bboxwt);
         } else {
-            el.realPath = (Snap.path.get[el.type] || Snap.path.get.deflt)(el);
+            if(typeof el.realPath == 'undefined' || el.type != 'g')
+                el.realPath = (Snap.path.get[el.type] || Snap.path.get.deflt)(el);
+
             _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, el.matrix));
         }
         return Snap._.box(_.bbox);
