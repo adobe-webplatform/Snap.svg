@@ -2214,7 +2214,7 @@ function arrayFirstValue(arr) {
         if (attrs instanceof Animation) {
             callback = attrs.callback;
             easing = attrs.easing;
-            ms = easing.dur;
+            ms = attrs.dur;
             attrs = attrs.attr;
         }
         var fkeys = [], tkeys = [], keys = {}, from, to, f, eq,
