@@ -2410,7 +2410,7 @@ Snap.parse = function (svg) {
             }
         }
     }
-    div.innerHTML = E;
+    //div.innerHTML = E;
     return new Fragment(f);
 };
 function Fragment(frag) {
