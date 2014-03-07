@@ -476,6 +476,7 @@ var mina = (function (eve) {
     stopit = function () {
         var a = this;
         delete animations[a.id];
+        a.update();
         eve("mina.stop." + a.id, a);
     },
     pause = function () {
@@ -484,6 +485,7 @@ var mina = (function (eve) {
             return;
         }
         delete animations[a.id];
+        a.update();
         a.pdif = a.get() - a.b;
     },
     resume = function () {
@@ -494,6 +496,20 @@ var mina = (function (eve) {
         a.b = a.get() - a.pdif;
         delete a.pdif;
         animations[a.id] = a;
+    },
+    update = function () {
+        var a = this,
+            res;
+        if (isArray(a.start)) {
+            res = [];
+            for (var j = 0, jj = a.start.length; j < jj; j++) {
+                res[j] = +a.start[j] +
+                    (a.end[j] - a.start[j]) * a.easing(a.s);
+            }
+        } else {
+            res = +a.start + (a.end - a.start) * a.easing(a.s);
+        }
+        a.set(res);
     },
     frame = function () {
         var len = 0;
@@ -513,20 +529,10 @@ var mina = (function (eve) {
                     });
                 }(a));
             }
-            if (isArray(a.start)) {
-                res = [];
-                for (var j = 0, jj = a.start.length; j < jj; j++) {
-                    res[j] = +a.start[j] +
-                        (a.end[j] - a.start[j]) * a.easing(a.s);
-                }
-            } else {
-                res = +a.start + (a.end - a.start) * a.easing(a.s);
-            }
-            a.set(res);
+            a.update();
         }
         len && requestAnimFrame(frame);
     },
-    // SIERRA Unfamiliar with the word _slave_ in this context. Also, I don't know what _gereal_ means. Do you mean _general_?
     /*\
      * mina
      [ method ]
@@ -556,6 +562,9 @@ var mina = (function (eve) {
      o         speed (function) speed getter/setter,
      o         duration (function) duration getter/setter,
      o         stop (function) animation stopper
+     o         pause (function) pauses the animation
+     o         resume (function) resumes the animation
+     o         update (function) calles setter with the right value of the animation
      o }
     \*/
     mina = function (a, A, b, B, get, set, easing) {
@@ -575,7 +584,8 @@ var mina = (function (eve) {
             duration: duration,
             stop: stopit,
             pause: pause,
-            resume: resume
+            resume: resume,
+            update: update
         };
         animations[anim.id] = anim;
         var len = 0, i;
@@ -2737,6 +2747,29 @@ function arrayFirstValue(arr) {
             }
         }
     }
+    var rgNotSpace = /\S+/g,
+        rgBadSpace = /[\t\r\n\f]/g;
+    elproto.addClass = function (value) {
+        var classes = (value || "").match(rgNotSpace) || [],
+            elem = this.node,
+            cur = elem.className ? (" " + elem.className + " ").replace(rgBadSpace, " ") : " ",
+            j,
+            clazz,
+            finalValue;
+        if (cur) {
+            j = 0;
+            while ((clazz = classes[j++])) {
+                if (cur.indexOf(" " + clazz + " ") < 0) {
+                    cur += clazz + " ";
+                }
+            }
+
+            finalValue = cur.replace(/(^\s+|\s+$)/g, "");
+            if (elem.className != finalValue) {
+                elem.className = finalValue;
+            }
+        }
+    };
     elproto.clone = function () {
         var clone = wrap(this.node.cloneNode(true));
         if ($(clone.node, "id")) {
@@ -2753,7 +2786,7 @@ function arrayFirstValue(arr) {
      **
      * Moves element to the shared `<defs>` area
      **
-     = (Element) the clone
+     = (Element) the element
     \*/
     elproto.toDefs = function () {
         var defs = getSomeDefs(this);
@@ -2872,7 +2905,6 @@ function arrayFirstValue(arr) {
         easing && (this.easing = easing);
         callback && (this.callback = callback);
     };
-    // SIERRA All object methods should feature sample code. This is just one instance.
     /*\
      * Snap.animation
      [ method ]
@@ -4335,9 +4367,13 @@ eve.on("snap.util.getattr.#text", function () {
 })(-1);
 eve.on("snap.util.getattr.viewBox", function () {
     eve.stop();
-    var vb = $(this.node, "viewBox").split(separator);
-    return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
-    // TODO: investigate why I need to z-index it
+    var vb = $(this.node, "viewBox");
+    if (vb) {
+        vb = vb.split(separator);
+        return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
+    } else {
+        return;
+    }
 })(-1);
 eve.on("snap.util.getattr.points", function () {
     var p = $(this.node, "points");

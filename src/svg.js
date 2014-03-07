@@ -1989,6 +1989,29 @@ function arrayFirstValue(arr) {
             }
         }
     }
+    var rgNotSpace = /\S+/g,
+        rgBadSpace = /[\t\r\n\f]/g;
+    elproto.addClass = function (value) {
+        var classes = (value || "").match(rgNotSpace) || [],
+            elem = this.node,
+            cur = elem.className ? (" " + elem.className + " ").replace(rgBadSpace, " ") : " ",
+            j,
+            clazz,
+            finalValue;
+        if (cur) {
+            j = 0;
+            while ((clazz = classes[j++])) {
+                if (cur.indexOf(" " + clazz + " ") < 0) {
+                    cur += clazz + " ";
+                }
+            }
+
+            finalValue = cur.replace(/(^\s+|\s+$)/g, "");
+            if (elem.className != finalValue) {
+                elem.className = finalValue;
+            }
+        }
+    };
     elproto.clone = function () {
         var clone = wrap(this.node.cloneNode(true));
         if ($(clone.node, "id")) {
@@ -2005,7 +2028,7 @@ function arrayFirstValue(arr) {
      **
      * Moves element to the shared `<defs>` area
      **
-     = (Element) the clone
+     = (Element) the element
     \*/
     elproto.toDefs = function () {
         var defs = getSomeDefs(this);
@@ -2124,7 +2147,6 @@ function arrayFirstValue(arr) {
         easing && (this.easing = easing);
         callback && (this.callback = callback);
     };
-    // SIERRA All object methods should feature sample code. This is just one instance.
     /*\
      * Snap.animation
      [ method ]
@@ -3587,9 +3609,13 @@ eve.on("snap.util.getattr.#text", function () {
 })(-1);
 eve.on("snap.util.getattr.viewBox", function () {
     eve.stop();
-    var vb = $(this.node, "viewBox").split(separator);
-    return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
-    // TODO: investigate why I need to z-index it
+    var vb = $(this.node, "viewBox");
+    if (vb) {
+        vb = vb.split(separator);
+        return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
+    } else {
+        return;
+    }
 })(-1);
 eve.on("snap.util.getattr.points", function () {
     var p = $(this.node, "points");
