@@ -1572,7 +1572,12 @@ function arrayFirstValue(arr) {
     elproto.getBBox = function (isWithoutTransform) {
         var el = this;
         if (el.type == "use") {
-            el = el.original;
+            if (el.original) {
+                el = el.original;
+            } else {
+                var href = el.attr("xlink:href");
+                el = glob.doc.getElementById(href.substring(href.indexOf("#") + 1));
+            }
         }
         if (el.removed) {
             return {};
