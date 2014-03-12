@@ -1,4 +1,4 @@
-// Snap.svg 0.2.0
+// Snap.svg 0.2.1
 // 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2013-12-23
+// build: 2014-03-07
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -476,6 +476,7 @@ var mina = (function (eve) {
     stopit = function () {
         var a = this;
         delete animations[a.id];
+        a.update();
         eve("mina.stop." + a.id, a);
     },
     pause = function () {
@@ -484,6 +485,7 @@ var mina = (function (eve) {
             return;
         }
         delete animations[a.id];
+        a.update();
         a.pdif = a.get() - a.b;
     },
     resume = function () {
@@ -494,6 +496,20 @@ var mina = (function (eve) {
         a.b = a.get() - a.pdif;
         delete a.pdif;
         animations[a.id] = a;
+    },
+    update = function () {
+        var a = this,
+            res;
+        if (isArray(a.start)) {
+            res = [];
+            for (var j = 0, jj = a.start.length; j < jj; j++) {
+                res[j] = +a.start[j] +
+                    (a.end[j] - a.start[j]) * a.easing(a.s);
+            }
+        } else {
+            res = +a.start + (a.end - a.start) * a.easing(a.s);
+        }
+        a.set(res);
     },
     frame = function () {
         var len = 0;
@@ -513,20 +529,10 @@ var mina = (function (eve) {
                     });
                 }(a));
             }
-            if (isArray(a.start)) {
-                res = [];
-                for (var j = 0, jj = a.start.length; j < jj; j++) {
-                    res[j] = +a.start[j] +
-                        (a.end[j] - a.start[j]) * a.easing(a.s);
-                }
-            } else {
-                res = +a.start + (a.end - a.start) * a.easing(a.s);
-            }
-            a.set(res);
+            a.update();
         }
         len && requestAnimFrame(frame);
     },
-    // SIERRA Unfamiliar with the word _slave_ in this context. Also, I don't know what _gereal_ means. Do you mean _general_?
     /*\
      * mina
      [ method ]
@@ -556,6 +562,9 @@ var mina = (function (eve) {
      o         speed (function) speed getter/setter,
      o         duration (function) duration getter/setter,
      o         stop (function) animation stopper
+     o         pause (function) pauses the animation
+     o         resume (function) resumes the animation
+     o         update (function) calles setter with the right value of the animation
      o }
     \*/
     mina = function (a, A, b, B, get, set, easing) {
@@ -575,7 +584,8 @@ var mina = (function (eve) {
             duration: duration,
             stop: stopit,
             pause: pause,
-            resume: resume
+            resume: resume,
+            update: update
         };
         animations[anim.id] = anim;
         var len = 0, i;
@@ -761,7 +771,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.2.0";
+Snap.version = "0.2.1";
 /*\
  * Snap
  [ method ]
@@ -1280,6 +1290,16 @@ function Matrix(a, b, c, d, e, f) {
         a[1] && (a[1] /= mag);
     }
     /*\
+     * Matrix.determinant
+     [ method ]
+     **
+     * Finds determinant of the given matrix.
+     = (number) determinant
+    \*/
+    matrixproto.determinant = function () {
+        return this.a * this.d - this.b * this.c;
+    };
+    /*\
      * Matrix.split
      [ method ]
      **
@@ -1311,6 +1331,10 @@ function Matrix(a, b, c, d, e, f) {
         normalize(row[1]);
         out.shear /= out.scaley;
 
+        if (this.determinant() < 0) {
+            out.scalex = -out.scalex;
+        }
+
         // rotation
         var sin = -row[0][1],
             cos = row[1][1];
@@ -1337,7 +1361,7 @@ function Matrix(a, b, c, d, e, f) {
     \*/
     matrixproto.toTransformString = function (shorter) {
         var s = shorter || this.split();
-        if (s.isSimple) {
+        if (!+s.shear.toFixed(9)) {
             s.scalex = +s.scalex.toFixed(4);
             s.scaley = +s.scaley.toFixed(4);
             s.rotate = +s.rotate.toFixed(4);
@@ -1886,6 +1910,9 @@ function svgTransform2string(tstr) {
             if (params.length == 1) {
                 params.push(params[0], 0, 0);
             }
+            if (params.length > 2) {
+                params = params.slice(0, 2);
+            }
         }
         if (name == "skewX") {
             res.push(["m", 1, 0, math.tan(rad(params[0])), 1, 0, 0]);
@@ -2184,10 +2211,28 @@ function Element(el) {
     try {
         svg = el.ownerSVGElement;
     } catch(e) {}
+    /*\
+     * Element.node
+     [ property (object) ]
+     **
+     * Gives you a reference to the DOM object, so you can assign event handlers or just mess around.
+     > Usage
+     | // draw a circle at coordinate 10,10 with radius of 10
+     | var c = paper.circle(10, 10, 10);
+     | c.node.onclick = function () {
+     |     c.attr("fill", "red");
+     | };
+    \*/
     this.node = el;
     if (svg) {
         this.paper = new Paper(svg);
     }
+    /*\
+     * Element.type
+     [ property (string) ]
+     **
+     * SVG tag name of the given element.
+    \*/
     this.type = el.tagName;
     this.anims = {};
     this._ = {
@@ -2285,7 +2330,12 @@ function arrayFirstValue(arr) {
     elproto.getBBox = function (isWithoutTransform) {
         var el = this;
         if (el.type == "use") {
-            el = el.original;
+            if (el.original) {
+                el = el.original;
+            } else {
+                var href = el.attr("xlink:href");
+                el = glob.doc.getElementById(href.substring(href.indexOf("#") + 1));
+            }
         }
         if (el.removed) {
             return {};
@@ -2303,9 +2353,6 @@ function arrayFirstValue(arr) {
     var propString = function () {
         return this.string;
     };
-// SIERRA Element.transform(): seems to allow two return values, one of which (_Element_) is undefined.
-// SIERRA Element.transform(): if this only accepts one argument, it's unclear how it can both _get_ and _set_ a transform.
-// SIERRA Element.transform(): Unclear how Snap transform string format differs from SVG's.
     /*\
      * Element.transform
      [ method ]
@@ -2345,11 +2392,10 @@ function arrayFirstValue(arr) {
             };
         }
         if (tstr instanceof Matrix) {
-            // may be need to apply it directly
-            // TODO: investigate
-            tstr = tstr.toTransformString();
+            this.matrix = tstr;
+        } else {
+            extractTransform(this, tstr);
         }
-        extractTransform(this, tstr);
 
         if (this.node) {
             if (this.type == "linearGradient" || this.type == "radialGradient") {
@@ -2701,6 +2747,29 @@ function arrayFirstValue(arr) {
             }
         }
     }
+    var rgNotSpace = /\S+/g,
+        rgBadSpace = /[\t\r\n\f]/g;
+    elproto.addClass = function (value) {
+        var classes = (value || "").match(rgNotSpace) || [],
+            elem = this.node,
+            cur = elem.className ? (" " + elem.className + " ").replace(rgBadSpace, " ") : " ",
+            j,
+            clazz,
+            finalValue;
+        if (cur) {
+            j = 0;
+            while ((clazz = classes[j++])) {
+                if (cur.indexOf(" " + clazz + " ") < 0) {
+                    cur += clazz + " ";
+                }
+            }
+
+            finalValue = cur.replace(/(^\s+|\s+$)/g, "");
+            if (elem.className != finalValue) {
+                elem.className = finalValue;
+            }
+        }
+    };
     elproto.clone = function () {
         var clone = wrap(this.node.cloneNode(true));
         if ($(clone.node, "id")) {
@@ -2717,7 +2786,7 @@ function arrayFirstValue(arr) {
      **
      * Moves element to the shared `<defs>` area
      **
-     = (Element) the clone
+     = (Element) the element
     \*/
     elproto.toDefs = function () {
         var defs = getSomeDefs(this);
@@ -2836,7 +2905,6 @@ function arrayFirstValue(arr) {
         easing && (this.easing = easing);
         callback && (this.callback = callback);
     };
-    // SIERRA All object methods should feature sample code. This is just one instance.
     /*\
      * Snap.animation
      [ method ]
@@ -3750,7 +3818,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
          * Linear gradient, absolute from (0, 0) to (100, 100), from black
          * through red at 25% to white:
-         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
+         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25-#fff");
          * Radial gradient, relative from the center of the element with radius
          * half the width, from black to white:
          | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
@@ -3994,7 +4062,7 @@ eve.on("snap.util.grad.parse", function parseGrad(string) {
             color: el[0]
         };
         if (el[1]) {
-            out.offset = el[1];
+            out.offset = parseFloat(el[1]);
         }
         return out;
     });
@@ -4299,9 +4367,13 @@ eve.on("snap.util.getattr.#text", function () {
 })(-1);
 eve.on("snap.util.getattr.viewBox", function () {
     eve.stop();
-    var vb = $(this.node, "viewBox").split(separator);
-    return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
-    // TODO: investigate why I need to z-index it
+    var vb = $(this.node, "viewBox");
+    if (vb) {
+        vb = vb.split(separator);
+        return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
+    } else {
+        return;
+    }
 })(-1);
 eve.on("snap.util.getattr.points", function () {
     var p = $(this.node, "points");
@@ -4313,6 +4385,12 @@ eve.on("snap.util.getattr.path", function () {
     eve.stop();
     return p;
 });
+function getFontSize() {
+    eve.stop();
+    return this.node.style.fontSize;
+}
+eve.on("snap.util.getattr.fontSize", getFontSize)(-1);
+eve.on("snap.util.getattr.font-size", getFontSize)(-1);
 // default
 eve.on("snap.util.getattr", function () {
     var att = eve.nt();
@@ -4845,7 +4923,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     function rectPath(x, y, w, h, r) {
         if (r) {
             return [
-                ["M", x + r, y],
+                ["M", +x + (+r), y],
                 ["l", w - r * 2, 0],
                 ["a", r, r, 0, 0, 1, r, r],
                 ["l", 0, h - r * 2],
@@ -4865,6 +4943,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         if (a == null && ry == null) {
             ry = rx;
         }
+        x = +x;
+        y = +y;
+        rx = +rx;
+        ry = +ry;
         if (a != null) {
             var rad = Math.PI / 180,
                 x1 = x + rx * Math.cos(-ry * rad),
@@ -5058,8 +5140,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                         r[3] = pa[3];
                         r[4] = pa[4];
                         r[5] = pa[5];
-                        r[6] = +(pa[6] + x);
-                        r[7] = +(pa[7] + y);
+                        r[6] = +pa[6] + x;
+                        r[7] = +pa[7] + y;
                         break;
                     case "V":
                         r[1] = +pa[1] + y;
@@ -5118,8 +5200,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             if (pa0 != "O") {
                 switch (r[0]) {
                     case "Z":
-                        x = mx;
-                        y = my;
+                        x = +mx;
+                        y = +my;
                         break;
                     case "H":
                         x = r[1];
@@ -5251,49 +5333,73 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             y: pow(t1, 3) * p1y + pow(t1, 2) * 3 * t * c1y + t1 * 3 * t * t * c2y + pow(t, 3) * p2y
         };
     }
-    function curveDim(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) {
-        var a = (c2x - 2 * c1x + p1x) - (p2x - 2 * c2x + c1x),
-            b = 2 * (c1x - p1x) - 2 * (c2x - c1x),
-            c = p1x - c1x,
-            t1 = (-b + math.sqrt(b * b - 4 * a * c)) / 2 / a,
-            t2 = (-b - math.sqrt(b * b - 4 * a * c)) / 2 / a,
-            y = [p1y, p2y],
-            x = [p1x, p2x],
-            dot;
-        abs(t1) > "1e12" && (t1 = .5);
-        abs(t2) > "1e12" && (t2 = .5);
-        if (t1 > 0 && t1 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t1);
-            x.push(dot.x);
-            y.push(dot.y);
+    
+    // Returns bounding box of cubic bezier curve.
+    // Source: http://blog.hackers-cafe.net/2009/06/how-to-calculate-bezier-curves-bounding.html
+    // Original version: NISHIO Hirokazu
+    // Modifications: https://github.com/timo22345
+    function curveDim(x0, y0, x1, y1, x2, y2, x3, y3) {
+        var tvalues = [],
+            bounds = [[], []],
+            a, b, c, t, t1, t2, b2ac, sqrtb2ac;
+        for (var i = 0; i < 2; ++i) {
+            if (i == 0) {
+                b = 6 * x0 - 12 * x1 + 6 * x2;
+                a = -3 * x0 + 9 * x1 - 9 * x2 + 3 * x3;
+                c = 3 * x1 - 3 * x0;
+            } else {
+                b = 6 * y0 - 12 * y1 + 6 * y2;
+                a = -3 * y0 + 9 * y1 - 9 * y2 + 3 * y3;
+                c = 3 * y1 - 3 * y0;
+            }
+            if (abs(a) < 1e-12) {
+                if (abs(b) < 1e-12) {
+                    continue;
+                }
+                t = -c / b;
+                if (0 < t && t < 1) {
+                    tvalues.push(t);
+                }
+                continue;
+            }
+            b2ac = b * b - 4 * c * a;
+            sqrtb2ac = math.sqrt(b2ac);
+            if (b2ac < 0) {
+                continue;
+            }
+            t1 = (-b + sqrtb2ac) / (2 * a);
+            if (0 < t1 && t1 < 1) {
+                tvalues.push(t1);
+            }
+            t2 = (-b - sqrtb2ac) / (2 * a);
+            if (0 < t2 && t2 < 1) {
+                tvalues.push(t2);
+            }
         }
-        if (t2 > 0 && t2 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t2);
-            x.push(dot.x);
-            y.push(dot.y);
+
+        var x, y, j = tvalues.length,
+            jlen = j,
+            mt;
+        while (j--) {
+            t = tvalues[j];
+            mt = 1 - t;
+            bounds[0][j] = (mt * mt * mt * x0) + (3 * mt * mt * t * x1) + (3 * mt * t * t * x2) + (t * t * t * x3);
+            bounds[1][j] = (mt * mt * mt * y0) + (3 * mt * mt * t * y1) + (3 * mt * t * t * y2) + (t * t * t * y3);
         }
-        a = (c2y - 2 * c1y + p1y) - (p2y - 2 * c2y + c1y);
-        b = 2 * (c1y - p1y) - 2 * (c2y - c1y);
-        c = p1y - c1y;
-        t1 = (-b + math.sqrt(b * b - 4 * a * c)) / 2 / a;
-        t2 = (-b - math.sqrt(b * b - 4 * a * c)) / 2 / a;
-        abs(t1) > "1e12" && (t1 = .5);
-        abs(t2) > "1e12" && (t2 = .5);
-        if (t1 > 0 && t1 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t1);
-            x.push(dot.x);
-            y.push(dot.y);
-        }
-        if (t2 > 0 && t2 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t2);
-            x.push(dot.x);
-            y.push(dot.y);
-        }
+
+        bounds[0][jlen] = x0;
+        bounds[1][jlen] = y0;
+        bounds[0][jlen + 1] = x3;
+        bounds[1][jlen + 1] = y3;
+        bounds[0].length = bounds[1].length = jlen + 2;
+
+
         return {
-            min: {x: mmin.apply(0, x), y: mmin.apply(0, y)},
-            max: {x: mmax.apply(0, x), y: mmax.apply(0, y)}
+          min: {x: mmin.apply(0, bounds[0]), y: mmin.apply(0, bounds[1])},
+          max: {x: mmax.apply(0, bounds[0]), y: mmax.apply(0, bounds[1])}
         };
     }
+
     function path2curve(path, path2) {
         var pth = !path2 && paths(path);
         if (!path2 && pth.curve) {
@@ -5303,28 +5409,40 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             p2 = path2 && pathToAbsolute(path2),
             attrs = {x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null},
             attrs2 = {x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null},
-            processPath = function (path, d) {
+            processPath = function (path, d, pcom) {
                 var nx, ny;
                 if (!path) {
                     return ["C", d.x, d.y, d.x, d.y, d.x, d.y];
                 }
-                !(path[0] in {T:1, Q:1}) && (d.qx = d.qy = null);
+                !(path[0] in {T: 1, Q: 1}) && (d.qx = d.qy = null);
                 switch (path[0]) {
                     case "M":
                         d.X = path[1];
                         d.Y = path[2];
                         break;
                     case "A":
-                        path = ["C"].concat(a2c.apply(0, [d.x, d.y].concat(path.slice(1))));
+                        path = ["C"].concat(a2c[apply](0, [d.x, d.y].concat(path.slice(1))));
                         break;
                     case "S":
-                        nx = d.x + (d.x - (d.bx || d.x));
-                        ny = d.y + (d.y - (d.by || d.y));
+                        if (pcom == "C" || pcom == "S") { // In "S" case we have to take into account, if the previous command is C/S.
+                            nx = d.x * 2 - d.bx;          // And reflect the previous
+                            ny = d.y * 2 - d.by;          // command's control point relative to the current point.
+                        }
+                        else {                            // or some else or nothing
+                            nx = d.x;
+                            ny = d.y;
+                        }
                         path = ["C", nx, ny].concat(path.slice(1));
                         break;
                     case "T":
-                        d.qx = d.x + (d.x - (d.qx || d.x));
-                        d.qy = d.y + (d.y - (d.qy || d.y));
+                        if (pcom == "Q" || pcom == "T") { // In "T" case we have to take into account, if the previous command is Q/T.
+                            d.qx = d.x * 2 - d.qx;        // And make a reflection similar
+                            d.qy = d.y * 2 - d.qy;        // to case "S".
+                        }
+                        else {                            // or something else or nothing
+                            d.qx = d.x;
+                            d.qy = d.y;
+                        }
                         path = ["C"].concat(q2c(d.x, d.y, d.qx, d.qy, path[1], path[2]));
                         break;
                     case "Q":
@@ -5352,6 +5470,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     pp[i].shift();
                     var pi = pp[i];
                     while (pi.length) {
+                        pcoms1[i] = "A"; // if created multiple C:s, their original seg is saved
+                        p2 && (pcoms2[i] = "A"); // the same as above
                         pp.splice(i++, 0, ["C"].concat(pi.splice(0, 6)));
                     }
                     pp.splice(i, 1);
@@ -5367,12 +5487,41 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     a1.y = path1[i][2];
                     ii = mmax(p.length, p2 && p2.length || 0);
                 }
-            };
+            },
+            pcoms1 = [], // path commands of original path p
+            pcoms2 = [], // path commands of original path p2
+            pfirst = "", // temporary holder for original path command
+            pcom = ""; // holder for previous path command of original path
         for (var i = 0, ii = mmax(p.length, p2 && p2.length || 0); i < ii; i++) {
-            p[i] = processPath(p[i], attrs);
-            fixArc(p, i);
-            p2 && (p2[i] = processPath(p2[i], attrs2));
-            p2 && fixArc(p2, i);
+            p[i] && (pfirst = p[i][0]); // save current path command
+
+            if (pfirst != "C") // C is not saved yet, because it may be result of conversion
+            {
+                pcoms1[i] = pfirst; // Save current path command
+                i && ( pcom = pcoms1[i - 1]); // Get previous path command pcom
+            }
+            p[i] = processPath(p[i], attrs, pcom); // Previous path command is inputted to processPath
+
+            if (pcoms1[i] != "A" && pfirst == "C") pcoms1[i] = "C"; // A is the only command
+            // which may produce multiple C:s
+            // so we have to make sure that C is also C in original path
+
+            fixArc(p, i); // fixArc adds also the right amount of A:s to pcoms1
+
+            if (p2) { // the same procedures is done to p2
+                p2[i] && (pfirst = p2[i][0]);
+                if (pfirst != "C") {
+                    pcoms2[i] = pfirst;
+                    i && (pcom = pcoms2[i - 1]);
+                }
+                p2[i] = processPath(p2[i], attrs2, pcom);
+
+                if (pcoms2[i] != "A" && pfirst == "C") {
+                    pcoms2[i] = "C";
+                }
+
+                fixArc(p2, i);
+            }
             fixM(p, p2, attrs, attrs2, i);
             fixM(p2, p, attrs2, attrs, i);
             var seg = p[i],
@@ -6727,10 +6876,20 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      **
      * Returns an SVG markup string for the shadow filter
      **
-     - dx (number) horizontal shift of the shadow, in pixels
-     - dy (number) vertical shift of the shadow, in pixels
+     - dx (number) #optional horizontal shift of the shadow, in pixels
+     - dy (number) #optional vertical shift of the shadow, in pixels
      - blur (number) #optional amount of blur
      - color (string) #optional color of the shadow
+     - opacity (number) #optional `0..1` opacity of the shadow
+     * or
+     - dx (number) #optional horizontal shift of the shadow, in pixels
+     - dy (number) #optional vertical shift of the shadow, in pixels
+     - color (string) #optional color of the shadow
+     - opacity (number) #optional `0..1` opacity of the shadow
+     * which makes blur default to `4`. Or
+     - dx (number) #optional horizontal shift of the shadow, in pixels
+     - dy (number) #optional vertical shift of the shadow, in pixels
+     - opacity (number) #optional `0..1` opacity of the shadow
      = (string) filter representation
      > Usage
      | var f = paper.filter(Snap.filter.shadow(0, 2, 3)),
@@ -6738,14 +6897,22 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      |         filter: f
      |     });
     \*/
-    Snap.filter.shadow = function (dx, dy, blur, color) {
+    Snap.filter.shadow = function (dx, dy, blur, color, opacity) {
+        if (typeof blur == "string") {
+            color = blur;
+            opacity = color;
+            blur = 4;
+        }
+        if (typeof color != "string") {
+            opacity = color;
+            color = "#000";
+        }
         color = color || "#000";
         if (blur == null) {
             blur = 4;
         }
-        if (typeof blur == "string") {
-            color = blur;
-            blur = 4;
+        if (opacity == null) {
+            opacity = 1;
         }
         if (dx == null) {
             dx = 0;
@@ -6755,11 +6922,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             dy = dx;
         }
         color = Snap.color(color);
-        return Snap.format('<feGaussianBlur in="SourceAlpha" stdDeviation="{blur}"/><feOffset dx="{dx}" dy="{dy}" result="offsetblur"/><feFlood flood-color="{color}"/><feComposite in2="offsetblur" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>', {
+        return Snap.format('<feGaussianBlur in="SourceAlpha" stdDeviation="{blur}"/><feOffset dx="{dx}" dy="{dy}" result="offsetblur"/><feFlood flood-color="{color}"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="{opacity}"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>', {
             color: color,
             dx: dx,
             dy: dy,
-            blur: blur
+            blur: blur,
+            opacity: opacity
         });
     };
     Snap.filter.shadow.toString = function () {

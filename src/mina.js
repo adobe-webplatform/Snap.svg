@@ -74,6 +74,7 @@ var mina = (function (eve) {
     stopit = function () {
         var a = this;
         delete animations[a.id];
+        a.update();
         eve("mina.stop." + a.id, a);
     },
     pause = function () {
@@ -82,6 +83,7 @@ var mina = (function (eve) {
             return;
         }
         delete animations[a.id];
+        a.update();
         a.pdif = a.get() - a.b;
     },
     resume = function () {
@@ -92,6 +94,20 @@ var mina = (function (eve) {
         a.b = a.get() - a.pdif;
         delete a.pdif;
         animations[a.id] = a;
+    },
+    update = function () {
+        var a = this,
+            res;
+        if (isArray(a.start)) {
+            res = [];
+            for (var j = 0, jj = a.start.length; j < jj; j++) {
+                res[j] = +a.start[j] +
+                    (a.end[j] - a.start[j]) * a.easing(a.s);
+            }
+        } else {
+            res = +a.start + (a.end - a.start) * a.easing(a.s);
+        }
+        a.set(res);
     },
     frame = function () {
         var len = 0;
@@ -111,20 +127,10 @@ var mina = (function (eve) {
                     });
                 }(a));
             }
-            if (isArray(a.start)) {
-                res = [];
-                for (var j = 0, jj = a.start.length; j < jj; j++) {
-                    res[j] = +a.start[j] +
-                        (a.end[j] - a.start[j]) * a.easing(a.s);
-                }
-            } else {
-                res = +a.start + (a.end - a.start) * a.easing(a.s);
-            }
-            a.set(res);
+            a.update();
         }
         len && requestAnimFrame(frame);
     },
-    // SIERRA Unfamiliar with the word _slave_ in this context. Also, I don't know what _gereal_ means. Do you mean _general_?
     /*\
      * mina
      [ method ]
@@ -154,6 +160,9 @@ var mina = (function (eve) {
      o         speed (function) speed getter/setter,
      o         duration (function) duration getter/setter,
      o         stop (function) animation stopper
+     o         pause (function) pauses the animation
+     o         resume (function) resumes the animation
+     o         update (function) calles setter with the right value of the animation
      o }
     \*/
     mina = function (a, A, b, B, get, set, easing) {
@@ -173,7 +182,8 @@ var mina = (function (eve) {
             duration: duration,
             stop: stopit,
             pause: pause,
-            resume: resume
+            resume: resume,
+            update: update
         };
         animations[anim.id] = anim;
         var len = 0, i;

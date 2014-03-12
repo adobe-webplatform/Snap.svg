@@ -451,7 +451,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     function rectPath(x, y, w, h, r) {
         if (r) {
             return [
-                ["M", x + r, y],
+                ["M", +x + (+r), y],
                 ["l", w - r * 2, 0],
                 ["a", r, r, 0, 0, 1, r, r],
                 ["l", 0, h - r * 2],
@@ -471,6 +471,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         if (a == null && ry == null) {
             ry = rx;
         }
+        x = +x;
+        y = +y;
+        rx = +rx;
+        ry = +ry;
         if (a != null) {
             var rad = Math.PI / 180,
                 x1 = x + rx * Math.cos(-ry * rad),
@@ -664,8 +668,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                         r[3] = pa[3];
                         r[4] = pa[4];
                         r[5] = pa[5];
-                        r[6] = +(pa[6] + x);
-                        r[7] = +(pa[7] + y);
+                        r[6] = +pa[6] + x;
+                        r[7] = +pa[7] + y;
                         break;
                     case "V":
                         r[1] = +pa[1] + y;
@@ -724,8 +728,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             if (pa0 != "O") {
                 switch (r[0]) {
                     case "Z":
-                        x = mx;
-                        y = my;
+                        x = +mx;
+                        y = +my;
                         break;
                     case "H":
                         x = r[1];
@@ -857,49 +861,73 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             y: pow(t1, 3) * p1y + pow(t1, 2) * 3 * t * c1y + t1 * 3 * t * t * c2y + pow(t, 3) * p2y
         };
     }
-    function curveDim(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) {
-        var a = (c2x - 2 * c1x + p1x) - (p2x - 2 * c2x + c1x),
-            b = 2 * (c1x - p1x) - 2 * (c2x - c1x),
-            c = p1x - c1x,
-            t1 = (-b + math.sqrt(b * b - 4 * a * c)) / 2 / a,
-            t2 = (-b - math.sqrt(b * b - 4 * a * c)) / 2 / a,
-            y = [p1y, p2y],
-            x = [p1x, p2x],
-            dot;
-        abs(t1) > "1e12" && (t1 = .5);
-        abs(t2) > "1e12" && (t2 = .5);
-        if (t1 > 0 && t1 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t1);
-            x.push(dot.x);
-            y.push(dot.y);
+    
+    // Returns bounding box of cubic bezier curve.
+    // Source: http://blog.hackers-cafe.net/2009/06/how-to-calculate-bezier-curves-bounding.html
+    // Original version: NISHIO Hirokazu
+    // Modifications: https://github.com/timo22345
+    function curveDim(x0, y0, x1, y1, x2, y2, x3, y3) {
+        var tvalues = [],
+            bounds = [[], []],
+            a, b, c, t, t1, t2, b2ac, sqrtb2ac;
+        for (var i = 0; i < 2; ++i) {
+            if (i == 0) {
+                b = 6 * x0 - 12 * x1 + 6 * x2;
+                a = -3 * x0 + 9 * x1 - 9 * x2 + 3 * x3;
+                c = 3 * x1 - 3 * x0;
+            } else {
+                b = 6 * y0 - 12 * y1 + 6 * y2;
+                a = -3 * y0 + 9 * y1 - 9 * y2 + 3 * y3;
+                c = 3 * y1 - 3 * y0;
+            }
+            if (abs(a) < 1e-12) {
+                if (abs(b) < 1e-12) {
+                    continue;
+                }
+                t = -c / b;
+                if (0 < t && t < 1) {
+                    tvalues.push(t);
+                }
+                continue;
+            }
+            b2ac = b * b - 4 * c * a;
+            sqrtb2ac = math.sqrt(b2ac);
+            if (b2ac < 0) {
+                continue;
+            }
+            t1 = (-b + sqrtb2ac) / (2 * a);
+            if (0 < t1 && t1 < 1) {
+                tvalues.push(t1);
+            }
+            t2 = (-b - sqrtb2ac) / (2 * a);
+            if (0 < t2 && t2 < 1) {
+                tvalues.push(t2);
+            }
         }
-        if (t2 > 0 && t2 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t2);
-            x.push(dot.x);
-            y.push(dot.y);
+
+        var x, y, j = tvalues.length,
+            jlen = j,
+            mt;
+        while (j--) {
+            t = tvalues[j];
+            mt = 1 - t;
+            bounds[0][j] = (mt * mt * mt * x0) + (3 * mt * mt * t * x1) + (3 * mt * t * t * x2) + (t * t * t * x3);
+            bounds[1][j] = (mt * mt * mt * y0) + (3 * mt * mt * t * y1) + (3 * mt * t * t * y2) + (t * t * t * y3);
         }
-        a = (c2y - 2 * c1y + p1y) - (p2y - 2 * c2y + c1y);
-        b = 2 * (c1y - p1y) - 2 * (c2y - c1y);
-        c = p1y - c1y;
-        t1 = (-b + math.sqrt(b * b - 4 * a * c)) / 2 / a;
-        t2 = (-b - math.sqrt(b * b - 4 * a * c)) / 2 / a;
-        abs(t1) > "1e12" && (t1 = .5);
-        abs(t2) > "1e12" && (t2 = .5);
-        if (t1 > 0 && t1 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t1);
-            x.push(dot.x);
-            y.push(dot.y);
-        }
-        if (t2 > 0 && t2 < 1) {
-            dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t2);
-            x.push(dot.x);
-            y.push(dot.y);
-        }
+
+        bounds[0][jlen] = x0;
+        bounds[1][jlen] = y0;
+        bounds[0][jlen + 1] = x3;
+        bounds[1][jlen + 1] = y3;
+        bounds[0].length = bounds[1].length = jlen + 2;
+
+
         return {
-            min: {x: mmin.apply(0, x), y: mmin.apply(0, y)},
-            max: {x: mmax.apply(0, x), y: mmax.apply(0, y)}
+          min: {x: mmin.apply(0, bounds[0]), y: mmin.apply(0, bounds[1])},
+          max: {x: mmax.apply(0, bounds[0]), y: mmax.apply(0, bounds[1])}
         };
     }
+
     function path2curve(path, path2) {
         var pth = !path2 && paths(path);
         if (!path2 && pth.curve) {
@@ -909,28 +937,40 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             p2 = path2 && pathToAbsolute(path2),
             attrs = {x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null},
             attrs2 = {x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null},
-            processPath = function (path, d) {
+            processPath = function (path, d, pcom) {
                 var nx, ny;
                 if (!path) {
                     return ["C", d.x, d.y, d.x, d.y, d.x, d.y];
                 }
-                !(path[0] in {T:1, Q:1}) && (d.qx = d.qy = null);
+                !(path[0] in {T: 1, Q: 1}) && (d.qx = d.qy = null);
                 switch (path[0]) {
                     case "M":
                         d.X = path[1];
                         d.Y = path[2];
                         break;
                     case "A":
-                        path = ["C"].concat(a2c.apply(0, [d.x, d.y].concat(path.slice(1))));
+                        path = ["C"].concat(a2c[apply](0, [d.x, d.y].concat(path.slice(1))));
                         break;
                     case "S":
-                        nx = d.x + (d.x - (d.bx || d.x));
-                        ny = d.y + (d.y - (d.by || d.y));
+                        if (pcom == "C" || pcom == "S") { // In "S" case we have to take into account, if the previous command is C/S.
+                            nx = d.x * 2 - d.bx;          // And reflect the previous
+                            ny = d.y * 2 - d.by;          // command's control point relative to the current point.
+                        }
+                        else {                            // or some else or nothing
+                            nx = d.x;
+                            ny = d.y;
+                        }
                         path = ["C", nx, ny].concat(path.slice(1));
                         break;
                     case "T":
-                        d.qx = d.x + (d.x - (d.qx || d.x));
-                        d.qy = d.y + (d.y - (d.qy || d.y));
+                        if (pcom == "Q" || pcom == "T") { // In "T" case we have to take into account, if the previous command is Q/T.
+                            d.qx = d.x * 2 - d.qx;        // And make a reflection similar
+                            d.qy = d.y * 2 - d.qy;        // to case "S".
+                        }
+                        else {                            // or something else or nothing
+                            d.qx = d.x;
+                            d.qy = d.y;
+                        }
                         path = ["C"].concat(q2c(d.x, d.y, d.qx, d.qy, path[1], path[2]));
                         break;
                     case "Q":
@@ -958,6 +998,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     pp[i].shift();
                     var pi = pp[i];
                     while (pi.length) {
+                        pcoms1[i] = "A"; // if created multiple C:s, their original seg is saved
+                        p2 && (pcoms2[i] = "A"); // the same as above
                         pp.splice(i++, 0, ["C"].concat(pi.splice(0, 6)));
                     }
                     pp.splice(i, 1);
@@ -973,12 +1015,41 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     a1.y = path1[i][2];
                     ii = mmax(p.length, p2 && p2.length || 0);
                 }
-            };
+            },
+            pcoms1 = [], // path commands of original path p
+            pcoms2 = [], // path commands of original path p2
+            pfirst = "", // temporary holder for original path command
+            pcom = ""; // holder for previous path command of original path
         for (var i = 0, ii = mmax(p.length, p2 && p2.length || 0); i < ii; i++) {
-            p[i] = processPath(p[i], attrs);
-            fixArc(p, i);
-            p2 && (p2[i] = processPath(p2[i], attrs2));
-            p2 && fixArc(p2, i);
+            p[i] && (pfirst = p[i][0]); // save current path command
+
+            if (pfirst != "C") // C is not saved yet, because it may be result of conversion
+            {
+                pcoms1[i] = pfirst; // Save current path command
+                i && ( pcom = pcoms1[i - 1]); // Get previous path command pcom
+            }
+            p[i] = processPath(p[i], attrs, pcom); // Previous path command is inputted to processPath
+
+            if (pcoms1[i] != "A" && pfirst == "C") pcoms1[i] = "C"; // A is the only command
+            // which may produce multiple C:s
+            // so we have to make sure that C is also C in original path
+
+            fixArc(p, i); // fixArc adds also the right amount of A:s to pcoms1
+
+            if (p2) { // the same procedures is done to p2
+                p2[i] && (pfirst = p2[i][0]);
+                if (pfirst != "C") {
+                    pcoms2[i] = pfirst;
+                    i && (pcom = pcoms2[i - 1]);
+                }
+                p2[i] = processPath(p2[i], attrs2, pcom);
+
+                if (pcoms2[i] != "A" && pfirst == "C") {
+                    pcoms2[i] = "C";
+                }
+
+                fixArc(p2, i);
+            }
             fixM(p, p2, attrs, attrs2, i);
             fixM(p2, p, attrs2, attrs, i);
             var seg = p[i],

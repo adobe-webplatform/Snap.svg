@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.2.0";
+Snap.version = "0.2.1";
 /*\
  * Snap
  [ method ]
@@ -532,6 +532,16 @@ function Matrix(a, b, c, d, e, f) {
         a[1] && (a[1] /= mag);
     }
     /*\
+     * Matrix.determinant
+     [ method ]
+     **
+     * Finds determinant of the given matrix.
+     = (number) determinant
+    \*/
+    matrixproto.determinant = function () {
+        return this.a * this.d - this.b * this.c;
+    };
+    /*\
      * Matrix.split
      [ method ]
      **
@@ -563,6 +573,10 @@ function Matrix(a, b, c, d, e, f) {
         normalize(row[1]);
         out.shear /= out.scaley;
 
+        if (this.determinant() < 0) {
+            out.scalex = -out.scalex;
+        }
+
         // rotation
         var sin = -row[0][1],
             cos = row[1][1];
@@ -589,7 +603,7 @@ function Matrix(a, b, c, d, e, f) {
     \*/
     matrixproto.toTransformString = function (shorter) {
         var s = shorter || this.split();
-        if (s.isSimple) {
+        if (!+s.shear.toFixed(9)) {
             s.scalex = +s.scalex.toFixed(4);
             s.scaley = +s.scaley.toFixed(4);
             s.rotate = +s.rotate.toFixed(4);
@@ -1138,6 +1152,9 @@ function svgTransform2string(tstr) {
             if (params.length == 1) {
                 params.push(params[0], 0, 0);
             }
+            if (params.length > 2) {
+                params = params.slice(0, 2);
+            }
         }
         if (name == "skewX") {
             res.push(["m", 1, 0, math.tan(rad(params[0])), 1, 0, 0]);
@@ -1436,10 +1453,28 @@ function Element(el) {
     try {
         svg = el.ownerSVGElement;
     } catch(e) {}
+    /*\
+     * Element.node
+     [ property (object) ]
+     **
+     * Gives you a reference to the DOM object, so you can assign event handlers or just mess around.
+     > Usage
+     | // draw a circle at coordinate 10,10 with radius of 10
+     | var c = paper.circle(10, 10, 10);
+     | c.node.onclick = function () {
+     |     c.attr("fill", "red");
+     | };
+    \*/
     this.node = el;
     if (svg) {
         this.paper = new Paper(svg);
     }
+    /*\
+     * Element.type
+     [ property (string) ]
+     **
+     * SVG tag name of the given element.
+    \*/
     this.type = el.tagName;
     this.anims = {};
     this._ = {
@@ -1537,7 +1572,12 @@ function arrayFirstValue(arr) {
     elproto.getBBox = function (isWithoutTransform) {
         var el = this;
         if (el.type == "use") {
-            el = el.original;
+            if (el.original) {
+                el = el.original;
+            } else {
+                var href = el.attr("xlink:href");
+                el = glob.doc.getElementById(href.substring(href.indexOf("#") + 1));
+            }
         }
         if (el.removed) {
             return {};
@@ -1555,9 +1595,6 @@ function arrayFirstValue(arr) {
     var propString = function () {
         return this.string;
     };
-// SIERRA Element.transform(): seems to allow two return values, one of which (_Element_) is undefined.
-// SIERRA Element.transform(): if this only accepts one argument, it's unclear how it can both _get_ and _set_ a transform.
-// SIERRA Element.transform(): Unclear how Snap transform string format differs from SVG's.
     /*\
      * Element.transform
      [ method ]
@@ -1597,11 +1634,10 @@ function arrayFirstValue(arr) {
             };
         }
         if (tstr instanceof Matrix) {
-            // may be need to apply it directly
-            // TODO: investigate
-            tstr = tstr.toTransformString();
+            this.matrix = tstr;
+        } else {
+            extractTransform(this, tstr);
         }
-        extractTransform(this, tstr);
 
         if (this.node) {
             if (this.type == "linearGradient" || this.type == "radialGradient") {
@@ -1953,6 +1989,29 @@ function arrayFirstValue(arr) {
             }
         }
     }
+    var rgNotSpace = /\S+/g,
+        rgBadSpace = /[\t\r\n\f]/g;
+    elproto.addClass = function (value) {
+        var classes = (value || "").match(rgNotSpace) || [],
+            elem = this.node,
+            cur = elem.className ? (" " + elem.className + " ").replace(rgBadSpace, " ") : " ",
+            j,
+            clazz,
+            finalValue;
+        if (cur) {
+            j = 0;
+            while ((clazz = classes[j++])) {
+                if (cur.indexOf(" " + clazz + " ") < 0) {
+                    cur += clazz + " ";
+                }
+            }
+
+            finalValue = cur.replace(/(^\s+|\s+$)/g, "");
+            if (elem.className != finalValue) {
+                elem.className = finalValue;
+            }
+        }
+    };
     elproto.clone = function () {
         var clone = wrap(this.node.cloneNode(true));
         if ($(clone.node, "id")) {
@@ -1969,7 +2028,7 @@ function arrayFirstValue(arr) {
      **
      * Moves element to the shared `<defs>` area
      **
-     = (Element) the clone
+     = (Element) the element
     \*/
     elproto.toDefs = function () {
         var defs = getSomeDefs(this);
@@ -2088,7 +2147,6 @@ function arrayFirstValue(arr) {
         easing && (this.easing = easing);
         callback && (this.callback = callback);
     };
-    // SIERRA All object methods should feature sample code. This is just one instance.
     /*\
      * Snap.animation
      [ method ]
@@ -3002,7 +3060,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
          | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
          * Linear gradient, absolute from (0, 0) to (100, 100), from black
          * through red at 25% to white:
-         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25%-#fff");
+         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25-#fff");
          * Radial gradient, relative from the center of the element with radius
          * half the width, from black to white:
          | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
@@ -3246,7 +3304,7 @@ eve.on("snap.util.grad.parse", function parseGrad(string) {
             color: el[0]
         };
         if (el[1]) {
-            out.offset = el[1];
+            out.offset = parseFloat(el[1]);
         }
         return out;
     });
@@ -3551,9 +3609,13 @@ eve.on("snap.util.getattr.#text", function () {
 })(-1);
 eve.on("snap.util.getattr.viewBox", function () {
     eve.stop();
-    var vb = $(this.node, "viewBox").split(separator);
-    return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
-    // TODO: investigate why I need to z-index it
+    var vb = $(this.node, "viewBox");
+    if (vb) {
+        vb = vb.split(separator);
+        return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
+    } else {
+        return;
+    }
 })(-1);
 eve.on("snap.util.getattr.points", function () {
     var p = $(this.node, "points");
@@ -3565,6 +3627,12 @@ eve.on("snap.util.getattr.path", function () {
     eve.stop();
     return p;
 });
+function getFontSize() {
+    eve.stop();
+    return this.node.style.fontSize;
+}
+eve.on("snap.util.getattr.fontSize", getFontSize)(-1);
+eve.on("snap.util.getattr.font-size", getFontSize)(-1);
 // default
 eve.on("snap.util.getattr", function () {
     var att = eve.nt();
