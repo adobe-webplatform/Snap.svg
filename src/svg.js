@@ -2507,7 +2507,6 @@ function make(name, parent) {
     var res = $(name);
     parent.appendChild(res);
     var el = wrap(res);
-    el.type = name;
     return el;
 }
 function Paper(w, h) {
@@ -2909,10 +2908,6 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
     \*/
     proto.group = proto.g = function (first) {
         var el = make("g", this.node);
-        el.add = add2group;
-        for (var method in proto) if (proto[has](method)) {
-            el[method] = proto[method];
-        }
         if (arguments.length == 1 && first && !first.type) {
             el.attr(first);
         } else if (arguments.length) {
