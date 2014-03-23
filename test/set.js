@@ -82,6 +82,51 @@ describe("Set methods", function () {
         expect(set[1]).to.be(rect2);
         expect(set[2]).to.be(rect3);
     });
+    it("Set.attr", function() {
+        var rect1 = s.rect(10, 20, 30, 40);
+        var rect2 = s.rect(10, 20, 30, 40);
+        var set = Snap.set(rect1, rect2);
+	set.attr({"fill": "#ff0000"});
+        expect(rect1.node.getAttribute("fill")).to.be("#ff0000");
+        expect(rect2.node.getAttribute("fill")).to.be("#ff0000");
+	set.attr({"stroke": "#0000ff"});
+        expect(rect1.node.getAttribute("stroke")).to.be("#0000ff");
+        expect(rect2.node.getAttribute("stroke")).to.be("#0000ff");
+    });
+    it("Set.bind", function() {
+        var rect1 = s.rect(10, 20, 30, 40);
+        var rect2 = s.rect(10, 20, 30, 40);
+        var set = Snap.set(rect1, rect2);
+
+	// Setting "stroke" on set only applies it to rect1
+	set.bind("stroke", rect1);
+	// Setting "fill1" on set maps to fill attribute on rect1
+	set.bind("fill1", rect1, "fill");
+	// Setting "fill2" on set maps to fill attribute on rect2
+	set.bind("fill2", function(v) { rect2.attr({"fill": v}); });
+
+	// Set everything to black
+	rect1.attr({"fill": "#000000", "stroke": "#000000"})
+	rect2.attr({"fill": "#000000", "stroke": "#000000"})
+
+	set.attr({"fill1": "#00ff00"});
+        expect(rect1.node.getAttribute("fill")).to.be("#00ff00");
+        expect(rect2.node.getAttribute("fill")).to.be("#000000");
+
+	// Will trigger the fallback implementation of attr which is
+	// to set that attribute on all elements in the set.
+	set.attr({"fill": "#ff0000"});
+        expect(rect1.node.getAttribute("fill")).to.be("#ff0000");
+        expect(rect2.node.getAttribute("fill")).to.be("#ff0000");
+
+	set.attr({"fill2": "#00ff00"});
+        expect(rect1.node.getAttribute("fill")).to.be("#ff0000");
+        expect(rect2.node.getAttribute("fill")).to.be("#00ff00");
+
+	set.attr({"stroke": "#0000ff"});
+        expect(rect1.node.getAttribute("stroke")).to.be("#0000ff");
+        expect(rect2.node.getAttribute("stroke")).to.be("#000000");
+    });
     it("Set.splice - remove only", function() {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
