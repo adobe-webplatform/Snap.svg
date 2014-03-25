@@ -949,7 +949,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                         d.Y = path[2];
                         break;
                     case "A":
-                        path = ["C"].concat(a2c[apply](0, [d.x, d.y].concat(path.slice(1))));
+                        path = ["C"].concat(a2c.apply(0, [d.x, d.y].concat(path.slice(1))));
                         break;
                     case "S":
                         if (pcom == "C" || pcom == "S") { // In "S" case we have to take into account, if the previous command is C/S.
