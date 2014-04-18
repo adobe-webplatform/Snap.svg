@@ -94,6 +94,9 @@ var has = "hasOwnProperty",
 
 function $(el, attr) {
     if (attr) {
+        if (el == "#text") {
+            el = glob.doc.createTextNode(attr.text || "");
+        }
         if (typeof el == "string") {
             el = $(el);
         }
@@ -1293,10 +1296,6 @@ var contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
         return false;
     };
 function getSomeDefs(el) {
-    var cache = Snap._.someDefs;
-    if (cache && contains(cache.ownerDocument.documentElement, cache)) {
-        return cache;
-    }
     var p = (el.node.ownerSVGElement && wrap(el.node.ownerSVGElement)) ||
             (el.node.parentNode && wrap(el.node.parentNode)) ||
             Snap.select("svg") ||
@@ -1306,7 +1305,6 @@ function getSomeDefs(el) {
     if (!defs) {
         defs = make("defs", p.node).node;
     }
-    Snap._.someDefs = defs;
     return defs;
 }
 Snap._.getSomeDefs = getSomeDefs;
@@ -1341,9 +1339,9 @@ function unit2px(el, name, value) {
     }
     function set(nam, f) {
         if (name == null) {
-            out[nam] = f(el.attr(nam));
+            out[nam] = f(el.attr(nam) || 0);
         } else if (nam == name) {
-            out = f(value == null ? el.attr(nam) : value);
+            out = f(value == null ? el.attr(nam) || 0 : value);
         }
     }
     switch (el.type) {
@@ -1532,7 +1530,7 @@ function arrayFirstValue(arr) {
                 json[params] = value;
                 params = json;
             } else {
-                return arrayFirstValue(eve("snap.util.getattr."+params, el));
+                return arrayFirstValue(eve("snap.util.getattr." + params, el));
             }
         }
         for (var att in params) {
@@ -2719,7 +2717,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         if (ry == null) {
             ry = rx;
         }
-        if (is(x, "object") && "x" in x) {
+        if (is(x, "object") && x == "[object Object]") {
             attr = x;
         } else if (x != null) {
             attr = {
@@ -2751,7 +2749,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
     \*/
     proto.circle = function (cx, cy, r) {
         var attr;
-        if (is(cx, "object") && "cx" in cx) {
+        if (is(cx, "object") && cx == "[object Object]") {
             attr = cx;
         } else if (cx != null) {
             attr = {
@@ -2826,7 +2824,7 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
     \*/
     proto.ellipse = function (cx, cy, rx, ry) {
         var el = make("ellipse", this.node);
-        if (is(cx, "object") && "cx" in cx) {
+        if (is(cx, "object") && cx == "[object Object]") {
             el.attr(cx);
         } else if (cx != null) {
             el.attr({
