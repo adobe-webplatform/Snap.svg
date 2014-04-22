@@ -1921,7 +1921,6 @@ function svgTransform2string(tstr) {
         } else if (name == "skewY") {
             res.push(["m", 1, math.tan(rad(params[0])), 0, 1, 0, 0]);
         } else {
-            console.log(params);
             res.push([name.charAt(0)].concat(params));
         }
         return all;
