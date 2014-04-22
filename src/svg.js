@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function() {
-Snap.version = "0.2.1";
+Snap.version = "0.3.0";
 /*\
  * Snap
  [ method ]
@@ -3002,6 +3002,31 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
             attrs.viewBox = [x, y, w, h];
         }
         el.attr(attrs);
+        return el;
+    };
+    /*\
+     * Paper.use
+     [ method ]
+     **
+     * Creates a <use> element.
+     - id (string) @optional id of element to link
+     * or
+     - id (Element) @optional element to link
+     **
+     = (object) the `use` element
+     **
+    \*/
+    proto.use = function (id) {
+        var el = make("use", this.node);
+        if (id instanceof Element) {
+            if (!id.attr("id")) {
+                id.attr({id: ID()});
+            }
+            id = id.attr("id");
+        }
+        id && el.attr({
+            "xlink:href": id
+        });
         return el;
     };
     /*\
