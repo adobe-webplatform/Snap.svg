@@ -2940,7 +2940,6 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         }
         return el;
     };
-// SIERRA Paper.g(): Don't understand the code comment about the order being _different._ Wouldn't it be a rect followed by a circle?
     /*\
      * Paper.g
      [ method ]
@@ -2973,6 +2972,36 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
         } else if (arguments.length) {
             el.add(Array.prototype.slice.call(arguments, 0));
         }
+        return el;
+    };
+    /*\
+     * Paper.svg
+     [ method ]
+     **
+     * Creates a nested SVG element.
+     - width (number) @optional width of the element
+     - height (number) @optional height of the element
+     - x (number) @optional viewbox X
+     - y (number) @optional viewbox Y
+     - w (number) @optional viewbox width
+     - h (number) @optional viewbox height
+     **
+     = (object) the `svg` element
+     **
+    \*/
+    proto.svg = function (width, height, x, y, w, h) {
+        var el = make("svg", this.node),
+            attrs = {};
+        if (width != null) {
+            attrs.width = width;
+        }
+        if (height != null) {
+            attrs.height = height;
+        }
+        if (x != null && y != null && w != null && h != null) {
+            attrs.viewBox = [x, y, w, h];
+        }
+        el.attr(attrs);
         return el;
     };
     /*\
