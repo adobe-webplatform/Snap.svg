@@ -1149,14 +1149,13 @@ function svgTransform2string(tstr) {
             params.push(0, 0);
         }
         if (name == "scale") {
-            if (params.length == 2) {
+            if (params.length > 2) {
+                params = params.slice(0, 2);
+            } else if (params.length == 2) {
                 params.push(0, 0);
             }
             if (params.length == 1) {
                 params.push(params[0], 0, 0);
-            }
-            if (params.length > 2) {
-                params = params.slice(0, 2);
             }
         }
         if (name == "skewX") {
@@ -1164,6 +1163,7 @@ function svgTransform2string(tstr) {
         } else if (name == "skewY") {
             res.push(["m", 1, math.tan(rad(params[0])), 0, 1, 0, 0]);
         } else {
+            console.log(params);
             res.push([name.charAt(0)].concat(params));
         }
         return all;
@@ -1988,26 +1988,92 @@ function arrayFirstValue(arr) {
         }
     }
     var rgNotSpace = /\S+/g,
-        rgBadSpace = /[\t\r\n\f]/g;
+        rgBadSpace = /[\t\r\n\f]/g,
+        rgTrim = /(^\s+|\s+$)/g;
     elproto.addClass = function (value) {
         var classes = (value || "").match(rgNotSpace) || [],
             elem = this.node,
-            cur = elem.className ? (" " + elem.className + " ").replace(rgBadSpace, " ") : " ",
+            className = elem.className.baseVal,
+            curClasses = className.match(rgNotSpace) || [],
             j,
+            pos,
             clazz,
             finalValue;
-        if (cur) {
+
+        if (classes.length) {
             j = 0;
             while ((clazz = classes[j++])) {
-                if (cur.indexOf(" " + clazz + " ") < 0) {
-                    cur += clazz + " ";
+                pos = curClasses.indexOf(clazz);
+                if (!~pos) {
+                    curClasses.push(clazz);
                 }
             }
 
-            finalValue = cur.replace(/(^\s+|\s+$)/g, "");
-            if (elem.className != finalValue) {
-                elem.className = finalValue;
+            finalValue = curClasses.join(" ");
+            if (className != finalValue) {
+                elem.className.baseVal = finalValue;
             }
+        }
+    };
+    elproto.removeClass = function (value) {
+        var classes = (value || "").match(rgNotSpace) || [],
+            elem = this.node,
+            className = elem.className.baseVal,
+            curClasses = className.match(rgNotSpace) || [],
+            j,
+            pos,
+            clazz,
+            finalValue;
+        if (curClasses.length) {
+            j = 0;
+            while ((clazz = classes[j++])) {
+                pos = curClasses.indexOf(clazz);
+                if (~pos) {
+                    curClasses.splice(pos, 1);
+                }
+            }
+
+            finalValue = curClasses.join(" ");
+            if (className != finalValue) {
+                elem.className.baseVal = finalValue;
+            }
+        }
+    };
+    elproto.hasClass = function (value) {
+        var elem = this.node,
+            className = elem.className.baseVal,
+            curClasses = className.match(rgNotSpace) || [];
+        return !!~curClasses.indexOf(value);
+    };
+    elproto.toggleClass = function (value, flag) {
+        if (flag != null) {
+            if (flag) {
+                return this.addClass(value);
+            } else {
+                return this.removeClass(value);
+            }
+        }
+        var classes = (value || "").match(rgNotSpace) || [],
+            elem = this.node,
+            className = elem.className.baseVal,
+            curClasses = className.match(rgNotSpace) || [],
+            j,
+            pos,
+            clazz,
+            finalValue;
+        j = 0;
+        while ((clazz = classes[j++])) {
+            pos = curClasses.indexOf(clazz);
+            if (~pos) {
+                curClasses.splice(pos, 1);
+            } else {
+                curClasses.push(clazz);
+            }
+        }
+
+        finalValue = curClasses.join(" ");
+        if (className != finalValue) {
+            elem.className.baseVal = finalValue;
         }
     };
     elproto.clone = function () {
@@ -2019,7 +2085,6 @@ function arrayFirstValue(arr) {
         clone.insertAfter(this);
         return clone;
     };
-// SIERRA Element.toDefs(): If this _moves_ an element to the <defs> region, why is the return value a _clone_? Also unclear why it's called the _relative_ <defs> section. Perhaps _shared_?
     /*\
      * Element.toDefs
      [ method ]
@@ -2033,8 +2098,6 @@ function arrayFirstValue(arr) {
         defs.appendChild(this.node);
         return this;
     };
-// SIERRA Element.pattern(): x/y/width/height data types are listed as both String and Number. Is that an error, or does it mean strings are coerced?
-// SIERRA Element.pattern(): clarify that x/y are offsets that e.g., may add gutters between the tiles.
     /*\
      * Element.pattern
      [ method ]
@@ -3332,6 +3395,10 @@ eve.on("snap.util.attr.path", function (value) {
     eve.stop();
     this.attr({d: value});
 })(-1);
+eve.on("snap.util.attr.class", function (value) {
+    eve.stop();
+    this.node.className.baseVal = value;
+})(-1);
 eve.on("snap.util.attr.viewBox", function (value) {
     var vb;
     if (is(value, "object") && "x" in value) {
@@ -3619,6 +3686,9 @@ eve.on("snap.util.getattr.path", function () {
     var p = $(this.node, "d");
     eve.stop();
     return p;
+});
+eve.on("snap.util.getattr.class", function () {
+    return this.node.className.baseVal;
 });
 function getFontSize() {
     eve.stop();
