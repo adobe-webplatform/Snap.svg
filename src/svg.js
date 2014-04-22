@@ -2613,7 +2613,7 @@ function wrap(dom) {
     if (dom instanceof Element || dom instanceof Fragment) {
         return dom;
     }
-    if (dom.tagName == "svg") {
+    if ( /^svg$/i.test( dom.tagName ) ) {
         return new Paper(dom);
     }
     return new Element(dom);
