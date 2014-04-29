@@ -3260,8 +3260,8 @@ Snap.ajax = function (url, postData, callback, scope){
             postData = pd.join("&");
         }
         req.open((postData ? "POST" : "GET"), url, true);
-        req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         if (postData) {
+            req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         }
         if (callback) {
