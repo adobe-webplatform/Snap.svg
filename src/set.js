@@ -81,6 +81,58 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return this;
     };
+    setproto.animate = function (attrs, ms, easing, callback) {
+        if (typeof easing == "function" && !easing.length) {
+            callback = easing;
+            easing = mina.linear;
+        }
+        if (attrs instanceof Snap._.Animation) {
+            callback = attrs.callback;
+            easing = attrs.easing;
+            ms = easing.dur;
+            attrs = attrs.attr;
+        }
+        var begin,
+            handler = function () {
+                if (begin) {
+                    this.b = begin;
+                } else {
+                    begin = this.b;
+                }
+            },
+            cb = 0,
+            callbacker = callback && function () {
+                if (cb++ == this.length) {
+                    callback.call(this);
+                }
+            };
+        return this.forEach(function (el) {
+            eve.once("snap.animcreated." + el.id, handler);
+            el.animate(attrs, ms, easing, callbacker);
+        });
+    };
+    setproto.animateEach = function () {
+        var i = 0,
+            set = this,
+            begin,
+            handler = function () {
+                if (begin) {
+                    this.b = begin;
+                } else {
+                    begin = this.b;
+                }
+            },
+            args = arguments,
+            caller = function (args) {
+                var el = set[i++];
+                if (el) {
+                    el.animate.apply(el, arguments.length > 1 ? arguments : args);
+                    eve.once("snap.animcreated." + el.id, handler);
+                }
+                return set[i] ? caller : set;
+            };
+        return caller(args);
+    };
     setproto.remove = function () {
         while (this.length) {
             this.pop().remove();

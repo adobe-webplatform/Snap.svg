@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-04-22
+// build: 2014-05-05
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -783,6 +783,8 @@ Snap.version = "0.3.0";
  * or
  - DOM (SVGElement) element to be wrapped into Snap structure
  * or
+ - array (array) array of elements (will return set of elements)
+ * or
  - query (string) CSS query selector
  = (object) @Element
 \*/
@@ -790,6 +792,9 @@ function Snap(w, h) {
     if (w) {
         if (w.tagName) {
             return wrap(w);
+        }
+        if (is(w, "array") && Snap.set) {
+            return Snap.set.apply(Snap, w);
         }
         if (w instanceof Element) {
             return w;
@@ -2239,6 +2244,8 @@ function Element(el) {
     hub[id] = this;
     if (this.type == "g") {
         this.add = add2group;
+    }
+    if (this.type in {"g": 1, "mask": 1, "pattern": 1}) {
         for (var method in Paper.prototype) if (Paper.prototype[has](method)) {
             this[method] = Paper.prototype[method];
         }
@@ -2326,16 +2333,16 @@ function arrayFirstValue(arr) {
     \*/
     elproto.getBBox = function (isWithoutTransform) {
         var el = this;
+        if (el.removed) {
+            return {};
+        }
         if (el.type == "use") {
             if (el.original) {
                 el = el.original;
             } else {
                 var href = el.attr("xlink:href");
-                el = glob.doc.getElementById(href.substring(href.indexOf("#") + 1));
+                el = el.node.ownerDocument.getElementById(href.substring(href.indexOf("#") + 1));
             }
-        }
-        if (el.removed) {
-            return {};
         }
         var _ = el._;
         if (isWithoutTransform) {
@@ -2343,6 +2350,7 @@ function arrayFirstValue(arr) {
             return Snap._.box(_.bboxwt);
         } else {
             el.realPath = (Snap.path.get[el.type] || Snap.path.get.deflt)(el);
+            el.matrix = el.transform().localMatrix;
             _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, el.matrix));
         }
         return Snap._.box(_.bbox);
@@ -2373,17 +2381,30 @@ function arrayFirstValue(arr) {
     elproto.transform = function (tstr) {
         var _ = this._;
         if (tstr == null) {
-            var global = new Matrix(this.node.getCTM()),
+            var papa = this,
+                global = new Matrix(this.node.getCTM()),
                 local = extractTransform(this),
+                ms = [local],
+                m = new Matrix,
+                i,
                 localString = local.toTransformString(),
                 string = Str(local) == Str(this.matrix) ?
                             _.transform : localString;
+            while ((papa = papa.parent()) && papa.type != "svg") {
+                ms.push(extractTransform(papa));
+            }
+            i = ms.length;
+            while (i--) {
+                m.add(ms[i]);
+            }
             return {
                 string: string,
                 globalMatrix: global,
+                totalMatrix: m,
                 localMatrix: local,
                 diffMatrix: global.clone().add(local.invert()),
                 global: global.toTransformString(),
+                total: m.toTransformString(),
                 local: localString,
                 toString: propString
             };
@@ -2771,6 +2792,7 @@ function arrayFirstValue(arr) {
                 elem.className.baseVal = finalValue;
             }
         }
+        return this;
     };
     elproto.removeClass = function (value) {
         var classes = (value || "").match(rgNotSpace) || [],
@@ -2795,6 +2817,7 @@ function arrayFirstValue(arr) {
                 elem.className.baseVal = finalValue;
             }
         }
+        return this;
     };
     elproto.hasClass = function (value) {
         var elem = this.node,
@@ -2832,6 +2855,7 @@ function arrayFirstValue(arr) {
         if (className != finalValue) {
             elem.className.baseVal = finalValue;
         }
+        return this;
     };
     elproto.clone = function () {
         var clone = wrap(this.node.cloneNode(true));
@@ -2859,6 +2883,12 @@ function arrayFirstValue(arr) {
      * Element.pattern
      [ method ]
      **
+     * Depricated. Use @Element.toPattern instead.
+    \*/
+    /*\
+     * Element.toPattern
+     [ method ]
+     **
      * Creates a `<pattern>` element from the current element
      **
      * To create a pattern you have to specify the pattern rect:
@@ -2878,7 +2908,7 @@ function arrayFirstValue(arr) {
      |     fill: p
      | });
     \*/
-    elproto.pattern = function (x, y, width, height) {
+    elproto.pattern = elproto.toPattern = function (x, y, width, height) {
         var p = make("pattern", getSomeDefs(this));
         if (x == null) {
             x = this.getBBox();
@@ -2965,6 +2995,7 @@ function arrayFirstValue(arr) {
         easing && (this.easing = easing);
         callback && (this.callback = callback);
     };
+    Snap._.Animation = Animation;
     /*\
      * Snap.animation
      [ method ]
@@ -2989,6 +3020,7 @@ function arrayFirstValue(arr) {
      = (object) in format:
      o {
      o     anim (object) animation object,
+     o     mina (object) @mina object,
      o     curStatus (number) 0..1 — status of the animation: 0 — just started, 1 — just finished,
      o     status (function) gets or sets the status of the animation,
      o     stop (function) stops the animation
@@ -3001,6 +3033,7 @@ function arrayFirstValue(arr) {
             (function (a) {
                 res.push({
                     anim: new Animation(a._attrs, a.dur, a.easing, a._callback),
+                    mina: a,
                     curStatus: a.status(),
                     status: function (val) {
                         return a.status(val);
@@ -3121,6 +3154,7 @@ function arrayFirstValue(arr) {
         el.anims[anim.id] = anim;
         anim._attrs = attrs;
         anim._callback = callback;
+        eve("snap.animcreated." + el.id, anim);
         eve.once("mina.finish." + anim.id, function () {
             delete el.anims[anim.id];
             callback && callback.call(el);
@@ -3336,12 +3370,13 @@ function Paper(w, h) {
         if (w.snap in hub) {
             return hub[w.snap];
         }
+        var doc = w.ownerDocument;
         res = new Element(w);
         desc = w.getElementsByTagName("desc")[0];
         defs = w.getElementsByTagName("defs")[0];
         if (!desc) {
             desc = $("desc");
-            desc.appendChild(glob.doc.createTextNode("Created with Snap"));
+            desc.appendChild(doc.createTextNode("Created with Snap"));
             res.node.appendChild(desc);
         }
         if (!defs) {
@@ -3373,6 +3408,9 @@ function wrap(dom) {
     }
     if (dom.tagName == "svg") {
         return new Paper(dom);
+    }
+    if (dom.tagName.toLowerCase() == "object" && dom.type == "image/svg+xml") {
+        return new Paper(dom.contentDocument.getElementsByTagName("svg")[0]);
     }
     return new Element(dom);
 }
@@ -3737,29 +3775,102 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      [ method ]
      **
      * Creates a nested SVG element.
+     - x (number) @optional X of the element
+     - y (number) @optional Y of the element
      - width (number) @optional width of the element
      - height (number) @optional height of the element
-     - x (number) @optional viewbox X
-     - y (number) @optional viewbox Y
-     - w (number) @optional viewbox width
-     - h (number) @optional viewbox height
+     - vbx (number) @optional viewbox X
+     - vby (number) @optional viewbox Y
+     - vbw (number) @optional viewbox width
+     - vbh (number) @optional viewbox height
      **
      = (object) the `svg` element
      **
     \*/
-    proto.svg = function (width, height, x, y, w, h) {
+    proto.svg = function (x, y, width, height, vbx, vby, vbw, vbh) {
         var el = make("svg", this.node),
             attrs = {};
-        if (width != null) {
-            attrs.width = width;
-        }
-        if (height != null) {
-            attrs.height = height;
-        }
-        if (x != null && y != null && w != null && h != null) {
-            attrs.viewBox = [x, y, w, h];
+        if (is(x, "object") && y == null) {
+            attrs = x;
+        } else {
+            if (x != null) {
+                attrs.x = x;
+            }
+            if (y != null) {
+                attrs.y = y;
+            }
+            if (width != null) {
+                attrs.width = width;
+            }
+            if (height != null) {
+                attrs.height = height;
+            }
+            if (vbx != null && vby != null && vbw != null && vbh != null) {
+                attrs.viewBox = [vbx, vby, vbw, vbh];
+            }
         }
         el.attr(attrs);
+        return el;
+    };
+    /*\
+     * Paper.mask
+     [ method ]
+     **
+     * Equivalent in behaviour to @Paper.g, except it’s a mask.
+     **
+     = (object) the `mask` element
+     **
+    \*/
+    proto.mask = function (first) {
+        var el = make("mask", this.node);
+        if (arguments.length == 1 && first && !first.type) {
+            el.attr(first);
+        } else if (arguments.length) {
+            el.add(Array.prototype.slice.call(arguments, 0));
+        }
+        return el;
+    };
+    /*\
+     * Paper.ptrn
+     [ method ]
+     **
+     * Equivalent in behaviour to @Paper.g, except it’s a mask.
+     - x (number) @optional X of the element
+     - y (number) @optional Y of the element
+     - width (number) @optional width of the element
+     - height (number) @optional height of the element
+     - vbx (number) @optional viewbox X
+     - vby (number) @optional viewbox Y
+     - vbw (number) @optional viewbox width
+     - vbh (number) @optional viewbox height
+     **
+     = (object) the `mask` element
+     **
+    \*/
+    proto.ptrn = function (x, y, width, height, vx, vy, vw, vh) {
+        var el = make("pattern", this.node);
+        if (!arguments.length) {
+            var attr = {patternUnits: "userSpaceOnUse"};
+        } else {
+            if (vx == null) {
+                vx = x;
+                vy = y;
+                vw = width;
+                vh = height;
+            }
+            attr = {
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                patternUnits: "userSpaceOnUse",
+                viewBox: [vx, vy, vw, vh].join(" ")
+            };
+        }
+        if (is(x, "object")) {
+            attr = x;
+        }
+        el.attr(attr);
         return el;
     };
     /*\
@@ -3775,17 +3886,21 @@ function gradientRadial(defs, cx, cy, r, fx, fy) {
      **
     \*/
     proto.use = function (id) {
-        var el = make("use", this.node);
-        if (id instanceof Element) {
-            if (!id.attr("id")) {
-                id.attr({id: ID()});
+        if (id != null) {
+            var el = make("use", this.node);
+            if (id instanceof Element) {
+                if (!id.attr("id")) {
+                    id.attr({id: ID()});
+                }
+                id = id.attr("id");
             }
-            id = id.attr("id");
+            id && el.attr({
+                "xlink:href": id
+            });
+            return el;
+        } else {
+            return Element.prototype.use.call(this);
         }
-        id && el.attr({
-            "xlink:href": id
-        });
-        return el;
     };
     /*\
      * Paper.text
@@ -6095,6 +6210,58 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
         }
         return this;
+    };
+    setproto.animate = function (attrs, ms, easing, callback) {
+        if (typeof easing == "function" && !easing.length) {
+            callback = easing;
+            easing = mina.linear;
+        }
+        if (attrs instanceof Snap._.Animation) {
+            callback = attrs.callback;
+            easing = attrs.easing;
+            ms = easing.dur;
+            attrs = attrs.attr;
+        }
+        var begin,
+            handler = function () {
+                if (begin) {
+                    this.b = begin;
+                } else {
+                    begin = this.b;
+                }
+            },
+            cb = 0,
+            callbacker = callback && function () {
+                if (cb++ == this.length) {
+                    callback.call(this);
+                }
+            };
+        return this.forEach(function (el) {
+            eve.once("snap.animcreated." + el.id, handler);
+            el.animate(attrs, ms, easing, callbacker);
+        });
+    };
+    setproto.animateEach = function () {
+        var i = 0,
+            set = this,
+            begin,
+            handler = function () {
+                if (begin) {
+                    this.b = begin;
+                } else {
+                    begin = this.b;
+                }
+            },
+            args = arguments,
+            caller = function (args) {
+                var el = set[i++];
+                if (el) {
+                    el.animate.apply(el, arguments.length > 1 ? arguments : args);
+                    eve.once("snap.animcreated." + el.id, handler);
+                }
+                return set[i] ? caller : set;
+            };
+        return caller(args);
     };
     setproto.remove = function () {
         while (this.length) {
