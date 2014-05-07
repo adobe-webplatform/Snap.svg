@@ -78,7 +78,7 @@ var has = "hasOwnProperty",
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
     reURLValue = /^url\(#?([^)]+)\)$/,
     spaces = "\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029",
-    separator = new RegExp("[," + spaces + "]+"),
+    separator = Snap._.separator = new RegExp("[," + spaces + "]+"),
     whitespace = new RegExp("[" + spaces + "]", "g"),
     commaSpaces = new RegExp("[" + spaces + "]*,[" + spaces + "]*"),
     hsrg = {hs: 1, rg: 1},
@@ -209,24 +209,6 @@ Snap.format = (function () {
         });
     };
 })();
-var preload = (function () {
-    function onerror() {
-        this.parentNode.removeChild(this);
-    }
-    return function (src, f) {
-        var img = glob.doc.createElement("img"),
-            body = glob.doc.body;
-        img.style.cssText = "position:absolute;left:-9999em;top:-9999em";
-        img.onload = function () {
-            f.call(img);
-            img.onload = img.onerror = null;
-            body.removeChild(img);
-        };
-        img.onerror = onerror;
-        body.appendChild(img);
-        img.src = src;
-    };
-}());
 function clone(obj) {
     if (typeof obj == "function" || Object(obj) !== obj) {
         return obj;
@@ -304,7 +286,6 @@ Snap.rad = rad;
  = (number) angle in degrees
 \*/
 Snap.deg = deg;
-// SIERRA for which point is the angle calculated?
 /*\
  * Snap.angle
  [ method ]
@@ -359,288 +340,6 @@ Snap.snapTo = function (values, value, tolerance) {
     }
     return value;
 };
-
-// MATRIX
-function Matrix(a, b, c, d, e, f) {
-    if (b == null && objectToString.call(a) == "[object SVGMatrix]") {
-        this.a = a.a;
-        this.b = a.b;
-        this.c = a.c;
-        this.d = a.d;
-        this.e = a.e;
-        this.f = a.f;
-        return;
-    }
-    if (a != null) {
-        this.a = +a;
-        this.b = +b;
-        this.c = +c;
-        this.d = +d;
-        this.e = +e;
-        this.f = +f;
-    } else {
-        this.a = 1;
-        this.b = 0;
-        this.c = 0;
-        this.d = 1;
-        this.e = 0;
-        this.f = 0;
-    }
-}
-(function (matrixproto) {
-    /*\
-     * Matrix.add
-     [ method ]
-     **
-     * Adds the given matrix to existing one
-     - a (number)
-     - b (number)
-     - c (number)
-     - d (number)
-     - e (number)
-     - f (number)
-     * or
-     - matrix (object) @Matrix
-    \*/
-    matrixproto.add = function (a, b, c, d, e, f) {
-        var out = [[], [], []],
-            m = [[this.a, this.c, this.e], [this.b, this.d, this.f], [0, 0, 1]],
-            matrix = [[a, c, e], [b, d, f], [0, 0, 1]],
-            x, y, z, res;
-
-        if (a && a instanceof Matrix) {
-            matrix = [[a.a, a.c, a.e], [a.b, a.d, a.f], [0, 0, 1]];
-        }
-
-        for (x = 0; x < 3; x++) {
-            for (y = 0; y < 3; y++) {
-                res = 0;
-                for (z = 0; z < 3; z++) {
-                    res += m[x][z] * matrix[z][y];
-                }
-                out[x][y] = res;
-            }
-        }
-        this.a = out[0][0];
-        this.b = out[1][0];
-        this.c = out[0][1];
-        this.d = out[1][1];
-        this.e = out[0][2];
-        this.f = out[1][2];
-        return this;
-    };
-    /*\
-     * Matrix.invert
-     [ method ]
-     **
-     * Returns an inverted version of the matrix
-     = (object) @Matrix
-    \*/
-    matrixproto.invert = function () {
-        var me = this,
-            x = me.a * me.d - me.b * me.c;
-        return new Matrix(me.d / x, -me.b / x, -me.c / x, me.a / x, (me.c * me.f - me.d * me.e) / x, (me.b * me.e - me.a * me.f) / x);
-    };
-    /*\
-     * Matrix.clone
-     [ method ]
-     **
-     * Returns a copy of the matrix
-     = (object) @Matrix
-    \*/
-    matrixproto.clone = function () {
-        return new Matrix(this.a, this.b, this.c, this.d, this.e, this.f);
-    };
-    /*\
-     * Matrix.translate
-     [ method ]
-     **
-     * Translate the matrix
-     - x (number) horizontal offset distance
-     - y (number) vertical offset distance
-    \*/
-    matrixproto.translate = function (x, y) {
-        return this.add(1, 0, 0, 1, x, y);
-    };
-    /*\
-     * Matrix.scale
-     [ method ]
-     **
-     * Scales the matrix
-     - x (number) amount to be scaled, with `1` resulting in no change
-     - y (number) #optional amount to scale along the vertical axis. (Otherwise `x` applies to both axes.)
-     - cx (number) #optional horizontal origin point from which to scale
-     - cy (number) #optional vertical origin point from which to scale
-     * Default cx, cy is the middle point of the element.
-    \*/
-    matrixproto.scale = function (x, y, cx, cy) {
-        y == null && (y = x);
-        (cx || cy) && this.add(1, 0, 0, 1, cx, cy);
-        this.add(x, 0, 0, y, 0, 0);
-        (cx || cy) && this.add(1, 0, 0, 1, -cx, -cy);
-        return this;
-    };
-    /*\
-     * Matrix.rotate
-     [ method ]
-     **
-     * Rotates the matrix
-     - a (number) angle of rotation, in degrees
-     - x (number) horizontal origin point from which to rotate
-     - y (number) vertical origin point from which to rotate
-    \*/
-    matrixproto.rotate = function (a, x, y) {
-        a = rad(a);
-        x = x || 0;
-        y = y || 0;
-        var cos = +math.cos(a).toFixed(9),
-            sin = +math.sin(a).toFixed(9);
-        this.add(cos, sin, -sin, cos, x, y);
-        return this.add(1, 0, 0, 1, -x, -y);
-    };
-    /*\
-     * Matrix.x
-     [ method ]
-     **
-     * Returns x coordinate for given point after transformation described by the matrix. See also @Matrix.y
-     - x (number)
-     - y (number)
-     = (number) x
-    \*/
-    matrixproto.x = function (x, y) {
-        return x * this.a + y * this.c + this.e;
-    };
-    /*\
-     * Matrix.y
-     [ method ]
-     **
-     * Returns y coordinate for given point after transformation described by the matrix. See also @Matrix.x
-     - x (number)
-     - y (number)
-     = (number) y
-    \*/
-    matrixproto.y = function (x, y) {
-        return x * this.b + y * this.d + this.f;
-    };
-    matrixproto.get = function (i) {
-        return +this[Str.fromCharCode(97 + i)].toFixed(4);
-    };
-    matrixproto.toString = function () {
-        return "matrix(" + [this.get(0), this.get(1), this.get(2), this.get(3), this.get(4), this.get(5)].join() + ")";
-    };
-    matrixproto.offset = function () {
-        return [this.e.toFixed(4), this.f.toFixed(4)];
-    };
-    function norm(a) {
-        return a[0] * a[0] + a[1] * a[1];
-    }
-    function normalize(a) {
-        var mag = math.sqrt(norm(a));
-        a[0] && (a[0] /= mag);
-        a[1] && (a[1] /= mag);
-    }
-    /*\
-     * Matrix.determinant
-     [ method ]
-     **
-     * Finds determinant of the given matrix.
-     = (number) determinant
-    \*/
-    matrixproto.determinant = function () {
-        return this.a * this.d - this.b * this.c;
-    };
-    /*\
-     * Matrix.split
-     [ method ]
-     **
-     * Splits matrix into primitive transformations
-     = (object) in format:
-     o dx (number) translation by x
-     o dy (number) translation by y
-     o scalex (number) scale by x
-     o scaley (number) scale by y
-     o shear (number) shear
-     o rotate (number) rotation in deg
-     o isSimple (boolean) could it be represented via simple transformations
-    \*/
-    matrixproto.split = function () {
-        var out = {};
-        // translation
-        out.dx = this.e;
-        out.dy = this.f;
-
-        // scale and shear
-        var row = [[this.a, this.c], [this.b, this.d]];
-        out.scalex = math.sqrt(norm(row[0]));
-        normalize(row[0]);
-
-        out.shear = row[0][0] * row[1][0] + row[0][1] * row[1][1];
-        row[1] = [row[1][0] - row[0][0] * out.shear, row[1][1] - row[0][1] * out.shear];
-
-        out.scaley = math.sqrt(norm(row[1]));
-        normalize(row[1]);
-        out.shear /= out.scaley;
-
-        if (this.determinant() < 0) {
-            out.scalex = -out.scalex;
-        }
-
-        // rotation
-        var sin = -row[0][1],
-            cos = row[1][1];
-        if (cos < 0) {
-            out.rotate = deg(math.acos(cos));
-            if (sin < 0) {
-                out.rotate = 360 - out.rotate;
-            }
-        } else {
-            out.rotate = deg(math.asin(sin));
-        }
-
-        out.isSimple = !+out.shear.toFixed(9) && (out.scalex.toFixed(9) == out.scaley.toFixed(9) || !out.rotate);
-        out.isSuperSimple = !+out.shear.toFixed(9) && out.scalex.toFixed(9) == out.scaley.toFixed(9) && !out.rotate;
-        out.noRotation = !+out.shear.toFixed(9) && !out.rotate;
-        return out;
-    };
-    /*\
-     * Matrix.toTransformString
-     [ method ]
-     **
-     * Returns transform string that represents given matrix
-     = (string) transform string
-    \*/
-    matrixproto.toTransformString = function (shorter) {
-        var s = shorter || this.split();
-        if (!+s.shear.toFixed(9)) {
-            s.scalex = +s.scalex.toFixed(4);
-            s.scaley = +s.scaley.toFixed(4);
-            s.rotate = +s.rotate.toFixed(4);
-            return  (s.dx || s.dy ? "t" + [+s.dx.toFixed(4), +s.dy.toFixed(4)] : E) + 
-                    (s.scalex != 1 || s.scaley != 1 ? "s" + [s.scalex, s.scaley, 0, 0] : E) +
-                    (s.rotate ? "r" + [+s.rotate.toFixed(4), 0, 0] : E);
-        } else {
-            return "m" + [this.get(0), this.get(1), this.get(2), this.get(3), this.get(4), this.get(5)];
-        }
-    };
-})(Matrix.prototype);
-/*\
- * Snap.Matrix
- [ method ]
- **
- * Utility method
- **
- * Returns a matrix based on the given parameters
- - a (number)
- - b (number)
- - c (number)
- - d (number)
- - e (number)
- - f (number)
- * or
- - svgMatrix (SVGMatrix)
- = (object) @Matrix
-\*/
-Snap.Matrix = Matrix;
 // Colour
 /*\
  * Snap.getRGB
@@ -1178,7 +877,7 @@ Snap._.svgTransform2string = svgTransform2string;
 Snap._.rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d", "i");
 function transform2matrix(tstr, bbox) {
     var tdata = parseTransformString(tstr),
-        m = new Matrix;
+        m = new Snap.Matrix;
     if (tdata) {
         for (var i = 0, ii = tdata.length; i < ii; i++) {
             var t = tdata[i],
@@ -1256,7 +955,7 @@ function extractTransform(el, tstr) {
             tstr = el.node.getAttribute("transform");
         }
         if (!tstr) {
-            return new Matrix;
+            return new Snap.Matrix;
         }
         tstr = svgTransform2string(tstr);
     } else {
@@ -1546,8 +1245,6 @@ function arrayFirstValue(arr) {
         }
         return el;
     };
-// SIERRA Element.getBBox(): Unclear why you would want to express the dimension of the box as a path.
-// SIERRA Element.getBBox(): Unclear why you would want to use r0/r1/r2. Also, basic definitions: wouldn't the _smallest circle that can be enclosed_ be a zero-radius point?
     /*\
      * Element.getBBox
      [ method ]
@@ -1624,15 +1321,15 @@ function arrayFirstValue(arr) {
         var _ = this._;
         if (tstr == null) {
             var papa = this,
-                global = new Matrix(this.node.getCTM()),
+                global = new Snap.Matrix(this.node.getCTM()),
                 local = extractTransform(this),
                 ms = [local],
-                m = new Matrix,
+                m = new Snap.Matrix,
                 i,
                 localString = local.toTransformString(),
                 string = Str(local) == Str(this.matrix) ?
                             _.transform : localString;
-            while ((papa = papa.parent()) && papa.type != "svg") {
+            while (papa.type != "svg" && (papa = papa.parent())) {
                 ms.push(extractTransform(papa));
             }
             i = ms.length;
@@ -1651,7 +1348,7 @@ function arrayFirstValue(arr) {
                 toString: propString
             };
         }
-        if (tstr instanceof Matrix) {
+        if (tstr instanceof Snap.Matrix) {
             this.matrix = tstr;
         } else {
             extractTransform(this, tstr);
@@ -2519,7 +2216,6 @@ function arrayFirstValue(arr) {
         };
     }
 }(Element.prototype));
-// SIERRA Snap.parse() accepts & returns a fragment, but there's no info on what it does in between. What if it doesn't parse?
 /*\
  * Snap.parse
  [ method ]
@@ -2648,1026 +2344,58 @@ function wrap(dom) {
     if (dom instanceof Element || dom instanceof Fragment) {
         return dom;
     }
-    if (dom.tagName == "svg") {
+    if (dom.tagName && dom.tagName.toLowerCase() == "svg") {
         return new Paper(dom);
     }
-    if (dom.tagName.toLowerCase() == "object" && dom.type == "image/svg+xml") {
+    if (dom.tagName && dom.tagName.toLowerCase() == "object" && dom.type == "image/svg+xml") {
         return new Paper(dom.contentDocument.getElementsByTagName("svg")[0]);
     }
     return new Element(dom);
 }
-// gradients' helpers
-function Gstops() {
-    return this.selectAll("stop");
-}
-function GaddStop(color, offset) {
-    var stop = $("stop"),
-        attr = {
-            offset: +offset + "%"
-        };
-    color = Snap.color(color);
-    attr["stop-color"] = color.hex;
-    if (color.opacity < 1) {
-        attr["stop-opacity"] = color.opacity;
-    }
-    $(stop, attr);
-    this.node.appendChild(stop);
-    return this;
-}
-function GgetBBox() {
-    if (this.type == "linearGradient") {
-        var x1 = $(this.node, "x1") || 0,
-            x2 = $(this.node, "x2") || 1,
-            y1 = $(this.node, "y1") || 0,
-            y2 = $(this.node, "y2") || 0;
-        return Snap._.box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
-    } else {
-        var cx = this.node.cx || .5,
-            cy = this.node.cy || .5,
-            r = this.node.r || 0;
-        return Snap._.box(cx - r, cy - r, r * 2, r * 2);
-    }
-}
-function gradient(defs, str) {
-    var grad = arrayFirstValue(eve("snap.util.grad.parse", null, str)),
-        el;
-    if (!grad) {
-        return null;
-    }
-    grad.params.unshift(defs);
-    if (grad.type.toLowerCase() == "l") {
-        el = gradientLinear.apply(0, grad.params);
-    } else {
-        el = gradientRadial.apply(0, grad.params);
-    }
-    if (grad.type != grad.type.toLowerCase()) {
-        $(el.node, {
-            gradientUnits: "userSpaceOnUse"
-        });
-    }
-    var stops = grad.stops,
-        len = stops.length,
-        start = 0,
-        j = 0;
-    function seed(i, end) {
-        var step = (end - start) / (i - j);
-        for (var k = j; k < i; k++) {
-            stops[k].offset = +(+start + step * (k - j)).toFixed(2);
-        }
-        j = i;
-        start = end;
-    }
-    len--;
-    for (var i = 0; i < len; i++) if ("offset" in stops[i]) {
-        seed(i, stops[i].offset);
-    }
-    stops[len].offset = stops[len].offset || 100;
-    seed(len, stops[len].offset);
-    for (i = 0; i <= len; i++) {
-        var stop = stops[i];
-        el.addStop(stop.color, stop.offset);
-    }
-    return el;
-}
-function gradientLinear(defs, x1, y1, x2, y2) {
-    var el = make("linearGradient", defs);
-    el.stops = Gstops;
-    el.addStop = GaddStop;
-    el.getBBox = GgetBBox;
-    if (x1 != null) {
-        $(el.node, {
-            x1: x1,
-            y1: y1,
-            x2: x2,
-            y2: y2
-        });
-    }
-    return el;
-}
-function gradientRadial(defs, cx, cy, r, fx, fy) {
-    var el = make("radialGradient", defs);
-    el.stops = Gstops;
-    el.addStop = GaddStop;
-    el.getBBox = GgetBBox;
-    if (cx != null) {
-        $(el.node, {
-            cx: cx,
-            cy: cy,
-            r: r
-        });
-    }
-    if (fx != null && fy != null) {
-        $(el.node, {
-            fx: fx,
-            fy: fy
-        });
-    }
-    return el;
-}
-// Paper prototype methods
-(function (proto) {
-    /*\
-     * Paper.el
-     [ method ]
-     **
-     * Creates an element on paper with a given name and no attributes
-     **
-     - name (string) tag name
-     - attr (object) attributes
-     = (Element) the current element
-     > Usage
-     | var c = paper.circle(10, 10, 10); // is the same as...
-     | var c = paper.el("circle").attr({
-     |     cx: 10,
-     |     cy: 10,
-     |     r: 10
-     | });
-     | // and the same as
-     | var c = paper.el("circle", {
-     |     cx: 10,
-     |     cy: 10,
-     |     r: 10
-     | });
-    \*/
-    proto.el = function (name, attr) {
-        return make(name, this.node).attr(attr);
-    };
-    /*\
-     * Paper.rect
-     [ method ]
-     *
-     * Draws a rectangle
-     **
-     - x (number) x coordinate of the top left corner
-     - y (number) y coordinate of the top left corner
-     - width (number) width
-     - height (number) height
-     - rx (number) #optional horizontal radius for rounded corners, default is 0
-     - ry (number) #optional vertical radius for rounded corners, default is rx or 0
-     = (object) the `rect` element
-     **
-     > Usage
-     | // regular rectangle
-     | var c = paper.rect(10, 10, 50, 50);
-     | // rectangle with rounded corners
-     | var c = paper.rect(40, 40, 50, 50, 10);
-    \*/
-    proto.rect = function (x, y, w, h, rx, ry) {
-        var attr;
-        if (ry == null) {
-            ry = rx;
-        }
-        if (is(x, "object") && x == "[object Object]") {
-            attr = x;
-        } else if (x != null) {
-            attr = {
-                x: x,
-                y: y,
-                width: w,
-                height: h
-            };
-            if (rx != null) {
-                attr.rx = rx;
-                attr.ry = ry;
-            }
-        }
-        return this.el("rect", attr);
-    };
-    /*\
-     * Paper.circle
-     [ method ]
-     **
-     * Draws a circle
-     **
-     - x (number) x coordinate of the centre
-     - y (number) y coordinate of the centre
-     - r (number) radius
-     = (object) the `circle` element
-     **
-     > Usage
-     | var c = paper.circle(50, 50, 40);
-    \*/
-    proto.circle = function (cx, cy, r) {
-        var attr;
-        if (is(cx, "object") && cx == "[object Object]") {
-            attr = cx;
-        } else if (cx != null) {
-            attr = {
-                cx: cx,
-                cy: cy,
-                r: r
-            };
-        }
-        return this.el("circle", attr);
-    };
 
-    /*\
-     * Paper.image
-     [ method ]
-     **
-     * Places an image on the surface
-     **
-     - src (string) URI of the source image
-     - x (number) x offset position
-     - y (number) y offset position
-     - width (number) width of the image
-     - height (number) height of the image
-     = (object) the `image` element
-     * or
-     = (object) Snap element object with type `image`
-     **
-     > Usage
-     | var c = paper.image("apple.png", 10, 10, 80, 80);
-    \*/
-    proto.image = function (src, x, y, width, height) {
-        var el = make("image", this.node);
-        if (is(src, "object") && "src" in src) {
-            el.attr(src);
-        } else if (src != null) {
-            var set = {
-                "xlink:href": src,
-                preserveAspectRatio: "none"
-            };
-            if (x != null && y != null) {
-                set.x = x;
-                set.y = y;
-            }
-            if (width != null && height != null) {
-                set.width = width;
-                set.height = height;
-            } else {
-                preload(src, function () {
-                    $(el.node, {
-                        width: this.offsetWidth,
-                        height: this.offsetHeight
-                    });
-                });
-            }
-            $(el.node, set);
-        }
-        return el;
-    };
-    /*\
-     * Paper.ellipse
-     [ method ]
-     **
-     * Draws an ellipse
-     **
-     - x (number) x coordinate of the centre
-     - y (number) y coordinate of the centre
-     - rx (number) horizontal radius
-     - ry (number) vertical radius
-     = (object) the `ellipse` element
-     **
-     > Usage
-     | var c = paper.ellipse(50, 50, 40, 20);
-    \*/
-    proto.ellipse = function (cx, cy, rx, ry) {
-        var el = make("ellipse", this.node);
-        if (is(cx, "object") && cx == "[object Object]") {
-            el.attr(cx);
-        } else if (cx != null) {
-            el.attr({
-                cx: cx,
-                cy: cy,
-                rx: rx,
-                ry: ry
-            });
-        }
-        return el;
-    };
-    // SIERRA Paper.path(): Unclear from the link what a Catmull-Rom curveto is, and why it would make life any easier.
-    /*\
-     * Paper.path
-     [ method ]
-     **
-     * Creates a `<path>` element using the given string as the path's definition
-     - pathString (string) #optional path string in SVG format
-     * Path string consists of one-letter commands, followed by comma seprarated arguments in numerical form. Example:
-     | "M10,20L30,40"
-     * This example features two commands: `M`, with arguments `(10, 20)` and `L` with arguments `(30, 40)`. Uppercase letter commands express coordinates in absolute terms, while lowercase commands express them in relative terms from the most recently declared coordinates.
-     *
-     # <p>Here is short list of commands available, for more details see <a href="http://www.w3.org/TR/SVG/paths.html#PathData" title="Details of a path's data attribute's format are described in the SVG specification.">SVG path string format</a> or <a href="https://developer.mozilla.org/en/SVG/Tutorial/Paths">article about path strings at MDN</a>.</p>
-     # <table><thead><tr><th>Command</th><th>Name</th><th>Parameters</th></tr></thead><tbody>
-     # <tr><td>M</td><td>moveto</td><td>(x y)+</td></tr>
-     # <tr><td>Z</td><td>closepath</td><td>(none)</td></tr>
-     # <tr><td>L</td><td>lineto</td><td>(x y)+</td></tr>
-     # <tr><td>H</td><td>horizontal lineto</td><td>x+</td></tr>
-     # <tr><td>V</td><td>vertical lineto</td><td>y+</td></tr>
-     # <tr><td>C</td><td>curveto</td><td>(x1 y1 x2 y2 x y)+</td></tr>
-     # <tr><td>S</td><td>smooth curveto</td><td>(x2 y2 x y)+</td></tr>
-     # <tr><td>Q</td><td>quadratic Bézier curveto</td><td>(x1 y1 x y)+</td></tr>
-     # <tr><td>T</td><td>smooth quadratic Bézier curveto</td><td>(x y)+</td></tr>
-     # <tr><td>A</td><td>elliptical arc</td><td>(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+</td></tr>
-     # <tr><td>R</td><td><a href="http://en.wikipedia.org/wiki/Catmull–Rom_spline#Catmull.E2.80.93Rom_spline">Catmull-Rom curveto</a>*</td><td>x1 y1 (x y)+</td></tr></tbody></table>
-     * * _Catmull-Rom curveto_ is a not standard SVG command and added to make life easier.
-     * Note: there is a special case when a path consists of only three commands: `M10,10R…z`. In this case the path connects back to its starting point.
-     > Usage
-     | var c = paper.path("M10 10L90 90");
-     | // draw a diagonal line:
-     | // move to 10,10, line to 90,90
-    \*/
-    proto.path = function (d) {
-        var el = make("path", this.node);
-        if (is(d, "object") && !is(d, "array")) {
-            el.attr(d);
-        } else if (d) {
-            el.attr({
-                d: d
-            });
-        }
-        return el;
-    };
-    /*\
-     * Paper.g
-     [ method ]
-     **
-     * Creates a group element
-     **
-     - varargs (…) #optional elements to nest within the group
-     = (object) the `g` element
-     **
-     > Usage
-     | var c1 = paper.circle(),
-     |     c2 = paper.rect(),
-     |     g = paper.g(c2, c1); // note that the order of elements is different
-     * or
-     | var c1 = paper.circle(),
-     |     c2 = paper.rect(),
-     |     g = paper.g();
-     | g.add(c2, c1);
-    \*/
-    /*\
-     * Paper.group
-     [ method ]
-     **
-     * See @Paper.g
-    \*/
-    proto.group = proto.g = function (first) {
-        var el = make("g", this.node);
-        if (arguments.length == 1 && first && !first.type) {
-            el.attr(first);
-        } else if (arguments.length) {
-            el.add(Array.prototype.slice.call(arguments, 0));
-        }
-        return el;
-    };
-    /*\
-     * Paper.svg
-     [ method ]
-     **
-     * Creates a nested SVG element.
-     - x (number) @optional X of the element
-     - y (number) @optional Y of the element
-     - width (number) @optional width of the element
-     - height (number) @optional height of the element
-     - vbx (number) @optional viewbox X
-     - vby (number) @optional viewbox Y
-     - vbw (number) @optional viewbox width
-     - vbh (number) @optional viewbox height
-     **
-     = (object) the `svg` element
-     **
-    \*/
-    proto.svg = function (x, y, width, height, vbx, vby, vbw, vbh) {
-        var el = make("svg", this.node),
-            attrs = {};
-        if (is(x, "object") && y == null) {
-            attrs = x;
-        } else {
-            if (x != null) {
-                attrs.x = x;
-            }
-            if (y != null) {
-                attrs.y = y;
-            }
-            if (width != null) {
-                attrs.width = width;
-            }
-            if (height != null) {
-                attrs.height = height;
-            }
-            if (vbx != null && vby != null && vbw != null && vbh != null) {
-                attrs.viewBox = [vbx, vby, vbw, vbh];
-            }
-        }
-        el.attr(attrs);
-        return el;
-    };
-    /*\
-     * Paper.mask
-     [ method ]
-     **
-     * Equivalent in behaviour to @Paper.g, except it’s a mask.
-     **
-     = (object) the `mask` element
-     **
-    \*/
-    proto.mask = function (first) {
-        var el = make("mask", this.node);
-        if (arguments.length == 1 && first && !first.type) {
-            el.attr(first);
-        } else if (arguments.length) {
-            el.add(Array.prototype.slice.call(arguments, 0));
-        }
-        return el;
-    };
-    /*\
-     * Paper.ptrn
-     [ method ]
-     **
-     * Equivalent in behaviour to @Paper.g, except it’s a mask.
-     - x (number) @optional X of the element
-     - y (number) @optional Y of the element
-     - width (number) @optional width of the element
-     - height (number) @optional height of the element
-     - vbx (number) @optional viewbox X
-     - vby (number) @optional viewbox Y
-     - vbw (number) @optional viewbox width
-     - vbh (number) @optional viewbox height
-     **
-     = (object) the `mask` element
-     **
-    \*/
-    proto.ptrn = function (x, y, width, height, vx, vy, vw, vh) {
-        var el = make("pattern", this.node);
-        if (!arguments.length) {
-            var attr = {patternUnits: "userSpaceOnUse"};
-        } else {
-            if (vx == null) {
-                vx = x;
-                vy = y;
-                vw = width;
-                vh = height;
-            }
-            attr = {
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                patternUnits: "userSpaceOnUse",
-                viewBox: [vx, vy, vw, vh].join(" ")
-            };
-        }
-        if (is(x, "object")) {
-            attr = x;
-        }
-        el.attr(attr);
-        return el;
-    };
-    /*\
-     * Paper.use
-     [ method ]
-     **
-     * Creates a <use> element.
-     - id (string) @optional id of element to link
-     * or
-     - id (Element) @optional element to link
-     **
-     = (object) the `use` element
-     **
-    \*/
-    proto.use = function (id) {
-        if (id != null) {
-            var el = make("use", this.node);
-            if (id instanceof Element) {
-                if (!id.attr("id")) {
-                    id.attr({id: ID()});
-                }
-                id = id.attr("id");
-            }
-            id && el.attr({
-                "xlink:href": id
-            });
-            return el;
-        } else {
-            return Element.prototype.use.call(this);
-        }
-    };
-    /*\
-     * Paper.text
-     [ method ]
-     **
-     * Draws a text string
-     **
-     - x (number) x coordinate position
-     - y (number) y coordinate position
-     - text (string|array) The text string to draw or array of strings to nest within separate `<tspan>` elements
-     = (object) the `text` element
-     **
-     > Usage
-     | var t1 = paper.text(50, 50, "Snap");
-     | var t2 = paper.text(50, 50, ["S","n","a","p"]);
-     | // Text path usage
-     | t1.attr({textpath: "M10,10L100,100"});
-     | // or
-     | var pth = paper.path("M10,10L100,100");
-     | t1.attr({textpath: pth});
-    \*/
-    proto.text = function (x, y, text) {
-        var el = make("text", this.node);
-        if (is(x, "object")) {
-            el.attr(x);
-        } else if (x != null) {
-            el.attr({
-                x: x,
-                y: y,
-                text: text || ""
-            });
-        }
-        return el;
-    };
-    /*\
-     * Paper.line
-     [ method ]
-     **
-     * Draws a line
-     **
-     - x1 (number) x coordinate position of the start
-     - y1 (number) y coordinate position of the start
-     - x2 (number) x coordinate position of the end
-     - y2 (number) y coordinate position of the end
-     = (object) the `line` element
-     **
-     > Usage
-     | var t1 = paper.line(50, 50, 100, 100);
-    \*/
-    proto.line = function (x1, y1, x2, y2) {
-        var el = make("line", this.node);
-        if (is(x1, "object")) {
-            el.attr(x1);
-        } else if (x1 != null) {
-            el.attr({
-                x1: x1,
-                x2: x2,
-                y1: y1,
-                y2: y2
-            });
-        }
-        return el;
-    };
-    /*\
-     * Paper.polyline
-     [ method ]
-     **
-     * Draws a polyline
-     **
-     - points (array) array of points
-     * or
-     - varargs (…) points
-     = (object) the `polyline` element
-     **
-     > Usage
-     | var p1 = paper.polyline([10, 10, 100, 100]);
-     | var p2 = paper.polyline(10, 10, 100, 100);
-    \*/
-    proto.polyline = function (points) {
-        if (arguments.length > 1) {
-            points = Array.prototype.slice.call(arguments, 0);
-        }
-        var el = make("polyline", this.node);
-        if (is(points, "object") && !is(points, "array")) {
-            el.attr(points);
-        } else if (points != null) {
-            el.attr({
-                points: points
-            });
-        }
-        return el;
-    };
-    /*\
-     * Paper.polygon
-     [ method ]
-     **
-     * Draws a polygon. See @Paper.polyline
-    \*/
-    proto.polygon = function (points) {
-        if (arguments.length > 1) {
-            points = Array.prototype.slice.call(arguments, 0);
-        }
-        var el = make("polygon", this.node);
-        if (is(points, "object") && !is(points, "array")) {
-            el.attr(points);
-        } else if (points != null) {
-            el.attr({
-                points: points
-            });
-        }
-        return el;
-    };
-    // gradients
-    (function () {
-        /*\
-         * Paper.gradient
-         [ method ]
-         **
-         * Creates a gradient element
-         **
-         - gradient (string) gradient descriptor
-         > Gradient Descriptor
-         * The gradient descriptor is an expression formatted as
-         * follows: `<type>(<coords>)<colors>`.  The `<type>` can be
-         * either linear or radial.  The uppercase `L` or `R` letters
-         * indicate absolute coordinates offset from the SVG surface.
-         * Lowercase `l` or `r` letters indicate coordinates
-         * calculated relative to the element to which the gradient is
-         * applied.  Coordinates specify a linear gradient vector as
-         * `x1`, `y1`, `x2`, `y2`, or a radial gradient as `cx`, `cy`,
-         * `r` and optional `fx`, `fy` specifying a focal point away
-         * from the center of the circle. Specify `<colors>` as a list
-         * of dash-separated CSS color values.  Each color may be
-         * followed by a custom offset value, separated with a colon
-         * character.
-         > Examples
-         * Linear gradient, relative from top-left corner to bottom-right
-         * corner, from black through red to white:
-         | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
-         * Linear gradient, absolute from (0, 0) to (100, 100), from black
-         * through red at 25% to white:
-         | var g = paper.gradient("L(0, 0, 100, 100)#000-#f00:25-#fff");
-         * Radial gradient, relative from the center of the element with radius
-         * half the width, from black to white:
-         | var g = paper.gradient("r(0.5, 0.5, 0.5)#000-#fff");
-         * To apply the gradient:
-         | paper.circle(50, 50, 40).attr({
-         |     fill: g
-         | });
-         = (object) the `gradient` element
-        \*/
-        proto.gradient = function (str) {
-            return gradient(this.defs, str);
-        };
-        proto.gradientLinear = function (x1, y1, x2, y2) {
-            return gradientLinear(this.defs, x1, y1, x2, y2);
-        };
-        proto.gradientRadial = function (cx, cy, r, fx, fy) {
-            return gradientRadial(this.defs, cx, cy, r, fx, fy);
-        };
-        /*\
-         * Paper.toString
-         [ method ]
-         **
-         * Returns SVG code for the @Paper
-         = (string) SVG code for the @Paper
-        \*/
-        proto.toString = function () {
-            var f = glob.doc.createDocumentFragment(),
-                d = glob.doc.createElement("div"),
-                svg = this.node.cloneNode(true),
-                res;
-            f.appendChild(d);
-            d.appendChild(svg);
-            $(svg, {xmlns: xmlns});
-            res = d.innerHTML;
-            f.removeChild(f.firstChild);
-            return res;
-        };
-        /*\
-         * Paper.clear
-         [ method ]
-         **
-         * Removes all child nodes of the paper, except <defs>.
-        \*/
-        proto.clear = function () {
-            var node = this.node.firstChild,
-                next;
-            while (node) {
-                next = node.nextSibling;
-                if (node.tagName != "defs") {
-                    node.parentNode.removeChild(node);
-                }
-                node = next;
-            }
-        };
-    }());
-}(Paper.prototype));
-
-// simple ajax
+Snap._.make = make;
+Snap._.wrap = wrap;
 /*\
- * Snap.ajax
+ * Paper.el
  [ method ]
  **
- * Simple implementation of Ajax
+ * Creates an element on paper with a given name and no attributes
  **
- - url (string) URL
- - postData (object|string) data for post request
- - callback (function) callback
- - scope (object) #optional scope of callback
- * or
- - url (string) URL
- - callback (function) callback
- - scope (object) #optional scope of callback
- = (XMLHttpRequest) the XMLHttpRequest object, just in case
+ - name (string) tag name
+ - attr (object) attributes
+ = (Element) the current element
+ > Usage
+ | var c = paper.circle(10, 10, 10); // is the same as...
+ | var c = paper.el("circle").attr({
+ |     cx: 10,
+ |     cy: 10,
+ |     r: 10
+ | });
+ | // and the same as
+ | var c = paper.el("circle", {
+ |     cx: 10,
+ |     cy: 10,
+ |     r: 10
+ | });
 \*/
-Snap.ajax = function (url, postData, callback, scope){
-    var req = new XMLHttpRequest,
-        id = ID();
-    if (req) {
-        if (is(postData, "function")) {
-            scope = callback;
-            callback = postData;
-            postData = null;
-        } else if (is(postData, "object")) {
-            var pd = [];
-            for (var key in postData) if (postData.hasOwnProperty(key)) {
-                pd.push(encodeURIComponent(key) + "=" + encodeURIComponent(postData[key]));
-            }
-            postData = pd.join("&");
-        }
-        req.open((postData ? "POST" : "GET"), url, true);
-        if (postData) {
-            req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        }
-        if (callback) {
-            eve.once("snap.ajax." + id + ".0", callback);
-            eve.once("snap.ajax." + id + ".200", callback);
-            eve.once("snap.ajax." + id + ".304", callback);
-        }
-        req.onreadystatechange = function() {
-            if (req.readyState != 4) return;
-            eve("snap.ajax." + id + "." + req.status, scope, req);
-        };
-        if (req.readyState == 4) {
-            return req;
-        }
-        req.send(postData);
-        return req;
-    }
+Paper.prototype.el = function (name, attr) {
+    var el = make(name, this.node);
+    attr && el.attr(attr);
+    return el;
 };
-/*\
- * Snap.load
- [ method ]
- **
- * Loads external SVG file as a @Fragment (see @Snap.ajax for more advanced AJAX)
- **
- - url (string) URL
- - callback (function) callback
- - scope (object) #optional scope of callback
-\*/
-Snap.load = function (url, callback, scope) {
-    Snap.ajax(url, function (req) {
-        var f = Snap.parse(req.responseText);
-        scope ? callback.call(scope, f) : callback(f);
-    });
-};
-
-// Attributes event handlers
-eve.on("snap.util.attr.mask", function (value) {
-    if (value instanceof Element || value instanceof Fragment) {
-        eve.stop();
-        if (value instanceof Fragment && value.node.childNodes.length == 1) {
-            value = value.node.firstChild;
-            getSomeDefs(this).appendChild(value);
-            value = wrap(value);
-        }
-        if (value.type == "mask") {
-            var mask = value;
-        } else {
-            mask = make("mask", getSomeDefs(this));
-            mask.node.appendChild(value.node);
-            !mask.node.id && $(mask.node, {
-                id: mask.id
-            });
-        }
-        $(this.node, {
-            mask: URL(mask.id)
-        });
-    }
-});
-(function (clipIt) {
-    eve.on("snap.util.attr.clip", clipIt);
-    eve.on("snap.util.attr.clip-path", clipIt);
-    eve.on("snap.util.attr.clipPath", clipIt);
-}(function (value) {
-    if (value instanceof Element || value instanceof Fragment) {
-        eve.stop();
-        if (value.type == "clipPath") {
-            var clip = value;
-        } else {
-            clip = make("clipPath", getSomeDefs(this));
-            clip.node.appendChild(value.node);
-            !clip.node.id && $(clip.node, {
-                id: clip.id
-            });
-        }
-        $(this.node, {
-            "clip-path": URL(clip.id)
-        });
-    }
-}));
-function fillStroke(name) {
-    return function (value) {
-        eve.stop();
-        if (value instanceof Fragment && value.node.childNodes.length == 1 &&
-            (value.node.firstChild.tagName == "radialGradient" ||
-            value.node.firstChild.tagName == "linearGradient" ||
-            value.node.firstChild.tagName == "pattern")) {
-            value = value.node.firstChild;
-            getSomeDefs(this).appendChild(value);
-            value = wrap(value);
-        }
-        if (value instanceof Element) {
-            if (value.type == "radialGradient" || value.type == "linearGradient"
-               || value.type == "pattern") {
-                if (!value.node.id) {
-                    $(value.node, {
-                        id: value.id
-                    });
-                }
-                var fill = URL(value.node.id);
-            } else {
-                fill = value.attr(name);
-            }
-        } else {
-            fill = Snap.color(value);
-            if (fill.error) {
-                var grad = gradient(getSomeDefs(this), value);
-                if (grad) {
-                    if (!grad.node.id) {
-                        $(grad.node, {
-                            id: grad.id
-                        });
-                    }
-                    fill = URL(grad.node.id);
-                } else {
-                    fill = value;
-                }
-            } else {
-                fill = Str(fill);
-            }
-        }
-        var attrs = {};
-        attrs[name] = fill;
-        $(this.node, attrs);
-        this.node.style[name] = E;
-    };
-}
-eve.on("snap.util.attr.fill", fillStroke("fill"));
-eve.on("snap.util.attr.stroke", fillStroke("stroke"));
-var gradrg = /^([lr])(?:\(([^)]*)\))?(.*)$/i;
-eve.on("snap.util.grad.parse", function parseGrad(string) {
-    string = Str(string);
-    var tokens = string.match(gradrg);
-    if (!tokens) {
-        return null;
-    }
-    var type = tokens[1],
-        params = tokens[2],
-        stops = tokens[3];
-    params = params.split(/\s*,\s*/).map(function (el) {
-        return +el == el ? +el : el;
-    });
-    if (params.length == 1 && params[0] == 0) {
-        params = [];
-    }
-    stops = stops.split("-");
-    stops = stops.map(function (el) {
-        el = el.split(":");
-        var out = {
-            color: el[0]
-        };
-        if (el[1]) {
-            out.offset = parseFloat(el[1]);
-        }
-        return out;
-    });
-    return {
-        type: type,
-        params: params,
-        stops: stops
-    };
-});
-
-eve.on("snap.util.attr.d", function (value) {
-    eve.stop();
-    if (is(value, "array") && is(value[0], "array")) {
-        value = Snap.path.toString.call(value);
-    }
-    value = Str(value);
-    if (value.match(/[ruo]/i)) {
-        value = Snap.path.toAbsolute(value);
-    }
-    $(this.node, {d: value});
-})(-1);
-eve.on("snap.util.attr.#text", function (value) {
-    eve.stop();
-    value = Str(value);
-    var txt = glob.doc.createTextNode(value);
-    while (this.node.firstChild) {
-        this.node.removeChild(this.node.firstChild);
-    }
-    this.node.appendChild(txt);
-})(-1);
-eve.on("snap.util.attr.path", function (value) {
-    eve.stop();
-    this.attr({d: value});
-})(-1);
-eve.on("snap.util.attr.class", function (value) {
-    eve.stop();
-    this.node.className.baseVal = value;
-})(-1);
-eve.on("snap.util.attr.viewBox", function (value) {
-    var vb;
-    if (is(value, "object") && "x" in value) {
-        vb = [value.x, value.y, value.width, value.height].join(" ");
-    } else if (is(value, "array")) {
-        vb = value.join(" ");
-    } else {
-        vb = value;
-    }
-    $(this.node, {
-        viewBox: vb
-    });
-    eve.stop();
-})(-1);
-eve.on("snap.util.attr.transform", function (value) {
-    this.transform(value);
-    eve.stop();
-})(-1);
-eve.on("snap.util.attr.r", function (value) {
-    if (this.type == "rect") {
-        eve.stop();
-        $(this.node, {
-            rx: value,
-            ry: value
-        });
-    }
-})(-1);
-eve.on("snap.util.attr.textpath", function (value) {
-    eve.stop();
-    if (this.type == "text") {
-        var id, tp, node;
-        if (!value && this.textPath) {
-            tp = this.textPath;
-            while (tp.node.firstChild) {
-                this.node.appendChild(tp.node.firstChild);
-            }
-            tp.remove();
-            delete this.textPath;
-            return;
-        }
-        if (is(value, "string")) {
-            var defs = getSomeDefs(this),
-                path = wrap(defs.parentNode).path(value);
-            defs.appendChild(path.node);
-            id = path.id;
-            path.attr({id: id});
-        } else {
-            value = wrap(value);
-            if (value instanceof Element) {
-                id = value.attr("id");
-                if (!id) {
-                    id = value.id;
-                    value.attr({id: id});
-                }
-            }
-        }
-        if (id) {
-            tp = this.textPath;
-            node = this.node;
-            if (tp) {
-                tp.attr({"xlink:href": "#" + id});
-            } else {
-                tp = $("textPath", {
-                    "xlink:href": "#" + id
-                });
-                while (node.firstChild) {
-                    tp.appendChild(node.firstChild);
-                }
-                node.appendChild(tp);
-                this.textPath = wrap(tp);
-            }
-        }
-    }
-})(-1);
-eve.on("snap.util.attr.text", function (value) {
-    if (this.type == "text") {
-        var i = 0,
-            node = this.node,
-            tuner = function (chunk) {
-                var out = $("tspan");
-                if (is(chunk, "array")) {
-                    for (var i = 0; i < chunk.length; i++) {
-                        out.appendChild(tuner(chunk[i]));
-                    }
-                } else {
-                    out.appendChild(glob.doc.createTextNode(chunk));
-                }
-                out.normalize && out.normalize();
-                return out;
-            };
-        while (node.firstChild) {
-            node.removeChild(node.firstChild);
-        }
-        var tuned = tuner(value);
-        while (tuned.firstChild) {
-            node.appendChild(tuned.firstChild);
-        }
-    }
-    eve.stop();
-})(-1);
 // default
+eve.on("snap.util.getattr", function () {
+    var att = eve.nt();
+    att = att.substring(att.lastIndexOf(".") + 1);
+    var css = att.replace(/[A-Z]/g, function (letter) {
+        return "-" + letter.toLowerCase();
+    });
+    if (cssAttr[has](css)) {
+        return this.node.ownerDocument.defaultView.getComputedStyle(this.node, null).getPropertyValue(css);
+    } else {
+        return $(this.node, att);
+    }
+});
 var cssAttr = {
     "alignment-baseline": 0,
     "baseline-shift": 0,
@@ -3749,134 +2477,77 @@ eve.on("snap.util.attr", function (value) {
         $(this.node, attr);
     }
 });
-eve.on("snap.util.getattr.transform", function () {
-    eve.stop();
-    return this.transform();
-})(-1);
-eve.on("snap.util.getattr.textpath", function () {
-    eve.stop();
-    return this.textPath;
-})(-1);
-// Markers
-(function () {
-    function getter(end) {
-        return function () {
-            eve.stop();
-            var style = glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue("marker-" + end);
-            if (style == "none") {
-                return style;
-            } else {
-                return Snap(glob.doc.getElementById(style.match(reURLValue)[1]));
+(function (proto) {}(Paper.prototype));
+
+// simple ajax
+/*\
+ * Snap.ajax
+ [ method ]
+ **
+ * Simple implementation of Ajax
+ **
+ - url (string) URL
+ - postData (object|string) data for post request
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+ * or
+ - url (string) URL
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+ = (XMLHttpRequest) the XMLHttpRequest object, just in case
+\*/
+Snap.ajax = function (url, postData, callback, scope){
+    var req = new XMLHttpRequest,
+        id = ID();
+    if (req) {
+        if (is(postData, "function")) {
+            scope = callback;
+            callback = postData;
+            postData = null;
+        } else if (is(postData, "object")) {
+            var pd = [];
+            for (var key in postData) if (postData.hasOwnProperty(key)) {
+                pd.push(encodeURIComponent(key) + "=" + encodeURIComponent(postData[key]));
             }
-        };
-    }
-    function setter(end) {
-        return function (value) {
-            eve.stop();
-            var name = "marker" + end.charAt(0).toUpperCase() + end.substring(1);
-            if (value == "" || !value) {
-                this.node.style[name] = "none";
-                return;
-            }
-            if (value.type == "marker") {
-                var id = value.node.id;
-                if (!id) {
-                    $(value.node, {id: value.id});
-                }
-                this.node.style[name] = URL(id);
-                return;
-            }
-        };
-    }
-    eve.on("snap.util.getattr.marker-end", getter("end"))(-1);
-    eve.on("snap.util.getattr.markerEnd", getter("end"))(-1);
-    eve.on("snap.util.getattr.marker-start", getter("start"))(-1);
-    eve.on("snap.util.getattr.markerStart", getter("start"))(-1);
-    eve.on("snap.util.getattr.marker-mid", getter("mid"))(-1);
-    eve.on("snap.util.getattr.markerMid", getter("mid"))(-1);
-    eve.on("snap.util.attr.marker-end", setter("end"))(-1);
-    eve.on("snap.util.attr.markerEnd", setter("end"))(-1);
-    eve.on("snap.util.attr.marker-start", setter("start"))(-1);
-    eve.on("snap.util.attr.markerStart", setter("start"))(-1);
-    eve.on("snap.util.attr.marker-mid", setter("mid"))(-1);
-    eve.on("snap.util.attr.markerMid", setter("mid"))(-1);
-}());
-eve.on("snap.util.getattr.r", function () {
-    if (this.type == "rect" && $(this.node, "rx") == $(this.node, "ry")) {
-        eve.stop();
-        return $(this.node, "rx");
-    }
-})(-1);
-function textExtract(node) {
-    var out = [];
-    var children = node.childNodes;
-    for (var i = 0, ii = children.length; i < ii; i++) {
-        var chi = children[i];
-        if (chi.nodeType == 3) {
-            out.push(chi.nodeValue);
+            postData = pd.join("&");
         }
-        if (chi.tagName == "tspan") {
-            if (chi.childNodes.length == 1 && chi.firstChild.nodeType == 3) {
-                out.push(chi.firstChild.nodeValue);
-            } else {
-                out.push(textExtract(chi));
-            }
+        req.open((postData ? "POST" : "GET"), url, true);
+        if (postData) {
+            req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         }
+        if (callback) {
+            eve.once("snap.ajax." + id + ".0", callback);
+            eve.once("snap.ajax." + id + ".200", callback);
+            eve.once("snap.ajax." + id + ".304", callback);
+        }
+        req.onreadystatechange = function() {
+            if (req.readyState != 4) return;
+            eve("snap.ajax." + id + "." + req.status, scope, req);
+        };
+        if (req.readyState == 4) {
+            return req;
+        }
+        req.send(postData);
+        return req;
     }
-    return out;
-}
-eve.on("snap.util.getattr.text", function () {
-    if (this.type == "text" || this.type == "tspan") {
-        eve.stop();
-        var out = textExtract(this.node);
-        return out.length == 1 ? out[0] : out;
-    }
-})(-1);
-eve.on("snap.util.getattr.#text", function () {
-    return this.node.textContent;
-})(-1);
-eve.on("snap.util.getattr.viewBox", function () {
-    eve.stop();
-    var vb = $(this.node, "viewBox");
-    if (vb) {
-        vb = vb.split(separator);
-        return Snap._.box(+vb[0], +vb[1], +vb[2], +vb[3]);
-    } else {
-        return;
-    }
-})(-1);
-eve.on("snap.util.getattr.points", function () {
-    var p = $(this.node, "points");
-    eve.stop();
-    return p.split(separator);
-});
-eve.on("snap.util.getattr.path", function () {
-    var p = $(this.node, "d");
-    eve.stop();
-    return p;
-});
-eve.on("snap.util.getattr.class", function () {
-    return this.node.className.baseVal;
-});
-function getFontSize() {
-    eve.stop();
-    return this.node.style.fontSize;
-}
-eve.on("snap.util.getattr.fontSize", getFontSize)(-1);
-eve.on("snap.util.getattr.font-size", getFontSize)(-1);
-// default
-eve.on("snap.util.getattr", function () {
-    var att = eve.nt();
-    att = att.substring(att.lastIndexOf(".") + 1);
-    var css = att.replace(/[A-Z]/g, function (letter) {
-        return "-" + letter.toLowerCase();
+};
+/*\
+ * Snap.load
+ [ method ]
+ **
+ * Loads external SVG file as a @Fragment (see @Snap.ajax for more advanced AJAX)
+ **
+ - url (string) URL
+ - callback (function) callback
+ - scope (object) #optional scope of callback
+\*/
+Snap.load = function (url, callback, scope) {
+    Snap.ajax(url, function (req) {
+        var f = Snap.parse(req.responseText);
+        scope ? callback.call(scope, f) : callback(f);
     });
-    if (cssAttr[has](css)) {
-        return glob.doc.defaultView.getComputedStyle(this.node, null).getPropertyValue(css);
-    } else {
-        return $(this.node, att);
-    }
-});
+};
 var getOffset = function (elem) {
     var box = elem.getBoundingClientRect(),
         doc = elem.ownerDocument,
@@ -3927,7 +2598,7 @@ Snap.getElementByPoint = function (x, y) {
  [ method ]
  **
  * Let you write plugins. You pass in a function with four arguments, like this:
- | Snap.plugin(function (Snap, Element, Paper, global) {
+ | Snap.plugin(function (Snap, Element, Paper, global, Fragment) {
  |     Snap.newmethod = function () {};
  |     Element.prototype.newmethod = function () {};
  |     Paper.prototype.newmethod = function () {};
@@ -3938,7 +2609,7 @@ Snap.getElementByPoint = function (x, y) {
  - f (function) your plugin body
 \*/
 Snap.plugin = function (f) {
-    f(Snap, Element, Paper, glob);
+    f(Snap, Element, Paper, glob, Fragment);
 };
 glob.win.Snap = Snap;
 return Snap;
