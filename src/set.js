@@ -159,25 +159,28 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - eattr (string) attribute on the element to bind the attribute to
      = (object) Set object
     \*/
-    setproto.bind = function(attr, a, b) {
-	var data = {};
-	if (typeof(a)=="function") {
-	    this.bindings[attr] = a;
-	} else {
-	    var aname = b || attr;
-	    this.bindings[attr] = function(v) {
-		data[aname] = v;
-		a.attr(data);
-	    }
-	}
-	return this;
-    }
+    setproto.bind = function (attr, a, b) {
+        var data = {};
+        if (typeof a == "function") {
+            this.bindings[attr] = a;
+        } else {
+            var aname = b || attr;
+            this.bindings[attr] = function (v) {
+                data[aname] = v;
+                a.attr(data);
+            };
+        }
+        return this;
+    };
     setproto.attr = function (value) {
-	var unbound = {};
-	for (var k in value) {
-	    if (this.bindings[k]) this.bindings[k](value[k]);
-	    else unbound[k] = value[k];
-	}
+        var unbound = {};
+        for (var k in value) {
+            if (this.bindings[k]) {
+                this.bindings[k](value[k]);
+            } else {
+                unbound[k] = value[k];
+            }
+        }
         for (var i = 0, ii = this.items.length; i < ii; i++) {
             this.items[i].attr(unbound);
         }
