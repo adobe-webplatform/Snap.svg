@@ -112,6 +112,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             el.animate(attrs, ms, easing, callbacker);
         });
     };
+    /*\
+     * Set.animateEach
+     [ method ]
+     **
+     * Creates multiple animations for each element in the seet. Ensures that they are synced.
+     *
+     **
+     = (function) next element animate function
+    \*/
     setproto.animateEach = function () {
         var i = 0,
             set = this,
