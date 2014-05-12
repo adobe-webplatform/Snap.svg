@@ -93,7 +93,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             } else {
                 fill = Snap.color(value);
                 if (fill.error) {
-                    var grad = gradient(getSomeDefs(this), value);
+                    var grad = Snap(getSomeDefs(this).ownerSVGElement).gradient(value);
                     if (grad) {
                         if (!grad.node.id) {
                             $(grad.node, {

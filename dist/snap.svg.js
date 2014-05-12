@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-08
+// build: 2014-05-12
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -3777,7 +3777,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             } else {
                 fill = Snap.color(value);
                 if (fill.error) {
-                    var grad = gradient(getSomeDefs(this), value);
+                    var grad = Snap(getSomeDefs(this).ownerSVGElement).gradient(value);
                     if (grad) {
                         if (!grad.node.id) {
                             $(grad.node, {
