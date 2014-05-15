@@ -377,7 +377,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     eve.on("snap.util.getattr.points", function () {
         var p = $(this.node, "points");
         eve.stop();
-        return p.split(separator);
+        if (p) {
+            return p.split(separator);
+        } else {
+            return;
+        }
     });
     eve.on("snap.util.getattr.path", function () {
         var p = $(this.node, "d");

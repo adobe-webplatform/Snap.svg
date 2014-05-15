@@ -2206,6 +2206,13 @@ function arrayFirstValue(arr) {
     \*/
     elproto.prepend = function (el) {
         if (el) {
+            if (el.type == "set") {
+                var it = this;
+                el.forEach(function (el) {
+                    it.prepend(el);
+                });
+                return this;
+            }
             el = wrap(el);
             var parent = el.parent();
             this.node.insertBefore(el.node, this.node.firstChild);
@@ -4063,7 +4070,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     eve.on("snap.util.getattr.points", function () {
         var p = $(this.node, "points");
         eve.stop();
-        return p.split(separator);
+        if (p) {
+            return p.split(separator);
+        } else {
+            return;
+        }
     });
     eve.on("snap.util.getattr.path", function () {
         var p = $(this.node, "d");
