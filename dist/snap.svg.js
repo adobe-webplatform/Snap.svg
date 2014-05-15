@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-12
+// build: 2014-05-15
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1974,7 +1974,7 @@ function arrayFirstValue(arr) {
      * Element.attr
      [ method ]
      **
-     * Gets or sets given attributes of the element
+     * Gets or sets given attributes of the element.
      **
      - params (object) contains key-value pairs of attributes you want to set
      * or
@@ -1987,9 +1987,13 @@ function arrayFirstValue(arr) {
      |     fill: "#fc0",
      |     stroke: "#000",
      |     strokeWidth: 2, // CamelCase...
-     |     "fill-opacity": 0.5 // or dash-separated names
+     |     "fill-opacity": 0.5, // or dash-separated names
+     |     width: "*=2" // prefixed values
      | });
      | console.log(el.attr("fill")); // #fc0
+     * Prefixed values in format `"+=10"` supported. All four operations
+     * (`+`, `-`, `*` and `/`) could be used. Optionally you can use units for `+`
+     * and `-`: `"+=2em"`.
     \*/
     elproto.attr = function (params, value) {
         var el = this,
@@ -2808,8 +2812,6 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
-    // SIERRA Element.animate(): For _attrs_, clarify if they represent the destination values, and if the animation executes relative to the element's current attribute values.
-    // SIERRA would a _custom_ animation function be an SVG keySplines value?
     /*\
      * Element.animate
      [ method ]
@@ -4092,6 +4094,95 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
 // See the License for the specific language governing permissions and
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
+    var operators = {
+            "+": function (x, y) {
+                    return x + y;
+                },
+            "-": function (x, y) {
+                    return x - y;
+                },
+            "/": function (x, y) {
+                    return x / y;
+                },
+            "*": function (x, y) {
+                    return x * y;
+                }
+        },
+        Str = String,
+        reUnit = /[a-z]+$/i,
+        reAddon = /^\s*([+\-\/*])\s*=\s*([\d.eE+\-]+)\s*([^\d\s]+)?\s*$/;
+    function getNumber(val) {
+        return val;
+    }
+    function getUnit(unit) {
+        return function (val) {
+            return +val.toFixed(3) + unit;
+        };
+    }
+    eve.on("snap.util.attr", function (val) {
+        var plus = Str(val).match(reAddon);
+        if (plus) {
+            var evnt = eve.nt(),
+                name = evnt.substring(evnt.lastIndexOf(".") + 1),
+                a = this.attr(name),
+                atr = {};
+            eve.stop();
+            var unit = plus[3] || "",
+                aUnit = a.match(reUnit),
+                op = operators[plus[1]];
+            if (aUnit && aUnit == unit) {
+                val = op(parseFloat(a), +plus[2]);
+            } else {
+                a = this.asPX(name);
+                val = op(this.asPX(name), this.asPX(name, plus[2] + unit));
+            }
+            if (isNaN(a) || isNaN(val)) {
+                return;
+            }
+            atr[name] = val;
+            this.attr(atr);
+        }
+    })(-10);
+    eve.on("snap.util.equal", function (name, b) {
+        var A, B, a = Str(this.attr(name) || ""),
+            el = this,
+            bplus = Str(b).match(reAddon);
+        if (bplus) {
+            eve.stop();
+            var unit = bplus[3] || "",
+                aUnit = a.match(reUnit),
+                op = operators[bplus[1]];
+            if (aUnit && aUnit == unit) {
+                return {
+                    from: parseFloat(a),
+                    to: op(parseFloat(a), +bplus[2]),
+                    f: getUnit(aUnit)
+                };
+            } else {
+                a = this.asPX(name);
+                return {
+                    from: a,
+                    to: op(a, this.asPX(name, bplus[2] + unit)),
+                    f: getNumber
+                };
+            }
+        }
+    })(-10);
+});
+// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     var proto = Paper.prototype,
         is = Snap.is;
     /*\
@@ -4427,8 +4518,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (height != null) {
                 attr.height = height;
             }
-            if (vbx != null && vby != null && vbw != null && vbh != null) {
-                attr.viewBox = [vbx, vby, vbw, vbh];
+            if (vx != null && vy != null && vw != null && vh != null) {
+                attr.viewBox = [vx, vy, vw, vh];
             }
         }
         return this.el("pattern", attr);
@@ -6283,6 +6374,27 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return this;
     };
+    /*\
+     * Set.animate
+     [ method ]
+     **
+     * Animates each element in set in sync.
+     *
+     **
+     - attrs (object) key-value pairs of destination attributes
+     - duration (number) duration of the animation in milliseconds
+     - easing (function) #optional easing function from @mina or custom
+     - callback (function) #optional callback function that executes when the animation ends
+     * or
+     - animation (array) array of animation parameter for each element in set in format `[attrs, duration, easing, callback]`
+     > Usage
+     | // animate all elements in set to radius 10
+     | set.animate({r: 10}, 500, mina.easein);
+     | // or
+     | // animate first element to radius 10, but second to radius 20 and in different time
+     | set.animate([{r: 10}, 500, mina.easein], [{r: 20}, 1500, mina.easein]);
+     = (Element) the current element
+    \*/
     setproto.animate = function (attrs, ms, easing, callback) {
         if (typeof easing == "function" && !easing.length) {
             callback = easing;
@@ -6293,6 +6405,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             easing = attrs.easing;
             ms = easing.dur;
             attrs = attrs.attr;
+        }
+        var args = arguments;
+        if (Snap.is(attrs, "array") && Snap.is(args[args.length - 1], "array")) {
+            var each = true;
         }
         var begin,
             handler = function () {
@@ -6308,32 +6424,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     callback.call(this);
                 }
             };
-        return this.forEach(function (el) {
+        return this.forEach(function (el, i) {
             eve.once("snap.animcreated." + el.id, handler);
-            el.animate(attrs, ms, easing, callbacker);
+            if (each) {
+                args[i] && el.animate.apply(el, args[i]);
+            } else {
+                el.animate(attrs, ms, easing, callbacker);
+            }
         });
-    };
-    setproto.animateEach = function () {
-        var i = 0,
-            set = this,
-            begin,
-            handler = function () {
-                if (begin) {
-                    this.b = begin;
-                } else {
-                    begin = this.b;
-                }
-            },
-            args = arguments,
-            caller = function (args) {
-                var el = set[i++];
-                if (el) {
-                    el.animate.apply(el, arguments.length > 1 ? arguments : args);
-                    eve.once("snap.animcreated." + el.id, handler);
-                }
-                return set[i] ? caller : set;
-            };
-        return caller(args);
     };
     setproto.remove = function () {
         while (this.length) {
@@ -6611,7 +6709,19 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return out;
     }
+    function arrayFirstValue(arr) {
+        var res;
+        for (var i = 0, ii = arr.length; i < ii; i++) {
+            res = res || arr[i];
+            if (res) {
+                return res;
+            }
+        }
+    }
     Element.prototype.equal = function (name, b) {
+        return arrayFirstValue(eve("snap.util.equal", this, name, b));
+    };
+    eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
         if (a == +a && b == +b) {
@@ -6650,16 +6760,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "points") {
-            A = Str(a).split(",");
-            B = Str(b).split(",");
+            A = Str(a).split(Snap._.separator);
+            B = Str(b).split(Snap._.separator);
             return {
                 from: A,
                 to: B,
                 f: function (val) { return val; }
             };
         }
-        var aUnit = a.match(reUnit),
-            bUnit = Str(b).match(reUnit);
+        aUnit = a.match(reUnit);
+        var bUnit = Str(b).match(reUnit);
         if (aUnit && aUnit == bUnit) {
             return {
                 from: parseFloat(a),
@@ -6673,7 +6783,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: getNumber
             };
         }
-    };
+    });
 });
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 

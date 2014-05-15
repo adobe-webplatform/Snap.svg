@@ -1216,7 +1216,7 @@ function arrayFirstValue(arr) {
      * Element.attr
      [ method ]
      **
-     * Gets or sets given attributes of the element
+     * Gets or sets given attributes of the element.
      **
      - params (object) contains key-value pairs of attributes you want to set
      * or
@@ -1229,9 +1229,13 @@ function arrayFirstValue(arr) {
      |     fill: "#fc0",
      |     stroke: "#000",
      |     strokeWidth: 2, // CamelCase...
-     |     "fill-opacity": 0.5 // or dash-separated names
+     |     "fill-opacity": 0.5, // or dash-separated names
+     |     width: "*=2" // prefixed values
      | });
      | console.log(el.attr("fill")); // #fc0
+     * Prefixed values in format `"+=10"` supported. All four operations
+     * (`+`, `-`, `*` and `/`) could be used. Optionally you can use units for `+`
+     * and `-`: `"+=2em"`.
     \*/
     elproto.attr = function (params, value) {
         var el = this,
@@ -2050,8 +2054,6 @@ function arrayFirstValue(arr) {
         }
         return this;
     };
-    // SIERRA Element.animate(): For _attrs_, clarify if they represent the destination values, and if the animation executes relative to the element's current attribute values.
-    // SIERRA would a _custom_ animation function be an SVG keySplines value?
     /*\
      * Element.animate
      [ method ]

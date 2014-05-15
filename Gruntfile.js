@@ -33,6 +33,7 @@ module.exports = function(grunt) {
                     "./src/svg.js",
                     "./src/matrix.js",
                     "./src/attr.js",
+                    "./src/attradd.js",
                     "./src/paper.js",
                     "./src/path.js",
                     "./src/set.js",

@@ -6,6 +6,9 @@
         "url": "src/svg.js",
         "link": "https://github.com/adobe-webplatform/savage/blob/master/src/svg.js"
     }, {
+        "url": "src/paper.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/src/paper.js"
+    }, {
         "url": "src/equal.js",
         "link": "https://github.com/adobe-webplatform/savage/blob/master/src/equal.js"
     }, {

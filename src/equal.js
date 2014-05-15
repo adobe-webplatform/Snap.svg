@@ -103,7 +103,19 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return out;
     }
+    function arrayFirstValue(arr) {
+        var res;
+        for (var i = 0, ii = arr.length; i < ii; i++) {
+            res = res || arr[i];
+            if (res) {
+                return res;
+            }
+        }
+    }
     Element.prototype.equal = function (name, b) {
+        return arrayFirstValue(eve("snap.util.equal", this, name, b));
+    };
+    eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
         if (a == +a && b == +b) {
@@ -142,16 +154,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "points") {
-            A = Str(a).split(",");
-            B = Str(b).split(",");
+            A = Str(a).split(Snap._.separator);
+            B = Str(b).split(Snap._.separator);
             return {
                 from: A,
                 to: B,
                 f: function (val) { return val; }
             };
         }
-        var aUnit = a.match(reUnit),
-            bUnit = Str(b).match(reUnit);
+        aUnit = a.match(reUnit);
+        var bUnit = Str(b).match(reUnit);
         if (aUnit && aUnit == bUnit) {
             return {
                 from: parseFloat(a),
@@ -165,5 +177,5 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: getNumber
             };
         }
-    };
+    });
 });

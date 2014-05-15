@@ -82,6 +82,27 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return this;
     };
+    /*\
+     * Set.animate
+     [ method ]
+     **
+     * Animates each element in set in sync.
+     *
+     **
+     - attrs (object) key-value pairs of destination attributes
+     - duration (number) duration of the animation in milliseconds
+     - easing (function) #optional easing function from @mina or custom
+     - callback (function) #optional callback function that executes when the animation ends
+     * or
+     - animation (array) array of animation parameter for each element in set in format `[attrs, duration, easing, callback]`
+     > Usage
+     | // animate all elements in set to radius 10
+     | set.animate({r: 10}, 500, mina.easein);
+     | // or
+     | // animate first element to radius 10, but second to radius 20 and in different time
+     | set.animate([{r: 10}, 500, mina.easein], [{r: 20}, 1500, mina.easein]);
+     = (Element) the current element
+    \*/
     setproto.animate = function (attrs, ms, easing, callback) {
         if (typeof easing == "function" && !easing.length) {
             callback = easing;
@@ -92,6 +113,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             easing = attrs.easing;
             ms = easing.dur;
             attrs = attrs.attr;
+        }
+        var args = arguments;
+        if (Snap.is(attrs, "array") && Snap.is(args[args.length - 1], "array")) {
+            var each = true;
         }
         var begin,
             handler = function () {
@@ -107,41 +132,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     callback.call(this);
                 }
             };
-        return this.forEach(function (el) {
+        return this.forEach(function (el, i) {
             eve.once("snap.animcreated." + el.id, handler);
-            el.animate(attrs, ms, easing, callbacker);
+            if (each) {
+                args[i] && el.animate.apply(el, args[i]);
+            } else {
+                el.animate(attrs, ms, easing, callbacker);
+            }
         });
-    };
-    /*\
-     * Set.animateEach
-     [ method ]
-     **
-     * Creates multiple animations for each element in the seet. Ensures that they are synced.
-     *
-     **
-     = (function) next element animate function
-    \*/
-    setproto.animateEach = function () {
-        var i = 0,
-            set = this,
-            begin,
-            handler = function () {
-                if (begin) {
-                    this.b = begin;
-                } else {
-                    begin = this.b;
-                }
-            },
-            args = arguments,
-            caller = function (args) {
-                var el = set[i++];
-                if (el) {
-                    el.animate.apply(el, arguments.length > 1 ? arguments : args);
-                    eve.once("snap.animcreated." + el.id, handler);
-                }
-                return set[i] ? caller : set;
-            };
-        return caller(args);
     };
     setproto.remove = function () {
         while (this.length) {
