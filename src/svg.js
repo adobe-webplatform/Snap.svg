@@ -1448,6 +1448,13 @@ function arrayFirstValue(arr) {
     \*/
     elproto.prepend = function (el) {
         if (el) {
+            if (el.type == "set") {
+                var it = this;
+                el.forEach(function (el) {
+                    it.prepend(el);
+                });
+                return this;
+            }
             el = wrap(el);
             var parent = el.parent();
             this.node.insertBefore(el.node, this.node.firstChild);
