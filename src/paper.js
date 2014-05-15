@@ -347,8 +347,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (height != null) {
                 attr.height = height;
             }
-            if (vbx != null && vby != null && vbw != null && vbh != null) {
-                attr.viewBox = [vbx, vby, vbw, vbh];
+            if (vx != null && vy != null && vw != null && vh != null) {
+                attr.viewBox = [vx, vy, vw, vh];
             }
         }
         return this.el("pattern", attr);
