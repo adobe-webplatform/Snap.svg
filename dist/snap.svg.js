@@ -3736,10 +3736,10 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             } else {
                 mask = make("mask", getSomeDefs(this));
                 mask.node.appendChild(value.node);
-                !mask.node.id && $(mask.node, {
-                    id: mask.id
-                });
             }
+            !mask.node.id && $(mask.node, {
+                id: mask.id
+            });
             $(this.node, {
                 mask: URL(mask.id)
             });
