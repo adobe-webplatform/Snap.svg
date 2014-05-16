@@ -5,7 +5,6 @@
 * Mask & pattern elements are sharing paper methods (just like group)
 * Added `Set.bind()` method
 * Added syncronisation for `Set.animate()`
-* Added method `Set.animateEach`
 * Added opacity to the shadow filter
 * Added ability to specify attributes as `"+=10"` or `"-=1em"` or `"*=2"`
 * Fix negative scale

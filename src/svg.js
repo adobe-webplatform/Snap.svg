@@ -1449,9 +1449,15 @@ function arrayFirstValue(arr) {
     elproto.prepend = function (el) {
         if (el) {
             if (el.type == "set") {
-                var it = this;
+                var it = this,
+                    first;
                 el.forEach(function (el) {
-                    it.prepend(el);
+                    if (first) {
+                        first.after(el);
+                    } else {
+                        it.prepend(el);
+                    }
+                    first = el;
                 });
                 return this;
             }

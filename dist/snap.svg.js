@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-15
+// build: 2014-05-16
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2207,9 +2207,15 @@ function arrayFirstValue(arr) {
     elproto.prepend = function (el) {
         if (el) {
             if (el.type == "set") {
-                var it = this;
+                var it = this,
+                    first;
                 el.forEach(function (el) {
-                    it.prepend(el);
+                    if (first) {
+                        first.after(el);
+                    } else {
+                        it.prepend(el);
+                    }
+                    first = el;
                 });
                 return this;
             }
