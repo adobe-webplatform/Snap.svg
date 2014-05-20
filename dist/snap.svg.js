@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-16
+// build: 2014-05-20
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2043,16 +2043,20 @@ function arrayFirstValue(arr) {
      o }
     \*/
     elproto.getBBox = function (isWithoutTransform) {
-        var el = this;
+        var el = this,
+            m = new Snap.Matrix;
         if (el.removed) {
             return {};
         }
-        if (el.type == "use") {
+        while (el.type == "use") {
+            if (!isWithoutTransform) {
+                m = m.add(el.transform().localMatrix.translate(el.attr("x") || 0, el.attr("y") || 0));
+            }
             if (el.original) {
                 el = el.original;
             } else {
                 var href = el.attr("xlink:href");
-                el = el.node.ownerDocument.getElementById(href.substring(href.indexOf("#") + 1));
+                el = el.original = el.node.ownerDocument.getElementById(href.substring(href.indexOf("#") + 1));
             }
         }
         var _ = el._;
@@ -2062,7 +2066,7 @@ function arrayFirstValue(arr) {
         } else {
             el.realPath = (Snap.path.get[el.type] || Snap.path.get.deflt)(el);
             el.matrix = el.transform().localMatrix;
-            _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, el.matrix));
+            _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, m.add(el.matrix)));
         }
         return Snap._.box(_.bbox);
     };
