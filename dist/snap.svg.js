@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-20
+// build: 2014-05-21
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1770,13 +1770,13 @@ function getSomeDefs(el) {
 }
 Snap._.getSomeDefs = getSomeDefs;
 function unit2px(el, name, value) {
-    var defs = getSomeDefs(el),
+    var svg = el.node.ownerSVGElement,
         out = {},
-        mgr = defs.querySelector(".svg---mgr");
+        mgr = svg.querySelector(".svg---mgr");
     if (!mgr) {
         mgr = $("rect");
-        $(mgr, {width: 10, height: 10, "class": "svg---mgr"});
-        defs.appendChild(mgr);
+        $(mgr, {x: -9e9, y: -9e9, width: 10, height: 10, "class": "svg---mgr", fill: "none"});
+        svg.appendChild(mgr);
     }
     function getW(val) {
         if (val == null) {
@@ -1850,6 +1850,7 @@ function unit2px(el, name, value) {
         default:
             set(name, getW);
     }
+    mgr.remove();
     return out;
 }
 /*\
@@ -2046,7 +2047,7 @@ function arrayFirstValue(arr) {
         var el = this,
             m = new Snap.Matrix;
         if (el.removed) {
-            return {};
+            return Snap._.box();
         }
         while (el.type == "use") {
             if (!isWithoutTransform) {
@@ -2059,16 +2060,22 @@ function arrayFirstValue(arr) {
                 el = el.original = el.node.ownerDocument.getElementById(href.substring(href.indexOf("#") + 1));
             }
         }
-        var _ = el._;
-        if (isWithoutTransform) {
-            _.bboxwt = Snap.path.get[el.type] ? Snap.path.getBBox(el.realPath = Snap.path.get[el.type](el)) : Snap._.box(el.node.getBBox());
-            return Snap._.box(_.bboxwt);
-        } else {
-            el.realPath = (Snap.path.get[el.type] || Snap.path.get.deflt)(el);
-            el.matrix = el.transform().localMatrix;
-            _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, m.add(el.matrix)));
+        var _ = el._,
+            pathfinder = Snap.path.get[el.type] || Snap.path.get.deflt;
+        try {
+            if (isWithoutTransform) {
+                _.bboxwt = pathfinder ? Snap.path.getBBox(el.realPath = pathfinder(el)) : Snap._.box(el.node.getBBox());
+                return Snap._.box(_.bboxwt);
+            } else {
+                el.realPath = pathfinder(el);
+                el.matrix = el.transform().localMatrix;
+                _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, m.add(el.matrix)));
+                return Snap._.box(_.bbox);
+            }
+        } catch (e) {
+            // Firefox doesn’t give you bbox of hidden element
+            return Snap._.box();
         }
-        return Snap._.box(_.bbox);
     };
     var propString = function () {
         return this.string;
@@ -5402,18 +5409,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             var attr = unit2px(el);
             return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height);
         },
-        text: function (el) {
-            var bbox = el.node.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-        },
-        g: function (el) {
-            var bbox = el.node.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-        },
-        symbol: function (el) {
-            var bbox = el.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-        },
         line: function (el) {
             return "M" + [el.attr("x1") || 0, el.attr("y1") || 0, el.attr("x2"), el.attr("y2")];
         },
@@ -5422,10 +5417,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         },
         polygon: function (el) {
             return "M" + el.attr("points") + "z";
-        },
-        svg: function (el) {
-            var bbox = el.node.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
         },
         deflt: function (el) {
             var bbox = el.node.getBBox();

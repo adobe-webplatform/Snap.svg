@@ -1010,15 +1010,19 @@ function getSomeDefs(el) {
     }
     return defs;
 }
+function getSomeSVG(el) {
+    return el.node.ownerSVGElement && wrap(el.node.ownerSVGElement) || Snap.select("svg");
+}
 Snap._.getSomeDefs = getSomeDefs;
+Snap._.getSomeSVG = getSomeSVG;
 function unit2px(el, name, value) {
-    var defs = getSomeDefs(el),
+    var svg = getSomeSVG(el),
         out = {},
-        mgr = defs.querySelector(".svg---mgr");
+        mgr = svg.querySelector(".svg---mgr");
     if (!mgr) {
         mgr = $("rect");
-        $(mgr, {width: 10, height: 10, "class": "svg---mgr"});
-        defs.appendChild(mgr);
+        $(mgr, {x: -9e9, y: -9e9, width: 10, height: 10, "class": "svg---mgr", fill: "none"});
+        svg.appendChild(mgr);
     }
     function getW(val) {
         if (val == null) {
@@ -1028,7 +1032,11 @@ function unit2px(el, name, value) {
             return val;
         }
         $(mgr, {width: val});
-        return mgr.getBBox().width;
+        try {
+            return mgr.getBBox().width;
+        } catch (e) {
+            return 0;
+        }
     }
     function getH(val) {
         if (val == null) {
@@ -1038,7 +1046,11 @@ function unit2px(el, name, value) {
             return val;
         }
         $(mgr, {height: val});
-        return mgr.getBBox().height;
+        try {
+            return mgr.getBBox().height;
+        } catch (e) {
+            return 0;
+        }
     }
     function set(nam, f) {
         if (name == null) {
@@ -1092,6 +1104,7 @@ function unit2px(el, name, value) {
         default:
             set(name, getW);
     }
+    mgr.remove();
     return out;
 }
 /*\
@@ -1285,10 +1298,13 @@ function arrayFirstValue(arr) {
      o }
     \*/
     elproto.getBBox = function (isWithoutTransform) {
+        if (!Snap.Matrix || !Snap.path) {
+            return this.getBBox();
+        }
         var el = this,
             m = new Snap.Matrix;
         if (el.removed) {
-            return {};
+            return Snap._.box();
         }
         while (el.type == "use") {
             if (!isWithoutTransform) {
@@ -1301,16 +1317,22 @@ function arrayFirstValue(arr) {
                 el = el.original = el.node.ownerDocument.getElementById(href.substring(href.indexOf("#") + 1));
             }
         }
-        var _ = el._;
-        if (isWithoutTransform) {
-            _.bboxwt = Snap.path.get[el.type] ? Snap.path.getBBox(el.realPath = Snap.path.get[el.type](el)) : Snap._.box(el.node.getBBox());
-            return Snap._.box(_.bboxwt);
-        } else {
-            el.realPath = (Snap.path.get[el.type] || Snap.path.get.deflt)(el);
-            el.matrix = el.transform().localMatrix;
-            _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, m.add(el.matrix)));
+        var _ = el._,
+            pathfinder = Snap.path.get[el.type] || Snap.path.get.deflt;
+        try {
+            if (isWithoutTransform) {
+                _.bboxwt = pathfinder ? Snap.path.getBBox(el.realPath = pathfinder(el)) : Snap._.box(el.node.getBBox());
+                return Snap._.box(_.bboxwt);
+            } else {
+                el.realPath = pathfinder(el);
+                el.matrix = el.transform().localMatrix;
+                _.bbox = Snap.path.getBBox(Snap.path.map(el.realPath, m.add(el.matrix)));
+                return Snap._.box(_.bbox);
+            }
+        } catch (e) {
+            // Firefox doesn’t give you bbox of hidden element
+            return Snap._.box();
         }
-        return Snap._.box(_.bbox);
     };
     var propString = function () {
         return this.string;

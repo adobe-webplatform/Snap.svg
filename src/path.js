@@ -515,18 +515,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             var attr = unit2px(el);
             return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height);
         },
-        text: function (el) {
-            var bbox = el.node.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-        },
-        g: function (el) {
-            var bbox = el.node.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-        },
-        symbol: function (el) {
-            var bbox = el.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-        },
         line: function (el) {
             return "M" + [el.attr("x1") || 0, el.attr("y1") || 0, el.attr("x2"), el.attr("y2")];
         },
@@ -535,10 +523,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         },
         polygon: function (el) {
             return "M" + el.attr("points") + "z";
-        },
-        svg: function (el) {
-            var bbox = el.node.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
         },
         deflt: function (el) {
             var bbox = el.node.getBBox();
