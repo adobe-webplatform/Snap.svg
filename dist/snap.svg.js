@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-21
+// build: 2014-05-22
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1768,9 +1768,13 @@ function getSomeDefs(el) {
     }
     return defs;
 }
+function getSomeSVG(el) {
+    return el.node.ownerSVGElement && wrap(el.node.ownerSVGElement) || Snap.select("svg");
+}
 Snap._.getSomeDefs = getSomeDefs;
+Snap._.getSomeSVG = getSomeSVG;
 function unit2px(el, name, value) {
-    var svg = el.node.ownerSVGElement,
+    var svg = getSomeSVG(el),
         out = {},
         mgr = svg.querySelector(".svg---mgr");
     if (!mgr) {
@@ -1786,7 +1790,11 @@ function unit2px(el, name, value) {
             return val;
         }
         $(mgr, {width: val});
-        return mgr.getBBox().width;
+        try {
+            return mgr.getBBox().width;
+        } catch (e) {
+            return 0;
+        }
     }
     function getH(val) {
         if (val == null) {
@@ -1796,7 +1804,11 @@ function unit2px(el, name, value) {
             return val;
         }
         $(mgr, {height: val});
-        return mgr.getBBox().height;
+        try {
+            return mgr.getBBox().height;
+        } catch (e) {
+            return 0;
+        }
     }
     function set(nam, f) {
         if (name == null) {
@@ -2044,6 +2056,9 @@ function arrayFirstValue(arr) {
      o }
     \*/
     elproto.getBBox = function (isWithoutTransform) {
+        if (!Snap.Matrix || !Snap.path) {
+            return this.getBBox();
+        }
         var el = this,
             m = new Snap.Matrix;
         if (el.removed) {
@@ -5194,8 +5209,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var l1 = bezlen.apply(0, bez1),
             l2 = bezlen.apply(0, bez2),
-            n1 = ~~(l1 / 5),
-            n2 = ~~(l2 / 5),
+            n1 = ~~(l1 / 15),
+            n2 = ~~(l2 / 15),
             dots1 = [],
             dots2 = [],
             xy = {},

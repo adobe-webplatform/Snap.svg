@@ -300,8 +300,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var l1 = bezlen.apply(0, bez1),
             l2 = bezlen.apply(0, bez2),
-            n1 = ~~(l1 / 5),
-            n2 = ~~(l2 / 5),
+            n1 = ~~(l1 / 15),
+            n2 = ~~(l2 / 15),
             dots1 = [],
             dots2 = [],
             xy = {},
