@@ -5233,8 +5233,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var l1 = bezlen.apply(0, bez1),
             l2 = bezlen.apply(0, bez2),
-            n1 = ~~(l1 / 15),
-            n2 = ~~(l2 / 15),
+            n1 = ~~(l1 / 8),
+            n2 = ~~(l2 / 8),
             dots1 = [],
             dots2 = [],
             xy = {},
@@ -5253,8 +5253,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     di1 = dots1[i + 1],
                     dj = dots2[j],
                     dj1 = dots2[j + 1],
-                    ci = abs(di1.x - di.x) < .0001 ? "y" : "x",
-                    cj = abs(dj1.x - dj.x) < .0001 ? "y" : "x",
+                    ci = abs(di1.x - di.x) < .001 ? "y" : "x",
+                    cj = abs(dj1.x - dj.x) < .001 ? "y" : "x",
                     is = intersect(di.x, di.y, di1.x, di1.y, dj.x, dj.y, dj1.x, dj1.y);
                 if (is) {
                     if (xy[is.x.toFixed(4)] == is.y.toFixed(4)) {
@@ -6340,7 +6340,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     Snap.path.toString = toString;
     Snap.path.clone = pathClone;
 });
-
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -6854,9 +6853,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         mousemove: "touchmove",
         mouseup: "touchend"
     },
-    getScroll = function (xy) {
-        var name = xy == "y" ? "scrollTop" : "scrollLeft";
-        return glob.doc.documentElement[name] || glob.doc.body[name];
+    getScroll = function (xy, el) {
+        var name = xy == "y" ? "scrollTop" : "scrollLeft",
+            doc = el.node.ownerDocument;
+        return doc[name in doc.documentElement ? "documentElement" : "body"][name];
     },
     preventDefault = function () {
         this.returnValue = false;
@@ -6875,8 +6875,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return function (obj, type, fn, element) {
                 var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
                     f = function (e) {
-                        var scrollY = getScroll("y"),
-                            scrollX = getScroll("x");
+                        var scrollY = getScroll("y", element),
+                            scrollX = getScroll("x", element);
                         if (supportsTouch && touchMap[has](type)) {
                             for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
                                 if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
@@ -6912,9 +6912,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         } else if (glob.doc.attachEvent) {
             return function (obj, type, fn, element) {
                 var f = function (e) {
-                    e = e || glob.win.event;
-                    var scrollY = getScroll("y"),
-                        scrollX = getScroll("x"),
+                    e = e || element.node.ownerDocument.window.event;
+                    var scrollY = getScroll("y", element),
+                        scrollX = getScroll("x", element),
                         x = e.clientX + scrollX,
                         y = e.clientY + scrollY;
                     e.preventDefault = e.preventDefault || preventDefault;
@@ -6957,7 +6957,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
             var node = dragi.el.node,
                 o,
-                glob = Snap._.glob,
                 next = node.nextSibling,
                 parent = node.parentNode,
                 display = node.style.display;
@@ -7177,7 +7176,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     this.events.push({
                         name: eventName,
                         f: fn,
-                        unbind: addEvent(this.shape || this.node || glob.doc, eventName, fn, scope || this)
+                        unbind: addEvent(this.shape || this.node || this.node.ownerDocument, eventName, fn, scope || this)
                     });
                 }
                 return this;

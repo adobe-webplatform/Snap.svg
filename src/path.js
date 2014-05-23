@@ -300,8 +300,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var l1 = bezlen.apply(0, bez1),
             l2 = bezlen.apply(0, bez2),
-            n1 = ~~(l1 / 15),
-            n2 = ~~(l2 / 15),
+            n1 = ~~(l1 / 8),
+            n2 = ~~(l2 / 8),
             dots1 = [],
             dots2 = [],
             xy = {},
@@ -320,8 +320,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     di1 = dots1[i + 1],
                     dj = dots2[j],
                     dj1 = dots2[j + 1],
-                    ci = abs(di1.x - di.x) < .0001 ? "y" : "x",
-                    cj = abs(dj1.x - dj.x) < .0001 ? "y" : "x",
+                    ci = abs(di1.x - di.x) < .001 ? "y" : "x",
+                    cj = abs(dj1.x - dj.x) < .001 ? "y" : "x",
                     is = intersect(di.x, di.y, di1.x, di1.y, dj.x, dj.y, dj1.x, dj1.y);
                 if (is) {
                     if (xy[is.x.toFixed(4)] == is.y.toFixed(4)) {
