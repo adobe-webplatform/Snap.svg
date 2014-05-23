@@ -25,13 +25,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         mousemove: "touchmove",
         mouseup: "touchend"
     },
-    getScroll = function (xy) {
-        var name = xy == "y" ? "scrollTop" : "scrollLeft";
-        if (name in glob.doc.documentElement) {
-            return glob.doc.documentElement[name];
-        } else {
-            return glob.doc.body[name];
-        }
+    getScroll = function (xy, el) {
+        var name = xy == "y" ? "scrollTop" : "scrollLeft",
+            doc = el.node.ownerDocument;
+        return doc[name in doc.documentElement ? "documentElement" : "body"][name];
     },
     preventDefault = function () {
         this.returnValue = false;
@@ -50,8 +47,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return function (obj, type, fn, element) {
                 var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
                     f = function (e) {
-                        var scrollY = getScroll("y"),
-                            scrollX = getScroll("x");
+                        var scrollY = getScroll("y", element),
+                            scrollX = getScroll("x", element);
                         if (supportsTouch && touchMap[has](type)) {
                             for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
                                 if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
@@ -87,9 +84,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         } else if (glob.doc.attachEvent) {
             return function (obj, type, fn, element) {
                 var f = function (e) {
-                    e = e || glob.win.event;
-                    var scrollY = getScroll("y"),
-                        scrollX = getScroll("x"),
+                    e = e || element.node.ownerDocument.window.event;
+                    var scrollY = getScroll("y", element),
+                        scrollX = getScroll("x", element),
                         x = e.clientX + scrollX,
                         y = e.clientY + scrollY;
                     e.preventDefault = e.preventDefault || preventDefault;
@@ -132,7 +129,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
             var node = dragi.el.node,
                 o,
-                glob = Snap._.glob,
                 next = node.nextSibling,
                 parent = node.parentNode,
                 display = node.style.display;
@@ -352,7 +348,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     this.events.push({
                         name: eventName,
                         f: fn,
-                        unbind: addEvent(this.shape || this.node || glob.doc, eventName, fn, scope || this)
+                        unbind: addEvent(this.shape || this.node || this.node.ownerDocument, eventName, fn, scope || this)
                     });
                 }
                 return this;
