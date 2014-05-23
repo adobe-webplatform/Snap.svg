@@ -314,7 +314,7 @@ describe("Path methods", function () {
             "M80 10 Q 110 40, 140 10 Z" +
             "M80 50 Q 90 70, 100 50 T 120 50 Z" +
             "M80 80 A 10 10 0 0 0 120 80 Z";
-        
+
         expect(Snap.path.isPointInside(path, 15, 35)).to.be(true);
         expect(Snap.path.isPointInside(path, 35, 75)).to.be(true);
         expect(Snap.path.isPointInside(path, 15, 102)).to.be(true);

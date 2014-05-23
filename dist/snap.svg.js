@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-22
+// build: 2014-05-23
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,6 +38,7 @@
     var version = "0.4.2",
         has = "hasOwnProperty",
         separator = /[\.\/]/,
+        comaseparator = /\s*,\s*/,
         wildcard = "*",
         fun = function () {},
         numsort = function (a, b) {
@@ -46,6 +47,21 @@
         current_event,
         stop,
         events = {n: {}},
+        firstDefined = function () {
+            for (var i = 0, ii = this.length; i < ii; i++) {
+                if (typeof this[i] != "undefined") {
+                    return this[i];
+                }
+            }
+        },
+        lastDefined = function () {
+            var i = this.length;
+            while (--i) {
+                if (typeof this[i] != "undefined") {
+                    return this[i];
+                }
+            }
+        },
     /*\
      * eve
      [ method ]
@@ -58,10 +74,10 @@
      - scope (object) context for the event handlers
      - varargs (...) the rest of arguments will be sent to event handlers
 
-     = (object) array of returned values from the listeners
+     = (object) array of returned values from the listeners. Array has two methods `.firstDefined()` and `.lastDefined()` to get first or last not `undefined` value.
     \*/
         eve = function (name, scope) {
-			name = String(name);
+            name = String(name);
             var e = events,
                 oldstop = stop,
                 args = Array.prototype.slice.call(arguments, 2),
@@ -74,6 +90,8 @@
                 out = [],
                 ce = current_event,
                 errors = [];
+            out.firstDefined = firstDefined;
+            out.lastDefined = lastDefined;
             current_event = name;
             stop = 0;
             for (var i = 0, ii = listeners.length; i < ii; i++) if ("zIndex" in listeners[i]) {
@@ -119,10 +137,10 @@
             }
             stop = oldstop;
             current_event = ce;
-            return out.length ? out : null;
+            return out;
         };
-		// Undocumented. Debug only.
-		eve._events = events;
+        // Undocumented. Debug only.
+        eve._events = events;
     /*\
      * eve.listeners
      [ method ]
@@ -186,27 +204,34 @@
      | eve.on("mouse", eatIt)(2);
      | eve.on("mouse", scream);
      | eve.on("mouse", catchIt)(1);
-     * This will ensure that `catchIt()` function will be called before `eatIt()`.
-	 *
+     * This will ensure that `catchIt` function will be called before `eatIt`.
+     *
      * If you want to put your handler before non-indexed handlers, specify a negative value.
      * Note: I assume most of the time you don’t need to worry about z-index, but it’s nice to have this feature “just in case”.
     \*/
     eve.on = function (name, f) {
-		name = String(name);
-		if (typeof f != "function") {
-			return function () {};
-		}
-        var names = name.split(separator),
-            e = events;
+        name = String(name);
+        if (typeof f != "function") {
+            return function () {};
+        }
+        var names = name.split(comaseparator);
         for (var i = 0, ii = names.length; i < ii; i++) {
-            e = e.n;
-            e = e.hasOwnProperty(names[i]) && e[names[i]] || (e[names[i]] = {n: {}});
+            (function (name) {
+                var names = name.split(separator),
+                    e = events,
+                    exist;
+                for (var i = 0, ii = names.length; i < ii; i++) {
+                    e = e.n;
+                    e = e.hasOwnProperty(names[i]) && e[names[i]] || (e[names[i]] = {n: {}});
+                }
+                e.f = e.f || [];
+                for (i = 0, ii = e.f.length; i < ii; i++) if (e.f[i] == f) {
+                    exist = true;
+                    break;
+                }
+                !exist && e.f.push(f);
+            }(names[i]));
         }
-        e.f = e.f || [];
-        for (i = 0, ii = e.f.length; i < ii; i++) if (e.f[i] == f) {
-            return fun;
-        }
-        e.f.push(f);
         return function (zIndex) {
             if (+zIndex == +zIndex) {
                 f.zIndex = +zIndex;
@@ -218,23 +243,23 @@
      [ method ]
      **
      * Returns function that will fire given event with optional arguments.
-	 * Arguments that will be passed to the result function will be also
-	 * concated to the list of final arguments.
- 	 | el.onclick = eve.f("click", 1, 2);
- 	 | eve.on("click", function (a, b, c) {
- 	 |     console.log(a, b, c); // 1, 2, [event object]
- 	 | });
+     * Arguments that will be passed to the result function will be also
+     * concated to the list of final arguments.
+     | el.onclick = eve.f("click", 1, 2);
+     | eve.on("click", function (a, b, c) {
+     |     console.log(a, b, c); // 1, 2, [event object]
+     | });
      > Arguments
-	 - event (string) event name
-	 - varargs (…) and any other arguments
-	 = (function) possible event handler function
+     - event (string) event name
+     - varargs (…) and any other arguments
+     = (function) possible event handler function
     \*/
-	eve.f = function (event) {
-		var attrs = [].slice.call(arguments, 1);
-		return function () {
-			eve.apply(null, [event, null].concat(attrs).concat([].slice.call(arguments, 0)));
-		};
-	};
+    eve.f = function (event) {
+        var attrs = [].slice.call(arguments, 1);
+        return function () {
+            eve.apply(null, [event, null].concat(attrs).concat([].slice.call(arguments, 0)));
+        };
+    };
     /*\
      * eve.stop
      [ method ]
@@ -281,7 +306,7 @@
      [ method ]
      **
      * Removes given function from the list of event listeners assigned to given name.
-	 * If no arguments specified all the events will be cleared.
+     * If no arguments specified all the events will be cleared.
      **
      > Arguments
      **
@@ -295,12 +320,19 @@
      * See @eve.off
     \*/
     eve.off = eve.unbind = function (name, f) {
-		if (!name) {
-		    eve._events = events = {n: {}};
-			return;
-		}
-        var names = name.split(separator),
-            e,
+        if (!name) {
+            eve._events = events = {n: {}};
+            return;
+        }
+        var names = name.split(comaseparator);
+        if (names.length > 1) {
+            for (var i = 0, ii = names.length; i < ii; i++) {
+                eve.off(names[i], f);
+            }
+            return;
+        }
+        names = name.split(separator);
+        var e,
             key,
             splice,
             i, ii, j, jj,
@@ -384,7 +416,7 @@
     eve.toString = function () {
         return "You are running Eve " + version;
     };
-    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define != "undefined" ? (define("eve", [], function() { return eve; })) : (glob.eve = eve));
+    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define === "function" && define.amd ? (define("eve", [], function() { return eve; })) : (glob.eve = eve));
 })(this);
 
 (function (glob, factory) {
@@ -1774,7 +1806,7 @@ function getSomeSVG(el) {
 Snap._.getSomeDefs = getSomeDefs;
 Snap._.getSomeSVG = getSomeSVG;
 function unit2px(el, name, value) {
-    var svg = getSomeSVG(el),
+    var svg = getSomeSVG(el).node,
         out = {},
         mgr = svg.querySelector(".svg---mgr");
     if (!mgr) {
@@ -1973,15 +2005,6 @@ function Element(el) {
         }
     }
 }
-function arrayFirstValue(arr) {
-    var res;
-    for (var i = 0, ii = arr.length; i < ii; i++) {
-        res = res || arr[i];
-        if (res) {
-            return res;
-        }
-    }
-}
 (function (elproto) {
     /*\
      * Element.attr
@@ -2020,7 +2043,7 @@ function arrayFirstValue(arr) {
                 json[params] = value;
                 params = json;
             } else {
-                return arrayFirstValue(eve("snap.util.getattr." + params, el));
+                return eve("snap.util.getattr." + params, el).firstDefined();
             }
         }
         for (var att in params) {
@@ -2057,7 +2080,7 @@ function arrayFirstValue(arr) {
     \*/
     elproto.getBBox = function (isWithoutTransform) {
         if (!Snap.Matrix || !Snap.path) {
-            return this.getBBox();
+            return this.node.getBBox();
         }
         var el = this,
             m = new Snap.Matrix;
@@ -3708,6 +3731,14 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      * Snap.Matrix
      [ method ]
      **
+     * Matrix constructor, extend on your own risk.
+     * To create matrices use @Snap.matrix.
+    \*/
+    Snap.Matrix = Matrix;
+    /*\
+     * Snap.matrix
+     [ method ]
+     **
      * Utility method
      **
      * Returns a matrix based on the given parameters
@@ -3721,7 +3752,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      - svgMatrix (SVGMatrix)
      = (object) @Matrix
     \*/
-    Snap.Matrix = Matrix;
+    Snap.matrix = function (a, b, c, d, e, f) {
+        return new Matrix(a, b, c, d, e, f);
+    };
 });
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -4107,15 +4140,15 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         } else {
             return;
         }
-    });
+    })(-1);
     eve.on("snap.util.getattr.path", function () {
         var p = $(this.node, "d");
         eve.stop();
         return p;
-    });
+    })(-1);
     eve.on("snap.util.getattr.class", function () {
         return this.node.className.baseVal;
-    });
+    })(-1);
     function getFontSize() {
         eve.stop();
         return this.node.style.fontSize;
@@ -4735,17 +4768,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 return Snap._.box(cx - r, cy - r, r * 2, r * 2);
             }
         }
-        function arrayFirstValue(arr) {
-            var res;
-            for (var i = 0, ii = arr.length; i < ii; i++) {
-                res = res || arr[i];
-                if (res) {
-                    return res;
-                }
-            }
-        }
         function gradient(defs, str) {
-            var grad = arrayFirstValue(eve("snap.util.grad.parse", null, str)),
+            var grad = eve("snap.util.grad.parse", null, str).firstDefined(),
                 el;
             if (!grad) {
                 return null;
@@ -5229,8 +5253,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     di1 = dots1[i + 1],
                     dj = dots2[j],
                     dj1 = dots2[j + 1],
-                    ci = abs(di1.x - di.x) < .001 ? "y" : "x",
-                    cj = abs(dj1.x - dj.x) < .001 ? "y" : "x",
+                    ci = abs(di1.x - di.x) < .0001 ? "y" : "x",
+                    cj = abs(dj1.x - dj.x) < .0001 ? "y" : "x",
                     is = intersect(di.x, di.y, di1.x, di1.y, dj.x, dj.y, dj1.x, dj1.y);
                 if (is) {
                     if (xy[is.x.toFixed(4)] == is.y.toFixed(4)) {
@@ -6736,17 +6760,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return out;
     }
-    function arrayFirstValue(arr) {
-        var res;
-        for (var i = 0, ii = arr.length; i < ii; i++) {
-            res = res || arr[i];
-            if (res) {
-                return res;
-            }
-        }
-    }
     Element.prototype.equal = function (name, b) {
-        return arrayFirstValue(eve("snap.util.equal", this, name, b));
+        return eve("snap.util.equal", this, name, b).firstDefined();
     };
     eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),

@@ -103,17 +103,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return out;
     }
-    function arrayFirstValue(arr) {
-        var res;
-        for (var i = 0, ii = arr.length; i < ii; i++) {
-            res = res || arr[i];
-            if (res) {
-                return res;
-            }
-        }
-    }
     Element.prototype.equal = function (name, b) {
-        return arrayFirstValue(eve("snap.util.equal", this, name, b));
+        return eve("snap.util.equal", this, name, b).firstDefined();
     };
     eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),

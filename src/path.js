@@ -320,8 +320,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     di1 = dots1[i + 1],
                     dj = dots2[j],
                     dj1 = dots2[j + 1],
-                    ci = abs(di1.x - di.x) < .001 ? "y" : "x",
-                    cj = abs(dj1.x - dj.x) < .001 ? "y" : "x",
+                    ci = abs(di1.x - di.x) < .0001 ? "y" : "x",
+                    cj = abs(dj1.x - dj.x) < .0001 ? "y" : "x",
                     is = intersect(di.x, di.y, di1.x, di1.y, dj.x, dj.y, dj1.x, dj1.y);
                 if (is) {
                     if (xy[is.x.toFixed(4)] == is.y.toFixed(4)) {

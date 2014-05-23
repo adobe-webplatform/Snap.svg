@@ -1016,7 +1016,7 @@ function getSomeSVG(el) {
 Snap._.getSomeDefs = getSomeDefs;
 Snap._.getSomeSVG = getSomeSVG;
 function unit2px(el, name, value) {
-    var svg = getSomeSVG(el),
+    var svg = getSomeSVG(el).node,
         out = {},
         mgr = svg.querySelector(".svg---mgr");
     if (!mgr) {
@@ -1215,15 +1215,6 @@ function Element(el) {
         }
     }
 }
-function arrayFirstValue(arr) {
-    var res;
-    for (var i = 0, ii = arr.length; i < ii; i++) {
-        res = res || arr[i];
-        if (res) {
-            return res;
-        }
-    }
-}
 (function (elproto) {
     /*\
      * Element.attr
@@ -1262,7 +1253,7 @@ function arrayFirstValue(arr) {
                 json[params] = value;
                 params = json;
             } else {
-                return arrayFirstValue(eve("snap.util.getattr." + params, el));
+                return eve("snap.util.getattr." + params, el).firstDefined();
             }
         }
         for (var att in params) {
@@ -1299,7 +1290,7 @@ function arrayFirstValue(arr) {
     \*/
     elproto.getBBox = function (isWithoutTransform) {
         if (!Snap.Matrix || !Snap.path) {
-            return this.getBBox();
+            return this.node.getBBox();
         }
         var el = this,
             m = new Snap.Matrix;

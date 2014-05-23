@@ -521,17 +521,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 return Snap._.box(cx - r, cy - r, r * 2, r * 2);
             }
         }
-        function arrayFirstValue(arr) {
-            var res;
-            for (var i = 0, ii = arr.length; i < ii; i++) {
-                res = res || arr[i];
-                if (res) {
-                    return res;
-                }
-            }
-        }
         function gradient(defs, str) {
-            var grad = arrayFirstValue(eve("snap.util.grad.parse", null, str)),
+            var grad = eve("snap.util.grad.parse", null, str).firstDefined(),
                 el;
             if (!grad) {
                 return null;

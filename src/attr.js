@@ -382,15 +382,15 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         } else {
             return;
         }
-    });
+    })(-1);
     eve.on("snap.util.getattr.path", function () {
         var p = $(this.node, "d");
         eve.stop();
         return p;
-    });
+    })(-1);
     eve.on("snap.util.getattr.class", function () {
         return this.node.className.baseVal;
-    });
+    })(-1);
     function getFontSize() {
         eve.stop();
         return this.node.style.fontSize;
