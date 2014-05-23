@@ -282,6 +282,14 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      * Snap.Matrix
      [ method ]
      **
+     * Matrix constructor, extend on your own risk.
+     * To create matrices use @Snap.matrix.
+    \*/
+    Snap.Matrix = Matrix;
+    /*\
+     * Snap.matrix
+     [ method ]
+     **
      * Utility method
      **
      * Returns a matrix based on the given parameters
@@ -295,5 +303,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      - svgMatrix (SVGMatrix)
      = (object) @Matrix
     \*/
-    Snap.Matrix = Matrix;
+    Snap.matrix = function (a, b, c, d, e, f) {
+        return new Matrix(a, b, c, d, e, f);
+    };
 });
