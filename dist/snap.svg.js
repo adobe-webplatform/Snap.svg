@@ -7176,7 +7176,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     this.events.push({
                         name: eventName,
                         f: fn,
-                        unbind: addEvent(this.shape || this.node || this.node.ownerDocument, eventName, fn, scope || this)
+                        unbind: addEvent(this.node || document, eventName, fn, scope || this)
                     });
                 }
                 return this;

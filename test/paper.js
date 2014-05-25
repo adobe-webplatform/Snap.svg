@@ -127,7 +127,6 @@ describe("Paper methods", function () {
     });
     it("Paper.getBBox", function() {
         paper.circle(50, 50, 30);
-        console.log(paper.getBBox)
         var bb = paper.getBBox();
         expect(bb.x).to.be(20);
         expect(bb.y).to.be(20);
