@@ -27,7 +27,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     },
     getScroll = function (xy, el) {
         var name = xy == "y" ? "scrollTop" : "scrollLeft",
-            doc = el.node.ownerDocument;
+            doc = el && el.node ? el.node.ownerDocument : glob.doc;
         return doc[name in doc.documentElement ? "documentElement" : "body"][name];
     },
     preventDefault = function () {

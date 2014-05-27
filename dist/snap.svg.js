@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-23
+// build: 2014-05-27
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -6855,7 +6855,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     },
     getScroll = function (xy, el) {
         var name = xy == "y" ? "scrollTop" : "scrollLeft",
-            doc = el.node.ownerDocument;
+            doc = el && el.node ? el.node.ownerDocument : glob.doc;
         return doc[name in doc.documentElement ? "documentElement" : "body"][name];
     },
     preventDefault = function () {
