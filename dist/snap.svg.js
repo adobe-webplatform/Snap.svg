@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-27
+// build: 2014-05-28
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -4036,6 +4036,18 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         }
         eve.stop();
     })(-1);
+    function setFontSize(value) {
+        eve.stop();
+        if (value == +value) {
+            value += "px";
+        }
+        this.node.style.fontSize = value;
+    }
+    eve.on("snap.util.attr.fontSize", setFontSize)(-1);
+    eve.on("snap.util.attr.font-size", setFontSize)(-1);
+    
+
+
     eve.on("snap.util.getattr.transform", function () {
         eve.stop();
         return this.transform();
