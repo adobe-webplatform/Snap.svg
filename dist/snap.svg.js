@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-28
+// build: 2014-05-29
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1287,7 +1287,7 @@ Snap.rgb = cacher(function (r, g, b, o) {
     return "#" + (16777216 | b | (g << 8) | (r << 16)).toString(16).slice(1);
 });
 var toHex = function (color) {
-    var i = glob.doc.getElementsByTagName("head")[0],
+    var i = glob.doc.getElementsByTagName("head")[0] || glob.doc.getElementsByTagName("svg")[0],
         red = "rgb(255, 0, 0)";
     toHex = cacher(function (color) {
         if (color.toLowerCase() == "red") {
@@ -1894,7 +1894,7 @@ function unit2px(el, name, value) {
         default:
             set(name, getW);
     }
-    mgr.remove();
+    svg.removeChild(mgr);
     return out;
 }
 /*\
@@ -4045,7 +4045,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     }
     eve.on("snap.util.attr.fontSize", setFontSize)(-1);
     eve.on("snap.util.attr.font-size", setFontSize)(-1);
-    
 
 
     eve.on("snap.util.getattr.transform", function () {

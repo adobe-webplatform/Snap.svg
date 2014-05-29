@@ -497,7 +497,7 @@ Snap.rgb = cacher(function (r, g, b, o) {
     return "#" + (16777216 | b | (g << 8) | (r << 16)).toString(16).slice(1);
 });
 var toHex = function (color) {
-    var i = glob.doc.getElementsByTagName("head")[0],
+    var i = glob.doc.getElementsByTagName("head")[0] || glob.doc.getElementsByTagName("svg")[0],
         red = "rgb(255, 0, 0)";
     toHex = cacher(function (color) {
         if (color.toLowerCase() == "red") {
@@ -1104,7 +1104,7 @@ function unit2px(el, name, value) {
         default:
             set(name, getW);
     }
-    mgr.remove();
+    svg.removeChild(mgr);
     return out;
 }
 /*\

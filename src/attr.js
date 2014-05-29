@@ -287,7 +287,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     }
     eve.on("snap.util.attr.fontSize", setFontSize)(-1);
     eve.on("snap.util.attr.font-size", setFontSize)(-1);
-    
 
 
     eve.on("snap.util.getattr.transform", function () {
