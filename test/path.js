@@ -314,7 +314,7 @@ describe("Path methods", function () {
             "M80 10 Q 110 40, 140 10 Z" +
             "M80 50 Q 90 70, 100 50 T 120 50 Z" +
             "M80 80 A 10 10 0 0 0 120 80 Z";
-        
+
         expect(Snap.path.isPointInside(path, 15, 35)).to.be(true);
         expect(Snap.path.isPointInside(path, 35, 75)).to.be(true);
         expect(Snap.path.isPointInside(path, 15, 102)).to.be(true);
@@ -343,6 +343,9 @@ describe("Path methods", function () {
         expect(Snap.path.isPointInside(path, 100, 70)).to.be(false);
         expect(Snap.path.isPointInside(path, 115, 96)).to.be(false);
         expect(Snap.path.isPointInside(path, 85, 96)).to.be(false);
+
+        // bug #248
+        expect(Snap.path.isPointInside("M1.4315332974182866,4.405806462382467 L57.26133189673147,176.23225849529868 A185.30156250000002,185.30156250000002 0 0 1 -172.2890356108522,-68.21405480708441 L-4.307225890271305,-1.7053513701771101 A4.6325390625,4.6325390625 0 0 0 1.4315332974182866,4.405806462382467 Z", -58.296875, 70.96875)).to.be(true);
     });
     
     it("Snap.path.intersection", function () {
@@ -379,19 +382,19 @@ describe("Path methods", function () {
         checkXY(5, 27.5, 50);
         checkXY(6, 40, 85.71);
         checkXY(7, 25.5, 90);
-        checkXY(8, 48.08, 108.79);
-        checkXY(9, 24.45, 110.99);
+        checkXY(8, 48.06, 108.75);
+        checkXY(9, 24.46, 110.77);
         checkXY(10, 45, 100);
         checkXY(11, 25, 100);
-        checkXY(12, 23.92, 121.52);
-        checkXY(13, 59.46, 141.32);
+        checkXY(12, 23.91, 121.7);
+        checkXY(13, 59.46, 141.31);
         checkXY(14, 59, 140);
         checkXY(15, 23, 140);
-        checkXY(16, 108.53, 24.91);
+        checkXY(16, 108.55, 24.82);
         checkXY(17, 83.33, 10);
         checkXY(18, 106, 42);
         checkXY(19, 104.81, 50);
-        checkXY(20, 97.45, 99.7);
+        checkXY(20, 97.49, 99.44);
         checkXY(21, 100.37, 80);
     });
 });

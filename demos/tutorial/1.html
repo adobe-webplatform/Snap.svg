@@ -140,97 +140,34 @@
     </head>
     <body>
         <ol id="codelines">
-<li>// First, let's create our drawing surface out of an existing SVG element
-// If you want to create a new surface just provide dimensions
-// like s = Snap(800, 600);
+<li>// Simple dashed pattern on circle
 var s = Snap("#svg");</li>
-<li>// Let's create a big circle in the middle:
-var bigCircle = s.circle(150, 150, 100);
-// By default it is black, let's change its attributes</li>
+<li>// This will be our shape. It could be anything.
+var bigCircle = s.circle(150, 150, 100);</li>
 <li>bigCircle.attr({
-    fill: "#bada55",
     stroke: "#000",
     strokeWidth: 5
 });</li>
-<li>// Now let's create another small circle:
-var smallCircle = s.circle(100, 150, 70);</li>
-<li>// Let's put this small circle and another one into a group:
-var discs = s.group(smallCircle, s.circle(200, 150, 70));</li>
-<li>// Now we can change attributes for the whole group
-discs.attr({
-    fill: "#fff"
-});</li>
-<li>// Now more interesting stuff
-// Let's assign this group as a mask for our big circle
-bigCircle.attr({
-    mask: discs
-});</li>
-<li>// Despite our small circle being part of a group
-// and part of a mask we can still access it:
-smallCircle.animate({r: 50}, 1000);</li>
-<li>// We don’t have a reference for second small circle,
-// but we can easily grab it with CSS selectors:
-discs.select("circle:nth-child(2)").animate({r: 50}, 1000);</li>
 <li>// Now let's create pattern
-var p = s.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
+var p = s.path("M110,95,95,110M115,100,100,115").attr({
         fill: "none",
         stroke: "#bada55",
-        strokeWidth: 5
+        strokeWidth: 4
     });
-// To create a pattern,
-// just specify dimensions in the pattern method:
-p = p.pattern(0, 0, 10, 10);
-// Then use it as a fill on the big circle
+</li>
+<li>//This is where our pattern cut will happen:
+var cut = s.rect(100, 100, 10, 10).attr({fill: "#fff", opacity: .5})</li>
+<li>cut.remove();</li>
+<li>//make it a pattern
+var ptrn = p.pattern(100, 100, 10, 10);
+//ptrn is an invisible &lt;pattern> element.</li>
+<li>// Then use it as a fill on the big circle
 bigCircle.attr({
-    fill: p
+    fill: ptrn
 });</li>
-<li>// We can also grab a pattern from an SVG
-// already embedded into our page
-discs.attr({
-    fill: Snap("#pattern")
-});</li>
-<li>// Let's change the fill of the circles to gradient
-// This string means relative radial gradient
-// from white to black
-discs.attr({fill: "r()#fff-#000"});
-// Note that we have two gradients, one for each circle</li>
-<li>// If we want them to share one gradient,
-// we need to use an absolute gradient with capital R
-discs.attr({fill: "R(150, 150, 100)#fff-#000"});</li>
-<li>// Of course we can animate color as well
-p.select("path").animate({stroke: "#f00"}, 1000);</li>
-<li>// Now let's load an external SVG file:
-Snap.load("mascot.svg", function (f) {
-    // Note that we traverse and change attr before the SVG
-    // is even added to the page
-    f.select("polygon[fill='#09B39C']").attr({fill: "#bada55"});
-    g = f.select("g");
-    s.append(g);
-    // Making croc draggable. Go ahead drag it around!
-    g.drag();
-    // Obviously drag could take event handlers too
-    // Looks like our croc is made from more than one polygon...
-});</li>
-<li class="replace">// Now let's load an external SVG file:
-Snap.load("mascot.svg", function (f) {
-    // Note that we traverse and change attr before SVG
-    // is even added to the page
-    f.selectAll("polygon[fill='#09B39C']").attr({fill: "#bada55"});
-    g = f.select("g");
-    s.append(g);
-    // Making croc draggable. Go ahead drag it around!
-    g.drag();
-    // Obviously drag could take event handlers too
-    // That’s better! selectAll for the rescue.
-});</li>
-<li>// Writing text is as simple as:
-s.text(200, 100, "Snap.svg");</li>
-<li>// Provide an array of strings (or arrays), to generate tspans
-var t = s.text(200, 120, ["Snap", ".", "svg"]);
-t.selectAll("tspan:nth-child(3)").attr({
-    fill: "#900",
-    "font-size": "20px"
-});</li>
+<li>//We still have access to original path for the pattern, lets animate it a bit:</li>
+<li>p.animate({strokeWidth: 1, stroke: "#FF4136"}, 1e3);
+//Note that pattern could have as many elements as you want</li>
         </ol>
         <svg id="svg"></svg>
         <pre class="javascript code"><code data-language="javascript" class="language-javascript" id="code"></code></pre>

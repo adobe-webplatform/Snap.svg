@@ -38,6 +38,10 @@ h5:hover a.dr-sourceline {
 .dr-type {
     float: left;
 }
+.dr-title {
+    float: left;
+    margin: 0 8px 0 0;
+}
 .dr-type em,
 .dr-returns em,
 .dr-property em {

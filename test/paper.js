@@ -57,6 +57,28 @@ describe("Paper methods", function () {
         paper.remove();
     });
 
+    it("Paper.svg", function() {
+        var c = paper.svg();
+        expect(c.node.nodeName).to.be("svg");
+        expect(c.node.parentNode).to.be(paper.node);
+    });
+    it("Paper.svg(x, y)", function() {
+        var c = paper.svg(100, 200);
+        expect(c.node.nodeName).to.be("svg");
+        expect(c.node.x.baseVal.value).to.be(100);
+        expect(c.node.y.baseVal.value).to.be(200);
+        expect(c.node.parentNode).to.be(paper.node);
+    });
+    it("Paper.svg(x, y, w, h, viewbox)", function() {
+        var c = paper.svg(100, 200, 300, 400, 10, 20, 30, 40);
+        expect(c.node.nodeName).to.be("svg");
+        expect(c.node.x.baseVal.value).to.be(100);
+        expect(c.node.y.baseVal.value).to.be(200);
+        expect(c.node.width.baseVal.value).to.be(300);
+        expect(c.node.height.baseVal.value).to.be(400);
+        expect(c.node.getAttribute("viewBox")).to.be("10 20 30 40");
+        expect(c.node.parentNode).to.be(paper.node);
+    });
     it("Paper.el", function() {
         var c = paper.el("circle");
         expect(c.node.nodeName).to.be("circle");
