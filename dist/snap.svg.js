@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-05-29
+// build: 2014-06-03
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -2149,7 +2149,7 @@ function Element(el) {
                 i,
                 localString = local.toTransformString(),
                 string = Str(local) == Str(this.matrix) ?
-                            _.transform : localString;
+                            Str(_.transform) : localString;
             while (papa.type != "svg" && (papa = papa.parent())) {
                 ms.push(extractTransform(papa));
             }
