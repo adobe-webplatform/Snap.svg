@@ -1359,7 +1359,7 @@ function Element(el) {
                 i,
                 localString = local.toTransformString(),
                 string = Str(local) == Str(this.matrix) ?
-                            _.transform : localString;
+                            Str(_.transform) : localString;
             while (papa.type != "svg" && (papa = papa.parent())) {
                 ms.push(extractTransform(papa));
             }
