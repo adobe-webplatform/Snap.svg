@@ -315,7 +315,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      * Paper.ptrn
      [ method ]
      **
-     * Equivalent in behaviour to @Paper.g, except it’s a mask.
+     * Equivalent in behaviour to @Paper.g, except it’s a pattern.
      - x (number) @optional X of the element
      - y (number) @optional Y of the element
      - width (number) @optional width of the element
@@ -325,7 +325,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      - vbw (number) @optional viewbox width
      - vbh (number) @optional viewbox height
      **
-     = (object) the `mask` element
+     = (object) the `pattern` element
      **
     \*/
     proto.ptrn = function (x, y, width, height, vx, vy, vw, vh) {
