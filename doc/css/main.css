@@ -252,10 +252,11 @@ section.examples li {
 /* Side Nav */
 #sideNav {
   background: #4A4D4E;
-  position: absolute;
+  position: fixed;
   width: 100%;
   z-index: 1;
   height: 100%;
+  overflow:auto;
   left: 0;
 }
 #sideNav ul {
@@ -358,11 +359,10 @@ select.docNav {
   /* Side Nav */
   #sideNav {
     background: transparent;
-    width: 220px;
+    width: 240px;
     z-index: 20;
-    left: 10px;
+    padding-left: 10px;
     top: 150px;
-    height: auto;
   }
   #sideNav nav.site {
     display: none;
