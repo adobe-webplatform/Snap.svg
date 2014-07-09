@@ -42,66 +42,43 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     stopTouch = function () {
         return this.originalEvent.stopPropagation();
     },
-    addEvent = (function () {
-        if (glob.doc.addEventListener) {
-            return function (obj, type, fn, element) {
-                var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
-                    f = function (e) {
-                        var scrollY = getScroll("y", element),
-                            scrollX = getScroll("x", element);
-                        if (supportsTouch && touchMap[has](type)) {
-                            for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
-                                if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
-                                    var olde = e;
-                                    e = e.targetTouches[i];
-                                    e.originalEvent = olde;
-                                    e.preventDefault = preventTouch;
-                                    e.stopPropagation = stopTouch;
-                                    break;
-                                }
-                            }
+    addEvent = function (obj, type, fn, element) {
+        var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
+            f = function (e) {
+                var scrollY = getScroll("y", element),
+                    scrollX = getScroll("x", element);
+                if (supportsTouch && touchMap[has](type)) {
+                    for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
+                        if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
+                            var olde = e;
+                            e = e.targetTouches[i];
+                            e.originalEvent = olde;
+                            e.preventDefault = preventTouch;
+                            e.stopPropagation = stopTouch;
+                            break;
                         }
-                        var x = e.clientX + scrollX,
-                            y = e.clientY + scrollY;
-                        return fn.call(element, e, x, y);
-                    };
-
-                if (type !== realName) {
-                    obj.addEventListener(type, f, false);
-                }
-
-                obj.addEventListener(realName, f, false);
-
-                return function () {
-                    if (type !== realName) {
-                        obj.removeEventListener(type, f, false);
                     }
+                }
+                var x = e.clientX + scrollX,
+                    y = e.clientY + scrollY;
+                return fn.call(element, e, x, y);
+            };
 
-                    obj.removeEventListener(realName, f, false);
-                    return true;
-                };
-            };
-        } else if (glob.doc.attachEvent) {
-            return function (obj, type, fn, element) {
-                var f = function (e) {
-                    e = e || element.node.ownerDocument.window.event;
-                    var scrollY = getScroll("y", element),
-                        scrollX = getScroll("x", element),
-                        x = e.clientX + scrollX,
-                        y = e.clientY + scrollY;
-                    e.preventDefault = e.preventDefault || preventDefault;
-                    e.stopPropagation = e.stopPropagation || stopPropagation;
-                    return fn.call(element, e, x, y);
-                };
-                obj.attachEvent("on" + type, f);
-                var detacher = function () {
-                    obj.detachEvent("on" + type, f);
-                    return true;
-                };
-                return detacher;
-            };
+        if (type !== realName) {
+            obj.addEventListener(type, f, false);
         }
-    })(),
+
+        obj.addEventListener(realName, f, false);
+
+        return function () {
+            if (type !== realName) {
+                obj.removeEventListener(type, f, false);
+            }
+
+            obj.removeEventListener(realName, f, false);
+            return true;
+        };
+    },
     drag = [],
     dragMove = function (e) {
         var x = e.clientX,
