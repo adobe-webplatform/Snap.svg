@@ -77,14 +77,13 @@ var has = "hasOwnProperty",
     colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\))\s*$/i,
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
     reURLValue = /^url\(#?([^)]+)\)$/,
-    spaces = "\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029",
-    separator = Snap._.separator = new RegExp("[," + spaces + "]+"),
-    whitespace = new RegExp("[" + spaces + "]", "g"),
-    commaSpaces = new RegExp("[" + spaces + "]*,[" + spaces + "]*"),
+    separator = Snap._.separator = /[,\s]+/,
+    whitespace = /[\s]/g,
+    commaSpaces = /[\s]*,[\s]*/,
     hsrg = {hs: 1, rg: 1},
-    pathCommand = new RegExp("([a-z])[" + spaces + ",]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[" + spaces + "]*,?[" + spaces + "]*)+)", "ig"),
-    tCommand = new RegExp("([rstm])[" + spaces + ",]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[" + spaces + "]*,?[" + spaces + "]*)+)", "ig"),
-    pathValues = new RegExp("(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[" + spaces + "]*,?[" + spaces + "]*", "ig"),
+    pathCommand = /([a-z])[\s,]*((-?\d*\.?\d*(?:e[\-+]?\d+)?[\s]*,?[\s]*)+)/ig,
+    tCommand = /([rstm])[\s,]*((-?\d*\.?\d*(?:e[\-+]?\d+)?[\s]*,?[\s]*)+)/ig,
+    pathValues = /(-?\d*\.?\d*(?:e[\-+]?\\d+)?)[\s]*,?[\s]*/ig,
     idgen = 0,
     idprefix = "S" + (+new Date).toString(36),
     ID = function () {
@@ -130,7 +129,6 @@ function $(el, attr) {
         }
     } else {
         el = glob.doc.createElementNS(xmlns, el);
-        // el.style && (el.style.webkitTapHighlightColor = "rgba(0,0,0,0)");
     }
     return el;
 }
@@ -874,7 +872,7 @@ function svgTransform2string(tstr) {
     return res;
 }
 Snap._.svgTransform2string = svgTransform2string;
-Snap._.rgTransform = new RegExp("^[a-z][" + spaces + "]*-?\\.?\\d", "i");
+Snap._.rgTransform = /^[a-z][\s]*-?\.?\d/i;
 function transform2matrix(tstr, bbox) {
     var tdata = parseTransformString(tstr),
         m = new Snap.Matrix;
@@ -1116,6 +1114,7 @@ function unit2px(el, name, value) {
  = (Element) the current element
 \*/
 Snap.select = function (query) {
+    query = Str(query).replace(/([^\\]):/g, "$1\\:");
     return wrap(glob.doc.querySelector(query));
 };
 /*\
@@ -1613,6 +1612,7 @@ function Element(el) {
      = (Element) result of query selection
     \*/
     elproto.select = function (query) {
+        query = Str(query).replace(/([^\\]):/g, "$1\\:");
         return wrap(this.node.querySelector(query));
     };
     /*\
