@@ -103,16 +103,25 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return out;
     }
+    function isNumeric(obj) {
+        return isFinite(parseFloat(obj));
+    }
+    function arrayEqual(arr1, arr2) {
+        if(!Snap.is(arr1, "array") || !Snap.is(arr2, "array")){
+            return false;
+        }
+        return arr1.sort().toString() == arr2.sort().toString();
+    }
     Element.prototype.equal = function (name, b) {
         return eve("snap.util.equal", this, name, b).firstDefined();
     };
     eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
-        if (a == +a && b == +b) {
+        if (isNumeric(a) && isNumeric(b)) {
             return {
-                from: +a,
-                to: +b,
+                from: parseFloat(a),
+                to: parseFloat(b),
                 f: getNumber
             };
         }
@@ -155,7 +164,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         aUnit = a.match(reUnit);
         var bUnit = Str(b).match(reUnit);
-        if (aUnit && aUnit == bUnit) {
+        if (aUnit && arrayEqual(aUnit, bUnit)) {
             return {
                 from: parseFloat(a),
                 to: parseFloat(b),
