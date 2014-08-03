@@ -367,7 +367,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     \*/
     proto.use = function (id) {
         if (id != null) {
-            var el = make("use", this.node);
+            var el = Snap._.make("use", this.node);
             if (id instanceof Element) {
                 if (!id.attr("id")) {
                     id.attr({id: ID()});

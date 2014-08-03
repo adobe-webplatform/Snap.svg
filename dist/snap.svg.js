@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-07-31
+// build: 2014-08-03
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -3729,7 +3729,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 });
             }
             $(this.node, {
-                "clip-path": URL(clip.id)
+                "clip-path": URL(clip.node.id || clip.id)
             });
         }
     }));
@@ -4222,6 +4222,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         return this;
     };
 });
+
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -4680,7 +4681,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     \*/
     proto.use = function (id) {
         if (id != null) {
-            var el = make("use", this.node);
+            var el = Snap._.make("use", this.node);
             if (id instanceof Element) {
                 if (!id.attr("id")) {
                     id.attr({id: ID()});
@@ -4997,6 +4998,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         };
     }());
 });
+
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");

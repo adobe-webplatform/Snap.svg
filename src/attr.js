@@ -63,7 +63,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 });
             }
             $(this.node, {
-                "clip-path": URL(clip.id)
+                "clip-path": URL(clip.node.id || clip.id)
             });
         }
     }));
