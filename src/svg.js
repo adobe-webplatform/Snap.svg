@@ -86,8 +86,8 @@ var has = "hasOwnProperty",
     pathValues = /(-?\d*\.?\d*(?:e[\-+]?\\d+)?)[\s]*,?[\s]*/ig,
     idgen = 0,
     idprefix = "S" + (+new Date).toString(36),
-    ID = function () {
-        return idprefix + (idgen++).toString(36);
+    ID = function (el) {
+        return (el && el.type ? el.type : E) + idprefix + (idgen++).toString(36);
     },
     xlink = "http://www.w3.org/1999/xlink",
     xmlns = "http://www.w3.org/2000/svg",
@@ -1171,8 +1171,7 @@ function Element(el) {
     if (el.snap in hub) {
         return hub[el.snap];
     }
-    var id = this.id = ID(),
-        svg;
+    var svg;
     try {
         svg = el.ownerSVGElement;
     } catch(e) {}
@@ -1199,6 +1198,7 @@ function Element(el) {
      * SVG tag name of the given element.
     \*/
     this.type = el.tagName;
+    var id = this.id = ID(this);
     this.anims = {};
     this._ = {
         transform: []
@@ -1208,7 +1208,7 @@ function Element(el) {
     if (this.type == "g") {
         this.add = add2group;
     }
-    if (this.type in {"g": 1, "mask": 1, "pattern": 1}) {
+    if (this.type in {g: 1, mask: 1, pattern: 1, symbol: 1}) {
         for (var method in Paper.prototype) if (Paper.prototype[has](method)) {
             this[method] = Paper.prototype[method];
         }

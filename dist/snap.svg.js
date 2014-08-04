@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-08-03
+// build: 2014-08-04
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -876,8 +876,8 @@ var has = "hasOwnProperty",
     pathValues = /(-?\d*\.?\d*(?:e[\-+]?\\d+)?)[\s]*,?[\s]*/ig,
     idgen = 0,
     idprefix = "S" + (+new Date).toString(36),
-    ID = function () {
-        return idprefix + (idgen++).toString(36);
+    ID = function (el) {
+        return (el && el.type ? el.type : E) + idprefix + (idgen++).toString(36);
     },
     xlink = "http://www.w3.org/1999/xlink",
     xmlns = "http://www.w3.org/2000/svg",
@@ -1961,8 +1961,7 @@ function Element(el) {
     if (el.snap in hub) {
         return hub[el.snap];
     }
-    var id = this.id = ID(),
-        svg;
+    var svg;
     try {
         svg = el.ownerSVGElement;
     } catch(e) {}
@@ -1989,6 +1988,7 @@ function Element(el) {
      * SVG tag name of the given element.
     \*/
     this.type = el.tagName;
+    var id = this.id = ID(this);
     this.anims = {};
     this._ = {
         transform: []
@@ -1998,7 +1998,7 @@ function Element(el) {
     if (this.type == "g") {
         this.add = add2group;
     }
-    if (this.type in {"g": 1, "mask": 1, "pattern": 1}) {
+    if (this.type in {g: 1, mask: 1, pattern: 1, symbol: 1}) {
         for (var method in Paper.prototype) if (Paper.prototype[has](method)) {
             this[method] = Paper.prototype[method];
         }
@@ -4075,6 +4075,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     eve.on("snap.util.getattr.fontSize", getFontSize)(-1);
     eve.on("snap.util.getattr.font-size", getFontSize)(-1);
 });
+
 // Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -4681,17 +4682,36 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     \*/
     proto.use = function (id) {
         if (id != null) {
-            var el = Snap._.make("use", this.node);
             if (id instanceof Element) {
                 if (!id.attr("id")) {
-                    id.attr({id: ID()});
+                    id.attr({id: Snap._.id(id)});
                 }
                 id = id.attr("id");
             }
-            return this.el("use", {"xlink:href": id});
+            return this.el("use", {"xlink:href": "#" + id});
         } else {
             return Element.prototype.use.call(this);
         }
+    };
+    /*\
+     * Paper.symbol
+     [ method ]
+     **
+     * Creates a <symbol> element.
+     - vbx (number) @optional viewbox X
+     - vby (number) @optional viewbox Y
+     - vbw (number) @optional viewbox width
+     - vbh (number) @optional viewbox height
+     = (object) the `symbol` element
+     **
+    \*/
+    proto.symbol = function (vx, vy, vw, vh) {
+        var attr = {};
+        if (vx != null && vy != null && vw != null && vh != null) {
+            attr.viewBox = [vx, vy, vw, vh];
+        }
+
+        return this.el("symbol", attr);
     };
     /*\
      * Paper.text

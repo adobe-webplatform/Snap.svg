@@ -468,6 +468,10 @@
                               </li>
                               
                               <li class="dr-lvl1">
+                                  <a href="#Paper.symbol" class="dr-method"><span>Paper.symbol()</span></a>
+                              </li>
+
+                              <li class="dr-lvl1">
                                   <a href="#Paper.text" class="dr-method"><span>Paper.text()</span></a>
                               </li>
                               
@@ -2750,7 +2754,7 @@ Parses given transform string into an array of transformations
                       
                       <article id="Element.node">
                           <header>
-                              <h3 class="dr-property">Element.node(x, y, width, height, refX, refY)<a href="#Element.node" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1191 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L1191">&#x27ad;</a></h3>
+                              <h3 class="dr-property">Element.node(x, y, width, height, refX, refY)<a href="#Element.node" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1190 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L1190">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.node-extra"></div>
@@ -2801,7 +2805,7 @@ c.node.onclick = function () {
                       
                       <article id="Element.type">
                           <header>
-                              <h3 class="dr-property">Element.type(tstr)<a href="#Element.type" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1201 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L1201">&#x27ad;</a></h3>
+                              <h3 class="dr-property">Element.type(tstr)<a href="#Element.type" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 1200 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L1200">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Element.type-extra"></div>
@@ -7627,9 +7631,78 @@ g.add(c2, c1);</code></pre></section>
                           </section>
                       </article>
                       
+                      <article id="Paper.symbol">
+                          <header>
+                              <h3 class="dr-method">Paper.symbol(vbx, vby, vbw, vbh)<a href="#Paper.symbol" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 393 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L393">&#x27ad;</a></h3>
+                          </header>
+                          <section>
+                              <div class="extra" id="Paper.symbol-extra"></div>
+                              <div class="dr-method">
+
+
+
+
+                                  <p>Creates a &lt;symbol&gt; element.
+</p>
+
+
+
+
+
+
+
+
+
+
+                                  <div class="topcoat-list__container">
+                                      <h3 class="topcoat-list__header">Parameters</h3>
+                                      <ol class="topcoat-list">
+                                          <li class="topcoat-list__item"><span class="dr-param">vbx</span>
+                                              <span class="dr-type"><em class="dr-type-number">number</em> </span>
+                                              <span class="dr-description"><a href="#optional" class="dr-link">optional</a> viewbox X</span></li>
+                                          <li class="topcoat-list__item"><span class="dr-param">vby</span>
+                                              <span class="dr-type"><em class="dr-type-number">number</em> </span>
+                                              <span class="dr-description"><a href="#optional" class="dr-link">optional</a> viewbox Y</span></li>
+                                          <li class="topcoat-list__item"><span class="dr-param">vbw</span>
+                                              <span class="dr-type"><em class="dr-type-number">number</em> </span>
+                                              <span class="dr-description"><a href="#optional" class="dr-link">optional</a> viewbox width</span></li>
+                                          <li class="topcoat-list__item"><span class="dr-param">vbh</span>
+                                              <span class="dr-type"><em class="dr-type-number">number</em> </span>
+                                              <span class="dr-description"><a href="#optional" class="dr-link">optional</a> viewbox height</span></li>
+
+                                      </ol>
+                                  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  <p class="dr-returns">
+                                      <strong class="dr-title">Returns:</strong>
+
+                                      <em class="dr-type-object">object</em>
+
+                                      <span class="dr-description">the <code>symbol</code> element</span>
+                                  </p>
+
+
+
+
+                              </div>
+                          </section>
+                      </article>
+
                       <article id="Paper.text">
                           <header>
-                              <h3 class="dr-method">Paper.text(x, y, text)<a href="#Paper.text" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 402 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L402">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.text(x, y, text)<a href="#Paper.text" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 421 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L421">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.text-extra"></div>
@@ -7723,7 +7796,7 @@ t1.attr({textpath: pth});</code></pre></section>
                       
                       <article id="Paper.line">
                           <header>
-                              <h3 class="dr-method">Paper.line(x1, y1, x2, y2)<a href="#Paper.line" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 430 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L430">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.line(x1, y1, x2, y2)<a href="#Paper.line" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 449 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L449">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.line-extra"></div>
@@ -7814,7 +7887,7 @@ t1.attr({textpath: pth});</code></pre></section>
                       
                       <article id="Paper.polyline">
                           <header>
-                              <h3 class="dr-method">Paper.polyline(…)<a href="#Paper.polyline" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 459 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L459">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.polyline(…)<a href="#Paper.polyline" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 478 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L478">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.polyline-extra"></div>
@@ -7926,7 +7999,7 @@ var p2 = paper.polyline(10, 10, 100, 100);</code></pre></section>
                       
                       <article id="Paper.polygon">
                           <header>
-                              <h3 class="dr-method">Paper.polygon()<a href="#Paper.polygon" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 477 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L477">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.polygon()<a href="#Paper.polygon" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 496 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L496">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.polygon-extra"></div>
@@ -7951,7 +8024,7 @@ var p2 = paper.polyline(10, 10, 100, 100);</code></pre></section>
                       
                       <article id="Paper.gradient">
                           <header>
-                              <h3 class="dr-method">Paper.gradient(gradient)<a href="#Paper.gradient" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 637 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L637">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.gradient(gradient)<a href="#Paper.gradient" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 656 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L656">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.gradient-extra"></div>
@@ -8149,7 +8222,7 @@ half the width, from black to white:
                       
                       <article id="Paper.toString">
                           <header>
-                              <h3 class="dr-method">Paper.toString()<a href="#Paper.toString" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 653 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L653">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.toString()<a href="#Paper.toString" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 672 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L672">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.toString-extra"></div>
@@ -8191,7 +8264,7 @@ half the width, from black to white:
                       
                       <article id="Paper.clear">
                           <header>
-                              <h3 class="dr-method">Paper.clear()<a href="#Paper.clear" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 672 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L672">&#x27ad;</a></h3>
+                              <h3 class="dr-method">Paper.clear()<a href="#Paper.clear" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 691 in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L691">&#x27ad;</a></h3>
                           </header>
                           <section>
                               <div class="extra" id="Paper.clear-extra"></div>

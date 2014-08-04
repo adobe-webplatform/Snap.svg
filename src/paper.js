@@ -367,17 +367,39 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     \*/
     proto.use = function (id) {
         if (id != null) {
-            var el = Snap._.make("use", this.node);
             if (id instanceof Element) {
                 if (!id.attr("id")) {
-                    id.attr({id: ID()});
+                    id.attr({id: Snap._.id(id)});
                 }
                 id = id.attr("id");
             }
-            return this.el("use", {"xlink:href": id});
+            if (String(id).charAt() == "#") {
+                id = id.substring(1);
+            }
+            return this.el("use", {"xlink:href": "#" + id});
         } else {
             return Element.prototype.use.call(this);
         }
+    };
+    /*\
+     * Paper.symbol
+     [ method ]
+     **
+     * Creates a <symbol> element.
+     - vbx (number) @optional viewbox X
+     - vby (number) @optional viewbox Y
+     - vbw (number) @optional viewbox width
+     - vbh (number) @optional viewbox height
+     = (object) the `symbol` element
+     **
+    \*/
+    proto.symbol = function (vx, vy, vw, vh) {
+        var attr = {};
+        if (vx != null && vy != null && vw != null && vh != null) {
+            attr.viewBox = [vx, vy, vw, vh];
+        }
+
+        return this.el("symbol", attr);
     };
     /*\
      * Paper.text
