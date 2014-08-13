@@ -686,6 +686,18 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             return res;
         };
         /*\
+         * Paper.toDataURL
+         [ method ]
+         **
+         * Returns SVG code for the @Paper as Data URI string.
+         = (string) Data URI string
+        \*/
+        proto.toDataURL = function () {
+            if (window && window.btoa) {
+                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(this)));
+            }
+        };
+        /*\
          * Paper.clear
          [ method ]
          **

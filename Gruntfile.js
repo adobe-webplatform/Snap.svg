@@ -31,6 +31,7 @@ module.exports = function(grunt) {
                     "./src/amd-banner.js",
                     "./src/mina.js",
                     "./src/svg.js",
+                    "./src/element.js",
                     "./src/matrix.js",
                     "./src/attr.js",
                     "./src/class.js",
