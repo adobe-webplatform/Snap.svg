@@ -171,6 +171,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         }
         if (tstr instanceof Snap.Matrix) {
             this.matrix = tstr;
+            this._.transform = tstr.toTransformString();
         } else {
             extractTransform(this, tstr);
         }
