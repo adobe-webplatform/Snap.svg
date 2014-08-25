@@ -331,14 +331,12 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     proto.ptrn = function (x, y, width, height, vx, vy, vw, vh) {
         if (is(x, "object")) {
             var attr = x;
-        } else if (!arguments.length) {
-            attr = {patternUnits: "userSpaceOnUse"};
         } else {
-            attr = {};
-            if (x != null) {
+            attr = {patternUnits: "userSpaceOnUse"};
+            if (x) {
                 attr.x = x;
             }
-            if (y != null) {
+            if (y) {
                 attr.y = y;
             }
             if (width != null) {

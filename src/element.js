@@ -562,12 +562,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         return this;
     };
     /*\
-     * Element.pattern
-     [ method ]
-     **
-     * Depricated. Use @Element.toPattern instead.
-    \*/
-    /*\
      * Element.toPattern
      [ method ]
      **
