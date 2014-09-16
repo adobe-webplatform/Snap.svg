@@ -1,0 +1,19 @@
+{
+  "name": "snapad",
+  "version": "0.0.1",
+  "description": "snap ad",
+  "main": "Gruntfile.js",
+  "repository": {
+    "type": "git"
+  },
+  "author": "CJ Gammon",
+  "license": "Apache License v2",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-compass": "*",
+    "grunt-contrib-requirejs": "*",
+    "grunt-processhtml": "*",
+    "grunt-inline": "*"
+  }
+}

@@ -109,4 +109,33 @@ describe("Primitives creation", function () {
         expect(C.getAttribute("x")).to.be("10");
         expect(C.textContent).to.be("test");
     });
+    it("creates a mask", function () {
+        var c = s.mask();
+        var C = document.querySelector("mask");
+        expect(C).to.not.be(null);
+        expect(C).to.be(c.node);
+    });
+    it("creates a pattern", function () {
+        var c = s.ptrn();
+        var C = document.querySelector("pattern");
+        expect(C).to.not.be(null);
+        expect(C).to.be(c.node);
+    });
+    it("creates a pattern(x, y)", function() {
+        var c = s.ptrn(100, 200);
+        expect(c.node.nodeName).to.be("pattern");
+        expect(c.node.x.baseVal.value).to.be(100);
+        expect(c.node.y.baseVal.value).to.be(200);
+        expect(c.node.parentNode).to.be(s.node);
+    });
+    it("creates a pattern(x, y, w, h, viewbox)", function() {
+        var c = s.ptrn(100, 200, 300, 400, 10, 20, 30, 40);
+        expect(c.node.nodeName).to.be("pattern");
+        expect(c.node.x.baseVal.value).to.be(100);
+        expect(c.node.y.baseVal.value).to.be(200);
+        expect(c.node.width.baseVal.value).to.be(300);
+        expect(c.node.height.baseVal.value).to.be(400);
+        expect(c.node.getAttribute("viewBox")).to.be("10 20 30 40");
+        expect(c.node.parentNode).to.be(s.node);
+    });
 });

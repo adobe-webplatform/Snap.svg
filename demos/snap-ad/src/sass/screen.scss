@@ -1,0 +1,82 @@
+@import 'compass/css3';
+
+.base-font{
+	font-family: 'Open Sans', serif;
+}
+
+.snap-font{
+	font-family: 'Source Sans Pro', serif;
+}
+
+body{
+	margin: 0;
+	cursor: pointer;
+}
+
+text{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+svg{
+	@include transform-origin(top, left);
+	@include transform(scale(1));
+}
+
+#learn-btn{
+	cursor: pointer;
+	
+	path, text{
+		@include transform(translateY(0));
+	}
+	
+	&:hover{
+		path{
+			&:first-child{
+				fill: #076656;
+				
+			}
+		}
+		
+		path{
+			&:nth-child(2){
+				fill: #7cd1c2;
+			}
+		}
+		
+		text{
+			fill: #0a9a87;
+			
+		}
+	};
+	
+	&:active{
+		path{
+			&:nth-child(2){
+				@include transform(translateY(2px));
+			}
+		}
+		
+		text{
+			@include transform(translateY(2px));
+		}
+	}
+}
+
+#replay-btn{
+	&:hover{
+		opacity: 0.5;
+	};
+}
+
+/*
+@media (max-width: 400px) {
+	svg{
+		@include transform(scale(0.375));
+	}
+}
+*/

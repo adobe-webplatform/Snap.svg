@@ -81,7 +81,7 @@
                         display: "none"
                     });
                     var flag,
-                        len = pth.getTotalLength();
+                        len = Snap.path.getTotalLength(pth.attr("d"));
                     Snap.animate(0, len, function (l) {
                         // Safari bug workaround: forcing redraw
                         g.attr({width: 100 + (flag = !flag ? 1e-5 : 0) + "%"});

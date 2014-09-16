@@ -104,6 +104,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return out;
     }
     Element.prototype.equal = function (name, b) {
+        return eve("snap.util.equal", this, name, b).firstDefined();
+    };
+    eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
         if (a == +a && b == +b) {
@@ -142,16 +145,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "points") {
-            A = Str(a).split(",");
-            B = Str(b).split(",");
+            A = Str(a).split(Snap._.separator);
+            B = Str(b).split(Snap._.separator);
             return {
                 from: A,
                 to: B,
                 f: function (val) { return val; }
             };
         }
-        var aUnit = a.match(reUnit),
-            bUnit = Str(b).match(reUnit);
+        aUnit = a.match(reUnit);
+        var bUnit = Str(b).match(reUnit);
         if (aUnit && aUnit == bUnit) {
             return {
                 from: parseFloat(a),
@@ -165,5 +168,5 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: getNumber
             };
         }
-    };
+    });
 });

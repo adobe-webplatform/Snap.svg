@@ -31,12 +31,16 @@ module.exports = function(grunt) {
                     "./src/amd-banner.js",
                     "./src/mina.js",
                     "./src/svg.js",
+                    "./src/matrix.js",
+                    "./src/attr.js",
+                    "./src/attradd.js",
+                    "./src/paper.js",
                     "./src/path.js",
                     "./src/set.js",
                     "./src/equal.js",
                     "./src/mouse.js",
                     "./src/filter.js",
-                    "./src/amd-footer.js",
+                    "./src/amd-footer.js"
                 ]
             }
         },
