@@ -303,6 +303,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     };
     setproto.type = "set";
     // export
+    Snap.Set = Set;
     Snap.set = function () {
         var set = new Set;
         if (arguments.length) {
