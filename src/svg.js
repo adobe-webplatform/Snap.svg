@@ -554,7 +554,6 @@ packageRGB = function (r, g, b, o) {
     is(o, "finite") && (rgb.opacity = o);
     return rgb;
 };
-// SIERRA Clarify if Snap does not support consolidated HSLA/RGBA colors. E.g., can you specify a semi-transparent value for Snap.filter.shadow()?
 /*\
  * Snap.color
  [ method ]
