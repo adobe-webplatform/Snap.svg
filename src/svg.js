@@ -2639,7 +2639,7 @@ Snap.getElementByPoint = function (x, y) {
  * Snap.plugin
  [ method ]
  **
- * Let you write plugins. You pass in a function with four arguments, like this:
+ * Let you write plugins. You pass in a function with five arguments, like this:
  | Snap.plugin(function (Snap, Element, Paper, global, Fragment) {
  |     Snap.newmethod = function () {};
  |     Element.prototype.newmethod = function () {};
