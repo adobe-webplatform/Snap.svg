@@ -127,8 +127,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 }
             },
             cb = 0,
+            set = this,
             callbacker = callback && function () {
-                if (cb++ == this.length) {
+                if (++cb == set.length) {
                     callback.call(this);
                 }
             };
