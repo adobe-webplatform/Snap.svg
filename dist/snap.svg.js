@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-09-17
+// build: 2014-10-28
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -828,7 +828,7 @@ Snap.version = "0.3.0";
 \*/
 function Snap(w, h) {
     if (w) {
-        if (w.tagName) {
+        if (w.nodeType) {
             return wrap(w);
         }
         if (is(w, "array") && Snap.set) {
@@ -838,7 +838,7 @@ function Snap(w, h) {
             return w;
         }
         if (h == null) {
-            w = glob.doc.querySelector(w);
+            w = glob.doc.querySelector(String(w));
             return wrap(w);
         }
     }
@@ -895,33 +895,46 @@ var has = "hasOwnProperty",
 function $(el, attr) {
     if (attr) {
         if (el == "#text") {
-            el = glob.doc.createTextNode(attr.text || "");
+            el = glob.doc.createTextNode(attr.text || attr["#text"] || "");
+        }
+        if (el == "#comment") {
+            el = glob.doc.createComment(attr.text || attr["#text"] || "");
         }
         if (typeof el == "string") {
             el = $(el);
         }
         if (typeof attr == "string") {
-            if (attr.substring(0, 6) == "xlink:") {
-                return el.getAttributeNS(xlink, attr.substring(6));
-            }
-            if (attr.substring(0, 4) == "xml:") {
-                return el.getAttributeNS(xmlns, attr.substring(4));
-            }
-            return el.getAttribute(attr);
-        }
-        for (var key in attr) if (attr[has](key)) {
-            var val = Str(attr[key]);
-            if (val) {
-                if (key.substring(0, 6) == "xlink:") {
-                    el.setAttributeNS(xlink, key.substring(6), val);
-                } else if (key.substring(0, 4) == "xml:") {
-                    el.setAttributeNS(xmlns, key.substring(4), val);
-                } else {
-                    el.setAttribute(key, val);
+            if (el.nodeType == 1) {
+                if (attr.substring(0, 6) == "xlink:") {
+                    return el.getAttributeNS(xlink, attr.substring(6));
                 }
+                if (attr.substring(0, 4) == "xml:") {
+                    return el.getAttributeNS(xmlns, attr.substring(4));
+                }
+                return el.getAttribute(attr);
+            } else if (attr == "text") {
+                return el.nodeValue;
             } else {
-                el.removeAttribute(key);
+                return null;
             }
+        }
+        if (el.nodeType == 1) {
+            for (var key in attr) if (attr[has](key)) {
+                var val = Str(attr[key]);
+                if (val) {
+                    if (key.substring(0, 6) == "xlink:") {
+                        el.setAttributeNS(xlink, key.substring(6), val);
+                    } else if (key.substring(0, 4) == "xml:") {
+                        el.setAttributeNS(xmlns, key.substring(4), val);
+                    } else {
+                        el.setAttribute(key, val);
+                    }
+                } else {
+                    el.removeAttribute(key);
+                }
+            }
+        } else if ("text" in attr) {
+            el.nodeValue = attr.text;
         }
     } else {
         el = glob.doc.createElementNS(xmlns, el);
@@ -1081,6 +1094,83 @@ Snap.rad = rad;
 \*/
 Snap.deg = deg;
 /*\
+ * Snap.sin
+ [ method ]
+ **
+ * Equivalent to `Math.sin()` only works with degrees, not radians.
+ - angle (number) angle in degrees
+ = (number) sin
+\*/
+Snap.sin = function (angle) {
+    return math.sin(Snap.rad(angle));
+};
+/*\
+ * Snap.tan
+ [ method ]
+ **
+ * Equivalent to `Math.tan()` only works with degrees, not radians.
+ - angle (number) angle in degrees
+ = (number) tan
+\*/
+Snap.tan = function (angle) {
+    return math.tan(Snap.rad(angle));
+};
+/*\
+ * Snap.cos
+ [ method ]
+ **
+ * Equivalent to `Math.cos()` only works with degrees, not radians.
+ - angle (number) angle in degrees
+ = (number) cos
+\*/
+Snap.cos = function (angle) {
+    return math.cos(Snap.rad(angle));
+};
+/*\
+ * Snap.asin
+ [ method ]
+ **
+ * Equivalent to `Math.asin()` only works with degrees, not radians.
+ - num (number) value
+ = (number) asin in degrees
+\*/
+Snap.asin = function (num) {
+    return Snap.deg(math.asin(num));
+};
+/*\
+ * Snap.acos
+ [ method ]
+ **
+ * Equivalent to `Math.acos()` only works with degrees, not radians.
+ - num (number) value
+ = (number) acos in degrees
+\*/
+Snap.acos = function (num) {
+    return Snap.deg(math.acos(num));
+};
+/*\
+ * Snap.atan
+ [ method ]
+ **
+ * Equivalent to `Math.atan()` only works with degrees, not radians.
+ - num (number) value
+ = (number) atan in degrees
+\*/
+Snap.atan = function (num) {
+    return Snap.deg(math.atan(num));
+};
+/*\
+ * Snap.atan2
+ [ method ]
+ **
+ * Equivalent to `Math.atan2()` only works with degrees, not radians.
+ - num (number) value
+ = (number) atan2 in degrees
+\*/
+Snap.atan2 = function (num) {
+    return Snap.deg(math.atan2(num));
+};
+/*\
  * Snap.angle
  [ method ]
  **
@@ -1095,6 +1185,100 @@ Snap.deg = deg;
  = (number) angle in degrees
 \*/
 Snap.angle = angle;
+/*\
+ * Snap.len
+ [ method ]
+ **
+ * Returns distance between two points
+ > Parameters
+ - x1 (number) x coord of first point
+ - y1 (number) y coord of first point
+ - x2 (number) x coord of second point
+ - y2 (number) y coord of second point
+ = (number) distance
+\*/
+Snap.len = function (x1, y1, x2, y2) {
+    return Math.sqrt(Snap.len2(x1, y1, x2, y2));
+};
+/*\
+ * Snap.len2
+ [ method ]
+ **
+ * Returns squared distance between two points
+ > Parameters
+ - x1 (number) x coord of first point
+ - y1 (number) y coord of first point
+ - x2 (number) x coord of second point
+ - y2 (number) y coord of second point
+ = (number) distance
+\*/
+Snap.len2 = function (x1, y1, x2, y2) {
+    return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+};
+/*\
+ * Snap.closestPoint
+ [ method ]
+ **
+ * Returns closest point to a given one on a given path.
+ > Parameters
+ - path (Element) path element
+ - x (number) x coord of a point
+ - y (number) y coord of a point
+ = (object) in format
+ {
+    x (number) x coord of the point on the path
+    y (number) y coord of the point on the path
+    length (number) length of the path to the point
+    distance (number) distance from the given point to the path
+ }
+\*/
+// Copied from http://bl.ocks.org/mbostock/8027637
+Snap.closestPoint = function (path, x, y) {
+    function distance2(p) {
+        var dx = p.x - x,
+            dy = p.y - y;
+        return dx * dx + dy * dy;
+    }
+    var pathNode = path.node,
+        pathLength = pathNode.getTotalLength(),
+        precision = pathLength / pathNode.pathSegList.numberOfItems * .125,
+        best,
+        bestLength,
+        bestDistance = Infinity;
+
+    // linear scan for coarse approximation
+    for (var scan, scanLength = 0, scanDistance; scanLength <= pathLength; scanLength += precision) {
+        if ((scanDistance = distance2(scan = pathNode.getPointAtLength(scanLength))) < bestDistance) {
+            best = scan, bestLength = scanLength, bestDistance = scanDistance;
+        }
+    }
+
+    // binary search for precise estimate
+    precision *= .5;
+    while (precision > .5) {
+        var before,
+            after,
+            beforeLength,
+            afterLength,
+            beforeDistance,
+            afterDistance;
+        if ((beforeLength = bestLength - precision) >= 0 && (beforeDistance = distance2(before = pathNode.getPointAtLength(beforeLength))) < bestDistance) {
+            best = before, bestLength = beforeLength, bestDistance = beforeDistance;
+        } else if ((afterLength = bestLength + precision) <= pathLength && (afterDistance = distance2(after = pathNode.getPointAtLength(afterLength))) < bestDistance) {
+            best = after, bestLength = afterLength, bestDistance = afterDistance;
+        } else {
+            precision *= .5;
+        }
+    }
+
+    best = {
+        x: best.x,
+        y: best.y,
+        length: bestLength,
+        distance: Math.sqrt(bestDistance)
+    };
+    return best;
+}
 /*\
  * Snap.is
  [ method ]
@@ -1425,8 +1609,8 @@ Snap.hsb2rgb = function (h, s, v, o) {
     if (is(h, "object") && "h" in h && "s" in h && "b" in h) {
         v = h.b;
         s = h.s;
-        h = h.h;
         o = h.o;
+        h = h.h;
     }
     h *= 360;
     var R, G, B, X, C;
@@ -1960,7 +2144,7 @@ function Element(el) {
      **
      * SVG tag name of the given element.
     \*/
-    this.type = el.tagName;
+    this.type = el.tagName || el.nodeName;
     var id = this.id = ID(this);
     this.anims = {};
     this._ = {
@@ -2006,7 +2190,17 @@ function Element(el) {
         var el = this,
             node = el.node;
         if (!params) {
-            return el;
+            if (node.nodeType != 1) {
+                return {
+                    text: node.nodeValue
+                };
+            }
+            var attr = node.attributes,
+                out = {};
+            for (var i = 0, ii = attr.length; i < ii; i++) {
+                out[attr[i].nodeName] = attr[i].nodeValue;
+            }
+            return out;
         }
         if (is(params, "string")) {
             if (arguments.length > 1) {
@@ -2176,6 +2370,51 @@ Paper.prototype.el = function (name, attr) {
     var el = make(name, this.node);
     attr && el.attr(attr);
     return el;
+};
+/*\
+ * Element.children
+ [ method ]
+ **
+ * Returns array of all the children of the element.
+ = (array) array of Elements
+\*/
+Element.prototype.children = function () {
+    var out = [],
+        ch = this.node.childNodes;
+    for (var i = 0, ii = ch.length; i < ii; i++) {
+        out[i] = Snap(ch[i]);
+    }
+    return out;
+};
+function jsonFiller(root, o) {
+    for (var i = 0, ii = root.length; i < ii; i++) {
+        var item = {
+                type: root[i].type,
+                attr: root[i].attr()
+            },
+            children = root[i].children();
+        o.push(item);
+        if (children.length) {
+            jsonFiller(children, item.childNodes = []);
+        }
+    }
+}
+/*\
+ * Element.toJSON
+ [ method ]
+ **
+ * Returns object representation of the given element and all its children.
+ = (object) in format
+ o {
+ o     type (string) this.type,
+ o     attr (object) attributes map,
+ o     childNodes (array) optional array of children in the same format
+ o }
+\*/
+Element.prototype.toJSON = function () {
+    var out = [];
+    jsonFiller([this], out);
+    return out[0];
 };
 // default
 eve.on("snap.util.getattr", function () {
@@ -2391,7 +2630,7 @@ Snap.getElementByPoint = function (x, y) {
  * Snap.plugin
  [ method ]
  **
- * Let you write plugins. You pass in a function with four arguments, like this:
+ * Let you write plugins. You pass in a function with five arguments, like this:
  | Snap.plugin(function (Snap, Element, Paper, global, Fragment) {
  |     Snap.newmethod = function () {};
  |     Element.prototype.newmethod = function () {};
@@ -4698,6 +4937,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
             if (vx != null && vy != null && vw != null && vh != null) {
                 attr.viewBox = [vx, vy, vw, vh];
+            } else {
+                attr.viewBox = [x || 0, y || 0, width || 0, height || 0];
             }
         }
         return this.el("pattern", attr);
@@ -6359,6 +6600,51 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (boolean) `true` if point is inside
     \*/
     Snap.path.isPointInsideBBox = isPointInsideBBox;
+    Snap.closest = function (x, y, X, Y) {
+        var r = 100,
+            b = box(x - r / 2, y - r / 2, r, r),
+            inside = [],
+            getter = X[0].hasOwnProperty("x") ? function (i) {
+                return {
+                    x: X[i].x,
+                    y: X[i].y
+                };
+            } : function (i) {
+                return {
+                    x: X[i],
+                    y: Y[i]
+                };
+            },
+            found = 0;
+        while (r <= 1e6 && !found) {
+            for (var i = 0, ii = X.length; i < ii; i++) {
+                var xy = getter(i);
+                if (isPointInsideBBox(b, xy.x, xy.y)) {
+                    found++;
+                    inside.push(xy);
+                    break;
+                }
+            }
+            if (!found) {
+                r *= 2;
+                b = box(x - r / 2, y - r / 2, r, r)
+            }
+        }
+        if (r == 1e6) {
+            return;
+        }
+        var len = Infinity,
+            res;
+        for (i = 0, ii = inside.length; i < ii; i++) {
+            var l = Snap.len(x, y, inside[i].x, inside[i].y);
+            if (len > l) {
+                len = l;
+                inside[i].len = l;
+                res = inside[i];
+            }
+        }
+        return res;
+    };
     /*\
      * Snap.path.isBBoxIntersect
      [ method ]
@@ -7117,6 +7403,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             dragi = drag[i];
             dragi.el._drag = {};
             eve("snap.drag.end." + dragi.el.id, dragi.end_scope || dragi.start_scope || dragi.move_scope || dragi.el, e);
+            eve.off("snap.drag.*." + dragi.el.id);
         }
         drag = [];
     };
@@ -7316,6 +7603,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                         f: fn,
                         unbind: addEvent(this.node || document, eventName, fn, scope || this)
                     });
+                } else {
+                    for (var i = 0, ii = this.events.length; i < ii; i++) if (this.events[i].name == eventName) {
+                        try {
+                            this.events[i].f.call(this);
+                        } catch (e) {}
+                    }
                 }
                 return this;
             };
@@ -7396,9 +7689,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
     elproto.drag = function (onmove, onstart, onend, move_scope, start_scope, end_scope) {
+        var el = this;
         if (!arguments.length) {
             var origTransform;
-            return this.drag(function (dx, dy) {
+            return el.drag(function (dx, dy) {
                 this.attr({
                     transform: origTransform + (origTransform ? "T" : "t") + [dx, dy]
                 });
@@ -7408,20 +7702,24 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         function start(e, x, y) {
             (e.originalEvent || e).preventDefault();
-            this._drag.x = x;
-            this._drag.y = y;
-            this._drag.id = e.identifier;
+            el._drag.x = x;
+            el._drag.y = y;
+            el._drag.id = e.identifier;
             !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
-            drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
-            onstart && eve.on("snap.drag.start." + this.id, onstart);
-            onmove && eve.on("snap.drag.move." + this.id, onmove);
-            onend && eve.on("snap.drag.end." + this.id, onend);
-            eve("snap.drag.start." + this.id, start_scope || move_scope || this, x, y, e);
+            drag.push({el: el, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
+            onstart && eve.on("snap.drag.start." + el.id, onstart);
+            onmove && eve.on("snap.drag.move." + el.id, onmove);
+            onend && eve.on("snap.drag.end." + el.id, onend);
+            eve("snap.drag.start." + el.id, start_scope || move_scope || el, x, y, e);
         }
-        this._drag = {};
-        draggable.push({el: this, start: start});
-        this.mousedown(start);
-        return this;
+        function init(e, x, y) {
+            eve("snap.draginit." + el.id, el, e, x, y);
+        }
+        eve.on("snap.draginit." + el.id, start);
+        el._drag = {};
+        draggable.push({el: el, start: start, init: init});
+        el.mousedown(init);
+        return el;
     };
     /*
      * Element.onDragOver
@@ -7442,9 +7740,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     elproto.undrag = function () {
         var i = draggable.length;
         while (i--) if (draggable[i].el == this) {
-            this.unmousedown(draggable[i].start);
+            this.unmousedown(draggable[i].init);
             draggable.splice(i, 1);
             eve.unbind("snap.drag.*." + this.id);
+            eve.unbind("snap.draginit." + this.id);
         }
         !draggable.length && Snap.unmousemove(dragMove).unmouseup(dragUp);
         return this;

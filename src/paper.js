@@ -347,6 +347,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
             if (vx != null && vy != null && vw != null && vh != null) {
                 attr.viewBox = [vx, vy, vw, vh];
+            } else {
+                attr.viewBox = [x || 0, y || 0, width || 0, height || 0];
             }
         }
         return this.el("pattern", attr);
