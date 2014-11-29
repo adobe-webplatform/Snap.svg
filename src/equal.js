@@ -73,6 +73,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     function getNumber(val) {
         return val;
     }
+    function getViewBox(val) {
+        return val.join(" ");
+    }
     function getUnit(unit) {
         return function (val) {
             return +val.toFixed(3) + unit;
@@ -123,6 +126,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 from: [A.r, A.g, A.b, A.opacity],
                 to: [B.r, B.g, B.b, B.opacity],
                 f: getColour
+            };
+        }
+        if (name == "viewBox") {
+            A = this.attr(name).vb.split(" ").map(function(item){return parseFloat(item)});
+            B = b.split(" ").map(function(item){return parseFloat(item)});
+            return {
+                from: A,
+                to: B,
+                f: getViewBox
             };
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
