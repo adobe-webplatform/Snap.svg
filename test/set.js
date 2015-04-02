@@ -6,6 +6,60 @@ describe("Set methods", function () {
     afterEach(function () {
         s.remove();
     });
+    it("Set.animate", function(done) {
+        var circle = s.circle(10, 20, 30);
+        var square = s.rect(60, 60, 30, 30);
+        var set = Snap.set(circle, square);
+        var result = set.animate({opacity: .5}, 10);
+        setTimeout(function() {
+            result.forEach(function (el) {
+              var o = el.attr("opacity");
+              expect(o).to.be("0.5");
+            });
+            done();
+        }, 50);
+        expect(result).to.be(set);
+    });    
+    it("Set.animate - with callback", function(done) {
+        var circle = s.circle(10, 20, 30);
+        var square = s.rect(60, 60, 30, 30);
+        var set = Snap.set(circle, square);
+        var result = set.animate({opacity: .5}, 10, function() {
+            result.forEach(function (el) {
+              var o = el.attr("opacity");
+              expect(o).to.be("0.5");
+            });
+            done();
+        });
+        expect(result).to.be(set);
+    });
+    it("Set.animate - with easing", function(done) {
+        var circle = s.circle(10, 20, 30);
+        var square = s.rect(60, 60, 30, 30);
+        var set = Snap.set(circle, square);
+        var result = set.animate({opacity: .5}, 10, mina.easein);
+        setTimeout(function() {
+            result.forEach(function (el) {
+              var o = el.attr("opacity");
+              expect(o).to.be("0.5");
+            });
+            done();
+        }, 50);
+        expect(result).to.be(set);
+    });
+    it("Set.animate - with callback & easing", function(done) {
+        var circle = s.circle(10, 20, 30);
+        var square = s.rect(60, 60, 30, 30);
+        var set = Snap.set(circle, square);
+        var result = set.animate({opacity: .5}, 10, mina.easeout, function() {
+            result.forEach(function (el) {
+              var o = el.attr("opacity");
+              expect(o).to.be("0.5");
+            });
+            done();
+        });
+        expect(result).to.be(set);
+    });
     it("Set.clear", function() {
         var rect1 = s.rect(10, 20, 30, 40);
         var rect2 = s.rect(10, 20, 30, 40);
