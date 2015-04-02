@@ -1,3 +1,16 @@
+#0.4.0
+
+* Moved class and element related code into separate plugins
+* Added `Element.align()` and `Element.getAlign()` methods
+* Added animation support for `viewBox`
+* Added support for `<symbol>`
+* Added method `Paper.toDataURL()`
+* Added method `Snap.closest()`
+* Added methods to work with degrees instead of radians: `Snap.sin()`, `Snap.cos()`, `Snap.tan()`, `Snap.asin()`, `Snap.acos()`, `Snap.atan()` and `Snap.atan2()`
+* Added methods `Snap.len()`, `Snap.len2()` and `Snap.closestPoint()`
+* Added methods `Element.children()` and `Element.toJSON()`
+* Various bug fixes
+
 #0.3.0
 
 * Added `.addClass()`, `.removeClass()`, `.toggleClass()` and `.hasClass()` APIs
