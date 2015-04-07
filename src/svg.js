@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.3.0";
+Snap.version = "0.4.0";
 /*\
  * Snap
  [ method ]
@@ -634,7 +634,6 @@ Snap.getRGB = cacher(function (colour) {
     }
     return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
 }, Snap);
-// SIERRA It seems odd that the following 3 conversion methods are not expressed as .this2that(), like the others.
 /*\
  * Snap.hsb
  [ method ]
@@ -940,7 +939,6 @@ Snap.rgb2hsl = function (r, g, b) {
 };
 
 // Transformations
-// SIERRA Snap.parsePathString(): By _array of arrays,_ I assume you mean a format like this for two separate segments? [ ["M10,10","L90,90"], ["M90,10","L10,90"] ] Otherwise how is each command structured?
 /*\
  * Snap.parsePathString
  [ method ]
@@ -1456,7 +1454,6 @@ Snap.parse = function (svg) {
 function Fragment(frag) {
     this.node = frag;
 }
-// SIERRA Snap.fragment() could especially use a code example
 /*\
  * Snap.fragment
  [ method ]
