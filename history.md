@@ -1,3 +1,7 @@
+#0.4.1
+
+* Bug fixes.
+
 #0.4.0
 
 * Moved class and element related code into separate plugins
@@ -35,7 +39,7 @@
 * Get rid of internal SVG parser in favor of the browser
 * Fix for `xlink:href` setting for images
 * Fix `Element.animate()`
-* Fix for animate and stroke-dashoffset 
+* Fix for animate and stroke-dashoffset
 * Absolute transforms fix
 * Fix for animation of SVG transformations, matrices and polygon points
 * Various bug fixes
