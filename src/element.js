@@ -104,7 +104,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (!Snap._.rgTransform.test(tstr)) {
                 tstr = Snap._.svgTransform2string(tstr);
             } else {
-                tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || E);
+                tstr = Str(tstr).replace(/\.{3}|\u2026/g, el._.transform || "");
             }
             if (is(tstr, "array")) {
                 tstr = Snap.path ? Snap.path.toString.call(tstr) : Str(tstr);
@@ -404,7 +404,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (Element) result of query selection
     \*/
     elproto.select = function (query) {
-        query = Str(query).replace(/([^\\]):/g, "$1\\:");
         return wrap(this.node.querySelector(query));
     };
     /*\
@@ -798,7 +797,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         if (attrs instanceof Animation) {
             callback = attrs.callback;
             easing = attrs.easing;
-            ms = easing.dur;
+            ms = attrs.dur;
             attrs = attrs.attr;
         }
         var fkeys = [], tkeys = [], keys = {}, from, to, f, eq,
