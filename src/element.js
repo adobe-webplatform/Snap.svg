@@ -830,10 +830,12 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         anim._callback = callback;
         eve("snap.animcreated." + el.id, anim);
         eve.once("mina.finish." + anim.id, function () {
+            eve.off("mina.*." + anim.id);
             delete el.anims[anim.id];
             callback && callback.call(el);
         });
         eve.once("mina.stop." + anim.id, function () {
+            eve.off("mina.*." + anim.id);
             delete el.anims[anim.id];
         });
         return el;
