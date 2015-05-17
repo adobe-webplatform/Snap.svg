@@ -121,13 +121,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
-        if (isNumeric(a) && isNumeric(b)) {
-            return {
-                from: parseFloat(a),
-                to: parseFloat(b),
-                f: getNumber
-            };
-        }
         if (names[name] == "colour") {
             A = Snap.color(a);
             B = Snap.color(b);
@@ -172,6 +165,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 from: A,
                 to: B,
                 f: function (val) { return val; }
+            };
+        }
+        if (isNumeric(a) && isNumeric(b)) {
+            return {
+                from: parseFloat(a),
+                to: parseFloat(b),
+                f: getNumber
             };
         }
         var aUnit = a.match(reUnit),
