@@ -19,7 +19,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         getSomeDefs = Snap._.getSomeDefs,
         reURLValue = /^url\(#?([^)]+)\)$/,
         $ = Snap._.$,
-        URL = Snap.url,
+        URL = function(url) { return Snap.url(url); },
         Str = String,
         separator = Snap._.separator,
         E = "";

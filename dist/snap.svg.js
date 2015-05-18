@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2015-04-13
+// build: 2015-05-18
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -795,13 +795,13 @@ var mina = (function (eve) {
     return mina;
 })(typeof eve == "undefined" ? function () {} : eve);
 // Copyright (c) 2013 - 2015 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -809,7 +809,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.4.0";
+Snap.version = "0.4.1";
 /*\
  * Snap
  [ method ]
@@ -888,9 +888,10 @@ var has = "hasOwnProperty",
     xlink = "http://www.w3.org/1999/xlink",
     xmlns = "http://www.w3.org/2000/svg",
     hub = {},
-    URL = Snap.url = function (url) {
+    URLBAK = Snap.url = function (url) {
         return "url('#" + url + "')";
-    };
+    },
+    URL = function(url) { return Snap.url(url); };
 
 function $(el, attr) {
     if (attr) {
@@ -1515,7 +1516,7 @@ prepareRGB = function (r, g, b) {
         g /= 255;
         b /= 255;
     }
-    
+
     return [r, g, b];
 },
 packageRGB = function (r, g, b, o) {
@@ -1753,7 +1754,7 @@ Snap.parsePathString = function (pathString) {
     if (pth.arr) {
         return Snap.path.clone(pth.arr);
     }
-    
+
     var paramCounts = {a: 7, c: 6, o: 2, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, u: 3, z: 0},
         data = [];
     if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
@@ -3955,7 +3956,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         getSomeDefs = Snap._.getSomeDefs,
         reURLValue = /^url\(#?([^)]+)\)$/,
         $ = Snap._.$,
-        URL = Snap.url,
+        URL = function(url) { return Snap.url(url); },
         Str = String,
         separator = Snap._.separator,
         E = "";
