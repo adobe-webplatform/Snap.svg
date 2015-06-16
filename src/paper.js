@@ -315,7 +315,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      * Paper.ptrn
      [ method ]
      **
-     * Equivalent in behaviour to @Paper.g, except it’s a mask.
+     * Equivalent in behaviour to @Paper.g, except it’s a pattern.
      - x (number) @optional X of the element
      - y (number) @optional Y of the element
      - width (number) @optional width of the element
@@ -325,20 +325,18 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      - vbw (number) @optional viewbox width
      - vbh (number) @optional viewbox height
      **
-     = (object) the `mask` element
+     = (object) the `pattern` element
      **
     \*/
     proto.ptrn = function (x, y, width, height, vx, vy, vw, vh) {
         if (is(x, "object")) {
             var attr = x;
-        } else if (!arguments.length) {
-            attr = {patternUnits: "userSpaceOnUse"};
         } else {
-            attr = {};
-            if (x != null) {
+            attr = {patternUnits: "userSpaceOnUse"};
+            if (x) {
                 attr.x = x;
             }
-            if (y != null) {
+            if (y) {
                 attr.y = y;
             }
             if (width != null) {
@@ -349,6 +347,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
             if (vx != null && vy != null && vw != null && vh != null) {
                 attr.viewBox = [vx, vy, vw, vh];
+            } else {
+                attr.viewBox = [x || 0, y || 0, width || 0, height || 0];
             }
         }
         return this.el("pattern", attr);
@@ -367,17 +367,39 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     \*/
     proto.use = function (id) {
         if (id != null) {
-            var el = make("use", this.node);
             if (id instanceof Element) {
                 if (!id.attr("id")) {
-                    id.attr({id: ID()});
+                    id.attr({id: Snap._.id(id)});
                 }
                 id = id.attr("id");
             }
-            return this.el("use", {"xlink:href": id});
+            if (String(id).charAt() == "#") {
+                id = id.substring(1);
+            }
+            return this.el("use", {"xlink:href": "#" + id});
         } else {
             return Element.prototype.use.call(this);
         }
+    };
+    /*\
+     * Paper.symbol
+     [ method ]
+     **
+     * Creates a <symbol> element.
+     - vbx (number) @optional viewbox X
+     - vby (number) @optional viewbox Y
+     - vbw (number) @optional viewbox width
+     - vbh (number) @optional viewbox height
+     = (object) the `symbol` element
+     **
+    \*/
+    proto.symbol = function (vx, vy, vw, vh) {
+        var attr = {};
+        if (vx != null && vy != null && vw != null && vh != null) {
+            attr.viewBox = [vx, vy, vw, vh];
+        }
+
+        return this.el("symbol", attr);
     };
     /*\
      * Paper.text
@@ -662,6 +684,18 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             res = d.innerHTML;
             f.removeChild(f.firstChild);
             return res;
+        };
+        /*\
+         * Paper.toDataURL
+         [ method ]
+         **
+         * Returns SVG code for the @Paper as Data URI string.
+         = (string) Data URI string
+        \*/
+        proto.toDataURL = function () {
+            if (window && window.btoa) {
+                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(this)));
+            }
         };
         /*\
          * Paper.clear

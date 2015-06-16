@@ -5,6 +5,12 @@ A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://s
 
 [Follow us on Twitter.](https://twitter.com/snapsvg)
 
+### Install
+* [Bower](http://bower.io/) - `bower install snap.svg`
+* Manual Minified - https://github.com/adobe-webplatform/Snap.svg/raw/master/dist/snap.svg-min.js
+* Manual Unminified - https://raw.githubusercontent.com/adobe-webplatform/Snap.svg/master/dist/snap.svg.js
+
+
 ### Learn
 
 * [About Snap.svg](http://snapsvg.io/about/)

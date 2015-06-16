@@ -78,6 +78,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return +val.toFixed(3) + unit;
         };
     }
+    function getViewBox(val) {
+        return val.join(" ");
+    }
     function getColour(clr) {
         return Snap.rgb(clr[0], clr[1], clr[2]);
     }
@@ -103,16 +106,25 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return out;
     }
+    function isNumeric(obj) {
+        return isFinite(parseFloat(obj));
+    }
+    function arrayEqual(arr1, arr2) {
+        if (!Snap.is(arr1, "array") || !Snap.is(arr2, "array")) {
+            return false;
+        }
+        return arr1.toString() == arr2.toString();
+    }
     Element.prototype.equal = function (name, b) {
         return eve("snap.util.equal", this, name, b).firstDefined();
     };
     eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
-        if (a == +a && b == +b) {
+        if (isNumeric(a) && isNumeric(b)) {
             return {
-                from: +a,
-                to: +b,
+                from: parseFloat(a),
+                to: parseFloat(b),
                 f: getNumber
             };
         }
@@ -123,6 +135,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 from: [A.r, A.g, A.b, A.opacity],
                 to: [B.r, B.g, B.b, B.opacity],
                 f: getColour
+            };
+        }
+        if (name == "viewBox") {
+            A = this.attr(name).vb.split(" ").map(Number);
+            B = b.split(" ").map(Number);
+            return {
+                from: A,
+                to: B,
+                f: getViewBox
             };
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
@@ -153,9 +174,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: function (val) { return val; }
             };
         }
-        aUnit = a.match(reUnit);
-        var bUnit = Str(b).match(reUnit);
-        if (aUnit && aUnit == bUnit) {
+        var aUnit = a.match(reUnit),
+            bUnit = Str(b).match(reUnit);
+        if (aUnit && arrayEqual(aUnit, bUnit)) {
             return {
                 from: parseFloat(a),
                 to: parseFloat(b),

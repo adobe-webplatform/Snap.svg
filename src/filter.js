@@ -18,7 +18,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         Str = String,
         $ = Snap._.$;
     Snap.filter = {};
-// SIERRA Paper.filter(): I don't understand the note. Does that mean an HTML should dedicate a separate SVG region for a filter definition? What's the advantage over a DEFS?
     /*\
      * Paper.filter
      [ method ]
@@ -274,6 +273,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         if (amount == null) {
             amount = 1;
         }
+//        <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" color-interpolation-filters="sRGB"/>
         return Snap.format('<feComponentTransfer><feFuncR type="table" tableValues="{amount} {amount2}"/><feFuncG type="table" tableValues="{amount} {amount2}"/><feFuncB type="table" tableValues="{amount} {amount2}"/></feComponentTransfer>', {
             amount: amount,
             amount2: 1 - amount

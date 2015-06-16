@@ -1289,6 +1289,51 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (boolean) `true` if point is inside
     \*/
     Snap.path.isPointInsideBBox = isPointInsideBBox;
+    Snap.closest = function (x, y, X, Y) {
+        var r = 100,
+            b = box(x - r / 2, y - r / 2, r, r),
+            inside = [],
+            getter = X[0].hasOwnProperty("x") ? function (i) {
+                return {
+                    x: X[i].x,
+                    y: X[i].y
+                };
+            } : function (i) {
+                return {
+                    x: X[i],
+                    y: Y[i]
+                };
+            },
+            found = 0;
+        while (r <= 1e6 && !found) {
+            for (var i = 0, ii = X.length; i < ii; i++) {
+                var xy = getter(i);
+                if (isPointInsideBBox(b, xy.x, xy.y)) {
+                    found++;
+                    inside.push(xy);
+                    break;
+                }
+            }
+            if (!found) {
+                r *= 2;
+                b = box(x - r / 2, y - r / 2, r, r)
+            }
+        }
+        if (r == 1e6) {
+            return;
+        }
+        var len = Infinity,
+            res;
+        for (i = 0, ii = inside.length; i < ii; i++) {
+            var l = Snap.len(x, y, inside[i].x, inside[i].y);
+            if (len > l) {
+                len = l;
+                inside[i].len = l;
+                res = inside[i];
+            }
+        }
+        return res;
+    };
     /*\
      * Snap.path.isBBoxIntersect
      [ method ]

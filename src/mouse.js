@@ -42,66 +42,43 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     stopTouch = function () {
         return this.originalEvent.stopPropagation();
     },
-    addEvent = (function () {
-        if (glob.doc.addEventListener) {
-            return function (obj, type, fn, element) {
-                var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
-                    f = function (e) {
-                        var scrollY = getScroll("y", element),
-                            scrollX = getScroll("x", element);
-                        if (supportsTouch && touchMap[has](type)) {
-                            for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
-                                if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
-                                    var olde = e;
-                                    e = e.targetTouches[i];
-                                    e.originalEvent = olde;
-                                    e.preventDefault = preventTouch;
-                                    e.stopPropagation = stopTouch;
-                                    break;
-                                }
-                            }
+    addEvent = function (obj, type, fn, element) {
+        var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
+            f = function (e) {
+                var scrollY = getScroll("y", element),
+                    scrollX = getScroll("x", element);
+                if (supportsTouch && touchMap[has](type)) {
+                    for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
+                        if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
+                            var olde = e;
+                            e = e.targetTouches[i];
+                            e.originalEvent = olde;
+                            e.preventDefault = preventTouch;
+                            e.stopPropagation = stopTouch;
+                            break;
                         }
-                        var x = e.clientX + scrollX,
-                            y = e.clientY + scrollY;
-                        return fn.call(element, e, x, y);
-                    };
-
-                if (type !== realName) {
-                    obj.addEventListener(type, f, false);
-                }
-
-                obj.addEventListener(realName, f, false);
-
-                return function () {
-                    if (type !== realName) {
-                        obj.removeEventListener(type, f, false);
                     }
+                }
+                var x = e.clientX + scrollX,
+                    y = e.clientY + scrollY;
+                return fn.call(element, e, x, y);
+            };
 
-                    obj.removeEventListener(realName, f, false);
-                    return true;
-                };
-            };
-        } else if (glob.doc.attachEvent) {
-            return function (obj, type, fn, element) {
-                var f = function (e) {
-                    e = e || element.node.ownerDocument.window.event;
-                    var scrollY = getScroll("y", element),
-                        scrollX = getScroll("x", element),
-                        x = e.clientX + scrollX,
-                        y = e.clientY + scrollY;
-                    e.preventDefault = e.preventDefault || preventDefault;
-                    e.stopPropagation = e.stopPropagation || stopPropagation;
-                    return fn.call(element, e, x, y);
-                };
-                obj.attachEvent("on" + type, f);
-                var detacher = function () {
-                    obj.detachEvent("on" + type, f);
-                    return true;
-                };
-                return detacher;
-            };
+        if (type !== realName) {
+            obj.addEventListener(type, f, false);
         }
-    })(),
+
+        obj.addEventListener(realName, f, false);
+
+        return function () {
+            if (type !== realName) {
+                obj.removeEventListener(type, f, false);
+            }
+
+            obj.removeEventListener(realName, f, false);
+            return true;
+        };
+    },
     drag = [],
     dragMove = function (e) {
         var x = e.clientX,
@@ -151,6 +128,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             dragi = drag[i];
             dragi.el._drag = {};
             eve("snap.drag.end." + dragi.el.id, dragi.end_scope || dragi.start_scope || dragi.move_scope || dragi.el, e);
+            eve.off("snap.drag.*." + dragi.el.id);
         }
         drag = [];
     };
@@ -350,6 +328,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                         f: fn,
                         unbind: addEvent(this.node || document, eventName, fn, scope || this)
                     });
+                } else {
+                    for (var i = 0, ii = this.events.length; i < ii; i++) if (this.events[i].name == eventName) {
+                        try {
+                            this.events[i].f.call(this);
+                        } catch (e) {}
+                    }
                 }
                 return this;
             };
@@ -430,9 +414,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
     elproto.drag = function (onmove, onstart, onend, move_scope, start_scope, end_scope) {
+        var el = this;
         if (!arguments.length) {
             var origTransform;
-            return this.drag(function (dx, dy) {
+            return el.drag(function (dx, dy) {
                 this.attr({
                     transform: origTransform + (origTransform ? "T" : "t") + [dx, dy]
                 });
@@ -442,20 +427,24 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         function start(e, x, y) {
             (e.originalEvent || e).preventDefault();
-            this._drag.x = x;
-            this._drag.y = y;
-            this._drag.id = e.identifier;
+            el._drag.x = x;
+            el._drag.y = y;
+            el._drag.id = e.identifier;
             !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
-            drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
-            onstart && eve.on("snap.drag.start." + this.id, onstart);
-            onmove && eve.on("snap.drag.move." + this.id, onmove);
-            onend && eve.on("snap.drag.end." + this.id, onend);
-            eve("snap.drag.start." + this.id, start_scope || move_scope || this, x, y, e);
+            drag.push({el: el, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
+            onstart && eve.on("snap.drag.start." + el.id, onstart);
+            onmove && eve.on("snap.drag.move." + el.id, onmove);
+            onend && eve.on("snap.drag.end." + el.id, onend);
+            eve("snap.drag.start." + el.id, start_scope || move_scope || el, x, y, e);
         }
-        this._drag = {};
-        draggable.push({el: this, start: start});
-        this.mousedown(start);
-        return this;
+        function init(e, x, y) {
+            eve("snap.draginit." + el.id, el, e, x, y);
+        }
+        eve.on("snap.draginit." + el.id, start);
+        el._drag = {};
+        draggable.push({el: el, start: start, init: init});
+        el.mousedown(init);
+        return el;
     };
     /*
      * Element.onDragOver
@@ -476,9 +465,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     elproto.undrag = function () {
         var i = draggable.length;
         while (i--) if (draggable[i].el == this) {
-            this.unmousedown(draggable[i].start);
+            this.unmousedown(draggable[i].init);
             draggable.splice(i, 1);
             eve.unbind("snap.drag.*." + this.id);
+            eve.unbind("snap.draginit." + this.id);
         }
         !draggable.length && Snap.unmousemove(dragMove).unmouseup(dragUp);
         return this;

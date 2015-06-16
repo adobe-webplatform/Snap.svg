@@ -1,6 +1,6 @@
 {
     "name": "snapsvg",
-    "version": "0.3.0",
+    "version": "0.4.1",
     "description": "JavaScript Vector Library",
     "main": "./dist/snap.svg.js",
     "repository": {
@@ -9,6 +9,9 @@
     },
     "author": "Dmitry Baranovskiy",
     "license": "Apache License v2",
+    "dependencies": {
+        "eve": "~0.4.2"
+    },
     "devDependencies": {
         "grunt": "~0.4.1",
         "grunt-contrib-uglify": "~0.2.0",
@@ -16,7 +19,6 @@
         "grunt-exec": "~0.4.2",
         "mocha": "*",
         "expect.js": "*",
-        "eve": "~0.4.2",
         "dr.js": "~0.1.0"
     }
 }
