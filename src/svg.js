@@ -93,7 +93,7 @@ var has = "hasOwnProperty",
     xmlns = "http://www.w3.org/2000/svg",
     hub = {},
     URL = Snap.url = function (url) {
-        return "url('#" + url + "')";
+        return "url('" + window.location.pathname + "#" + url + "')";
     };
 
 function $(el, attr) {
