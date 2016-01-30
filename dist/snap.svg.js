@@ -7788,7 +7788,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var f = Snap.parse(Str(filstr)),
             id = Snap._.id(),
-             width = paper.node.getBoundingClientRect().width,
+            width = paper.node.getBoundingClientRect().width,
             height = paper.node.getBoundingClientRect().height,
             filter = $("filter");
         $(filter, {
