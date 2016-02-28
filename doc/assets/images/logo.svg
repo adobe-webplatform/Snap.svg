@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="250px" height="250px" viewBox="0 0 250 250">
+     <defs>
+         <linearGradient id="bottom_1_" gradientUnits="userSpaceOnUse" x1="175" y1="111.8719" x2="175" y2="-135.0812" gradientTransform="matrix(1 0 0 -1 -50 111)">
+         	<stop  offset="0" style="stop-color:#002E3B"/>
+         	<stop  offset="1" style="stop-color:#002639"/>
+         </linearGradient>
+         <radialGradient id="right_2_" cx="63.3041" cy="235.6129" r="219.7985" gradientUnits="userSpaceOnUse">
+         	<stop  offset="0" style="stop-color:#00BC85"/>
+         	<stop  offset="1" style="stop-color:#149D91"/>
+         </radialGradient>
+         <radialGradient id="right-2_1_" cx="186.8275" cy="123.7814" r="265.5574" gradientTransform="matrix(1 0 0 -1 -50 111)" gradientUnits="userSpaceOnUse">
+         	<stop  offset="0" style="stop-color:#00BC85"/>
+         	<stop  offset="1" style="stop-color:#149D91"/>
+         </radialGradient>
+         <radialGradient id="left_2_" cx="118.0562" cy="143.2378" r="507.5908" gradientTransform="matrix(1 0 0 -1 -50 111)" gradientUnits="userSpaceOnUse">
+         	<stop  offset="0" style="stop-color:#004473"/>
+         	<stop  offset="1" style="stop-color:#00345F"/>
+         </radialGradient>
+         <linearGradient id="top_1_" gradientUnits="userSpaceOnUse" x1="174.922" y1="110.6136" x2="174.922" y2="-135.0903" gradientTransform="matrix(1 0 0 -1 -50 111)">
+         	<stop  offset="0" style="stop-color:#002E3B"/>
+         	<stop  offset="1" style="stop-color:#002639"/>
+         </linearGradient>
+     </defs>
+<polygon id="bottom" fill="url(#bottom_1_)" stroke="url(#bottom_1_)" points="124.913,210.751 89.063,193.264 89.103,193.245 89.093,193.24 51,211.82 
+	124.941,247.884 199,211.9 160.771,192.962 "/>
+<polygon id="right_1_" fill="url(#right_2_)" stroke="url(#right_2_)" points="51.091,211.945 51.091,174.781 87.749,156.903 125.455,175.5 "/>
+<polygon id="right-2" fill="url(#right-2_1_)" stroke="url(#right-2_1_)" points="165.596,58.995 165.596,117.758 165.596,117.758 165.596,117.758 
+	124.611,137.737 162.301,156.506 198.996,138.632 198.996,38.123 "/>
+<polygon id="left_1_" fill="url(#left_2_)" stroke="url(#left_2_)" points="199,211.912 199,211.912 199,174.746 84.498,117.723 84.498,58.96 
+	51.096,38.088 51.096,138.597 "/>
+<polygon id="top" fill="url(#top_1_)" stroke="url(#top_1_)" points="84.396,58.904 84.396,58.892 124.939,39.118 165.485,58.892 198.844,38.046 
+	124.912,1.985 51,38.035 51,38.067 84.368,58.918 "/>
+</svg>

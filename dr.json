@@ -1,6 +1,6 @@
 {
     "title": "Snap.svg",
-    "output": "doc/reference.html",
+    "output": "doc/index.html",
     "template": "template.dot",
     "files": [{
         "url": "src/svg.js",

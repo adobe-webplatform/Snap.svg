@@ -119,6 +119,10 @@ ol.dr-json ol.dr-json  {
     margin: 0;
     padding: 0 0 0 50px;
 }
+#pageNav li.dr-lvl0 a {
+    color: black !important;
+    font-weight: bold !important;
+}
 #pageNav li.dr-lvl1 a {
     padding-left: 1em;
 }
