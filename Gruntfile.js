@@ -1,3 +1,20 @@
+var SNAP_FILES = [
+  "./src/mina.js",
+  "./src/svg.js",
+  "./src/element.js",
+  "./src/matrix.js",
+  "./src/attr.js",
+  "./src/class.js",
+  "./src/attradd.js",
+  "./src/paper.js",
+  "./src/path.js",
+  "./src/set.js",
+  "./src/equal.js",
+  "./src/mouse.js",
+  "./src/filter.js",
+  "./src/align.js"
+];
+
 module.exports = function(grunt) {
 
     var pkg = grunt.file.readJSON("package.json");
@@ -18,6 +35,10 @@ module.exports = function(grunt) {
             dist: {
                 src: "<%= concat.target.dest %>",
                 dest: "dist/snap.svg-min.js"
+            },
+            'dist.commonjs': {
+                src: "<%= concat.commonjs.dest %>",
+                dest: "dist/snap.svg-commonjs-min.js"
             }
         },
         concat: {
@@ -29,22 +50,15 @@ module.exports = function(grunt) {
                 src: [
                     "./node_modules/eve/eve.js",
                     "./src/amd-banner.js",
-                    "./src/mina.js",
-                    "./src/svg.js",
-                    "./src/element.js",
-                    "./src/matrix.js",
-                    "./src/attr.js",
-                    "./src/class.js",
-                    "./src/attradd.js",
-                    "./src/paper.js",
-                    "./src/path.js",
-                    "./src/set.js",
-                    "./src/equal.js",
-                    "./src/mouse.js",
-                    "./src/filter.js",
-                    "./src/align.js",
-                    "./src/amd-footer.js"
-                ]
+                  ].concat(SNAP_FILES)
+                   .concat(["./src/amd-footer.js"])
+            },
+            commonjs: {
+                dest: "dist/snap.svg.commonjs.js",
+                src: [
+                    "./src/commonjs-banner.js"
+                  ].concat(SNAP_FILES)
+                   .concat(["./src/commonjs-footer.js"])
             }
         },
         exec: {
