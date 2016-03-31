@@ -17,6 +17,7 @@
 // build: 2016-03-31
 
 var eve = require('eve');
+var $ = require('jquery');
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
