@@ -34,11 +34,11 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: "<%= concat.target.dest %>",
-                dest: "dist/snap.svg-min.js"
+                dest: "dist/snapsvg.min.js"
             },
             'dist.commonjs': {
                 src: "<%= concat.commonjs.dest %>",
-                dest: "dist/snap.svg-commonjs-min.js"
+                dest: "dist/snapsvg.commonjs.min.js"
             }
         },
         concat: {
@@ -46,7 +46,7 @@ module.exports = function(grunt) {
                 banner: "<%= banner %>"
             },
             target: {
-                dest: "dist/snap.svg.js",
+                dest: "dist/snapsvg.js",
                 src: [
                     "./node_modules/eve/eve.js",
                     "./src/amd-banner.js",
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
                    .concat(["./src/amd-footer.js"])
             },
             commonjs: {
-                dest: "dist/snap.svg.commonjs.js",
+                dest: "dist/snapsvg.commonjs.js",
                 src: [
                     "./src/commonjs-banner.js"
                   ].concat(SNAP_FILES)
