@@ -138,9 +138,17 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 set.height = height;
             } else {
                 preload(src, function () {
+                    var width, height;
+                    if (typeof this.getBoundingClientRect !== 'undefined') {
+                        width = this.getBoundingClientRect().width;
+                        height = this.getBoundingClientRect().height;
+                    } else {
+                        width = this.offsetWidth;
+                        height = this.offsetHeight;
+                    }
                     Snap._.$(el.node, {
-                        width: this.offsetWidth,
-                        height: this.offsetHeight
+                        width: width,
+                        height: height
                     });
                 });
             }
