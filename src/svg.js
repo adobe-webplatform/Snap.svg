@@ -1492,7 +1492,7 @@ function Paper(w, h) {
         desc,
         defs,
         proto = Paper.prototype;
-    if (w && w.tagName.toLowerCase() == "svg") {
+    if (w && w.tagName && w.tagName.toLowerCase() == "svg") {
         if (w.snap in hub) {
             return hub[w.snap];
         }
