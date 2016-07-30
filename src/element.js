@@ -47,6 +47,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      o }
     \*/
     elproto.getBBox = function (isWithoutTransform) {
+        if (this.type == "tspan") {
+            return Snap._.box(this.node.getClientRects().item(0));
+        }
         if (!Snap.Matrix || !Snap.path) {
             return this.node.getBBox();
         }
