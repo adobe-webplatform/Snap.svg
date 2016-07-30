@@ -1,11 +1,11 @@
 // Copyright (c) 2013 - 2015 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.3.0";
+Snap.version = "0.4.1";
 /*\
  * Snap
  [ method ]
@@ -634,7 +634,6 @@ Snap.getRGB = cacher(function (colour) {
     }
     return {r: -1, g: -1, b: -1, hex: "none", error: 1, toString: rgbtoString};
 }, Snap);
-// SIERRA It seems odd that the following 3 conversion methods are not expressed as .this2that(), like the others.
 /*\
  * Snap.hsb
  [ method ]
@@ -720,7 +719,7 @@ prepareRGB = function (r, g, b) {
         g /= 255;
         b /= 255;
     }
-    
+
     return [r, g, b];
 },
 packageRGB = function (r, g, b, o) {
@@ -940,7 +939,6 @@ Snap.rgb2hsl = function (r, g, b) {
 };
 
 // Transformations
-// SIERRA Snap.parsePathString(): By _array of arrays,_ I assume you mean a format like this for two separate segments? [ ["M10,10","L90,90"], ["M90,10","L10,90"] ] Otherwise how is each command structured?
 /*\
  * Snap.parsePathString
  [ method ]
@@ -959,7 +957,7 @@ Snap.parsePathString = function (pathString) {
     if (pth.arr) {
         return Snap.path.clone(pth.arr);
     }
-    
+
     var paramCounts = {a: 7, c: 6, o: 2, h: 1, l: 2, m: 2, r: 4, q: 4, s: 4, t: 2, v: 1, u: 3, z: 0},
         data = [];
     if (is(pathString, "array") && is(pathString[0], "array")) { // rough assumption
@@ -1456,7 +1454,6 @@ Snap.parse = function (svg) {
 function Fragment(frag) {
     this.node = frag;
 }
-// SIERRA Snap.fragment() could especially use a code example
 /*\
  * Snap.fragment
  [ method ]
@@ -1495,7 +1492,7 @@ function Paper(w, h) {
         desc,
         defs,
         proto = Paper.prototype;
-    if (w && w.tagName == "svg") {
+    if (w && w.tagName && w.tagName.toLowerCase() == "svg") {
         if (w.snap in hub) {
             return hub[w.snap];
         }
