@@ -1,11 +1,11 @@
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -420,7 +420,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return box();
         }
         path = path2curve(path);
-        var x = 0, 
+        var x = 0,
             y = 0,
             X = [],
             Y = [],
@@ -761,6 +761,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     Y = x * math.sin(rad) + y * math.cos(rad);
                 return {x: X, y: Y};
             });
+        if (!rx || !ry) {
+            return [x1, y1, x2, y2, x2, y2];
+        }
         if (!recursive) {
             xy = rotate(x1, y1, -rad);
             x1 = xy.x;
@@ -845,7 +848,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             y: pow(t1, 3) * p1y + pow(t1, 2) * 3 * t * c1y + t1 * 3 * t * t * c2y + pow(t, 3) * p2y
         };
     }
-    
+
     // Returns bounding box of cubic bezier curve.
     // Source: http://blog.hackers-cafe.net/2009/06/how-to-calculate-bezier-curves-bounding.html
     // Original version: NISHIO Hirokazu

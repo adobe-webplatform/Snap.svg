@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2016-06-09
+// build: 2016-08-01
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -2693,6 +2693,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      o }
     \*/
     elproto.getBBox = function (isWithoutTransform) {
+        if (this.type == "tspan") {
+            return Snap._.box(this.node.getClientRects().item(0));
+        }
         if (!Snap.Matrix || !Snap.path) {
             return this.node.getBBox();
         }
@@ -3476,10 +3479,12 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         anim._callback = callback;
         eve("snap.animcreated." + el.id, anim);
         eve.once("mina.finish." + anim.id, function () {
+            eve.off("mina.*." + anim.id);
             delete el.anims[anim.id];
             callback && callback.call(el);
         });
         eve.once("mina.stop." + anim.id, function () {
+            eve.off("mina.*." + anim.id);
             delete el.anims[anim.id];
         });
         return el;
@@ -3626,13 +3631,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -3685,30 +3690,48 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          - matrix (object) @Matrix
         \*/
         matrixproto.add = function (a, b, c, d, e, f) {
-            var out = [[], [], []],
-                m = [[this.a, this.c, this.e], [this.b, this.d, this.f], [0, 0, 1]],
-                matrix = [[a, c, e], [b, d, f], [0, 0, 1]],
-                x, y, z, res;
-
             if (a && a instanceof Matrix) {
-                matrix = [[a.a, a.c, a.e], [a.b, a.d, a.f], [0, 0, 1]];
+                return this.add(a.a, a.b, a.c, a.d, a.e, a.f);
             }
+            var aNew = a * this.a + b * this.c,
+                bNew = a * this.b + b * this.d;
+            this.e += e * this.a + f * this.c;
+            this.f += e * this.b + f * this.d;
+            this.c = c * this.a + d * this.c;
+            this.d = c * this.b + d * this.d;
 
-            for (x = 0; x < 3; x++) {
-                for (y = 0; y < 3; y++) {
-                    res = 0;
-                    for (z = 0; z < 3; z++) {
-                        res += m[x][z] * matrix[z][y];
-                    }
-                    out[x][y] = res;
-                }
+            this.a = aNew;
+            this.b = bNew;
+            return this;
+        };
+        /*\
+         * Matrix.multLeft
+         [ method ]
+         **
+         * Multiplies a passed affine transform to the left: M * this.
+         - a (number)
+         - b (number)
+         - c (number)
+         - d (number)
+         - e (number)
+         - f (number)
+         * or
+         - matrix (object) @Matrix
+        \*/
+        Matrix.prototype.multLeft = function (a, b, c, d, e, f) {
+            if (a && a instanceof Matrix) {
+                return this.multLeft(a.a, a.b, a.c, a.d, a.e, a.f);
             }
-            this.a = out[0][0];
-            this.b = out[1][0];
-            this.c = out[0][1];
-            this.d = out[1][1];
-            this.e = out[0][2];
-            this.f = out[1][2];
+            var aNew = a * this.a + c * this.b,
+                cNew = a * this.c + c * this.d,
+                eNew = a * this.e + c * this.f + e;
+            this.b = b * this.a + d * this.b;
+            this.d = b * this.c + d * this.d;
+            this.f = b * this.e + d * this.f + f;
+
+            this.a = aNew;
+            this.c = cNew;
+            this.e = eNew;
             return this;
         };
         /*\
@@ -3742,7 +3765,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          - y (number) vertical offset distance
         \*/
         matrixproto.translate = function (x, y) {
-            return this.add(1, 0, 0, 1, x, y);
+            this.e += tx * this.a + ty * this.c;
+            this.f += tx * this.b + ty * this.d;
+            return this;
         };
         /*\
          * Matrix.scale
@@ -3756,10 +3781,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          * Default cx, cy is the middle point of the element.
         \*/
         matrixproto.scale = function (x, y, cx, cy) {
-            y == null && (y = x);
-            (cx || cy) && this.add(1, 0, 0, 1, cx, cy);
-            this.add(x, 0, 0, y, 0, 0);
-            (cx || cy) && this.add(1, 0, 0, 1, -cx, -cy);
+            sy == null && (sy = sx);
+            (tx || ty) && this.translate(tx, ty);
+            this.a *= sx;
+            this.b *= sx;
+            this.c *= sy;
+            this.d *= sy;
+            (tx || ty) && this.translate(-tx, -ty);
             return this;
         };
         /*\
@@ -3779,6 +3807,43 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 sin = +math.sin(a).toFixed(9);
             this.add(cos, sin, -sin, cos, x, y);
             return this.add(1, 0, 0, 1, -x, -y);
+        };
+        /*\
+         * Matrix.skewX
+         [ method ]
+         **
+         * Skews the matrix along the x-axis
+         - x (number) Angle to skew along the x-axis (in degrees).
+        \*/
+        matrixproto.skewX = function (x) {
+            return this.skew(x, 0);
+        };
+        /*\
+         * Matrix.skewY
+         [ method ]
+         **
+         * Skews the matrix along the y-axis
+         - y (number) Angle to skew along the y-axis (in degrees).
+        \*/
+        matrixproto.skewY = function (y) {
+            return this.skew(0, y);
+        };
+        /*\
+         * Matrix.skew
+         [ method ]
+         **
+         * Skews the matrix
+         - y (number) Angle to skew along the y-axis (in degrees).
+         - x (number) Angle to skew along the x-axis (in degrees).
+        \*/
+        matrixproto.skew = function (x, y) {
+            x = x || 0;
+            y = y || 0;
+            x = Snap.rad(x);
+            y = Snap.rad(y);
+            var c = math.tan(x).toFixed(9);
+            var b = math.tan(y).toFixed(9);
+            return this.add(1, b, c, 1, 0, 0);
         };
         /*\
          * Matrix.x
@@ -3897,7 +3962,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 s.scalex = +s.scalex.toFixed(4);
                 s.scaley = +s.scaley.toFixed(4);
                 s.rotate = +s.rotate.toFixed(4);
-                return  (s.dx || s.dy ? "t" + [+s.dx.toFixed(4), +s.dy.toFixed(4)] : E) + 
+                return  (s.dx || s.dy ? "t" + [+s.dx.toFixed(4), +s.dy.toFixed(4)] : E) +
                         (s.scalex != 1 || s.scaley != 1 ? "s" + [s.scalex, s.scaley, 0, 0] : E) +
                         (s.rotate ? "r" + [+s.rotate.toFixed(4), 0, 0] : E);
             } else {
@@ -3934,6 +3999,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         return new Matrix(a, b, c, d, e, f);
     };
 });
+
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -5305,13 +5371,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -5726,7 +5792,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return box();
         }
         path = path2curve(path);
-        var x = 0, 
+        var x = 0,
             y = 0,
             X = [],
             Y = [],
@@ -6067,6 +6133,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     Y = x * math.sin(rad) + y * math.cos(rad);
                 return {x: X, y: Y};
             });
+        if (!rx || !ry) {
+            return [x1, y1, x2, y2, x2, y2];
+        }
         if (!recursive) {
             xy = rotate(x1, y1, -rad);
             x1 = xy.x;
@@ -6151,7 +6220,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             y: pow(t1, 3) * p1y + pow(t1, 2) * 3 * t * c1y + t1 * 3 * t * t * c2y + pow(t, 3) * p2y
         };
     }
-    
+
     // Returns bounding box of cubic bezier curve.
     // Source: http://blog.hackers-cafe.net/2009/06/how-to-calculate-bezier-curves-bounding.html
     // Original version: NISHIO Hirokazu
@@ -7198,13 +7267,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
-        if (isNumeric(a) && isNumeric(b)) {
-            return {
-                from: parseFloat(a),
-                to: parseFloat(b),
-                f: getNumber
-            };
-        }
         if (names[name] == "colour") {
             A = Snap.color(a);
             B = Snap.color(b);
@@ -7249,6 +7311,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 from: A,
                 to: B,
                 f: function (val) { return val; }
+            };
+        }
+        if (isNumeric(a) && isNumeric(b)) {
+            return {
+                from: parseFloat(a),
+                to: parseFloat(b),
+                f: getNumber
             };
         }
         var aUnit = a.match(reUnit),
