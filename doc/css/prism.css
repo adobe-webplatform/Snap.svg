@@ -113,13 +113,6 @@ pre[data-line] {
 	color: hsl(33, 33%, 52%); /* #AC885B */
 }
 
-/* Text Selection colour */
-::selection {
-	background: hsla(0,0%,93%,0.15); /* #EDEDED */
-}
-::-moz-selection {
-	background: hsla(0,0%,93%,0.15); /* #EDEDED */
-}
 
 /* Make the tokens sit above the line highlight so the colours don't look faded. */
 .token {
