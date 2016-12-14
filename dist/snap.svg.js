@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2016-08-01
+// build: 2016-12-09
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -3765,8 +3765,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          - y (number) vertical offset distance
         \*/
         matrixproto.translate = function (x, y) {
-            this.e += tx * this.a + ty * this.c;
-            this.f += tx * this.b + ty * this.d;
+            this.e += x * this.a + y * this.c;
+            this.f += x * this.b + y * this.d;
             return this;
         };
         /*\
@@ -3781,13 +3781,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          * Default cx, cy is the middle point of the element.
         \*/
         matrixproto.scale = function (x, y, cx, cy) {
-            sy == null && (sy = sx);
-            (tx || ty) && this.translate(tx, ty);
-            this.a *= sx;
-            this.b *= sx;
-            this.c *= sy;
-            this.d *= sy;
-            (tx || ty) && this.translate(-tx, -ty);
+            y == null && (y = x);
+            (cx || cy) && this.translate(cx, cy);
+            this.a *= x;
+            this.b *= x;
+            this.c *= y;
+            this.d *= y;
+            (cx || cy) && this.translate(-cx, -cy);
             return this;
         };
         /*\
@@ -3917,7 +3917,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             out.dy = this.f;
 
             // scale and shear
-            var row = [[this.a, this.c], [this.b, this.d]];
+            var row = [[this.a, this.b], [this.c, this.d]];
             out.scalex = math.sqrt(norm(row[0]));
             normalize(row[0]);
 
@@ -3933,7 +3933,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
 
             // rotation
-            var sin = -row[0][1],
+            var sin = row[0][1],
                 cos = row[1][1];
             if (cos < 0) {
                 out.rotate = Snap.deg(math.acos(cos));
@@ -3963,8 +3963,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 s.scaley = +s.scaley.toFixed(4);
                 s.rotate = +s.rotate.toFixed(4);
                 return  (s.dx || s.dy ? "t" + [+s.dx.toFixed(4), +s.dy.toFixed(4)] : E) +
-                        (s.scalex != 1 || s.scaley != 1 ? "s" + [s.scalex, s.scaley, 0, 0] : E) +
-                        (s.rotate ? "r" + [+s.rotate.toFixed(4), 0, 0] : E);
+                        (s.rotate ? "r" + [+s.rotate.toFixed(4), 0, 0] : E) +
+                        (s.scalex != 1 || s.scaley != 1 ? "s" + [s.scalex, s.scaley, 0, 0] : E);
             } else {
                 return "m" + [this.get(0), this.get(1), this.get(2), this.get(3), this.get(4), this.get(5)];
             }
@@ -7145,13 +7145,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -7182,9 +7182,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
     }
     function equaliseTransform(t1, t2, getBBox) {
-        t2 = Str(t2).replace(/\.{3}|\u2026/g, t1);
-        t1 = Snap.parseTransformString(t1) || [];
-        t2 = Snap.parseTransformString(t2) || [];
+        t1 = Snap.parseTransformString(t1.toTransformString()) || [];
+        t2 = Snap.parseTransformString(t2.toTransformString()) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
@@ -7286,12 +7285,19 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
+            if (typeof b == "string") {
+                b = Str(b).replace(/\.{3}|\u2026/g, a);
+            }
+            a = this.matrix;
             if (b instanceof Snap.Matrix) {
-                b = b.toTransformString();
+                // b = b.toTransformString();
             }
             if (!Snap._.rgTransform.test(b)) {
-                b = Snap._.svgTransform2string(b);
+                b = Snap._.transform2matrix(Snap._.svgTransform2string(b));
+            } else {
+                b = Snap._.transform2matrix(b);
             }
+            console.log(a, b)
             return equaliseTransform(a, b, function () {
                 return el.getBBox(1);
             });

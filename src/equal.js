@@ -1,11 +1,11 @@
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,9 +36,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
     }
     function equaliseTransform(t1, t2, getBBox) {
-        t2 = Str(t2).replace(/\.{3}|\u2026/g, t1);
-        t1 = Snap.parseTransformString(t1) || [];
-        t2 = Snap.parseTransformString(t2) || [];
+        t1 = Snap.parseTransformString(t1.toTransformString()) || [];
+        t2 = Snap.parseTransformString(t2.toTransformString()) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
@@ -140,12 +139,19 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
+            if (typeof b == "string") {
+                b = Str(b).replace(/\.{3}|\u2026/g, a);
+            }
+            a = this.matrix;
             if (b instanceof Snap.Matrix) {
-                b = b.toTransformString();
+                // b = b.toTransformString();
             }
             if (!Snap._.rgTransform.test(b)) {
-                b = Snap._.svgTransform2string(b);
+                b = Snap._.transform2matrix(Snap._.svgTransform2string(b));
+            } else {
+                b = Snap._.transform2matrix(b);
             }
+            console.log(a, b)
             return equaliseTransform(a, b, function () {
                 return el.getBBox(1);
             });

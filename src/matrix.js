@@ -133,8 +133,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          - y (number) vertical offset distance
         \*/
         matrixproto.translate = function (x, y) {
-            this.e += tx * this.a + ty * this.c;
-            this.f += tx * this.b + ty * this.d;
+            this.e += x * this.a + y * this.c;
+            this.f += x * this.b + y * this.d;
             return this;
         };
         /*\
@@ -149,13 +149,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          * Default cx, cy is the middle point of the element.
         \*/
         matrixproto.scale = function (x, y, cx, cy) {
-            sy == null && (sy = sx);
-            (tx || ty) && this.translate(tx, ty);
-            this.a *= sx;
-            this.b *= sx;
-            this.c *= sy;
-            this.d *= sy;
-            (tx || ty) && this.translate(-tx, -ty);
+            y == null && (y = x);
+            (cx || cy) && this.translate(cx, cy);
+            this.a *= x;
+            this.b *= x;
+            this.c *= y;
+            this.d *= y;
+            (cx || cy) && this.translate(-cx, -cy);
             return this;
         };
         /*\
@@ -285,7 +285,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             out.dy = this.f;
 
             // scale and shear
-            var row = [[this.a, this.c], [this.b, this.d]];
+            var row = [[this.a, this.b], [this.c, this.d]];
             out.scalex = math.sqrt(norm(row[0]));
             normalize(row[0]);
 
@@ -301,7 +301,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
 
             // rotation
-            var sin = -row[0][1],
+            var sin = row[0][1],
                 cos = row[1][1];
             if (cos < 0) {
                 out.rotate = Snap.deg(math.acos(cos));
@@ -331,8 +331,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 s.scaley = +s.scaley.toFixed(4);
                 s.rotate = +s.rotate.toFixed(4);
                 return  (s.dx || s.dy ? "t" + [+s.dx.toFixed(4), +s.dy.toFixed(4)] : E) +
-                        (s.scalex != 1 || s.scaley != 1 ? "s" + [s.scalex, s.scaley, 0, 0] : E) +
-                        (s.rotate ? "r" + [+s.rotate.toFixed(4), 0, 0] : E);
+                        (s.rotate ? "r" + [+s.rotate.toFixed(4), 0, 0] : E) +
+                        (s.scalex != 1 || s.scaley != 1 ? "s" + [s.scalex, s.scaley, 0, 0] : E);
             } else {
                 return "m" + [this.get(0), this.get(1), this.get(2), this.get(3), this.get(4), this.get(5)];
             }
