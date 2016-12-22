@@ -36,6 +36,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
     }
     function equaliseTransform(t1, t2, getBBox) {
+        t1 = t1 || new Snap.Matrix;
+        t2 = t2 || new Snap.Matrix;
         t1 = Snap.parseTransformString(t1.toTransformString()) || [];
         t2 = Snap.parseTransformString(t2.toTransformString()) || [];
         var maxlength = Math.max(t1.length, t2.length),
@@ -147,9 +149,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 // b = b.toTransformString();
             }
             if (!Snap._.rgTransform.test(b)) {
-                b = Snap._.transform2matrix(Snap._.svgTransform2string(b));
+                b = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
             } else {
-                b = Snap._.transform2matrix(b);
+                b = Snap._.transform2matrix(b, this.getBBox());
             }
             console.log(a, b)
             return equaliseTransform(a, b, function () {
