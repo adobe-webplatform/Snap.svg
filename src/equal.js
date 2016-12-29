@@ -13,7 +13,7 @@
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var names = {},
-        reUnit = /[a-z]+$/i,
+        reUnit = /[%a-z]+$/i,
         Str = String;
     names.stroke = names.fill = "colour";
     function getEmpty(item) {
@@ -108,7 +108,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return out;
     }
     function isNumeric(obj) {
-        return isFinite(parseFloat(obj));
+        return isFinite(obj);
     }
     function arrayEqual(arr1, arr2) {
         if (!Snap.is(arr1, "array") || !Snap.is(arr2, "array")) {
@@ -145,15 +145,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 b = Str(b).replace(/\.{3}|\u2026/g, a);
             }
             a = this.matrix;
-            if (b instanceof Snap.Matrix) {
-                // b = b.toTransformString();
-            }
             if (!Snap._.rgTransform.test(b)) {
                 b = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
             } else {
                 b = Snap._.transform2matrix(b, this.getBBox());
             }
-            console.log(a, b)
             return equaliseTransform(a, b, function () {
                 return el.getBBox(1);
             });

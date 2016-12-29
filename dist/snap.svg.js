@@ -1,6 +1,6 @@
-// Snap.svg 0.4.1
+// Snap.svg 0.4.2dev
 //
-// Copyright (c) 2013 – 2015 Adobe Systems Incorporated. All rights reserved.
+// Copyright (c) 2013 – 2016 Adobe Systems Incorporated. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2016-12-14
+// build: 2016-12-29
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -185,7 +185,7 @@
         }
         return out;
     };
-
+    
     /*\
      * eve.on
      [ method ]
@@ -200,7 +200,7 @@
      - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
      - f (function) event handler function
      **
-     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
+     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
      > Example:
      | eve.on("mouse", eatIt)(2);
      | eve.on("mouse", scream);
@@ -439,13 +439,13 @@
 }(window || this, function (window, eve) {
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -809,7 +809,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.4.1";
+Snap.version = "0.4.2dev";
 /*\
  * Snap
  [ method ]
@@ -3300,7 +3300,165 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         p.node.appendChild(this.node);
         return p;
     };
-    // animation
+    var eldata = {};
+    /*\
+     * Element.data
+     [ method ]
+     **
+     * Adds or retrieves given value associated with given key. (Don’t confuse
+     * with `data-` attributes)
+     *
+     * See also @Element.removeData
+     - key (string) key to store data
+     - value (any) #optional value to store
+     = (object) @Element
+     * or, if value is not specified:
+     = (any) value
+     > Usage
+     | for (var i = 0, i < 5, i++) {
+     |     paper.circle(10 + 15 * i, 10, 10)
+     |          .attr({fill: "#000"})
+     |          .data("i", i)
+     |          .click(function () {
+     |             alert(this.data("i"));
+     |          });
+     | }
+    \*/
+    elproto.data = function (key, value) {
+        var data = eldata[this.id] = eldata[this.id] || {};
+        if (arguments.length == 0){
+            eve("snap.data.get." + this.id, this, data, null);
+            return data;
+        }
+        if (arguments.length == 1) {
+            if (Snap.is(key, "object")) {
+                for (var i in key) if (key[has](i)) {
+                    this.data(i, key[i]);
+                }
+                return this;
+            }
+            eve("snap.data.get." + this.id, this, data[key], key);
+            return data[key];
+        }
+        data[key] = value;
+        eve("snap.data.set." + this.id, this, value, key);
+        return this;
+    };
+    /*\
+     * Element.removeData
+     [ method ]
+     **
+     * Removes value associated with an element by given key.
+     * If key is not provided, removes all the data of the element.
+     - key (string) #optional key
+     = (object) @Element
+    \*/
+    elproto.removeData = function (key) {
+        if (key == null) {
+            eldata[this.id] = {};
+        } else {
+            eldata[this.id] && delete eldata[this.id][key];
+        }
+        return this;
+    };
+    /*\
+     * Element.outerSVG
+     [ method ]
+     **
+     * Returns SVG code for the element, equivalent to HTML's `outerHTML`.
+     *
+     * See also @Element.innerSVG
+     = (string) SVG code for the element
+    \*/
+    /*\
+     * Element.toString
+     [ method ]
+     **
+     * See @Element.outerSVG
+    \*/
+    elproto.outerSVG = elproto.toString = toString(1);
+    /*\
+     * Element.innerSVG
+     [ method ]
+     **
+     * Returns SVG code for the element's contents, equivalent to HTML's `innerHTML`
+     = (string) SVG code for the element
+    \*/
+    elproto.innerSVG = toString();
+    function toString(type) {
+        return function () {
+            var res = type ? "<" + this.type : "",
+                attr = this.node.attributes,
+                chld = this.node.childNodes;
+            if (type) {
+                for (var i = 0, ii = attr.length; i < ii; i++) {
+                    res += " " + attr[i].name + '="' +
+                            attr[i].value.replace(/"/g, '\\"') + '"';
+                }
+            }
+            if (chld.length) {
+                type && (res += ">");
+                for (i = 0, ii = chld.length; i < ii; i++) {
+                    if (chld[i].nodeType == 3) {
+                        res += chld[i].nodeValue;
+                    } else if (chld[i].nodeType == 1) {
+                        res += wrap(chld[i]).toString();
+                    }
+                }
+                type && (res += "</" + this.type + ">");
+            } else {
+                type && (res += "/>");
+            }
+            return res;
+        };
+    }
+    elproto.toDataURL = function () {
+        if (window && window.btoa) {
+            var bb = this.getBBox(),
+                svg = Snap.format('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{width}" height="{height}" viewBox="{x} {y} {width} {height}">{contents}</svg>', {
+                x: +bb.x.toFixed(3),
+                y: +bb.y.toFixed(3),
+                width: +bb.width.toFixed(3),
+                height: +bb.height.toFixed(3),
+                contents: this.outerSVG()
+            });
+            return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg)));
+        }
+    };
+    /*\
+     * Fragment.select
+     [ method ]
+     **
+     * See @Element.select
+    \*/
+    Fragment.prototype.select = elproto.select;
+    /*\
+     * Fragment.selectAll
+     [ method ]
+     **
+     * See @Element.selectAll
+    \*/
+    Fragment.prototype.selectAll = elproto.selectAll;
+});
+
+// Copyright (c) 2016 Adobe Systems Incorporated. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
+    var elproto = Element.prototype,
+        is = Snap.is,
+        Str = String,
+        has = "hasOwnProperty";
     function slice(from, to, f) {
         return function (arr) {
             var res = arr.slice(from, to);
@@ -3489,145 +3647,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         });
         return el;
     };
-    var eldata = {};
-    /*\
-     * Element.data
-     [ method ]
-     **
-     * Adds or retrieves given value associated with given key. (Don’t confuse
-     * with `data-` attributes)
-     *
-     * See also @Element.removeData
-     - key (string) key to store data
-     - value (any) #optional value to store
-     = (object) @Element
-     * or, if value is not specified:
-     = (any) value
-     > Usage
-     | for (var i = 0, i < 5, i++) {
-     |     paper.circle(10 + 15 * i, 10, 10)
-     |          .attr({fill: "#000"})
-     |          .data("i", i)
-     |          .click(function () {
-     |             alert(this.data("i"));
-     |          });
-     | }
-    \*/
-    elproto.data = function (key, value) {
-        var data = eldata[this.id] = eldata[this.id] || {};
-        if (arguments.length == 0){
-            eve("snap.data.get." + this.id, this, data, null);
-            return data;
-        }
-        if (arguments.length == 1) {
-            if (Snap.is(key, "object")) {
-                for (var i in key) if (key[has](i)) {
-                    this.data(i, key[i]);
-                }
-                return this;
-            }
-            eve("snap.data.get." + this.id, this, data[key], key);
-            return data[key];
-        }
-        data[key] = value;
-        eve("snap.data.set." + this.id, this, value, key);
-        return this;
-    };
-    /*\
-     * Element.removeData
-     [ method ]
-     **
-     * Removes value associated with an element by given key.
-     * If key is not provided, removes all the data of the element.
-     - key (string) #optional key
-     = (object) @Element
-    \*/
-    elproto.removeData = function (key) {
-        if (key == null) {
-            eldata[this.id] = {};
-        } else {
-            eldata[this.id] && delete eldata[this.id][key];
-        }
-        return this;
-    };
-    /*\
-     * Element.outerSVG
-     [ method ]
-     **
-     * Returns SVG code for the element, equivalent to HTML's `outerHTML`.
-     *
-     * See also @Element.innerSVG
-     = (string) SVG code for the element
-    \*/
-    /*\
-     * Element.toString
-     [ method ]
-     **
-     * See @Element.outerSVG
-    \*/
-    elproto.outerSVG = elproto.toString = toString(1);
-    /*\
-     * Element.innerSVG
-     [ method ]
-     **
-     * Returns SVG code for the element's contents, equivalent to HTML's `innerHTML`
-     = (string) SVG code for the element
-    \*/
-    elproto.innerSVG = toString();
-    function toString(type) {
-        return function () {
-            var res = type ? "<" + this.type : "",
-                attr = this.node.attributes,
-                chld = this.node.childNodes;
-            if (type) {
-                for (var i = 0, ii = attr.length; i < ii; i++) {
-                    res += " " + attr[i].name + '="' +
-                            attr[i].value.replace(/"/g, '\\"') + '"';
-                }
-            }
-            if (chld.length) {
-                type && (res += ">");
-                for (i = 0, ii = chld.length; i < ii; i++) {
-                    if (chld[i].nodeType == 3) {
-                        res += chld[i].nodeValue;
-                    } else if (chld[i].nodeType == 1) {
-                        res += wrap(chld[i]).toString();
-                    }
-                }
-                type && (res += "</" + this.type + ">");
-            } else {
-                type && (res += "/>");
-            }
-            return res;
-        };
-    }
-    elproto.toDataURL = function () {
-        if (window && window.btoa) {
-            var bb = this.getBBox(),
-                svg = Snap.format('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{width}" height="{height}" viewBox="{x} {y} {width} {height}">{contents}</svg>', {
-                x: +bb.x.toFixed(3),
-                y: +bb.y.toFixed(3),
-                width: +bb.width.toFixed(3),
-                height: +bb.height.toFixed(3),
-                contents: this.outerSVG()
-            });
-            return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg)));
-        }
-    };
-    /*\
-     * Fragment.select
-     [ method ]
-     **
-     * See @Element.select
-    \*/
-    Fragment.prototype.select = elproto.select;
-    /*\
-     * Fragment.selectAll
-     [ method ]
-     **
-     * See @Element.selectAll
-    \*/
-    Fragment.prototype.selectAll = elproto.selectAll;
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
@@ -4001,13 +4020,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -4649,14 +4668,15 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         }
     })(-10);
 });
+
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -6829,13 +6849,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -7159,7 +7179,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var names = {},
-        reUnit = /[a-z]+$/i,
+        reUnit = /[%a-z]+$/i,
         Str = String;
     names.stroke = names.fill = "colour";
     function getEmpty(item) {
@@ -7254,7 +7274,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return out;
     }
     function isNumeric(obj) {
-        return isFinite(parseFloat(obj));
+        return isFinite(obj);
     }
     function arrayEqual(arr1, arr2) {
         if (!Snap.is(arr1, "array") || !Snap.is(arr2, "array")) {
@@ -7291,9 +7311,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 b = Str(b).replace(/\.{3}|\u2026/g, a);
             }
             a = this.matrix;
-            if (b instanceof Snap.Matrix) {
-                // b = b.toTransformString();
-            }
             if (!Snap._.rgTransform.test(b)) {
                 b = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
             } else {
@@ -7346,13 +7363,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -7495,7 +7512,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.dblclick
      [ method ]
@@ -7512,7 +7529,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.mousedown
      [ method ]
@@ -7529,7 +7546,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.mousemove
      [ method ]
@@ -7546,7 +7563,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.mouseout
      [ method ]
@@ -7563,7 +7580,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.mouseover
      [ method ]
@@ -7580,7 +7597,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.mouseup
      [ method ]
@@ -7597,7 +7614,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.touchstart
      [ method ]
@@ -7614,7 +7631,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.touchmove
      [ method ]
@@ -7631,7 +7648,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.touchend
      [ method ]
@@ -7648,7 +7665,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-
+    
     /*\
      * Element.touchcancel
      [ method ]
@@ -7742,8 +7759,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - mcontext (object) #optional context for moving handler
      - scontext (object) #optional context for drag start handler
      - econtext (object) #optional context for drag end handler
-     * Additionaly following `drag` events are triggered: `drag.start.<id>` on start,
-     * `drag.end.<id>` on end and `drag.move.<id>` on every move. When element is dragged over another element
+     * Additionaly following `drag` events are triggered: `drag.start.<id>` on start, 
+     * `drag.end.<id>` on end and `drag.move.<id>` on every move. When element is dragged over another element 
      * `drag.over.<id>` fires as well.
      *
      * Start event and start handler are called in specified context or in context of the element with following parameters:
@@ -7823,13 +7840,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -7875,7 +7892,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         paper.defs.appendChild(filter);
         return new Element(filter);
     };
-
+    
     eve.on("snap.util.getattr.filter", function () {
         eve.stop();
         var p = $(this.node, "filter");
