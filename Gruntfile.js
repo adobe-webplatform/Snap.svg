@@ -44,6 +44,7 @@ module.exports = function(grunt) {
                     "./src/mouse.js",
                     "./src/filter.js",
                     "./src/align.js",
+                    "./src/colors.js",
                     "./src/amd-footer.js"
                 ]
             }
