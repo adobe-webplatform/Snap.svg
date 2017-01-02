@@ -83,7 +83,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return val.join(" ");
     }
     function getColour(clr) {
-        return Snap.rgb(clr[0], clr[1], clr[2]);
+        return Snap.rgb(clr[0], clr[1], clr[2], clr[3]);
     }
     function getPath(path) {
         var k = 0, i, ii, j, jj, out, a, b = [];

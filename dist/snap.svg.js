@@ -1,6 +1,6 @@
 // Snap.svg 0.4.2dev
 //
-// Copyright (c) 2013 – 2016 Adobe Systems Incorporated. All rights reserved.
+// Copyright (c) 2013 – 2017 Adobe Systems Incorporated. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2016-12-30
+// build: 2017-01-03
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -7249,7 +7249,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return val.join(" ");
     }
     function getColour(clr) {
-        return Snap.rgb(clr[0], clr[1], clr[2]);
+        return Snap.rgb(clr[0], clr[1], clr[2], clr[3]);
     }
     function getPath(path) {
         var k = 0, i, ii, j, jj, out, a, b = [];
@@ -8259,7 +8259,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     };
 });
 
-// Copyright (c) 2016 Adobe Systems Incorporated. All rights reserved.
+// Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.

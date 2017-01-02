@@ -24,9 +24,9 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
 
-            function trackOutboundLink(link, category, action) { 
-                try { 
-                    _gaq.push(['_trackEvent', category , action]); 
+            function trackOutboundLink(link, category, action) {
+                try {
+                    _gaq.push(['_trackEvent', category , action]);
                 } catch(err){}
 
                 setTimeout(function() {
@@ -50,7 +50,7 @@
                     <a href="/docs/" class="mobile-hide selected">Docs</a>
                     <a href="/support/">Support</a>
                     <a href="/demos/" class="mobile-hide">Demos</a>
-                    <a class="bt" href="/assets/downloads/Snap.svg-0.1.0.zip" onclick="trackOutboundLink(this, 'Download', '0.1');return false;">Download</a>
+                    <a class="bt" href="/assets/downloads/Snap.svg-0.4.2.zip" onclick="trackOutboundLink(this, 'Download', '0.4.2');return false;">Download</a>
                 </nav>
             </div>
         </header>
