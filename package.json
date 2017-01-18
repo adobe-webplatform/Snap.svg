@@ -8,9 +8,9 @@
         "url": "git@github.com:adobe-webplatform/Snap.svg.git"
     },
     "author": "Dmitry Baranovskiy",
-    "license": "Apache License v2",
+    "license": "Apache-2.0",
     "dependencies": {
-        "eve": "~0.4.2"
+        "eve": "~0.5.1"
     },
     "devDependencies": {
         "grunt": "~0.4.1",
