@@ -48,9 +48,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         for (; i < maxlength; i++) {
             tt1 = t1[i] || getEmpty(t2[i]);
             tt2 = t2[i] || getEmpty(tt1);
-            if ((tt1[0] != tt2[0]) ||
-                (tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3])) ||
-                (tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4]))
+            if (tt1[0] != tt2[0] ||
+                tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3]) ||
+                tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4])
                 ) {
                     t1 = Snap._.transform2matrix(t1, getBBox());
                     t2 = Snap._.transform2matrix(t2, getBBox());
@@ -91,7 +91,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             out = "[";
             a = ['"' + path[i][0] + '"'];
             for (j = 1, jj = path[i].length; j < jj; j++) {
-                a[j] = "val[" + (k++) + "]";
+                a[j] = "val[" + k++ + "]";
             }
             out += a + "]";
             b[i] = out;

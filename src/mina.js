@@ -333,18 +333,18 @@ var mina = (function (eve) {
         var s = 7.5625,
             p = 2.75,
             l;
-        if (n < (1 / p)) {
+        if (n < 1 / p) {
             l = s * n * n;
         } else {
-            if (n < (2 / p)) {
-                n -= (1.5 / p);
+            if (n < 2 / p) {
+                n -= 1.5 / p;
                 l = s * n * n + .75;
             } else {
-                if (n < (2.5 / p)) {
-                    n -= (2.25 / p);
+                if (n < 2.5 / p) {
+                    n -= 2.25 / p;
                     l = s * n * n + .9375;
                 } else {
-                    n -= (2.625 / p);
+                    n -= 2.625 / p;
                     l = s * n * n + .984375;
                 }
             }
