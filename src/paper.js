@@ -512,21 +512,51 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     (function () {
         var $ = Snap._.$;
         // gradients' helpers
+        /*\
+         * Element.stops()
+         [ method ]
+         **
+         * Only for gradients!
+         * Returns array of gradient stops elements.
+         = (array) the stops array.
+        \*/
         function Gstops() {
             return this.selectAll("stop");
         }
+        /*\
+         * Element.addStop()
+         [ method ]
+         **
+         * Only for gradients!
+         * Adds another stop to the gradient.
+         - color (string) stops color
+         - offset (number) stops offset 0..100
+         = (object) gradient element
+        \*/
         function GaddStop(color, offset) {
             var stop = $("stop"),
                 attr = {
                     offset: +offset + "%"
                 };
             color = Snap.color(color);
-            attr["stop-color"] = color.toString();
+            attr["stop-color"] = color.hex;
             if (color.opacity < 1) {
                 attr["stop-opacity"] = color.opacity;
             }
             $(stop, attr);
-            this.node.appendChild(stop);
+            var stops = this.stops(),
+                inserted;
+            for (var i = 0; i < stops.length; i++) {
+                var stopOffset = parseFloat(stops[i].attr("offset"));
+                if (stopOffset > offset) {
+                    this.node.insertBefore(stop, stops[i].node);
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted) {
+                this.node.appendChild(stop);
+            }
             return this;
         }
         function GgetBBox() {
@@ -542,6 +572,44 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                     r = this.node.r || 0;
                 return Snap._.box(cx - r, cy - r, r * 2, r * 2);
             }
+        }
+        /*\
+         * Element.setStops()
+         [ method ]
+         **
+         * Only for gradients!
+         * Updates stops of the gradient based on passed gradient descriptor. See @Ppaer.gradient
+         - str (string) gradient descriptor part after `()`.
+         = (object) gradient element
+         | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
+         | g.setStops("#fff-#000-#f00-#fc0");
+        \*/
+        function GsetStops(str) {
+            var grad = str,
+                stops = this.stops();
+            if (typeof str == "string") {
+                grad = eve("snap.util.grad.parse", null, "l(0,0,0,1)" + str).firstDefined().stops;
+            }
+            if (!Snap.is(grad, "array")) {
+                return;
+            }
+            for (var i = 0; i < stops.length; i++) {
+                if (grad[i]) {
+                    var color = Snap.color(grad[i].color),
+                        attr = {"offset": grad[i].offset + "%"};
+                    attr["stop-color"] = color.hex;
+                    if (color.opacity < 1) {
+                        attr["stop-opacity"] = color.opacity;
+                    }
+                    stops[i].attr(attr);
+                } else {
+                    stops[i].remove();
+                }
+            }
+            for (i = stops.length; i < grad.length; i++) {
+                this.addStop(grad[i].color, grad[i].offset);
+            }
+            return this;
         }
         function gradient(defs, str) {
             var grad = eve("snap.util.grad.parse", null, str).firstDefined(),
@@ -561,24 +629,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 });
             }
             var stops = grad.stops,
-                len = stops.length,
-                start = 0,
-                j = 0;
-            function seed(i, end) {
-                var step = (end - start) / (i - j);
-                for (var k = j; k < i; k++) {
-                    stops[k].offset = +(+start + step * (k - j)).toFixed(2);
-                }
-                j = i;
-                start = end;
-            }
-            len--;
-            for (var i = 0; i < len; i++) if ("offset" in stops[i]) {
-                seed(i, stops[i].offset);
-            }
-            stops[len].offset = stops[len].offset || 100;
-            seed(len, stops[len].offset);
-            for (i = 0; i <= len; i++) {
+                len = stops.length;
+            for (var i = 0; i < len; i++) {
                 var stop = stops[i];
                 el.addStop(stop.color, stop.offset);
             }
@@ -589,6 +641,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             el.stops = Gstops;
             el.addStop = GaddStop;
             el.getBBox = GgetBBox;
+            el.setStops = GsetStops;
             if (x1 != null) {
                 $(el.node, {
                     x1: x1,

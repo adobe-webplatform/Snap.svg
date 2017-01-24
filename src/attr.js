@@ -23,6 +23,28 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         Str = String,
         separator = Snap._.separator,
         E = "";
+    /*\
+     * Snap.url()
+     [ method ]
+     **
+     * Wraps path into `"url(<path>)"`.
+     - value (string) path
+     = (string) wrapped path
+    \*/
+    Snap.url = function (value) {
+        return "url(" + value + ")";
+    }
+    /*\
+     * Snap.deurl()
+     [ method ]
+     **
+     * Unwraps path from `"url(<path>)"`.
+     - value (string) url path
+     = (string) unwrapped path
+    \*/
+    Snap.deurl = function (value) {
+        return String(value).match(reURLValue)[1];
+    }
     // Attributes event handlers
     eve.on("snap.util.attr.mask", function (value) {
         if (value instanceof Element || value instanceof Fragment) {
@@ -143,6 +165,23 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
             return out;
         });
+        var len = stops.length,
+            start = 0,
+            j = 0;
+        function seed(i, end) {
+            var step = (end - start) / (i - j);
+            for (var k = j; k < i; k++) {
+                stops[k].offset = +(+start + step * (k - j)).toFixed(2);
+            }
+            j = i;
+            start = end;
+        }
+        len--;
+        for (var i = 0; i < len; i++) if ("offset" in stops[i]) {
+            seed(i, stops[i].offset);
+        }
+        stops[len].offset = stops[len].offset || 100;
+        seed(len, stops[len].offset);
         return {
             type: type,
             params: params,
@@ -374,6 +413,22 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     })(-1);
     eve.on("snap.util.getattr.#text", function () {
         return this.node.textContent;
+    })(-1);
+    eve.on("snap.util.getattr.fill", function (internal) {
+        if (internal) {
+            return;
+        }
+        eve.stop();
+        var value = eve("snap.util.getattr.fill", this, true).firstDefined();
+        return Snap("#" + Snap.deurl(value)) || value;
+    })(-1);
+    eve.on("snap.util.getattr.stroke", function (internal) {
+        if (internal) {
+            return;
+        }
+        eve.stop();
+        var value = eve("snap.util.getattr.stroke", this, true).firstDefined();
+        return Snap("#" + Snap.deurl(value)) || value;
     })(-1);
     eve.on("snap.util.getattr.viewBox", function () {
         eve.stop();
