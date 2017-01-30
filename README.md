@@ -19,8 +19,16 @@ A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://s
 
 ### Use
 
-In your HTML file, load simply by: `<script src="snap.svg-min.js"></script>`
+In your HTML file, load simply by:
+```html
+<script src="snap.svg-min.js"></script>`
+```
 No other scripts are needed. Both the minified and uncompressed (for development) versions are in the `/dist` folder.
+
+To load with webpack use following command:
+```js
+const Snap = require(`imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js`);
+```
 
 ### Build
 
@@ -63,6 +71,6 @@ _*Snap.svg uses Grunt 0.4.0. You might want to [read](http://gruntjs.com/getting
 
         git push origin my_branch
 
-* Make a [pull request](https://help.github.com/articles/using-pull-requests) to `dev` branch.
+* Make a [pull request](https://help.github.com/articles/using-pull-requests) to `dev`(!) branch.
 
 *Note:* Pull requests to other branches than `dev` or without filled CLA wouldn’t be accepted.
