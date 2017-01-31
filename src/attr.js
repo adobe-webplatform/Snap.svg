@@ -64,7 +64,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 id: mask.id
             });
             $(this.node, {
-                mask: URL(mask.id)
+                mask: Snap.url(mask.id)
             });
         }
     });
@@ -85,7 +85,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 });
             }
             $(this.node, {
-                "clip-path": URL(clip.node.id || clip.id)
+                "clip-path": Snap.url(clip.node.id || clip.id)
             });
         }
     }));
@@ -108,7 +108,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                             id: value.id
                         });
                     }
-                    var fill = URL(value.node.id);
+                    var fill = Snap.url(value.node.id);
                 } else {
                     fill = value.attr(name);
                 }
@@ -122,7 +122,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                                 id: grad.id
                             });
                         }
-                        fill = URL(grad.node.id);
+                        fill = Snap.url(grad.node.id);
                     } else {
                         fill = value;
                     }
@@ -362,7 +362,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                     if (!id) {
                         $(value.node, {id: value.id});
                     }
-                    this.node.style[name] = URL(id);
+                    this.node.style[name] = Snap.url(id);
                     return;
                 }
             };
