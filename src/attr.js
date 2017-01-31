@@ -24,17 +24,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         separator = Snap._.separator,
         E = "";
     /*\
-     * Snap.url()
-     [ method ]
-     **
-     * Wraps path into `"url(<path>)"`.
-     - value (string) path
-     = (string) wrapped path
-    \*/
-    Snap.url = function (value) {
-        return "url(" + value + ")";
-    }
-    /*\
      * Snap.deurl()
      [ method ]
      **

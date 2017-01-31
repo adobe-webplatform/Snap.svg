@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-01-24
+// build: 2017-02-01
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -934,6 +934,14 @@ var has = "hasOwnProperty",
     xlink = "http://www.w3.org/1999/xlink",
     xmlns = "http://www.w3.org/2000/svg",
     hub = {},
+    /*\
+     * Snap.url()
+     [ method ]
+     **
+     * Wraps path into `"url('<path>')"`.
+     - value (string) path
+     = (string) wrapped path
+    \*/
     URL = Snap.url = function (url) {
         return "url('#" + url + "')";
     };
@@ -3187,7 +3195,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (val) {
                 uses[val] = (uses[val] || []).concat(function (id) {
                     var attr = {};
-                    attr[name] = URL(id);
+                    attr[name] = Snap.url(id);
                     $(it.node, attr);
                 });
             }
@@ -4095,17 +4103,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         Str = String,
         separator = Snap._.separator,
         E = "";
-    /*\
-     * Snap.url()
-     [ method ]
-     **
-     * Wraps path into `"url(<path>)"`.
-     - value (string) path
-     = (string) wrapped path
-    \*/
-    Snap.url = function (value) {
-        return "url(" + value + ")";
-    }
     /*\
      * Snap.deurl()
      [ method ]

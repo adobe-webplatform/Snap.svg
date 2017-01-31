@@ -91,6 +91,14 @@ var has = "hasOwnProperty",
     xlink = "http://www.w3.org/1999/xlink",
     xmlns = "http://www.w3.org/2000/svg",
     hub = {},
+    /*\
+     * Snap.url()
+     [ method ]
+     **
+     * Wraps path into `"url('<path>')"`.
+     - value (string) path
+     = (string) wrapped path
+    \*/
     URL = Snap.url = function (url) {
         return "url('#" + url + "')";
     };
