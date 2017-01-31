@@ -1,6 +1,6 @@
 {
     "name": "snapsvg",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "JavaScript Vector Library",
     "main": "./dist/snap.svg.js",
     "repository": {

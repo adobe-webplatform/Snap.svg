@@ -35,13 +35,21 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     \*/
     pproto.filter = function (filstr) {
         var paper = this;
+        var width, height;
         if (paper.type != "svg") {
             paper = paper.paper;
         }
+        if (typeof paper.node.getBoundingClientRect !== "undefined") {
+            width = paper.node.getBoundingClientRect().width;
+            height = paper.node.getBoundingClientRect().height;
+        } else {
+            width = paper.node.offsetWidth;
+            height = paper.node.offsetWidth;
+        }
         var f = Snap.parse(Str(filstr)),
             id = Snap._.id(),
-            width = paper.node.offsetWidth,
-            height = paper.node.offsetHeight,
+            width = paper.node.getBoundingClientRect().width,
+            height = paper.node.getBoundingClientRect().height,
             filter = $("filter");
         $(filter, {
             id: id,
