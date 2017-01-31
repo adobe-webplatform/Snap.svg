@@ -19,8 +19,10 @@ var mina = (function (eve) {
                        window.oRequestAnimationFrame      ||
                        window.msRequestAnimationFrame     ||
                        function (callback) {
-                           setTimeout(callback, 16);
+                           setTimeout(callback, 16, new Date().getTime());
+                           return true;
                        },
+    requestID,
     isArray = Array.isArray || function (a) {
         return a instanceof Array ||
             Object.prototype.toString.call(a) == "[object Array]";
@@ -94,6 +96,7 @@ var mina = (function (eve) {
         a.b = a.get() - a.pdif;
         delete a.pdif;
         animations[a.id] = a;
+        frame();
     },
     update = function () {
         var a = this,
@@ -109,7 +112,16 @@ var mina = (function (eve) {
         }
         a.set(res);
     },
-    frame = function () {
+    frame = function (timeStamp) {
+        // Manual invokation?
+        if (!timeStamp) {
+            // Frame loop stopped?
+            if (!requestID) {
+                // Start frame loop...
+                requestID = requestAnimFrame(frame);
+            }
+            return;
+        }
         var len = 0;
         for (var i in animations) if (animations.hasOwnProperty(i)) {
             var a = animations[i],
@@ -129,7 +141,7 @@ var mina = (function (eve) {
             }
             a.update();
         }
-        len && requestAnimFrame(frame);
+        requestID = len ? requestAnimFrame(frame) : false;
     },
     /*\
      * mina
@@ -193,7 +205,7 @@ var mina = (function (eve) {
                 break;
             }
         }
-        len == 1 && requestAnimFrame(frame);
+        len == 1 && frame();
         return anim;
     };
     /*\
