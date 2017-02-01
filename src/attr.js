@@ -64,9 +64,20 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     }(function (value) {
         if (value instanceof Element || value instanceof Fragment) {
             eve.stop();
-            if (value.type == "clipPath") {
-                var clip = value;
-            } else {
+            var clip,
+                node = value.node;
+            while (node) {
+                if (node.nodeName === "clipPath") {
+                    clip = new Element(node);
+                    break;
+                }
+                if (node.nodeName === "svg") {
+                    clip = undefined;
+                    break;
+                }
+                node = node.parentNode;
+            }
+            if (!clip) {
                 clip = make("clipPath", getSomeDefs(this));
                 clip.node.appendChild(value.node);
                 !clip.node.id && $(clip.node, {
