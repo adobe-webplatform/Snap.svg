@@ -138,8 +138,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 blur = 4;
                 color = "#000";
             } else {
-                color = blur;
                 opacity = color;
+                color = blur;
                 blur = 4;
             }
         }
