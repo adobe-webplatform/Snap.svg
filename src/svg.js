@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.4.2dev";
+Snap.version = "0.5.0dev";
 /*\
  * Snap
  [ method ]
