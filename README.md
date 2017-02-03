@@ -17,7 +17,7 @@ A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://s
 * [About Snap.svg](http://snapsvg.io/about/)
 * [Getting Started](http://snapsvg.io/start/)
 * [API Reference](http://snapsvg.io/docs/)
-* [Slack Room](https://snapsvg.slack.com/)
+* [Slack Room](https://snapsvg.slack.com/). [Invite](https://snapsvg.slack.com/shared_invite/MTM2NTE4MTk3MDYwLTE0ODYwODgzNzUtYjQ0YmM1N2U0Mg)
 
 ### Use
 

@@ -1,6 +1,6 @@
 {
     "name": "snapsvg",
-    "version": "0.5.0dev",
+    "version": "0.5.0",
     "description": "JavaScript Vector Library",
     "main": "./dist/snap.svg.js",
     "repository": {
@@ -17,6 +17,7 @@
         "grunt-contrib-uglify": "~0.2.0",
         "grunt-contrib-concat": "~0.3.0",
         "grunt-exec": "~0.4.2",
+        "grunt-prettify": "0.4.0",
         "mocha": "*",
         "expect.js": "*",
         "eslint": "*",

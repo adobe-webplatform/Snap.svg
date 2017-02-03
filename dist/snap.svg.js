@@ -1,4 +1,4 @@
-// Snap.svg 0.4.2dev
+// Snap.svg 0.5.0
 //
 // Copyright (c) 2013 – 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-02
+// build: 2017-02-03
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -868,7 +868,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.4.2dev";
+Snap.version = "0.5.0";
 /*\
  * Snap
  [ method ]
@@ -4156,9 +4156,20 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     }(function (value) {
         if (value instanceof Element || value instanceof Fragment) {
             eve.stop();
-            if (value.type == "clipPath") {
-                var clip = value;
-            } else {
+            var clip,
+                node = value.node;
+            while (node) {
+                if (node.nodeName === "clipPath") {
+                    clip = new Element(node);
+                    break;
+                }
+                if (node.nodeName === "svg") {
+                    clip = undefined;
+                    break;
+                }
+                node = node.parentNode;
+            }
+            if (!clip) {
                 clip = make("clipPath", getSomeDefs(this));
                 clip.node.appendChild(value.node);
                 !clip.node.id && $(clip.node, {

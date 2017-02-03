@@ -63,14 +63,28 @@ module.exports = function(grunt) {
             eslint: {
                 command: "./node_modules/eslint/bin/eslint.js " + core.join(" ")
             },
+        },
+        prettify: {
+            options: {
+                indent: 4,
+                indent_char: " ",
+                wrap_line_length: 80,
+                brace_style: "expand",
+                unformatted: ["code", "pre", "script"]
+            },
+            one: {
+                src: "./doc/reference.html",
+                dest: "./doc/reference.html"
+            }
         }
     });
 
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-exec");
+    grunt.loadNpmTasks("grunt-prettify");
 
-    grunt.registerTask("default", ["exec:eslint", "concat", "uglify", "exec:dr"]);
+    grunt.registerTask("default", ["exec:eslint", "concat", "uglify", "exec:dr", "prettify"]);
     grunt.registerTask("lint", ["exec:eslint"]);
     grunt.registerTask("test", ["exec:test"]);
 };
