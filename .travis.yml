@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "4.4.x"
+
+sudo: true
+
+before_script:
+  - npm install -g grunt-cli
+  - npm install
+  - grunt
+  - cd test
+
+script: phantomjs test.js

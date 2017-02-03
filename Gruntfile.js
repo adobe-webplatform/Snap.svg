@@ -57,6 +57,9 @@ module.exports = function(grunt) {
             dr: {
               command: "node node_modules/dr.js/dr dr.json"
             },
+            test: {
+              command: "cd test; phantomjs test.js"
+            },
             eslint: {
                 command: "./node_modules/eslint/bin/eslint.js " + core.join(" ")
             },
@@ -69,4 +72,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask("default", ["exec:eslint", "concat", "uglify", "exec:dr"]);
     grunt.registerTask("lint", ["exec:eslint"]);
+    grunt.registerTask("test", ["exec:test"]);
 };
