@@ -31,6 +31,7 @@ const Snap = require(`imports-loader?this=>window,fix=>module.exports=0!snapsvg/
 ```
 
 ### Build
+[![Build Status](https://travis-ci.org/adobe-webplatform/Snap.svg.svg?branch=dev)](https://travis-ci.org/adobe-webplatform/Snap.svg)
 
 Snap.svg uses [Grunt](http://gruntjs.com/) to build.
 
