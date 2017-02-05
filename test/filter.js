@@ -59,25 +59,25 @@ describe("Filter methods", function () {
         str = Snap.filter.shadow(-1, 3);
         expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="1"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
     });
-    it("Snap.filter.shadow - dx & dy, blur", function() {
+    it("Snap.filter.shadow - dx & dy, opacity", function() {
         var str = Snap.filter.shadow(5, 5, 5);
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="1"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="5"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
         str = Snap.filter.shadow(-1, 3, 10);
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="1"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="#000000"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="10"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
     });
-    it("Snap.filter.shadow - dx & dy, color", function() {
-        var str = Snap.filter.shadow(5, 5, '#F00');
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#ff0000"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="#F00"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
-        str = Snap.filter.shadow(-1, 3, 'hsla(128deg, 50%, 50%, 0.8)');
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="rgba(64,191,81,0.8)"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="hsla(128deg, 50%, 50%, 0.8)"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+    it("Snap.filter.shadow - dx & dy, color, opacity", function() {
+        var str = Snap.filter.shadow(5, 5, '#F00', 1);
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#ff0000"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="1"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        str = Snap.filter.shadow(-1, 3, 'hsla(128deg, 50%, 50%, 0.8)', .5);
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="4"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="rgba(64,191,81,0.8)"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="0.5"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
     });
 
-    it("Snap.filter.shadow - dx & dy, blur & color", function() {
-        var str = Snap.filter.shadow(5, 5, 5, '#F00');
+    it("Snap.filter.shadow - dx & dy, blur, color, opacity", function() {
+        var str = Snap.filter.shadow(5, 5, 5, '#F00', 1);
         expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dx="5" dy="5" result="offsetblur"/><feFlood flood-color="#ff0000"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="1"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
-        str = Snap.filter.shadow(-1, 3, 10, 'hsla(128deg, 50%, 50%, 0.8)');
-        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="rgba(64,191,81,0.8)"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="1"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
+        str = Snap.filter.shadow(-1, 3, 10, 'hsla(128deg, 50%, 50%, 0.8)', .5);
+        expect(str).to.be('<feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="-1" dy="3" result="offsetblur"/><feFlood flood-color="rgba(64,191,81,0.8)"/><feComposite in2="offsetblur" operator="in"/><feComponentTransfer><feFuncA type="linear" slope="0.5"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>');
     });
-    
-       
+
+
 });

@@ -1,4 +1,4 @@
-// Copyright (c) 2013 - 2015 Adobe Systems Incorporated. All rights reserved.
+// Copyright (c) 2013 - 2017 Adobe Systems Incorporated. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.4.1";
+Snap.version = "0.5.0";
 /*\
  * Snap
  [ method ]
@@ -76,14 +76,13 @@ var has = "hasOwnProperty",
     ISURL = /^url\(['"]?([^\)]+?)['"]?\)$/i,
     colourRegExp = /^\s*((#[a-f\d]{6})|(#[a-f\d]{3})|rgba?\(\s*([\d\.]+%?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+%?(?:\s*,\s*[\d\.]+%?)?)\s*\)|hsba?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\)|hsla?\(\s*([\d\.]+(?:deg|\xb0|%)?\s*,\s*[\d\.]+%?\s*,\s*[\d\.]+(?:%?\s*,\s*[\d\.]+)?%?)\s*\))\s*$/i,
     bezierrg = /^(?:cubic-)?bezier\(([^,]+),([^,]+),([^,]+),([^\)]+)\)/,
-    reURLValue = /^url\(#?([^)]+)\)$/,
     separator = Snap._.separator = /[,\s]+/,
     whitespace = /[\s]/g,
     commaSpaces = /[\s]*,[\s]*/,
     hsrg = {hs: 1, rg: 1},
     pathCommand = /([a-z])[\s,]*((-?\d*\.?\d*(?:e[\-+]?\d+)?[\s]*,?[\s]*)+)/ig,
     tCommand = /([rstm])[\s,]*((-?\d*\.?\d*(?:e[\-+]?\d+)?[\s]*,?[\s]*)+)/ig,
-    pathValues = /(-?\d*\.?\d*(?:e[\-+]?\\d+)?)[\s]*,?[\s]*/ig,
+    pathValues = /(-?\d*\.?\d*(?:e[\-+]?\d+)?)[\s]*,?[\s]*/ig,
     idgen = 0,
     idprefix = "S" + (+new Date).toString(36),
     ID = function (el) {
@@ -92,6 +91,14 @@ var has = "hasOwnProperty",
     xlink = "http://www.w3.org/1999/xlink",
     xmlns = "http://www.w3.org/2000/svg",
     hub = {},
+    /*\
+     * Snap.url
+     [ method ]
+     **
+     * Wraps path into `"url('<path>')"`.
+     - value (string) path
+     = (string) wrapped path
+    \*/
     URL = Snap.url = function (url) {
         return "url('#" + url + "')";
     };
@@ -171,9 +178,9 @@ function is(o, type) {
         (o instanceof Array || Array.isArray && Array.isArray(o))) {
         return true;
     }
-    return  (type == "null" && o === null) ||
-            (type == typeof o && o !== null) ||
-            (type == "object" && o === Object(o)) ||
+    return  type == "null" && o === null ||
+            type == typeof o && o !== null ||
+            type == "object" && o === Object(o) ||
             objectToString.call(o).slice(8, -1).toLowerCase() == type;
 }
 /*\
@@ -379,7 +386,6 @@ Snap.atan2 = function (num) {
  [ method ]
  **
  * Returns an angle between two or three points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -394,7 +400,6 @@ Snap.angle = angle;
  [ method ]
  **
  * Returns distance between two points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -409,7 +414,6 @@ Snap.len = function (x1, y1, x2, y2) {
  [ method ]
  **
  * Returns squared distance between two points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -424,7 +428,6 @@ Snap.len2 = function (x1, y1, x2, y2) {
  [ method ]
  **
  * Returns closest point to a given one on a given path.
- > Parameters
  - path (Element) path element
  - x (number) x coord of a point
  - y (number) y coord of a point
@@ -453,7 +456,9 @@ Snap.closestPoint = function (path, x, y) {
     // linear scan for coarse approximation
     for (var scan, scanLength = 0, scanDistance; scanLength <= pathLength; scanLength += precision) {
         if ((scanDistance = distance2(scan = pathNode.getPointAtLength(scanLength))) < bestDistance) {
-            best = scan, bestLength = scanLength, bestDistance = scanDistance;
+            best = scan;
+            bestLength = scanLength;
+            bestDistance = scanDistance;
         }
     }
 
@@ -467,9 +472,13 @@ Snap.closestPoint = function (path, x, y) {
             beforeDistance,
             afterDistance;
         if ((beforeLength = bestLength - precision) >= 0 && (beforeDistance = distance2(before = pathNode.getPointAtLength(beforeLength))) < bestDistance) {
-            best = before, bestLength = beforeLength, bestDistance = beforeDistance;
+            best = before;
+            bestLength = beforeLength;
+            bestDistance = beforeDistance;
         } else if ((afterLength = bestLength + precision) <= pathLength && (afterDistance = distance2(after = pathNode.getPointAtLength(afterLength))) < bestDistance) {
-            best = after, bestLength = afterLength, bestDistance = afterDistance;
+            best = after;
+            bestLength = afterLength;
+            bestDistance = afterDistance;
         } else {
             precision *= .5;
         }
@@ -628,7 +637,7 @@ Snap.getRGB = cacher(function (colour) {
         blue = mmin(math.round(blue), 255);
         opacity = mmin(mmax(opacity, 0), 1);
         rgb = {r: red, g: green, b: blue, toString: rgbtoString};
-        rgb.hex = "#" + (16777216 | blue | (green << 8) | (red << 16)).toString(16).slice(1);
+        rgb.hex = "#" + (16777216 | blue | green << 8 | red << 16).toString(16).slice(1);
         rgb.opacity = is(opacity, "finite") ? opacity : 1;
         return rgb;
     }
@@ -675,7 +684,7 @@ Snap.rgb = cacher(function (r, g, b, o) {
         var round = math.round;
         return "rgba(" + [round(r), round(g), round(b), +o.toFixed(2)] + ")";
     }
-    return "#" + (16777216 | b | (g << 8) | (r << 16)).toString(16).slice(1);
+    return "#" + (16777216 | b | g << 8 | r << 16).toString(16).slice(1);
 });
 var toHex = function (color) {
     var i = glob.doc.getElementsByTagName("head")[0] || glob.doc.getElementsByTagName("svg")[0],
@@ -817,7 +826,7 @@ Snap.hsb2rgb = function (h, s, v, o) {
     }
     h *= 360;
     var R, G, B, X, C;
-    h = (h % 360) / 60;
+    h = h % 360 / 60;
     C = v * s;
     X = C * (1 - abs(h % 2 - 1));
     R = G = B = v - C;
@@ -857,7 +866,7 @@ Snap.hsl2rgb = function (h, s, l, o) {
     }
     h *= 360;
     var R, G, B, X, C;
-    h = (h % 360) / 60;
+    h = h % 360 / 60;
     C = 2 * s * (l < .5 ? l : 1 - l);
     X = C * (1 - abs(h % 2 - 1));
     R = G = B = l - C / 2;
@@ -892,12 +901,11 @@ Snap.rgb2hsb = function (r, g, b) {
     var H, S, V, C;
     V = mmax(r, g, b);
     C = V - mmin(r, g, b);
-    H = (C == 0 ? null :
-         V == r ? (g - b) / C :
-         V == g ? (b - r) / C + 2 :
-                  (r - g) / C + 4
-        );
-    H = ((H + 360) % 6) * 60 / 360;
+    H = C == 0 ? null :
+        V == r ? (g - b) / C :
+        V == g ? (b - r) / C + 2 :
+                 (r - g) / C + 4;
+    H = (H + 360) % 6 * 60 / 360;
     S = C == 0 ? 0 : C / V;
     return {h: H, s: S, b: V, toString: hsbtoString};
 };
@@ -926,15 +934,15 @@ Snap.rgb2hsl = function (r, g, b) {
     M = mmax(r, g, b);
     m = mmin(r, g, b);
     C = M - m;
-    H = (C == 0 ? null :
-         M == r ? (g - b) / C :
-         M == g ? (b - r) / C + 2 :
-                  (r - g) / C + 4);
-    H = ((H + 360) % 6) * 60 / 360;
+    H = C == 0 ? null :
+        M == r ? (g - b) / C :
+        M == g ? (b - r) / C + 2 :
+                 (r - g) / C + 4;
+    H = (H + 360) % 6 * 60 / 360;
     L = (M + m) / 2;
-    S = (C == 0 ? 0 :
+    S = C == 0 ? 0 :
          L < .5 ? C / (2 * L) :
-                  C / (2 - 2 * L));
+                  C / (2 - 2 * L);
     return {h: H, s: S, l: L, toString: hsltoString};
 };
 
@@ -1146,8 +1154,8 @@ var contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
         return false;
     };
 function getSomeDefs(el) {
-    var p = (el.node.ownerSVGElement && wrap(el.node.ownerSVGElement)) ||
-            (el.node.parentNode && wrap(el.node.parentNode)) ||
+    var p = el.node.ownerSVGElement && wrap(el.node.ownerSVGElement) ||
+            el.node.parentNode && wrap(el.node.parentNode) ||
             Snap.select("svg") ||
             Snap(0, 0),
         pdefs = p.select("defs"),
@@ -1492,7 +1500,7 @@ function Paper(w, h) {
         desc,
         defs,
         proto = Paper.prototype;
-    if (w && w.tagName == "svg") {
+    if (w && w.tagName && w.tagName.toLowerCase() == "svg") {
         if (w.snap in hub) {
             return hub[w.snap];
         }
@@ -1744,7 +1752,7 @@ Snap.ajax = function (url, postData, callback, scope){
             }
             postData = pd.join("&");
         }
-        req.open((postData ? "POST" : "GET"), url, true);
+        req.open(postData ? "POST" : "GET", url, true);
         if (postData) {
             req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

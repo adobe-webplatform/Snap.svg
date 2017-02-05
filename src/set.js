@@ -1,11 +1,11 @@
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -142,6 +142,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
         });
     };
+    /*\
+     * Set.remove
+     [ method ]
+     **
+     * Removes all children of the set.
+     *
+     = (object) Set object
+    \*/
     setproto.remove = function () {
         while (this.length) {
             this.pop().remove();
@@ -180,6 +188,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return this;
     };
+    /*\
+     * Set.attr
+     [ method ]
+     **
+     * Equivalent of @Element.attr.
+     = (object) Set object
+    \*/
     setproto.attr = function (value) {
         var unbound = {};
         for (var k in value) {
@@ -258,6 +273,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return false;
     };
+    /*\
+     * Set.insertAfter
+     [ method ]
+     **
+     * Inserts set elements after given element.
+     **
+     - element (object) set will be inserted after this element
+     = (object) Set object
+    \*/
     setproto.insertAfter = function (el) {
         var i = this.items.length;
         while (i--) {
@@ -265,6 +289,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return this;
     };
+    /*\
+     * Set.getBBox
+     [ method ]
+     **
+     * Union of all bboxes of the set. See @Element.getBBox.
+     = (object) bounding box descriptor. See @Element.getBBox.
+    \*/
     setproto.getBBox = function () {
         var x = [],
             y = [],
@@ -292,6 +323,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             cy: y + (y2 - y) / 2
         };
     };
+    /*\
+     * Set.insertAfter
+     [ method ]
+     **
+     * Creates a clone of the set.
+     **
+     = (object) New Set object
+    \*/
     setproto.clone = function (s) {
         s = new Set;
         for (var i = 0, ii = this.items.length; i < ii; i++) {
@@ -304,7 +343,24 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     };
     setproto.type = "set";
     // export
+    /*\
+     * Snap.Set
+     [ property ]
+     **
+     * Set constructor.
+    \*/
     Snap.Set = Set;
+    /*\
+     * Snap.set
+     [ method ]
+     **
+     * Creates a set and fills it with list of arguments.
+     **
+     = (object) New Set object
+     | var r = paper.rect(0, 0, 10, 10),
+     |     s1 = Snap.set(), // empty set
+     |     s2 = Snap.set(r, paper.circle(100, 100, 20)); // prefilled set
+    \*/
     Snap.set = function () {
         var set = new Set;
         if (arguments.length) {

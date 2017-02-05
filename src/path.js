@@ -1,11 +1,11 @@
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -165,7 +165,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             ay = t1 * p1y + t * c1y,
             cx = t1 * c2x + t * p2x,
             cy = t1 * c2y + t * p2y,
-            alpha = (90 - math.atan2(mx - nx, my - ny) * 180 / PI);
+            alpha = 90 - math.atan2(mx - nx, my - ny) * 180 / PI;
         // (mx > nx || my < ny) && (alpha += 180);
         return {
             x: x,
@@ -420,7 +420,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return box();
         }
         path = path2curve(path);
-        var x = 0, 
+        var x = 0,
             y = 0,
             X = [],
             Y = [],
@@ -451,7 +451,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     function rectPath(x, y, w, h, r) {
         if (r) {
             return [
-                ["M", +x + (+r), y],
+                ["M", +x + +r, y],
                 ["l", w - r * 2, 0],
                 ["a", r, r, 0, 0, 1, r, r],
                 ["l", 0, h - r * 2],
@@ -575,7 +575,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                         my = pa[2];
                     default:
                         for (var j = 1, jj = pa.length; j < jj; j++) {
-                            r[j] = +(pa[j] - ((j % 2) ? x : y)).toFixed(3);
+                            r[j] = +(pa[j] - (j % 2 ? x : y)).toFixed(3);
                         }
                 }
             } else {
@@ -686,7 +686,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                         my = +pa[2] + y;
                     default:
                         for (j = 1, jj = pa.length; j < jj; j++) {
-                            r[j] = +pa[j] + ((j % 2) ? x : y);
+                            r[j] = +pa[j] + (j % 2 ? x : y);
                         }
                 }
             } else if (pa0 == "R") {
@@ -761,6 +761,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     Y = x * math.sin(rad) + y * math.cos(rad);
                 return {x: X, y: Y};
             });
+        if (!rx || !ry) {
+            return [x1, y1, x2, y2, x2, y2];
+        }
         if (!recursive) {
             xy = rotate(x1, y1, -rad);
             x1 = xy.x;
@@ -772,7 +775,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 sin = math.sin(PI / 180 * angle),
                 x = (x1 - x2) / 2,
                 y = (y1 - y2) / 2;
-            var h = (x * x) / (rx * rx) + (y * y) / (ry * ry);
+            var h = x * x / (rx * rx) + y * y / (ry * ry);
             if (h > 1) {
                 h = math.sqrt(h);
                 rx = h * rx;
@@ -845,7 +848,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             y: pow(t1, 3) * p1y + pow(t1, 2) * 3 * t * c1y + t1 * 3 * t * t * c2y + pow(t, 3) * p2y
         };
     }
-    
+
     // Returns bounding box of cubic bezier curve.
     // Source: http://blog.hackers-cafe.net/2009/06/how-to-calculate-bezier-curves-bounding.html
     // Original version: NISHIO Hirokazu
@@ -895,8 +898,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         while (j--) {
             t = tvalues[j];
             mt = 1 - t;
-            bounds[0][j] = (mt * mt * mt * x0) + (3 * mt * mt * t * x1) + (3 * mt * t * t * x2) + (t * t * t * x3);
-            bounds[1][j] = (mt * mt * mt * y0) + (3 * mt * mt * t * y1) + (3 * mt * t * t * y2) + (t * t * t * y3);
+            bounds[0][j] = mt * mt * mt * x0 + 3 * mt * mt * t * x1 + 3 * mt * t * t * x2 + t * t * t * x3;
+            bounds[1][j] = mt * mt * mt * y0 + 3 * mt * mt * t * y1 + 3 * mt * t * t * y2 + t * t * t * y3;
         }
 
         bounds[0][jlen] = x0;

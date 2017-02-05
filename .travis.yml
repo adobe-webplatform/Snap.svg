@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "node"
+
+sudo: true
+
+before_script:
+  - npm install -g grunt-cli
+  - npm install
+  - grunt
+  - cd test
+
+script: phantomjs test.js
+
+notifications:
+  slack: snapsvg:1zY6dZQuE1vhnug8pLSbbYMv

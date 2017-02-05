@@ -1,11 +1,11 @@
-// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+// Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,8 +19,10 @@ var mina = (function (eve) {
                        window.oRequestAnimationFrame      ||
                        window.msRequestAnimationFrame     ||
                        function (callback) {
-                           setTimeout(callback, 16);
+                           setTimeout(callback, 16, new Date().getTime());
+                           return true;
                        },
+    requestID,
     isArray = Array.isArray || function (a) {
         return a instanceof Array ||
             Object.prototype.toString.call(a) == "[object Array]";
@@ -94,6 +96,7 @@ var mina = (function (eve) {
         a.b = a.get() - a.pdif;
         delete a.pdif;
         animations[a.id] = a;
+        frame();
     },
     update = function () {
         var a = this,
@@ -109,7 +112,16 @@ var mina = (function (eve) {
         }
         a.set(res);
     },
-    frame = function () {
+    frame = function (timeStamp) {
+        // Manual invokation?
+        if (!timeStamp) {
+            // Frame loop stopped?
+            if (!requestID) {
+                // Start frame loop...
+                requestID = requestAnimFrame(frame);
+            }
+            return;
+        }
         var len = 0;
         for (var i in animations) if (animations.hasOwnProperty(i)) {
             var a = animations[i],
@@ -129,7 +141,7 @@ var mina = (function (eve) {
             }
             a.update();
         }
-        len && requestAnimFrame(frame);
+        requestID = len ? requestAnimFrame(frame) : false;
     },
     /*\
      * mina
@@ -140,7 +152,7 @@ var mina = (function (eve) {
      - a (number) start _slave_ number
      - A (number) end _slave_ number
      - b (number) start _master_ number (start time in general case)
-     - B (number) end _master_ number (end time in gereal case)
+     - B (number) end _master_ number (end time in general case)
      - get (function) getter of _master_ number (see @mina.time)
      - set (function) setter of _slave_ number
      - easing (function) #optional easing function, default is @mina.linear
@@ -193,7 +205,7 @@ var mina = (function (eve) {
                 break;
             }
         }
-        len == 1 && requestAnimFrame(frame);
+        len == 1 && frame();
         return anim;
     };
     /*\
@@ -333,18 +345,18 @@ var mina = (function (eve) {
         var s = 7.5625,
             p = 2.75,
             l;
-        if (n < (1 / p)) {
+        if (n < 1 / p) {
             l = s * n * n;
         } else {
-            if (n < (2 / p)) {
-                n -= (1.5 / p);
+            if (n < 2 / p) {
+                n -= 1.5 / p;
                 l = s * n * n + .75;
             } else {
-                if (n < (2.5 / p)) {
-                    n -= (2.25 / p);
+                if (n < 2.5 / p) {
+                    n -= 2.25 / p;
                     l = s * n * n + .9375;
                 } else {
-                    n -= (2.625 / p);
+                    n -= 2.625 / p;
                     l = s * n * n + .984375;
                 }
             }

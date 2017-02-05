@@ -9,6 +9,12 @@
         "url": "src/element.js",
         "link": "https://github.com/adobe-webplatform/Snap.svg/blob/master/src/element.js"
     }, {
+        "url": "src/attr.js",
+        "link": "https://github.com/adobe-webplatform/Snap.svg/blob/master/src/attr.js"
+    }, {
+        "url": "src/animation.js",
+        "link": "https://github.com/adobe-webplatform/Snap.svg/blob/master/src/animation.js"
+    }, {
         "url": "src/matrix.js",
         "link": "https://github.com/adobe-webplatform/Snap.svg/blob/master/src/matrix.js"
     }, {
@@ -35,5 +41,8 @@
     }, {
         "url": "src/set.js",
         "link": "https://github.com/adobe-webplatform/Snap.svg/blob/master/src/set.js"
+    }, {
+        "url": "src/colors.js",
+        "link": "https://github.com/adobe-webplatform/Snap.svg/blob/master/src/colors.js"
     }]
 }

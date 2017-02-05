@@ -1,6 +1,6 @@
 {
     "name": "snapsvg",
-    "version": "0.4.1",
+    "version": "0.5.0",
     "description": "JavaScript Vector Library",
     "main": "./dist/snap.svg.js",
     "repository": {
@@ -8,17 +8,51 @@
         "url": "git@github.com:adobe-webplatform/Snap.svg.git"
     },
     "author": "Dmitry Baranovskiy",
-    "license": "Apache License v2",
+    "license": "Apache-2.0",
     "dependencies": {
-        "eve": "~0.4.2"
+        "eve": "~0.5.1"
     },
     "devDependencies": {
         "grunt": "~0.4.1",
         "grunt-contrib-uglify": "~0.2.0",
         "grunt-contrib-concat": "~0.3.0",
         "grunt-exec": "~0.4.2",
+        "grunt-prettify": "0.4.0",
         "mocha": "*",
         "expect.js": "*",
+        "eslint": "*",
         "dr.js": "~0.1.0"
+    },
+    "eslintConfig": {
+        "globals": {
+            "window": true,
+            "console": true
+        },
+        "rules": {
+            "block-scoped-var": 0,
+            "comma-dangle": 0,
+            "no-extra-parens": 1,
+            "no-shadow": 0,
+            "consistent-return": 0,
+            "eqeqeq": 0,
+            "no-new-wrappers": 0,
+            "no-sequences": 1,
+            "radix": 2,
+            "new-parens": 0,
+            "no-underscore-dangle": 0,
+            "no-path-concat": 0,
+            "strict": 0,
+            "camelcase": 0,
+            "no-extend-native": 0,
+            "no-loop-func": 0,
+            "new-cap": 0,
+            "no-unused-expressions": 0,
+            "no-mixed-requires": 0,
+            "quotes": [
+                1,
+                "double",
+                "avoid-escape"
+            ]
+        }
     }
 }

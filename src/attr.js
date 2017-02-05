@@ -1,11 +1,11 @@
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,12 +17,23 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         wrap = Snap._.wrap,
         is = Snap.is,
         getSomeDefs = Snap._.getSomeDefs,
-        reURLValue = /^url\(#?([^)]+)\)$/,
+        reURLValue = /^url\((['"]?)([^)]+)\1\)$/,
         $ = Snap._.$,
         URL = Snap.url,
         Str = String,
         separator = Snap._.separator,
         E = "";
+    /*\
+     * Snap.deurl
+     [ method ]
+     **
+     * Unwraps path from `"url(<path>)"`.
+     - value (string) url path
+     = (string) unwrapped path
+    \*/
+    Snap.deurl = function (value) {
+        return String(value).match(reURLValue)[2];
+    }
     // Attributes event handlers
     eve.on("snap.util.attr.mask", function (value) {
         if (value instanceof Element || value instanceof Fragment) {
@@ -53,9 +64,20 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     }(function (value) {
         if (value instanceof Element || value instanceof Fragment) {
             eve.stop();
-            if (value.type == "clipPath") {
-                var clip = value;
-            } else {
+            var clip,
+                node = value.node;
+            while (node) {
+                if (node.nodeName === "clipPath") {
+                    clip = new Element(node);
+                    break;
+                }
+                if (node.nodeName === "svg") {
+                    clip = undefined;
+                    break;
+                }
+                node = node.parentNode;
+            }
+            if (!clip) {
                 clip = make("clipPath", getSomeDefs(this));
                 clip.node.appendChild(value.node);
                 !clip.node.id && $(clip.node, {
@@ -143,6 +165,23 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
             return out;
         });
+        var len = stops.length,
+            start = 0,
+            j = 0;
+        function seed(i, end) {
+            var step = (end - start) / (i - j);
+            for (var k = j; k < i; k++) {
+                stops[k].offset = +(+start + step * (k - j)).toFixed(2);
+            }
+            j = i;
+            start = end;
+        }
+        len--;
+        for (var i = 0; i < len; i++) if ("offset" in stops[i]) {
+            seed(i, stops[i].offset);
+        }
+        stops[len].offset = stops[len].offset || 100;
+        seed(len, stops[len].offset);
         return {
             type: type,
             params: params,
@@ -374,6 +413,22 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     })(-1);
     eve.on("snap.util.getattr.#text", function () {
         return this.node.textContent;
+    })(-1);
+    eve.on("snap.util.getattr.fill", function (internal) {
+        if (internal) {
+            return;
+        }
+        eve.stop();
+        var value = eve("snap.util.getattr.fill", this, true).firstDefined();
+        return Snap(Snap.deurl(value)) || value;
+    })(-1);
+    eve.on("snap.util.getattr.stroke", function (internal) {
+        if (internal) {
+            return;
+        }
+        eve.stop();
+        var value = eve("snap.util.getattr.stroke", this, true).firstDefined();
+        return Snap(Snap.deurl(value)) || value;
     })(-1);
     eve.on("snap.util.getattr.viewBox", function () {
         eve.stop();

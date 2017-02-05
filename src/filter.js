@@ -1,11 +1,11 @@
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         paper.defs.appendChild(filter);
         return new Element(filter);
     };
-    
+
     eve.on("snap.util.getattr.filter", function () {
         eve.stop();
         var p = $(this.node, "filter");
@@ -126,22 +126,23 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - opacity (number) #optional `0..1` opacity of the shadow
      = (string) filter representation
      > Usage
-     | var f = paper.filter(Snap.filter.shadow(0, 2, 3)),
+     | var f = paper.filter(Snap.filter.shadow(0, 2, .3)),
      |     c = paper.circle(10, 10, 10).attr({
      |         filter: f
      |     });
     \*/
     Snap.filter.shadow = function (dx, dy, blur, color, opacity) {
-        if (typeof blur == "string") {
-            color = blur;
-            opacity = color;
-            blur = 4;
+        if (opacity == null) {
+            if (color == null) {
+                opacity = blur;
+                blur = 4;
+                color = "#000";
+            } else {
+                opacity = color;
+                color = blur;
+                blur = 4;
+            }
         }
-        if (typeof color != "string") {
-            opacity = color;
-            color = "#000";
-        }
-        color = color || "#000";
         if (blur == null) {
             blur = 4;
         }
