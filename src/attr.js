@@ -24,7 +24,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         separator = Snap._.separator,
         E = "";
     /*\
-     * Snap.deurl()
+     * Snap.deurl
      [ method ]
      **
      * Unwraps path from `"url(<path>)"`.

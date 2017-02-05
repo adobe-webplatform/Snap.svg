@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-04
+// build: 2017-02-05
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -947,7 +947,7 @@ var has = "hasOwnProperty",
     xmlns = "http://www.w3.org/2000/svg",
     hub = {},
     /*\
-     * Snap.url()
+     * Snap.url
      [ method ]
      **
      * Wraps path into `"url('<path>')"`.
@@ -1241,7 +1241,6 @@ Snap.atan2 = function (num) {
  [ method ]
  **
  * Returns an angle between two or three points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -1256,7 +1255,6 @@ Snap.angle = angle;
  [ method ]
  **
  * Returns distance between two points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -1271,7 +1269,6 @@ Snap.len = function (x1, y1, x2, y2) {
  [ method ]
  **
  * Returns squared distance between two points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -1286,7 +1283,6 @@ Snap.len2 = function (x1, y1, x2, y2) {
  [ method ]
  **
  * Returns closest point to a given one on a given path.
- > Parameters
  - path (Element) path element
  - x (number) x coord of a point
  - y (number) y coord of a point
@@ -4116,7 +4112,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         separator = Snap._.separator,
         E = "";
     /*\
-     * Snap.deurl()
+     * Snap.deurl
      [ method ]
      **
      * Unwraps path from `"url(<path>)"`.
@@ -5310,7 +5306,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         var $ = Snap._.$;
         // gradients' helpers
         /*\
-         * Element.stops()
+         * Element.stops
          [ method ]
          **
          * Only for gradients!
@@ -5321,7 +5317,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             return this.selectAll("stop");
         }
         /*\
-         * Element.addStop()
+         * Element.addStop
          [ method ]
          **
          * Only for gradients!
@@ -5371,7 +5367,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
         }
         /*\
-         * Element.setStops()
+         * Element.setStops
          [ method ]
          **
          * Only for gradients!

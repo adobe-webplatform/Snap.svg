@@ -513,7 +513,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         var $ = Snap._.$;
         // gradients' helpers
         /*\
-         * Element.stops()
+         * Element.stops
          [ method ]
          **
          * Only for gradients!
@@ -524,7 +524,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             return this.selectAll("stop");
         }
         /*\
-         * Element.addStop()
+         * Element.addStop
          [ method ]
          **
          * Only for gradients!
@@ -574,7 +574,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             }
         }
         /*\
-         * Element.setStops()
+         * Element.setStops
          [ method ]
          **
          * Only for gradients!

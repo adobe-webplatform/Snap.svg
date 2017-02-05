@@ -92,7 +92,7 @@ var has = "hasOwnProperty",
     xmlns = "http://www.w3.org/2000/svg",
     hub = {},
     /*\
-     * Snap.url()
+     * Snap.url
      [ method ]
      **
      * Wraps path into `"url('<path>')"`.
@@ -386,7 +386,6 @@ Snap.atan2 = function (num) {
  [ method ]
  **
  * Returns an angle between two or three points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -401,7 +400,6 @@ Snap.angle = angle;
  [ method ]
  **
  * Returns distance between two points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -416,7 +414,6 @@ Snap.len = function (x1, y1, x2, y2) {
  [ method ]
  **
  * Returns squared distance between two points
- > Parameters
  - x1 (number) x coord of first point
  - y1 (number) y coord of first point
  - x2 (number) x coord of second point
@@ -431,7 +428,6 @@ Snap.len2 = function (x1, y1, x2, y2) {
  [ method ]
  **
  * Returns closest point to a given one on a given path.
- > Parameters
  - path (Element) path element
  - x (number) x coord of a point
  - y (number) y coord of a point
