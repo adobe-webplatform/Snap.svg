@@ -17,7 +17,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         wrap = Snap._.wrap,
         is = Snap.is,
         getSomeDefs = Snap._.getSomeDefs,
-        reURLValue = /^url\(#?([^)]+)\)$/,
+        reURLValue = /^url\((['"]?)([^)]+)\1\)$/,
         $ = Snap._.$,
         URL = Snap.url,
         Str = String,
@@ -32,7 +32,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (string) unwrapped path
     \*/
     Snap.deurl = function (value) {
-        return String(value).match(reURLValue)[1];
+        return String(value).match(reURLValue)[2];
     }
     // Attributes event handlers
     eve.on("snap.util.attr.mask", function (value) {
@@ -420,7 +420,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         }
         eve.stop();
         var value = eve("snap.util.getattr.fill", this, true).firstDefined();
-        return Snap("#" + Snap.deurl(value)) || value;
+        return Snap(Snap.deurl(value)) || value;
     })(-1);
     eve.on("snap.util.getattr.stroke", function (internal) {
         if (internal) {
@@ -428,7 +428,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         }
         eve.stop();
         var value = eve("snap.util.getattr.stroke", this, true).firstDefined();
-        return Snap("#" + Snap.deurl(value)) || value;
+        return Snap(Snap.deurl(value)) || value;
     })(-1);
     eve.on("snap.util.getattr.viewBox", function () {
         eve.stop();
