@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.5.0";
+Snap.version = "0.5.1";
 /*\
  * Snap
  [ method ]
@@ -42,8 +42,12 @@ function Snap(w, h) {
             return w;
         }
         if (h == null) {
-            w = glob.doc.querySelector(String(w));
-            return wrap(w);
+            try {
+                w = glob.doc.querySelector(String(w));
+                return wrap(w);
+            } catch (e) {
+                return null;
+            }
         }
     }
     w = w == null ? "100%" : w;

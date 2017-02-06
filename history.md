@@ -1,3 +1,7 @@
+#0.5.1
+
+* Bug fix
+
 #0.5.0
 
 * Added color palettes for Material and FlatUI
