@@ -32,7 +32,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (string) unwrapped path
     \*/
     Snap.deurl = function (value) {
-        return String(value).match(reURLValue)[2];
+        var res = String(value).match(reURLValue);
+        return res ? res[2] : value;
     }
     // Attributes event handlers
     eve.on("snap.util.attr.mask", function (value) {

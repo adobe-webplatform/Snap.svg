@@ -13,6 +13,7 @@ describe("Attributes", function () {
             o[key] = "#fc0";
             r.attr(o);
             expect(r.node.getAttribute(key)).to.be("#ffcc00");
+            expect(r.attr(key)).to.be("rgb(255, 204, 0)");
             o[key] = "rgb(255, 204, 0)";
             r.attr(o);
             expect(r.node.getAttribute(key)).to.be("#ffcc00");

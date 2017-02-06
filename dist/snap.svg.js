@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-05
+// build: 2017-02-06
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -868,7 +868,7 @@ var mina = (function (eve) {
 // limitations under the License.
 
 var Snap = (function(root) {
-Snap.version = "0.5.0";
+Snap.version = "0.5.1";
 /*\
  * Snap
  [ method ]
@@ -897,8 +897,12 @@ function Snap(w, h) {
             return w;
         }
         if (h == null) {
-            w = glob.doc.querySelector(String(w));
-            return wrap(w);
+            // try {
+                w = glob.doc.querySelector(String(w));
+                return wrap(w);
+            // } catch (e) {
+                // return null;
+            // }
         }
     }
     w = w == null ? "100%" : w;
@@ -4120,7 +4124,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (string) unwrapped path
     \*/
     Snap.deurl = function (value) {
-        return String(value).match(reURLValue)[2];
+        var res = String(value).match(reURLValue);
+        return res ? res[2] : value;
     }
     // Attributes event handlers
     eve.on("snap.util.attr.mask", function (value) {
