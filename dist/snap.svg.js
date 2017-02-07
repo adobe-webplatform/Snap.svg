@@ -1,4 +1,4 @@
-// Snap.svg 0.5.0
+// Snap.svg 0.5.1
 //
 // Copyright (c) 2013 – 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-06
+// build: 2017-02-07
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -897,12 +897,12 @@ function Snap(w, h) {
             return w;
         }
         if (h == null) {
-            // try {
+            try {
                 w = glob.doc.querySelector(String(w));
                 return wrap(w);
-            // } catch (e) {
-                // return null;
-            // }
+            } catch (e) {
+                return null;
+            }
         }
     }
     w = w == null ? "100%" : w;
@@ -2641,9 +2641,10 @@ Snap.ajax = function (url, postData, callback, scope){
  - url (string) URL
  - callback (function) callback
  - scope (object) #optional scope of callback
+ = (XMLHttpRequest) the XMLHttpRequest object, just in case
 \*/
 Snap.load = function (url, callback, scope) {
-    Snap.ajax(url, function (req) {
+    return Snap.ajax(url, function (req) {
         var f = Snap.parse(req.responseText);
         scope ? callback.call(scope, f) : callback(f);
     });
@@ -4936,9 +4937,19 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 set.height = height;
             } else {
                 preload(src, function () {
+                    var width,
+                        height,
+                        bcr = this.getBoundingClientRect && this.getBoundingClientRect();
+                    if (bcr) {
+                        width = bcr.width;
+                        height = bcr.height;
+                    } else {
+                        width = this.offsetWidth;
+                        height = this.offsetHeight;
+                    }
                     Snap._.$(el.node, {
-                        width: this.offsetWidth,
-                        height: this.offsetHeight
+                        width: width,
+                        height: height
                     });
                 });
             }
@@ -8117,8 +8128,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var f = Snap.parse(Str(filstr)),
             id = Snap._.id(),
-            width = paper.node.offsetWidth,
-            height = paper.node.offsetHeight,
             filter = $("filter");
         $(filter, {
             id: id,
