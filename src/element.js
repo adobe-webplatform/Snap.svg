@@ -754,25 +754,28 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             var nsMgr = {
                 namespaces: {},
                 getPrefix: function (namespaceURI, node) {
-                    if (namespaceURI === null || namespaceURI === '') {
+                    if (namespaceURI == null || namespaceURI == "") {
                         return null;
                     }
 
                     // try to get prefix from allready used namespaces
-                    for (var prefix in nsMgr.namespaces)
-                        if (nsMgr.namespaces[prefix] == namespaceURI)
+                    for (var prefix in nsMgr.namespaces) {
+                        if (nsMgr.namespaces[prefix] == namespaceURI) {
                             return prefix;
+                        }
+                    }
 
                     // try to get prefix from commonly known namepsaces
-                    for (var prefix in knownNamespaces)
+                    for (var prefix in knownNamespaces) {
                         if (knownNamespaces[prefix] == namespaceURI) {
                             nsMgr.namespaces[prefix] = namespaceURI;
                             return prefix;
                         }
+                    }
 
                     // try to get prefix in the document
                     if (node && node.lookupPrefix) {
-                        var prefix = node.lookupPrefix(namespaceURI);
+                        prefix = node.lookupPrefix(namespaceURI);
                         if (prefix) {
                             nsMgr.namespaces[prefix] = namespaceURI;
                             return prefix;
@@ -781,9 +784,10 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
 
                     // generate prefix
                     var i = 1;
-                    var prefix = "prfx" + i;
-                    while (nsMgr.namespaces[prefix])
-                        prefix = "prfx" + (++i);
+                    prefix = "prfx" + i;
+                    while (nsMgr.namespaces[prefix]) {
+                        prefix = "prfx" + ++i;
+                    }
 
                     nsMgr.namespaces[prefix] = namespaceURI;
 
@@ -795,20 +799,20 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         };
 
         return function (nsMgr) {
-            nsMgr = (typeof nsMgr == 'undefined') ? createNameSpaceMgr() : nsMgr;
-            var isRootElement = false;
-            var res = "";
-            var attr = this.node.attributes;
-            var chld = this.node.childNodes;
+            nsMgr = typeof nsMgr == "undefined" ? createNameSpaceMgr() : nsMgr;
+            var isRootElement = false,
+                res = "",
+                attr = this.node.attributes,
+                chld = this.node.childNodes;
 
             if (type) {
-                if (typeof (nsMgr.rootNS) == 'undefined') {
+                if (typeof nsMgr.rootNS == "undefined") {
                     isRootElement = true;
                     nsMgr.rootNS = this.node.namespaceURI || "";
-
                     res = "<" + this.type;
-                    if (nsMgr.rootNS.length > 0)
+                    if (nsMgr.rootNS.length > 0) {
                         res += ' xmlns="' + nsMgr.rootNS + '"';
+                    }
                 } else if ((this.node.namespaceURI || "") != nsMgr.rootNS) {
                     var nodeNS = nsMgr.getPrefix(this.node.namespaceURI || "", this.node);
                     if (nodeNS) {
@@ -821,8 +825,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 }
 
                 for (var i = 0, ii = attr.length; i < ii; i++) {
-                    var attrName = attr[i].name;
-                    var attrNS = attr[i].namespaceURI ? nsMgr.getPrefix(attr[i].namespaceURI, attr[i]) + ":" : "";
+                    var attrName = attr[i].name,
+                        attrNS = attr[i].namespaceURI ? nsMgr.getPrefix(attr[i].namespaceURI, attr[i]) + ":" : "";
                     res += " " + attrNS + attrName + '="' + attr[i].value.replace(/"/g, "'") + '"';
                 }
             }
@@ -846,8 +850,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                     nsString += " xmlns:" + prefix + '="' + nsMgr.namespaces[prefix] + '"';
                 }
 
-                if (nsString.length > 0)
+                if (nsString.length > 0) {
                     res = "<" + this.type + nsString + " " + res.substring(this.type.length + 1);
+                }
             }
             return res;
         };

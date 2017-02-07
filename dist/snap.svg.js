@@ -3458,14 +3458,94 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     \*/
     elproto.innerSVG = toString();
     function toString(type) {
-        return function () {
-            var res = type ? "<" + this.type : "",
+        var createNameSpaceMgr = function () {
+            var knownNamespaces = {
+                svg: "http://www.w3.org/2000/svg",
+                xlink: "http://www.w3.org/1999/xlink",
+                inkscape: "http://www.inkscape.org/namespaces/inkscape",
+                sodipodi: "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd",
+                rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                cc: "http://web.resource.org/cc/",
+                dc: "http://purl.org/dc/elements/1.1/",
+                xhtml: "http://www.w3.org/1999/xhtml"
+            };
+            var nsMgr = {
+                namespaces: {},
+                getPrefix: function (namespaceURI, node) {
+                    if (namespaceURI == null || namespaceURI == "") {
+                        return null;
+                    }
+
+                    // try to get prefix from allready used namespaces
+                    for (var prefix in nsMgr.namespaces) {
+                        if (nsMgr.namespaces[prefix] == namespaceURI) {
+                            return prefix;
+                        }
+                    }
+
+                    // try to get prefix from commonly known namepsaces
+                    for (var prefix in knownNamespaces) {
+                        if (knownNamespaces[prefix] == namespaceURI) {
+                            nsMgr.namespaces[prefix] = namespaceURI;
+                            return prefix;
+                        }
+                    }
+
+                    // try to get prefix in the document
+                    if (node && node.lookupPrefix) {
+                        prefix = node.lookupPrefix(namespaceURI);
+                        if (prefix) {
+                            nsMgr.namespaces[prefix] = namespaceURI;
+                            return prefix;
+                        }
+                    }
+
+                    // generate prefix
+                    var i = 1;
+                    prefix = "prfx" + i;
+                    while (nsMgr.namespaces[prefix]) {
+                        prefix = "prfx" + ++i;
+                    }
+
+                    nsMgr.namespaces[prefix] = namespaceURI;
+
+                    return prefix;
+                }
+            };
+
+            return nsMgr;
+        };
+
+        return function (nsMgr) {
+            nsMgr = typeof nsMgr == "undefined" ? createNameSpaceMgr() : nsMgr;
+            var isRootElement = false,
+                res = "",
                 attr = this.node.attributes,
                 chld = this.node.childNodes;
+
             if (type) {
+                if (typeof nsMgr.rootNS == "undefined") {
+                    isRootElement = true;
+                    nsMgr.rootNS = this.node.namespaceURI || "";
+                    res = "<" + this.type;
+                    if (nsMgr.rootNS.length > 0) {
+                        res += ' xmlns="' + nsMgr.rootNS + '"';
+                    }
+                } else if ((this.node.namespaceURI || "") != nsMgr.rootNS) {
+                    var nodeNS = nsMgr.getPrefix(this.node.namespaceURI || "", this.node);
+                    if (nodeNS) {
+                        res = "<" + nodeNS + ":" +this.type;
+                    } else {
+                        res = "<" + this.type + ' xmlns=""';
+                    }
+                } else {
+                    res = "<" + this.type;
+                }
+
                 for (var i = 0, ii = attr.length; i < ii; i++) {
-                    res += " " + attr[i].name + '="' +
-                            attr[i].value.replace(/"/g, '\\"') + '"';
+                    var attrName = attr[i].name,
+                        attrNS = attr[i].namespaceURI ? nsMgr.getPrefix(attr[i].namespaceURI, attr[i]) + ":" : "";
+                    res += " " + attrNS + attrName + '="' + attr[i].value.replace(/"/g, "'") + '"';
                 }
             }
             if (chld.length) {
@@ -3474,12 +3554,23 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                     if (chld[i].nodeType == 3) {
                         res += chld[i].nodeValue;
                     } else if (chld[i].nodeType == 1) {
-                        res += wrap(chld[i]).toString();
+                        res += " " + wrap(chld[i]).outerSVG(nsMgr);
                     }
                 }
                 type && (res += "</" + this.type + ">");
             } else {
-                type && (res += "/>");
+                type && (res += " />");
+            }
+
+            if (type && isRootElement) {
+                var nsString = "";
+                for (var prefix in nsMgr.namespaces) {
+                    nsString += " xmlns:" + prefix + '="' + nsMgr.namespaces[prefix] + '"';
+                }
+
+                if (nsString.length > 0) {
+                    res = "<" + this.type + nsString + " " + res.substring(this.type.length + 1);
+                }
             }
             return res;
         };
