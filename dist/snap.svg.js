@@ -1,4 +1,4 @@
-// Snap.svg 0.5.0
+// Snap.svg 0.5.1
 //
 // Copyright (c) 2013 – 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-06
+// build: 2017-02-07
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -897,12 +897,12 @@ function Snap(w, h) {
             return w;
         }
         if (h == null) {
-            // try {
+            try {
                 w = glob.doc.querySelector(String(w));
                 return wrap(w);
-            // } catch (e) {
-                // return null;
-            // }
+            } catch (e) {
+                return null;
+            }
         }
     }
     w = w == null ? "100%" : w;
