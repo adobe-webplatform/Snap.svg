@@ -104,7 +104,8 @@ var has = "hasOwnProperty",
      = (string) wrapped path
     \*/
     URL = Snap.url = function (url) {
-        return "url('#" + url + "')";
+        var prefix = window ? window.location.pathname : "";
+        return "url('" + prefix + "#" + url + "')";
     };
 
 function $(el, attr) {
