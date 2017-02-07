@@ -14,16 +14,22 @@
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
     has = "hasOwnProperty",
-    supportsTouch = "createTouch" in glob.doc,
+    supportsPointer = 'onmspointerdown' in window.document || 'onpointerdown' in window.document,
+    supportsTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch,
     events = [
         "click", "dblclick", "mousedown", "mousemove", "mouseout",
-        "mouseover", "mouseup", "touchstart", "touchmove", "touchend",
-        "touchcancel"
+        "mouseover", "mouseup", "pointerdown", "pointermove", "pointerup",
+        "touchstart", "touchmove", "touchend", "touchcancel"
     ],
     touchMap = {
         mousedown: "touchstart",
         mousemove: "touchmove",
         mouseup: "touchend"
+    },
+    pointerMap = {
+        mousedown: "pointerdown",
+        mousemove: "pointermove",
+        mouseup: "pointerup"
     },
     getScroll = function (xy, el) {
         var name = xy == "y" ? "scrollTop" : "scrollLeft",
@@ -43,7 +49,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return this.originalEvent.stopPropagation();
     },
     addEvent = function (obj, type, fn, element) {
-        var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
+        var realName = (supportsTouch && touchMap[type]) ||  (supportsPointer && pointerMap[type]) || type,
             f = function (e) {
                 var scrollY = getScroll("y", element),
                     scrollX = getScroll("x", element);
