@@ -104,8 +104,11 @@ var has = "hasOwnProperty",
      = (string) wrapped path
     \*/
     URL = Snap.url = function (url) {
-        var prefix = window ? window.location.pathname : "";
-        return "url('" + prefix + "#" + url + "')";
+        return "url('#" + url + "')";
+    };
+    Snap.prefixURL = function (url) {
+        var prefix = window ? window.location.href : "";
+        return url.replace(/^(url\(')/, "$1" + prefix);
     };
 
 function $(el, attr) {

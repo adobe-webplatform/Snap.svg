@@ -67,7 +67,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 id = value.id;
             }
             $(this.node, {
-                filter: Snap.url(id)
+                filter: Snap.prefixURL(Snap.url(id))
             });
         }
         if (!value || value == "none") {

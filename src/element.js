@@ -490,7 +490,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (val) {
                 uses[val] = (uses[val] || []).concat(function (id) {
                     var attr = {};
-                    attr[name] = Snap.url(id);
+                    attr[name] = Snap.prefixURL(Snap.url(id));
                     $(it.node, attr);
                 });
             }
