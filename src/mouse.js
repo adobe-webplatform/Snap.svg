@@ -1,11 +1,11 @@
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,11 +14,13 @@
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
     has = "hasOwnProperty",
-    supportsTouch = "createTouch" in glob.doc,
+    supportsPointer = "onmspointerdown" in window.document || "onpointerdown" in window.document,
+    supportsTouch = ("ontouchstart" in window) || window.DocumentTouch && document instanceof DocumentTouch,
     events = [
         "click", "dblclick", "mousedown", "mousemove", "mouseout",
         "mouseover", "mouseup", "touchstart", "touchmove", "touchend",
-        "touchcancel"
+        "touchcancel", "pointerup", "pointerdown", "pointermove",
+        "pointerout", "pointerover"
     ],
     touchMap = {
         mousedown: "touchstart",
@@ -50,7 +52,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return this.originalEvent.stopPropagation();
     },
     addEvent = function (obj, type, fn, element) {
-        var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
+        var realName = supportsTouch && touchMap[type] ? touchMap[type] : supportsPointer && pointerMap[type] ? pointerMap[type] : type,
             f = function (e) {
                 var scrollY = getScroll("y", element),
                     scrollX = getScroll("x", element);
@@ -164,7 +166,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.dblclick
      [ method ]
@@ -181,7 +183,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mousedown
      [ method ]
@@ -198,7 +200,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mousemove
      [ method ]
@@ -215,7 +217,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mouseout
      [ method ]
@@ -232,7 +234,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mouseover
      [ method ]
@@ -249,7 +251,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mouseup
      [ method ]
@@ -266,7 +268,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.touchstart
      [ method ]
@@ -283,7 +285,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.touchmove
      [ method ]
@@ -300,7 +302,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.touchend
      [ method ]
@@ -317,7 +319,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.touchcancel
      [ method ]
@@ -411,8 +413,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - mcontext (object) #optional context for moving handler
      - scontext (object) #optional context for drag start handler
      - econtext (object) #optional context for drag end handler
-     * Additionaly following `drag` events are triggered: `drag.start.<id>` on start, 
-     * `drag.end.<id>` on end and `drag.move.<id>` on every move. When element is dragged over another element 
+     * Additionaly following `drag` events are triggered: `drag.start.<id>` on start,
+     * `drag.end.<id>` on end and `drag.move.<id>` on every move. When element is dragged over another element
      * `drag.over.<id>` fires as well.
      *
      * Start event and start handler are called in specified context or in context of the element with following parameters:
