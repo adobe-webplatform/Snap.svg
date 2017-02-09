@@ -25,6 +25,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         mousemove: "touchmove",
         mouseup: "touchend"
     },
+    pointerMap = {
+        mouseup: "pointerup",
+        mousedown: "pointerdown",
+        mousemove: "pointermove",
+        mouseout: "pointerout",
+        mouseover: "pointerover"
+    },
     getScroll = function (xy, el) {
         var name = xy == "y" ? "scrollTop" : "scrollLeft",
             doc = el && el.node ? el.node.ownerDocument : glob.doc;
@@ -62,10 +69,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 var x = e.clientX + scrollX,
                     y = e.clientY + scrollY;
                 return fn.call(element, e, x, y);
-            };
+            },
+            pointerName = pointerMap[type];
 
         if (type !== realName) {
             obj.addEventListener(type, f, false);
+        }
+
+        if (pointerName) {
+          obj.addEventListener(pointerName, f, false);
         }
 
         obj.addEventListener(realName, f, false);
@@ -73,6 +85,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return function () {
             if (type !== realName) {
                 obj.removeEventListener(type, f, false);
+            }
+
+            if (pointerName) {
+              obj.removeEventListener(pointerName, f, false);
             }
 
             obj.removeEventListener(realName, f, false);
