@@ -12,11 +12,13 @@ pre[class*="language-"] {
 	text-shadow: 0 -.1em .2em black;
 	white-space: pre;
 	word-spacing: normal;
-	
+	word-break: normal;
+	line-height: 1.5;
+
 	-moz-tab-size: 4;
 	-o-tab-size: 4;
 	tab-size: 4;
-	
+
 	-webkit-hyphens: none;
 	-moz-hyphens: none;
 	-ms-hyphens: none;
@@ -33,17 +35,34 @@ pre[class*="language-"] {
 	margin: .5em 0;
 	overflow: auto;
 }
-pre[class*="language-"]::selection { /* Safari */
-	background:hsl(200, 4%, 16%); /* #282A2B */
+
+pre[class*="language-"]::selection {
+	/* Safari */
+	background: hsl(200, 4%, 16%); /* #282A2B */
 }
-pre[class*="language-"]::selection { /* Firefox */
-	background:hsl(200, 4%, 16%); /* #282A2B */
+
+pre[class*="language-"]::selection {
+	/* Firefox */
+	background: hsl(200, 4%, 16%); /* #282A2B */
+}
+
+/* Text Selection colour */
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+	text-shadow: none;
+	background: hsla(0, 0%, 93%, 0.15); /* #EDEDED */
+}
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+	text-shadow: none;
+	background: hsla(0, 0%, 93%, 0.15); /* #EDEDED */
 }
 
 /* Inline code */
 :not(pre) > code[class*="language-"] {
 	border-radius: .3em;
-	border: .13em solid hsl(0,0%,33%); /* #545454 */
+	border: .13em solid hsl(0, 0%, 33%); /* #545454 */
 	box-shadow: 1px 1px .3em -.1em black inset;
 	padding: .15em .2em .05em;
 }
@@ -65,28 +84,36 @@ pre[class*="language-"]::selection { /* Firefox */
 
 .token.tag,
 .token.boolean,
-.token.number {
+.token.number,
+.token.deleted {
 	color: hsl(14, 58%, 55%); /* #CF6A4C */
 }
 
 .token.keyword,
 .token.property,
-.token.selector {
-	color:hsl(53, 89%, 79%); /* #F9EE98 */
+.token.selector,
+.token.constant,
+.token.symbol,
+.token.builtin {
+	color: hsl(53, 89%, 79%); /* #F9EE98 */
 }
+
 .token.attr-name,
 .token.attr-value,
 .token.string,
+.token.char,
 .token.operator,
 .token.entity,
 .token.url,
 .language-css .token.string,
-.style .token.string {
-	color:hsl(76, 21%, 52%); /* #8F9D6A */
+.style .token.string,
+.token.variable,
+.token.inserted {
+	color: hsl(76, 21%, 52%); /* #8F9D6A */
 }
 
 .token.atrule {
-	color:hsl(218, 22%, 55%); /* #7587A6 */
+	color: hsl(218, 22%, 55%); /* #7587A6 */
 }
 
 .token.regex,
@@ -94,13 +121,18 @@ pre[class*="language-"]::selection { /* Firefox */
 	color: hsl(42, 75%, 65%); /* #E9C062 */
 }
 
-.token.important {
+.token.important,
+.token.bold {
 	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
 }
 
 .token.entity {
 	cursor: help;
 }
+
 pre[data-line] {
 	padding: 1em 0 1em 3em;
 	position: relative;
@@ -109,31 +141,24 @@ pre[data-line] {
 /* Markup */
 .language-markup .token.tag,
 .language-markup .token.attr-name,
-.language-markup .token.punctuation  {
+.language-markup .token.punctuation {
 	color: hsl(33, 33%, 52%); /* #AC885B */
-}
-
-/* Text Selection colour */
-::selection {
-	background: hsla(0,0%,93%,0.15); /* #EDEDED */
-}
-::-moz-selection {
-	background: hsla(0,0%,93%,0.15); /* #EDEDED */
 }
 
 /* Make the tokens sit above the line highlight so the colours don't look faded. */
 .token {
-	position:relative;
-	z-index:1;
+	position: relative;
+	z-index: 1;
 }
+
 .line-highlight {
-	background: -moz-linear-gradient(left, hsla(0, 0%, 33%,.1) 70%, hsla(0, 0%, 33%,0)); /* #545454 */
-	background: -o-linear-gradient(left, hsla(0, 0%, 33%,.1) 70%, hsla(0, 0%, 33%,0)); /* #545454 */
-	background: -webkit-linear-gradient(left, hsla(0, 0%, 33%,.1) 70%, hsla(0, 0%, 33%,0)); /* #545454 */
+	background: -moz-linear-gradient(left, hsla(0, 0%, 33%, .1) 70%, hsla(0, 0%, 33%, 0)); /* #545454 */
+	background: -o-linear-gradient(left, hsla(0, 0%, 33%, .1) 70%, hsla(0, 0%, 33%, 0)); /* #545454 */
+	background: -webkit-linear-gradient(left, hsla(0, 0%, 33%, .1) 70%, hsla(0, 0%, 33%, 0)); /* #545454 */
 	background: hsla(0, 0%, 33%, 0.25); /* #545454 */
-	background: linear-gradient(left, hsla(0, 0%, 33%,.1) 70%, hsla(0, 0%, 33%,0)); /* #545454 */
-	border-bottom:1px dashed hsl(0, 0%, 33%); /* #545454 */
-	border-top:1px dashed hsl(0, 0%, 33%); /* #545454 */
+	background: linear-gradient(left, hsla(0, 0%, 33%, .1) 70%, hsla(0, 0%, 33%, 0)); /* #545454 */
+	border-bottom: 1px dashed hsl(0, 0%, 33%); /* #545454 */
+	border-top: 1px dashed hsl(0, 0%, 33%); /* #545454 */
 	left: 0;
 	line-height: inherit;
 	margin-top: 0.75em; /* Same as .prism’s padding-top */
@@ -142,8 +167,9 @@ pre[data-line] {
 	position: absolute;
 	right: 0;
 	white-space: pre;
-	z-index:0;
+	z-index: 0;
 }
+
 .line-highlight:before,
 .line-highlight[data-end]:after {
 	background-color: hsl(215, 15%, 59%); /* #8794A6 */
@@ -161,6 +187,7 @@ pre[data-line] {
 	top: .4em;
 	vertical-align: .3em;
 }
+
 .line-highlight[data-end]:after {
 	bottom: .4em;
 	content: attr(data-end);
