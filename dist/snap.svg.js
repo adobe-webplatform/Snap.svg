@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-09
+// build: 2017-02-14
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
@@ -3632,7 +3632,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (res.length == 1) {
                 res = res[0];
             }
-            return f ? f(res) : res;
+            var out = f ? f(res) : res;
+            if (f && out == "r") {
+                out = f([res]);
+            }
+            return out;
         };
     }
     var Animation = function (attr, ms, easing, callback) {
@@ -7545,11 +7549,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
         }
     }
-    function equaliseTransform(t1, t2, getBBox) {
-        t1 = t1 || new Snap.Matrix;
-        t2 = t2 || new Snap.Matrix;
-        t1 = Snap.parseTransformString(t1.toTransformString()) || [];
-        t2 = Snap.parseTransformString(t2.toTransformString()) || [];
+    function equaliseTransformString(t1, t2, getBBox) {
+        t1 = Snap.parseTransformString(t1) || [];
+        t2 = Snap.parseTransformString(t2) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
@@ -7562,8 +7564,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3]) ||
                 tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4])
                 ) {
-                    t1 = Snap._.transform2matrix(t1, getBBox());
-                    t2 = Snap._.transform2matrix(t2, getBBox());
+                    t1 = Snap._.transform2matrix(t1, getBBox(1));
+                    t2 = Snap._.transform2matrix(t2, getBBox(1));
                     from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
                     to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
                     break;
@@ -7580,6 +7582,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             to: path2array(to),
             f: getPath(from)
         };
+    }
+    function equaliseTransform(t1, t2, t1Matrix, t2Matrix, getBBox) {
+        t1 = t1 || new Snap.Matrix;
+        t2 = t2 || new Snap.Matrix;
+        var stringRes = equaliseTransformString(t1, t2, getBBox),
+            matrixRes;
+        if (stringRes.f([]).charAt() == "m") {
+            matrixRes = equaliseTransformString(t1Matrix.toTransformString(), t2Matrix.toTransformString(), getBBox);
+        }
+        return matrixRes || stringRes;
     }
     function getNumber(val) {
         return val;
@@ -7654,13 +7666,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             if (typeof b == "string") {
                 b = Str(b).replace(/\.{3}|\u2026/g, a);
             }
-            a = this.matrix;
+            var bMatrix;
             if (!Snap._.rgTransform.test(b)) {
-                b = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
+                bMatrix = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
             } else {
-                b = Snap._.transform2matrix(b, this.getBBox());
+                bMatrix = Snap._.transform2matrix(b, this.getBBox());
             }
-            return equaliseTransform(a, b, function () {
+            return equaliseTransform(a, b, this.matrix, bMatrix, function () {
                 return el.getBBox(1);
             });
         }
