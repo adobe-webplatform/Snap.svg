@@ -16,7 +16,8 @@
     "clean": "rimraf dist",
     "lint": "grunt",
     "unittest": "grunt test",
-    "test": "npm-run-all clean lint unittest"
+    "webpack": "webpack",
+    "test": "npm-run-all clean lint unittest webpack"
   },
   "devDependencies": {
     "dr.js": "~0.1.0",
@@ -30,7 +31,8 @@
     "grunt-prettify": "0.4.0",
     "mocha": "*",
     "npm-run-all": "^4.0.2",
-    "rimraf": "^2.6.1"
+    "rimraf": "^2.6.1",
+    "webpack": "^2.2.1"
   },
   "eslintConfig": {
     "globals": {
