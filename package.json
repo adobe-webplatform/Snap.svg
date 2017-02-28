@@ -2,7 +2,7 @@
   "name": "snapsvg",
   "version": "0.5.1",
   "description": "JavaScript Vector Library",
-  "main": "./dist/snapsvg.js",
+  "main": "./dist/snap.svg.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:adobe-webplatform/Snap.svg.git"
@@ -16,8 +16,7 @@
     "clean": "rimraf dist",
     "lint": "grunt",
     "unittest": "grunt test",
-    "webpack": "webpack",
-    "test": "npm-run-all clean lint unittest webpack"
+    "test": "npm-run-all clean lint unittest"
   },
   "devDependencies": {
     "dr.js": "~0.1.0",
@@ -32,7 +31,8 @@
     "mocha": "*",
     "npm-run-all": "^4.0.2",
     "rimraf": "^2.6.1",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
   },
   "eslintConfig": {
     "globals": {

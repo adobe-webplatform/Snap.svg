@@ -3,7 +3,13 @@ var path = require('path');
 module.exports = {
     entry: "./test/webpackentry.js",
     output: {
-        filename: "./.tmp/webpacked.js",
+        filename: "./.tmp/test-bundle.js",
+    },
+    devServer: {
+        contentBase: ".",
+        historyApiFallback: {
+            index: "test/test.html",
+        },
     },
     resolve: {
         alias: {
