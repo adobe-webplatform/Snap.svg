@@ -456,6 +456,8 @@
     typeof module != "undefined" && module.exports ? module.exports = eve : typeof define === "function" && define.amd ? define("eve", [], function() { return eve; }) : glob.eve = eve;
 })(typeof window != "undefined" ? window : this);
 
+// Using pattern defined here
+// http://ifandelse.com/its-not-hard-making-your-library-support-amd-and-commonjs/
 (function (glob, factory) {
     // AMD support
     if (typeof define === "function" && define.amd) {
@@ -463,7 +465,7 @@
         define(["eve"], function (eve) {
             return factory(glob, eve);
         });
-    } else if (typeof require === "function") {
+    } else if (typeof module === "object" && module.exports) {
         // Next for Node.js or CommonJS
         var eve = require("eve");
         module.exports = factory(glob, eve);

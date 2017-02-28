@@ -1,4 +1,5 @@
 var SNAP_FILES = [
+  "./src/banner.js",
   "./src/mina.js",
   "./src/svg.js",
   "./src/element.js",
@@ -12,8 +13,11 @@ var SNAP_FILES = [
   "./src/equal.js",
   "./src/mouse.js",
   "./src/filter.js",
-  "./src/align.js"
+  "./src/align.js",
+  "./src/footer.js",
 ];
+
+var DEP_FILES = ["./node_modules/eve/eve.js"];
 
 module.exports = function(grunt) {
 
@@ -60,9 +64,9 @@ module.exports = function(grunt) {
                 src: "<%= concat.target.dest %>",
                 dest: "dist/snapsvg.min.js"
             },
-            'dist.commonjs': {
-                src: "<%= concat.commonjs.dest %>",
-                dest: "dist/snapsvg.commonjs.min.js"
+            'dist.slim': {
+                src: "<%= concat.slim.dest %>",
+                dest: "dist/snapsvg.slim.min.js"
             }
         },
         concat: {
@@ -71,20 +75,11 @@ module.exports = function(grunt) {
             },
             target: {
                 dest: "dist/snapsvg.js",
-                src: [
-                    "./node_modules/eve/eve.js",
-                    "./src/amd-banner.js",
-                  ].concat(SNAP_FILES)
-                   .concat(["./src/amd-footer.js"])
+                src: DEP_FILES.concat(SNAP_FILES)
             },
-            commonjs: {
-                dest: "dist/snapsvg.commonjs.js",
-                src: [
-                    "./src/commonjs-banner.js"
-                  ].concat(SNAP_FILES)
-                   .concat(["./src/commonjs-footer.js"]),
-                dest: "dist/snap.svg.js",
-                src: src
+            slim: {
+                dest: "dist/snapsvg.slim.js",
+                src: SNAP_FILES
             }
         },
         exec: {
