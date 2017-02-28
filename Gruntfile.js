@@ -42,8 +42,8 @@ module.exports = function(grunt) {
         ],
         src = [
             "./node_modules/eve/eve.js",
-            "./src/amd-banner.js",
-            "./src/amd-footer.js"
+            "./src/banner.js",
+            "./src/footer.js"
         ];
 
     src.splice(2, 0, core);
@@ -62,11 +62,11 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: "<%= concat.target.dest %>",
-                dest: "dist/snapsvg.min.js"
+                dest: "dist/snap.svg.min.js"
             },
             'dist.slim': {
                 src: "<%= concat.slim.dest %>",
-                dest: "dist/snapsvg.slim.min.js"
+                dest: "dist/snap.svg.slim.min.js"
             }
         },
         concat: {
@@ -74,11 +74,14 @@ module.exports = function(grunt) {
                 banner: "<%= banner %>"
             },
             target: {
-                dest: "dist/snapsvg.js",
+                dest: "dist/snap.svg.js",
                 src: DEP_FILES.concat(SNAP_FILES)
             },
+            /**
+             * The slim bundle excludes dependencies, such as eve
+             */
             slim: {
-                dest: "dist/snapsvg.slim.js",
+                dest: "dist/snap.svg.slim.js",
                 src: SNAP_FILES
             }
         },

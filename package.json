@@ -2,7 +2,7 @@
   "name": "snapsvg",
   "version": "0.5.1",
   "description": "JavaScript Vector Library",
-  "main": "./dist/snap.svg.js",
+  "main": "./dist/snapsvg.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:adobe-webplatform/Snap.svg.git"
