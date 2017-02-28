@@ -13,7 +13,10 @@
     "eve": "~0.5.1"
   },
   "scripts": {
-      "test": "grunt && grunt test"
+    "clean": "rimraf dist",
+    "lint": "grunt",
+    "unittest": "grunt test",
+    "test": "npm-run-all clean lint unittest"
   },
   "devDependencies": {
     "dr.js": "~0.1.0",
@@ -25,7 +28,9 @@
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-exec": "~0.4.2",
     "grunt-prettify": "0.4.0",
-    "mocha": "*"
+    "mocha": "*",
+    "npm-run-all": "^4.0.2",
+    "rimraf": "^2.6.1"
   },
   "eslintConfig": {
     "globals": {
