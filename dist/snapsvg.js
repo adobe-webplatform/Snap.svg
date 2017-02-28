@@ -1002,7 +1002,6 @@ function $(el, attr) {
     return el;
 }
 Snap._.$ = $;
-Snap._.eve = eve;
 Snap._.id = ID;
 function getAttrs(el) {
     var attrs = el.attributes,
@@ -2725,7 +2724,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         Str = String,
         unit2px = Snap._unit2px,
         $ = Snap._.$,
-        eve = Snap._.eve,
         make = Snap._.make,
         getSomeDefs = Snap._.getSomeDefs,
         has = "hasOwnProperty",
@@ -3895,7 +3893,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         getSomeDefs = Snap._.getSomeDefs,
         reURLValue = /^url\((['"]?)([^)]+)\1\)$/,
         $ = Snap._.$,
-        eve = Snap._.eve,
         URL = Snap.url,
         Str = String,
         separator = Snap._.separator,
@@ -4520,7 +4517,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 }
         },
         Str = String,
-        eve = Snap._.eve,
         reUnit = /[a-z]+$/i,
         reAddon = /^\s*([+\-\/*])\s*=\s*([\d.eE+\-]+)\s*([^\d\s]+)?\s*$/;
     function getNumber(val) {
@@ -6834,10 +6830,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     // Set
     var Set = function (items) {
         this.items = [];
-        
-    var eve = Snap._.eve;
-
-	this.bindings = {};
+        this.bindings = {};
         this.length = 0;
         this.type = "set";
         if (items) {
@@ -7205,7 +7198,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var names = {},
         reUnit = /[%a-z]+$/i,
-        eve = Snap._.eve,
         Str = String;
     names.stroke = names.fill = "colour";
     function getEmpty(item) {
@@ -7404,7 +7396,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
     has = "hasOwnProperty",
-    eve = Snap._.eve,
     supportsTouch = "createTouch" in glob.doc,
     events = [
         "click", "dblclick", "mousedown", "mousemove", "mouseout",
@@ -7884,7 +7875,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         pproto = Paper.prototype,
         rgurl = /^\s*url\((.+)\)/,
         Str = String,
-        eve = Snap._.eve,
         $ = Snap._.$;
     Snap.filter = {};
     /*\

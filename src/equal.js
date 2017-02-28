@@ -14,7 +14,6 @@
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var names = {},
         reUnit = /[%a-z]+$/i,
-        eve = Snap._.eve,
         Str = String;
     names.stroke = names.fill = "colour";
     function getEmpty(item) {
