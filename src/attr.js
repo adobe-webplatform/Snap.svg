@@ -19,7 +19,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         getSomeDefs = Snap._.getSomeDefs,
         reURLValue = /^url\((['"]?)([^)]+)\1\)$/,
         $ = Snap._.$,
-        eve = Snap._.eve,
         URL = Snap.url,
         Str = String,
         separator = Snap._.separator,

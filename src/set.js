@@ -18,10 +18,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     // Set
     var Set = function (items) {
         this.items = [];
-        
-    var eve = Snap._.eve;
-
-	this.bindings = {};
+        this.bindings = {};
         this.length = 0;
         this.type = "set";
         if (items) {

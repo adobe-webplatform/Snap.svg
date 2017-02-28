@@ -17,7 +17,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         Str = String,
         unit2px = Snap._unit2px,
         $ = Snap._.$,
-        eve = Snap._.eve,
         make = Snap._.make,
         getSomeDefs = Snap._.getSomeDefs,
         has = "hasOwnProperty",

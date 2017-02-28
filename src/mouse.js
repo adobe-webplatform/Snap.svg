@@ -14,7 +14,6 @@
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
     has = "hasOwnProperty",
-    eve = Snap._.eve,
     supportsTouch = "createTouch" in glob.doc,
     events = [
         "click", "dblclick", "mousedown", "mousemove", "mouseout",

@@ -16,7 +16,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         pproto = Paper.prototype,
         rgurl = /^\s*url\((.+)\)/,
         Str = String,
-        eve = Snap._.eve,
         $ = Snap._.$;
     Snap.filter = {};
     /*\

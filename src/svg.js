@@ -157,7 +157,6 @@ function $(el, attr) {
     return el;
 }
 Snap._.$ = $;
-Snap._.eve = eve;
 Snap._.id = ID;
 function getAttrs(el) {
     var attrs = el.attributes,

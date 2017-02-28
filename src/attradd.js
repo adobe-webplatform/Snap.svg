@@ -27,7 +27,6 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 }
         },
         Str = String,
-        eve = Snap._.eve,
         reUnit = /[a-z]+$/i,
         reAddon = /^\s*([+\-\/*])\s*=\s*([\d.eE+\-]+)\s*([^\d\s]+)?\s*$/;
     function getNumber(val) {
