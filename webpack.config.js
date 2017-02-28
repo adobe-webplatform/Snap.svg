@@ -1,14 +1,14 @@
 // A test weback configuration to make sure snap.svg can be bundled
-var path = require('path');
+var path = require("path");
 module.exports = {
-    entry: "./test/webpackentry.js",
+    entry: "./test/index.js",
     output: {
-        filename: "./.tmp/test-bundle.js",
+        filename: "./test-bundle.js",
     },
     devServer: {
         contentBase: ".",
         historyApiFallback: {
-            index: "test/test.html",
+            index: "test/index.webpack.html",
         },
     },
     resolve: {

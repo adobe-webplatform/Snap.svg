@@ -1,4 +1,6 @@
-var snapsvg = require("snapsvg");
+require("expose-loader?Snap!snapsvg");
+// These tests require a server to function properly
+// require("./ajax");
 require("./system");
 require("./paper");
 require("./snap-tests");

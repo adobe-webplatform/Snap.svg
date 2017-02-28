@@ -62,7 +62,7 @@ grunt
 
 ### Testing
 
-Tests are located in `test` folder. To run tests, simply open `test.html` in there. Automatic tests use PhantomJS to scrap this file, so you can use it as a reference.
+Tests are located in `test` folder. To run tests, simply open `test/index.html`. Automatic tests use PhantomJS to scrap this file, so you can use it as a reference.
 
 Alternatively, install [PhantomJS](http://phantomjs.org) and run command
 ```sh
