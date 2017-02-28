@@ -82,7 +82,7 @@
         <textPath xlink:href="#textline" startOffset="50%">Mocha</textPath>
     </text>
     <text transform="rotate(216, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
-        <textPath xlink:href="#textline" startOffset="50%">Mochiatto</textPath>
+        <textPath xlink:href="#textline" startOffset="50%">Macchiato</textPath>
     </text>
     <text transform="rotate(288, 500, 379.5)" fill="#423733" style="font: 400 11px Source Sans Pro, source-sans-pro, sans-serif" text-anchor="middle">
         <textPath xlink:href="#textline" startOffset="50%">Espresso</textPath>

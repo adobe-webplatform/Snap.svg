@@ -38,7 +38,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
 
         if (classes.length) {
             j = 0;
-            while ((clazz = classes[j++])) {
+            while (clazz = classes[j++]) {
                 pos = curClasses.indexOf(clazz);
                 if (!~pos) {
                     curClasses.push(clazz);
@@ -72,7 +72,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             finalValue;
         if (curClasses.length) {
             j = 0;
-            while ((clazz = classes[j++])) {
+            while (clazz = classes[j++]) {
                 pos = curClasses.indexOf(clazz);
                 if (~pos) {
                     curClasses.splice(pos, 1);
@@ -129,7 +129,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             clazz,
             finalValue;
         j = 0;
-        while ((clazz = classes[j++])) {
+        while (clazz = classes[j++]) {
             pos = curClasses.indexOf(clazz);
             if (~pos) {
                 curClasses.splice(pos, 1);

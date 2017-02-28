@@ -8,7 +8,6 @@
         <link rel="shortcut icon" href="/assets/favicon.ico?v=1">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" href="/assets/docs/fonts/stylesheet.css?v=201311041519">
-        <link rel="stylesheet" href="/assets/docs/css/topcoat-desktop-light.css?v=201311041519">
         <link rel="stylesheet" href="/assets/docs/css/main.css?v=201311041519">
         <link rel="stylesheet" href="/assets/docs/css/dr.css?v=201311041519">
         <link rel="stylesheet" href="/assets/docs/css/prism.css?v=201311041519">
@@ -24,9 +23,9 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
 
-            function trackOutboundLink(link, category, action) { 
-                try { 
-                    _gaq.push(['_trackEvent', category , action]); 
+            function trackOutboundLink(link, category, action) {
+                try {
+                    _gaq.push(['_trackEvent', category , action]);
                 } catch(err){}
 
                 setTimeout(function() {
@@ -50,7 +49,7 @@
                     <a href="/docs/" class="mobile-hide selected">Docs</a>
                     <a href="/support/">Support</a>
                     <a href="/demos/" class="mobile-hide">Demos</a>
-                    <a class="bt" href="/assets/downloads/Snap.svg-0.1.0.zip" onclick="trackOutboundLink(this, 'Download', '0.1');return false;">Download</a>
+                    <a class="bt" href="/assets/downloads/Snap.svg-0.5.0.zip" onclick="trackOutboundLink(this, 'Download', '0.5.0');return false;">Download</a>
                 </nav>
             </div>
         </header>
@@ -62,7 +61,7 @@
             <div class="max-width">
                   <div id="sideNav">
                       <div class="combo">
-                          <input type="search" id="dr-filter" value="" placeholder="search" class="topcoat-search-input">
+                          <input type="search" id="dr-filter" value="" placeholder="search">
                       </div>
                       <div id="pageNav">
                           <ol id="dr-toc">
@@ -80,7 +79,7 @@
                       {{~it.out :item:index}}
                       <article id="{{=item[0].title}}">
                           <header>
-                              <h3 class="{{=item[0].clas}}">{{=item[0].name}}<a href="#{{=item[0].title}}" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line {{=item[0].line}} in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L{{=item[0].line}}">&#x27ad;</a></h3>
+                              <h2 class="{{=item[0].clas}}">{{=item[0].name}}<a href="#{{=item[0].title}}" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line {{=item[0].line}} in the source" href="https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js#L{{=item[0].line}}">&#x27ad;</a></h2>
                           </header>
                           <section>
                               <div class="extra" id="{{=item[0].title}}-extra"></div>
@@ -88,10 +87,10 @@
                                   {{~item :line:i}}
                                   {{ if (i > 0) { }}
                                   {{ if (line.text) { }}<p>{{=line.text.join("</p><p>")}}</p>{{ } }}
-                                  {{ if (line.attr) { }}<div class="topcoat-list__container">
-                                      <h3 class="topcoat-list__header">Parameters</h3>
-                                      <ol class="topcoat-list">
-                                          {{~line.attr :attr:j}}<li class="topcoat-list__item"><span class="dr-param">{{=attr.name}}</span>
+                                  {{ if (line.attr) { }}<div class="params">
+                                      <h3 class="params">Parameters</h3>
+                                      <ol class="params-list">
+                                          {{~line.attr :attr:j}}<li><span class="dr-param">{{=attr.name}}</span>
                                               <span class="dr-type">{{~attr.type :type:k}}<em class="dr-type-{{=type}}">{{=type}}</em> {{~}}</span>
                                               <span class="dr-description">{{=attr.desc}}</span></li>
                                           {{~}}

@@ -1,3 +1,15 @@
+#0.5.1
+
+* Bug fix
+
+#0.5.0
+
+* Added color palettes for Material and FlatUI
+* Added methods for gradients: `Element.stops()`, `Element.addStop()`, `Element.setStops()`
+* Fixed matrix splitting for better animation of matrices`
+* Various bug fixes
+* Better integration of tests and ESlint
+
 #0.4.1
 
 * Bug fixes.

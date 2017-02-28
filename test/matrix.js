@@ -183,6 +183,42 @@ describe("Matrix methods", function () {
             f: 18
         });
     });
+    it("Matrix.skewX", function() {
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
+        matrix.skewX(45);
+        expect(matrix).to.eql({
+            a: 1,
+            b: 0,
+            c: 1,
+            d: 1,
+            e: 20,
+            f: 30
+        });
+    });
+    it("Matrix.skewY", function() {
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
+        matrix.skewY(45);
+        expect(matrix).to.eql({
+            a: 1,
+            b: 1,
+            c: 0,
+            d: 1,
+            e: 20,
+            f: 30
+        });
+    });
+    it("Matrix.skew", function() {
+        var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
+        matrix.skew(45, -45);
+        expect(matrix).to.eql({
+            a: 1,
+            b: -1,
+            c: 1,
+            d: 1,
+            e: 20,
+            f: 30
+        });
+    });
     it("Matrix.x", function() {
         var matrix = new Snap.Matrix(1, 0, 0, 1, 20, 30);
         var result = matrix.x(10, -10);

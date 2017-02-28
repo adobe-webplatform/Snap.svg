@@ -13,7 +13,7 @@
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var names = {},
-        reUnit = /[a-z]+$/i,
+        reUnit = /[%a-z]+$/i,
         eve = Snap._.eve,
         Str = String;
     names.stroke = names.fill = "colour";
@@ -37,9 +37,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
     }
     function equaliseTransform(t1, t2, getBBox) {
-        t2 = Str(t2).replace(/\.{3}|\u2026/g, t1);
-        t1 = Snap.parseTransformString(t1) || [];
-        t2 = Snap.parseTransformString(t2) || [];
+        t1 = t1 || new Snap.Matrix;
+        t2 = t2 || new Snap.Matrix;
+        t1 = Snap.parseTransformString(t1.toTransformString()) || [];
+        t2 = Snap.parseTransformString(t2.toTransformString()) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
@@ -48,9 +49,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         for (; i < maxlength; i++) {
             tt1 = t1[i] || getEmpty(t2[i]);
             tt2 = t2[i] || getEmpty(tt1);
-            if ((tt1[0] != tt2[0]) ||
-                (tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3])) ||
-                (tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4]))
+            if (tt1[0] != tt2[0] ||
+                tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3]) ||
+                tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4])
                 ) {
                     t1 = Snap._.transform2matrix(t1, getBBox());
                     t2 = Snap._.transform2matrix(t2, getBBox());
@@ -83,7 +84,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return val.join(" ");
     }
     function getColour(clr) {
-        return Snap.rgb(clr[0], clr[1], clr[2]);
+        return Snap.rgb(clr[0], clr[1], clr[2], clr[3]);
     }
     function getPath(path) {
         var k = 0, i, ii, j, jj, out, a, b = [];
@@ -91,7 +92,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             out = "[";
             a = ['"' + path[i][0] + '"'];
             for (j = 1, jj = path[i].length; j < jj; j++) {
-                a[j] = "val[" + (k++) + "]";
+                a[j] = "val[" + k++ + "]";
             }
             out += a + "]";
             b[i] = out;
@@ -108,7 +109,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return out;
     }
     function isNumeric(obj) {
-        return isFinite(parseFloat(obj));
+        return isFinite(obj);
     }
     function arrayEqual(arr1, arr2) {
         if (!Snap.is(arr1, "array") || !Snap.is(arr2, "array")) {
@@ -122,13 +123,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     eve.on("snap.util.equal", function (name, b) {
         var A, B, a = Str(this.attr(name) || ""),
             el = this;
-        if (isNumeric(a) && isNumeric(b)) {
-            return {
-                from: parseFloat(a),
-                to: parseFloat(b),
-                f: getNumber
-            };
-        }
         if (names[name] == "colour") {
             A = Snap.color(a);
             B = Snap.color(b);
@@ -148,11 +142,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
-            if (b instanceof Snap.Matrix) {
-                b = b.toTransformString();
+            if (typeof b == "string") {
+                b = Str(b).replace(/\.{3}|\u2026/g, a);
             }
+            a = this.matrix;
             if (!Snap._.rgTransform.test(b)) {
-                b = Snap._.svgTransform2string(b);
+                b = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
+            } else {
+                b = Snap._.transform2matrix(b, this.getBBox());
             }
             return equaliseTransform(a, b, function () {
                 return el.getBBox(1);
@@ -173,6 +170,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 from: A,
                 to: B,
                 f: function (val) { return val; }
+            };
+        }
+        if (isNumeric(a) && isNumeric(b)) {
+            return {
+                from: parseFloat(a),
+                to: parseFloat(b),
+                f: getNumber
             };
         }
         var aUnit = a.match(reUnit),

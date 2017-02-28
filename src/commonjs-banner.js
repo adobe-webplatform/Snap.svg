@@ -1,2 +1,1 @@
-var eve = require('eve');
-var $ = require('jquery');
+var eve = require("eve");
