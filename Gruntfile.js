@@ -3,6 +3,7 @@ var SNAP_FILES = [
   "./src/mina.js",
   "./src/svg.js",
   "./src/element.js",
+  "./src/animation.js",
   "./src/matrix.js",
   "./src/attr.js",
   "./src/class.js",
