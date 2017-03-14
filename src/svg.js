@@ -106,6 +106,10 @@ var has = "hasOwnProperty",
     URL = Snap.url = function (url) {
         return "url('#" + url + "')";
     };
+    Snap.prefixURL = function (url) {
+        var prefix = window ? window.location.href : "";
+        return url.replace(/^(url\(')/, "$1" + prefix);
+    };
 
 function $(el, attr) {
     if (attr) {
@@ -1786,9 +1790,10 @@ Snap.ajax = function (url, postData, callback, scope){
  - url (string) URL
  - callback (function) callback
  - scope (object) #optional scope of callback
+ = (XMLHttpRequest) the XMLHttpRequest object, just in case
 \*/
 Snap.load = function (url, callback, scope) {
-    Snap.ajax(url, function (req) {
+    return Snap.ajax(url, function (req) {
         var f = Snap.parse(req.responseText);
         scope ? callback.call(scope, f) : callback(f);
     });

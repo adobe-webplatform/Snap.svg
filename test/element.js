@@ -6,8 +6,8 @@ describe("Element methods", function () {
     afterEach(function () {
         s.remove();
     });
-    
-    /* 
+
+    /*
     DOM manipulation:
         - add/append
         - prepend
@@ -132,7 +132,7 @@ describe("Element methods", function () {
         expect(rect.node.parentNode).to.be(null);
         expect(result).to.be(rect);
     });
-    
+
     /*
     Set/get data:
         Element.attr()
@@ -146,7 +146,7 @@ describe("Element methods", function () {
         Element.innerSVG()
         Element.toString()
     */
-    
+
     it("Element.attr - get", function() {
         var circle = s.circle(10, 20, 30);
         var r = circle.attr("r");
@@ -238,7 +238,7 @@ describe("Element methods", function () {
         expect(bbox.y2).to.eql(20 + 40);
         expect(bbox).to.eql(lbbx);
     });
-    
+
     it("Element.getPointAtLength", function() {
         var path = s.path("M0,0 100,0");
         expect(path.getPointAtLength(50)).to.eql({
@@ -261,7 +261,7 @@ describe("Element methods", function () {
                 y: 0
             },
             alpha: 180
-        }); 
+        });
     });
     it("Element.getSubpath", function() {
         var path = s.path("M0,0 100,0");
@@ -278,11 +278,11 @@ describe("Element methods", function () {
         var group2 = s.group().attr({
             'class': 'group-two'
         });
-        
+
         var group3 = s.group().attr({
             'class': 'group-three'
         });
-        
+
         var circle1 = s.circle(10, 20, 30).attr({
             'class': 'circle-one'
         });
@@ -294,7 +294,7 @@ describe("Element methods", function () {
         group2.add(circle1);
         group3.add(circle2);
         var innerSVG = group1.innerSVG();
-        expect(innerSVG).to.match(/<g .*?class="group-two".*?>\w*<g .*?class="group-three".*?>\w*<circle .*?class="circle-two".*?>\w*<circle .*?class="circle-one".*?>/);
+        expect(innerSVG).to.match(/<g .*?class="group-two".*?>\s*<g .*?class="group-three".*?>\s*<circle .*?class="circle-two".*?>\s*<circle .*?class="circle-one".*?>/);
     });
     it("Element.toString", function() {
         var group1 = s.group();
@@ -305,10 +305,10 @@ describe("Element methods", function () {
         var str = group1.toString();
         expect(str).to.match(/<g.*?>\w*<circle .*?class="circle-one".*?>\w*<\/g>/);
     });
-    
+
     /*
-        Misc: 
-        
+        Misc:
+
         Element.select()
         Element.selectAll()
         Element.animate()
@@ -320,7 +320,7 @@ describe("Element methods", function () {
         Element.transform()
         Element.toDefs()
     */
-    
+
     it("Element.select", function() {
         var group1 = s.group();
         var group2 = s.group();
@@ -368,7 +368,7 @@ describe("Element methods", function () {
             done();
         }, 50);
         expect(result).to.be(circle);
-    });    
+    });
     it("Element.animate - with callback", function(done) {
         var circle = s.circle(10, 20, 30);
         var result = circle.animate({r: 50}, 10, function() {
@@ -478,11 +478,11 @@ describe("Element methods", function () {
         var result = circle.toDefs();
         expect(circle.node.parentElement.nodeName).to.be('defs');
         expect(result).to.be(circle);
-    });   
-        
+    });
+
     /*
-        Event binding & unbinding: 
-        
+        Event binding & unbinding:
+
             Element.click()
             Element.dblclick()
             Element.mousedown()
@@ -512,14 +512,14 @@ describe("Element methods", function () {
             Element.hover()
             Element.unhover()
     */
-      
+
     // Helper function to simulate event triggering
     var triggerEvent = function(savageEl, eventType) {
         var event = document.createEvent("HTMLEvents");
         event.initEvent(eventType, true, true);
         savageEl.node.dispatchEvent(event);
     };
-    
+
     // Generate tests for all standard DOM events
     (function() {
         var elementEvents = [
@@ -535,7 +535,7 @@ describe("Element methods", function () {
             "touchmove",
             "touchstart"
         ];
-        
+
         var makeEventTest = function(eventName) {
             return function() {
                 // Add event, trigger event, remove event, trigger again
@@ -555,7 +555,7 @@ describe("Element methods", function () {
                 expect(result2).to.be(circle);
             };
         };
-        
+
         for (var i = 0; i < elementEvents.length; i++) {
             var eventName = elementEvents[i];
             var testName = "Element." + eventName + ", Element.un" + eventName;
@@ -584,7 +584,7 @@ describe("Element methods", function () {
             ended++;
             expect(event).to.be.an('object');
         });
-        
+
         expect(started).to.be(0);
         triggerEvent(circle, 'mousedown');
         expect(started).to.be(1);
@@ -595,7 +595,7 @@ describe("Element methods", function () {
         triggerEvent(circle, 'mouseup');
         expect(ended).to.be(1);
         expect(result1).to.be(circle);
-        
+
         var result2 = circle.undrag();
         triggerEvent(circle, 'mousedown');
         expect(started).to.be(1);
@@ -629,7 +629,7 @@ describe("Element methods", function () {
             expect(event).to.be.an('object');
             expect(this.endContext).to.be(true);
         }, {moveContext: true}, {startContext: true}, {endContext: true});
-        
+
         expect(started).to.be(0);
         triggerEvent(circle, 'mousedown');
         expect(started).to.be(1);
@@ -640,7 +640,7 @@ describe("Element methods", function () {
         triggerEvent(circle, 'mouseup');
         expect(ended).to.be(1);
         expect(result).to.be(circle);
-        
+
         var result2 = circle.undrag();
         triggerEvent(circle, 'mousedown');
         expect(started).to.be(1);
@@ -650,8 +650,8 @@ describe("Element methods", function () {
         expect(ended).to.be(1);
         // expect(result2).to.be(circle); // TODO: Make undrag return element
     });
-    
-    
+
+
     it("Element.hover, Element.unhover - no contexts", function() {
         var circle = s.circle(10, 20, 30);
         var eventIn = 0;
@@ -661,7 +661,7 @@ describe("Element methods", function () {
         }, function() {
             eventOut++;
         });
-        
+
         expect(eventIn).to.be(0);
         triggerEvent(circle, 'mouseover');
         expect(eventIn).to.be(1);
@@ -669,7 +669,7 @@ describe("Element methods", function () {
         triggerEvent(circle, 'mouseout');
         expect(eventOut).to.be(1);
         expect(result1).to.be(circle);
-        
+
         var result2 = circle.unhover();
         triggerEvent(circle, 'mouseover');
         expect(eventIn).to.be(1);
@@ -688,7 +688,7 @@ describe("Element methods", function () {
             eventOut++;
             expect(this.outContext).to.be(true);
         }, {inContext: true}, {outContext: true});
-        
+
         expect(eventIn).to.be(0);
         triggerEvent(circle, 'mouseover');
         expect(eventIn).to.be(1);
@@ -696,7 +696,7 @@ describe("Element methods", function () {
         triggerEvent(circle, 'mouseout');
         expect(eventOut).to.be(1);
         expect(result1).to.be(circle);
-        
+
         var result2 = circle.unhover();
         triggerEvent(circle, 'mouseover');
         expect(eventIn).to.be(1);

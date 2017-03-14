@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-27
+// build: 2017-03-14
 
 // Using pattern defined here
 // http://ifandelse.com/its-not-hard-making-your-library-support-amd-and-commonjs/
@@ -512,6 +512,10 @@ var has = "hasOwnProperty",
     \*/
     URL = Snap.url = function (url) {
         return "url('#" + url + "')";
+    };
+    Snap.prefixURL = function (url) {
+        var prefix = window ? window.location.href : "";
+        return url.replace(/^(url\(')/, "$1" + prefix);
     };
 
 function $(el, attr) {
@@ -2193,9 +2197,10 @@ Snap.ajax = function (url, postData, callback, scope){
  - url (string) URL
  - callback (function) callback
  - scope (object) #optional scope of callback
+ = (XMLHttpRequest) the XMLHttpRequest object, just in case
 \*/
 Snap.load = function (url, callback, scope) {
-    Snap.ajax(url, function (req) {
+    return Snap.ajax(url, function (req) {
         var f = Snap.parse(req.responseText);
         scope ? callback.call(scope, f) : callback(f);
     });
@@ -2759,7 +2764,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (val) {
                 uses[val] = (uses[val] || []).concat(function (id) {
                     var attr = {};
-                    attr[name] = Snap.url(id);
+                    attr[name] = Snap.prefixURL(Snap.url(id));
                     $(it.node, attr);
                 });
             }
@@ -3009,14 +3014,94 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     \*/
     elproto.innerSVG = toString();
     function toString(type) {
-        return function () {
-            var res = type ? "<" + this.type : "",
+        var createNameSpaceMgr = function () {
+            var knownNamespaces = {
+                svg: "http://www.w3.org/2000/svg",
+                xlink: "http://www.w3.org/1999/xlink",
+                inkscape: "http://www.inkscape.org/namespaces/inkscape",
+                sodipodi: "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd",
+                rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                cc: "http://web.resource.org/cc/",
+                dc: "http://purl.org/dc/elements/1.1/",
+                xhtml: "http://www.w3.org/1999/xhtml"
+            };
+            var nsMgr = {
+                namespaces: {},
+                getPrefix: function (namespaceURI, node) {
+                    if (namespaceURI == null || namespaceURI == "") {
+                        return null;
+                    }
+
+                    // try to get prefix from allready used namespaces
+                    for (var prefix in nsMgr.namespaces) {
+                        if (nsMgr.namespaces[prefix] == namespaceURI) {
+                            return prefix;
+                        }
+                    }
+
+                    // try to get prefix from commonly known namepsaces
+                    for (var prefix in knownNamespaces) {
+                        if (knownNamespaces[prefix] == namespaceURI) {
+                            nsMgr.namespaces[prefix] = namespaceURI;
+                            return prefix;
+                        }
+                    }
+
+                    // try to get prefix in the document
+                    if (node && node.lookupPrefix) {
+                        prefix = node.lookupPrefix(namespaceURI);
+                        if (prefix) {
+                            nsMgr.namespaces[prefix] = namespaceURI;
+                            return prefix;
+                        }
+                    }
+
+                    // generate prefix
+                    var i = 1;
+                    prefix = "prfx" + i;
+                    while (nsMgr.namespaces[prefix]) {
+                        prefix = "prfx" + ++i;
+                    }
+
+                    nsMgr.namespaces[prefix] = namespaceURI;
+
+                    return prefix;
+                }
+            };
+
+            return nsMgr;
+        };
+
+        return function (nsMgr) {
+            nsMgr = typeof nsMgr == "undefined" ? createNameSpaceMgr() : nsMgr;
+            var isRootElement = false,
+                res = "",
                 attr = this.node.attributes,
                 chld = this.node.childNodes;
+
             if (type) {
+                if (typeof nsMgr.rootNS == "undefined") {
+                    isRootElement = true;
+                    nsMgr.rootNS = this.node.namespaceURI || "";
+                    res = "<" + this.type;
+                    if (nsMgr.rootNS.length > 0) {
+                        res += ' xmlns="' + nsMgr.rootNS + '"';
+                    }
+                } else if ((this.node.namespaceURI || "") != nsMgr.rootNS) {
+                    var nodeNS = nsMgr.getPrefix(this.node.namespaceURI || "", this.node);
+                    if (nodeNS) {
+                        res = "<" + nodeNS + ":" +this.type;
+                    } else {
+                        res = "<" + this.type + ' xmlns=""';
+                    }
+                } else {
+                    res = "<" + this.type;
+                }
+
                 for (var i = 0, ii = attr.length; i < ii; i++) {
-                    res += " " + attr[i].name + '="' +
-                            attr[i].value.replace(/"/g, '\\"') + '"';
+                    var attrName = attr[i].name,
+                        attrNS = attr[i].namespaceURI ? nsMgr.getPrefix(attr[i].namespaceURI, attr[i]) + ":" : "";
+                    res += " " + attrNS + attrName + '="' + attr[i].value.replace(/"/g, "'") + '"';
                 }
             }
             if (chld.length) {
@@ -3025,12 +3110,23 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                     if (chld[i].nodeType == 3) {
                         res += chld[i].nodeValue;
                     } else if (chld[i].nodeType == 1) {
-                        res += wrap(chld[i]).toString();
+                        res += " " + wrap(chld[i]).outerSVG(nsMgr);
                     }
                 }
                 type && (res += "</" + this.type + ">");
             } else {
-                type && (res += "/>");
+                type && (res += " />");
+            }
+
+            if (type && isRootElement) {
+                var nsString = "";
+                for (var prefix in nsMgr.namespaces) {
+                    nsString += " xmlns:" + prefix + '="' + nsMgr.namespaces[prefix] + '"';
+                }
+
+                if (nsString.length > 0) {
+                    res = "<" + this.type + nsString + " " + res.substring(this.type.length + 1);
+                }
             }
             return res;
         };
@@ -3088,7 +3184,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (res.length == 1) {
                 res = res[0];
             }
-            return f ? f(res) : res;
+            var out = f ? f(res) : res;
+            if (f && out == "r") {
+                out = f([res]);
+            }
+            return out;
         };
     }
     var Animation = function (attr, ms, easing, callback) {
@@ -3676,7 +3776,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (string) unwrapped path
     \*/
     Snap.deurl = function (value) {
-        var res = String(value).match(reURLValue);
+        var prefix = window ? window.location.href : "",
+            reURLValue = new RegExp("^url\\((['\"]?)(?:" + prefix + ")?([^)]+)\\1\\)$", "i"),
+            res = String(value).match(reURLValue);
         return res ? res[2] : value;
     }
     // Attributes event handlers
@@ -3698,7 +3800,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 id: mask.id
             });
             $(this.node, {
-                mask: URL(mask.id)
+                mask: Snap.prefixURL(URL(mask.id))
             });
         }
     });
@@ -3730,7 +3832,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 });
             }
             $(this.node, {
-                "clip-path": URL(clip.node.id || clip.id)
+                "clip-path": Snap.prefixURL(URL(clip.node.id || clip.id))
             });
         }
     }));
@@ -3753,7 +3855,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                             id: value.id
                         });
                     }
-                    var fill = URL(value.node.id);
+                    var fill = Snap.prefixURL(URL(value.node.id));
                 } else {
                     fill = value.attr(name);
                 }
@@ -3767,7 +3869,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                                 id: grad.id
                             });
                         }
-                        fill = URL(grad.node.id);
+                        fill = Snap.prefixURL(URL(grad.node.id));
                     } else {
                         fill = value;
                     }
@@ -4007,7 +4109,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                     if (!id) {
                         $(value.node, {id: value.id});
                     }
-                    this.node.style[name] = URL(id);
+                    this.node.style[name] = Snap.prefixURL(URL(id));
                     return;
                 }
             };
@@ -4488,9 +4590,19 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 set.height = height;
             } else {
                 preload(src, function () {
+                    var width,
+                        height,
+                        bcr = this.getBoundingClientRect && this.getBoundingClientRect();
+                    if (bcr) {
+                        width = bcr.width;
+                        height = bcr.height;
+                    } else {
+                        width = this.offsetWidth;
+                        height = this.offsetHeight;
+                    }
                     Snap._.$(el.node, {
-                        width: this.offsetWidth,
-                        height: this.offsetHeight
+                        width: width,
+                        height: height
                     });
                 });
             }
@@ -6989,11 +7101,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
         }
     }
-    function equaliseTransform(t1, t2, getBBox) {
-        t1 = t1 || new Snap.Matrix;
-        t2 = t2 || new Snap.Matrix;
-        t1 = Snap.parseTransformString(t1.toTransformString()) || [];
-        t2 = Snap.parseTransformString(t2.toTransformString()) || [];
+    function equaliseTransformString(t1, t2, getBBox) {
+        t1 = Snap.parseTransformString(t1) || [];
+        t2 = Snap.parseTransformString(t2) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
@@ -7006,8 +7116,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3]) ||
                 tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4])
                 ) {
-                    t1 = Snap._.transform2matrix(t1, getBBox());
-                    t2 = Snap._.transform2matrix(t2, getBBox());
+                    t1 = Snap._.transform2matrix(t1, getBBox(1));
+                    t2 = Snap._.transform2matrix(t2, getBBox(1));
                     from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
                     to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
                     break;
@@ -7024,6 +7134,16 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             to: path2array(to),
             f: getPath(from)
         };
+    }
+    function equaliseTransform(t1, t2, t1Matrix, t2Matrix, getBBox) {
+        t1 = t1 || new Snap.Matrix;
+        t2 = t2 || new Snap.Matrix;
+        var stringRes = equaliseTransformString(t1, t2, getBBox),
+            matrixRes;
+        if (stringRes.f([]).charAt() == "m") {
+            matrixRes = equaliseTransformString(t1Matrix.toTransformString(), t2Matrix.toTransformString(), getBBox);
+        }
+        return matrixRes || stringRes;
     }
     function getNumber(val) {
         return val;
@@ -7098,13 +7218,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             if (typeof b == "string") {
                 b = Str(b).replace(/\.{3}|\u2026/g, a);
             }
-            a = this.matrix;
+            var bMatrix;
             if (!Snap._.rgTransform.test(b)) {
-                b = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
+                bMatrix = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
             } else {
-                b = Snap._.transform2matrix(b, this.getBBox());
+                bMatrix = Snap._.transform2matrix(b, this.getBBox());
             }
-            return equaliseTransform(a, b, function () {
+            return equaliseTransform(a, b, this.matrix, bMatrix, function () {
                 return el.getBBox(1);
             });
         }
@@ -7151,13 +7271,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 });
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -7166,16 +7286,25 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
     has = "hasOwnProperty",
-    supportsTouch = "createTouch" in glob.doc,
+    supportsPointer = "onmspointerdown" in window.document || "onpointerdown" in window.document,
+    supportsTouch = "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch,
     events = [
         "click", "dblclick", "mousedown", "mousemove", "mouseout",
         "mouseover", "mouseup", "touchstart", "touchmove", "touchend",
-        "touchcancel"
+        "touchcancel", "pointerup", "pointerdown", "pointermove",
+        "pointerout", "pointerover"
     ],
     touchMap = {
         mousedown: "touchstart",
         mousemove: "touchmove",
         mouseup: "touchend"
+    },
+    pointerMap = {
+        mouseup: "pointerup",
+        mousedown: "pointerdown",
+        mousemove: "pointermove",
+        mouseout: "pointerout",
+        mouseover: "pointerover"
     },
     getScroll = function (xy, el) {
         var name = xy == "y" ? "scrollTop" : "scrollLeft",
@@ -7195,7 +7324,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return this.originalEvent.stopPropagation();
     },
     addEvent = function (obj, type, fn, element) {
-        var realName = supportsTouch && touchMap[type] ? touchMap[type] : type,
+        var realName = supportsTouch && touchMap[type] ? touchMap[type] : supportsPointer && pointerMap[type] ? pointerMap[type] : type,
             f = function (e) {
                 var scrollY = getScroll("y", element),
                     scrollX = getScroll("x", element);
@@ -7214,10 +7343,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 var x = e.clientX + scrollX,
                     y = e.clientY + scrollY;
                 return fn.call(element, e, x, y);
-            };
+            },
+            pointerName = pointerMap[type];
 
         if (type !== realName) {
             obj.addEventListener(type, f, false);
+        }
+
+        if (pointerName) {
+          obj.addEventListener(pointerName, f, false);
         }
 
         obj.addEventListener(realName, f, false);
@@ -7225,6 +7359,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return function () {
             if (type !== realName) {
                 obj.removeEventListener(type, f, false);
+            }
+
+            if (pointerName) {
+              obj.removeEventListener(pointerName, f, false);
             }
 
             obj.removeEventListener(realName, f, false);
@@ -7300,7 +7438,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.dblclick
      [ method ]
@@ -7317,7 +7455,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mousedown
      [ method ]
@@ -7334,7 +7472,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mousemove
      [ method ]
@@ -7351,7 +7489,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mouseout
      [ method ]
@@ -7368,7 +7506,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mouseover
      [ method ]
@@ -7385,7 +7523,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.mouseup
      [ method ]
@@ -7402,7 +7540,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.touchstart
      [ method ]
@@ -7419,7 +7557,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.touchmove
      [ method ]
@@ -7436,7 +7574,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.touchend
      [ method ]
@@ -7453,7 +7591,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    
+
     /*\
      * Element.touchcancel
      [ method ]
@@ -7547,8 +7685,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - mcontext (object) #optional context for moving handler
      - scontext (object) #optional context for drag start handler
      - econtext (object) #optional context for drag end handler
-     * Additionaly following `drag` events are triggered: `drag.start.<id>` on start, 
-     * `drag.end.<id>` on end and `drag.move.<id>` on every move. When element is dragged over another element 
+     * Additionaly following `drag` events are triggered: `drag.start.<id>` on start,
+     * `drag.end.<id>` on end and `drag.move.<id>` on every move. When element is dragged over another element
      * `drag.over.<id>` fires as well.
      *
      * Start event and start handler are called in specified context or in context of the element with following parameters:
@@ -7669,8 +7807,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var f = Snap.parse(Str(filstr)),
             id = Snap._.id(),
-            width = paper.node.offsetWidth,
-            height = paper.node.offsetHeight,
             filter = $("filter");
         $(filter, {
             id: id,
@@ -7698,7 +7834,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 id = value.id;
             }
             $(this.node, {
-                filter: Snap.url(id)
+                filter: Snap.prefixURL(Snap.url(id))
             });
         }
         if (!value || value == "none") {

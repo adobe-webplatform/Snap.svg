@@ -40,8 +40,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var f = Snap.parse(Str(filstr)),
             id = Snap._.id(),
-            width = paper.node.offsetWidth,
-            height = paper.node.offsetHeight,
             filter = $("filter");
         $(filter, {
             id: id,
@@ -69,7 +67,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 id = value.id;
             }
             $(this.node, {
-                filter: Snap.url(id)
+                filter: Snap.prefixURL(Snap.url(id))
             });
         }
         if (!value || value == "none") {
