@@ -1230,11 +1230,12 @@ Snap.atan = function (num) {
  [ method ]
  **
  * Equivalent to `Math.atan2()` only works with degrees, not radians.
- - num (number) value
+ - x (number) value
+ - y (number) value
  = (number) atan2 in degrees
 \*/
-Snap.atan2 = function (num) {
-    return Snap.deg(math.atan2(num));
+Snap.atan2 = function (x, y) {
+    return Snap.deg(math.atan2(x, y));
 };
 /*\
  * Snap.angle
