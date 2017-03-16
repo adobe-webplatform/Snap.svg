@@ -23,13 +23,13 @@ A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://s
 
 In your HTML file, load simply by:
 ```html
-<script src="snap.svg-min.js"></script>
+<script src="snap.svg.min.js"></script>
 ```
 No other scripts are needed. Both the minified and uncompressed (for development) versions are in the `/dist` folder.
 
 To load with webpack use following command:
 ```js
-const Snap = require(`imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js`);
+const Snap = require(`snapsvg/dist/snap.svg.slim.js`); // or define an alias in webpack.config.js
 ```
 
 ### Build
@@ -41,12 +41,6 @@ Snap.svg uses [Grunt](http://gruntjs.com/) to build.
 ```sh
 cd Snap.svg
 ```
-* Install its command line interface (CLI) globally:
-```sh
-npm install -g grunt-cli
-```
-_*You might need to use `sudo npm`, depending on your configuration._
-
 * Install dependencies with npm:
 ```sh
 npm install
@@ -62,7 +56,7 @@ grunt
 
 ### Testing
 
-Tests are located in `test` folder. To run tests, simply open `test.html` in there. Automatic tests use PhantomJS to scrap this file, so you can use it as a reference.
+Tests are located in `test` folder. To run tests, simply open `test/index.html`. Automatic tests use PhantomJS to scrap this file, so you can use it as a reference.
 
 Alternatively, install [PhantomJS](http://phantomjs.org) and run command
 ```sh

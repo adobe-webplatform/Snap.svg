@@ -22,34 +22,7 @@ describe("Snap methods", function () {
             f: 0
         });
     });
-    it("Snap.ajax - no postData", function(done) {
-        var xhr = Snap.ajax('./res/file-for-ajax.txt', function(xhr) {
-            var responseText = xhr.responseText;
-            expect(responseText).to.be('success');
-            expect(this.isContext).to.be(true);
-            done();
-        }, {'isContext': true});
-        expect(xhr).to.be.an('object');
-    });
-    it("Snap.ajax - with object postData", function(done) {
-        var xhr = Snap.ajax('./res/file-for-ajax.txt', {foo: 'bar'}, function(xhr) {
-            var responseText = xhr.responseText;
-            expect(responseText).to.be('success');
-            expect(this.isContext).to.be(true);
-            done();
-        }, {'isContext': true});
-        expect(xhr).to.be.an('object');
-    });
-    it("Snap.ajax - with string postData", function(done) {
-        var xhr = Snap.ajax('./res/file-for-ajax.txt', 'foo=bar', function(xhr) {
-            var responseText = xhr.responseText;
-            expect(responseText).to.be('success');
-            expect(this.isContext).to.be(true);
-            done();
-        }, {'isContext': true});
-        expect(xhr).to.be.an('object');
-    });
-    
+
     var validateMina = function(minaObj) {
         expect(minaObj).to.be.an('object');
         expect(minaObj.id).to.be.a('string');
@@ -59,7 +32,7 @@ describe("Snap methods", function () {
         expect(minaObj.status).to.be.a('function');
         expect(minaObj.stop).to.be.a('function');
     };
-    
+
     it("Snap.animate - numbers, no easing or callback", function(done) {
         var n;
         var minaObj = Snap.animate(10, 20, function(newN) { n = newN; }, 50);
@@ -219,19 +192,6 @@ describe("Snap methods", function () {
         expect(Snap.is(undef, "undefined")).to.be.ok();
         expect(Snap.is(function(){}, "function")).to.be.ok();
         expect(Snap.is(function(){}, "object")).to.be.ok();
-    });
-    it("Snap.load - with context", function(done) {
-        Snap.load('./res/external-svg.svg', function(fragment) {
-            expect(fragment.node.querySelector("svg")).to.not.be(null);
-            expect(this.myContext).to.be(true);
-            done();
-        }, {myContext: true});
-    });
-    it("Snap.load - without context", function(done) {
-        Snap.load('./res/external-svg.svg', function(fragment) {
-            expect(fragment.node.querySelector("svg")).to.not.be(null);
-            done();
-        });
     });
     it("Snap.parse", function() {
         var frag = Snap.parse('<g class="foo"></g>');
