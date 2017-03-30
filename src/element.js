@@ -30,7 +30,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (object) bounding box descriptor:
      o {
      o     cx: (number) x of the center,
-     o     cy: (number) x of the center,
+     o     cy: (number) y of the center,
      o     h: (number) height,
      o     height: (number) height,
      o     path: (string) path command for the box,
