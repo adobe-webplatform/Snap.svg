@@ -667,6 +667,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             el.stops = Gstops;
             el.addStop = GaddStop;
             el.getBBox = GgetBBox;
+            el.setStops = GsetStops;
             if (cx != null) {
                 $(el.node, {
                     cx: cx,
