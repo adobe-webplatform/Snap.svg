@@ -379,8 +379,8 @@ Snap.atan = function (num) {
  [ method ]
  **
  * Equivalent to `Math.atan2()` only works with degrees, not radians.
- - y (number) x-value
- - x (number) y-value
+ - y (number) y-value
+ - x (number) x-value
  = (number) atan2 in degrees
 \*/
 Snap.atan2 = function (y, x) {
