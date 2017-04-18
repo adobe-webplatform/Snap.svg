@@ -36,8 +36,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
     }
     function equaliseTransformString(t1, t2, getBBox) {
-        t1 = Snap.parseTransformString(t1) || [];
-        t2 = Snap.parseTransformString(t2) || [];
+        t1 = typeof t1 == "string" && Snap.parseTransformString(t1) || [];
+        t2 = typeof t2 == "string" && Snap.parseTransformString(t2) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],

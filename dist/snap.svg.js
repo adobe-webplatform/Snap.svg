@@ -14,29 +14,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-03-14
+// build: 2017-04-18
 
-// Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
-//
+// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // ┌────────────────────────────────────────────────────────────┐ \\
-// │ Eve 0.5.3 - JavaScript Events Library                      │ \\
+// │ Eve 0.5.0 - JavaScript Events Library                      │ \\
 // ├────────────────────────────────────────────────────────────┤ \\
 // │ Author Dmitry Baranovskiy (http://dmitry.baranovskiy.com/) │ \\
 // └────────────────────────────────────────────────────────────┘ \\
 
 (function (glob) {
-    var version = "0.5.3",
+    var version = "0.5.0",
         has = "hasOwnProperty",
         separator = /[\.\/]/,
         comaseparator = /\s*,\s*/,
@@ -73,6 +73,8 @@
      [ method ]
 
      * Fires event with given `name`, given scope and other parameters.
+
+     > Arguments
 
      - name (string) name of the *event*, dot (`.`) or slash (`/`) separated
      - scope (object) context for the event handlers
@@ -150,6 +152,8 @@
 
      * Internal method which gives you array of all event handlers that will be triggered by the given `name`.
 
+     > Arguments
+
      - name (string) name of the event, dot (`.`) or slash (`/`) separated
 
      = (array) array of event handlers
@@ -219,7 +223,7 @@
      - name (array) if you don’t want to use separators, you can use array of strings
      - f (function) event handler function
      **
-     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
+     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
      > Example:
      | eve.on("mouse", eatIt)(2);
      | eve.on("mouse", scream);
@@ -233,7 +237,7 @@
         if (typeof f != "function") {
             return function () {};
         }
-        var names = isArray(name) ? isArray(name[0]) ? name : [name] : Str(name).split(comaseparator);
+        var names = isArray(name) ? (isArray(name[0]) ? name : [name]) : Str(name).split(comaseparator);
         for (var i = 0, ii = names.length; i < ii; i++) {
             (function (name) {
                 var names = isArray(name) ? name : Str(name).split(separator),
@@ -268,6 +272,7 @@
      | eve.on("click", function (a, b, c) {
      |     console.log(a, b, c); // 1, 2, [event object]
      | });
+     > Arguments
      - event (string) event name
      - varargs (…) and any other arguments
      = (function) possible event handler function
@@ -292,6 +297,8 @@
      [ method ]
      **
      * Could be used inside event handler to figure out actual name of the event.
+     **
+     > Arguments
      **
      - subname (string) #optional subname of the event
      **
@@ -325,6 +332,8 @@
      * Removes given function from the list of event listeners assigned to given name.
      * If no arguments specified all the events will be cleared.
      **
+     > Arguments
+     **
      - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
      - f (function) event handler function
     \*/
@@ -339,7 +348,7 @@
             eve._events = events = {n: {}};
             return;
         }
-        var names = isArray(name) ? isArray(name[0]) ? name : [name] : Str(name).split(comaseparator);
+        var names = isArray(name) ? (isArray(name[0]) ? name : [name]) : Str(name).split(comaseparator);
         if (names.length > 1) {
             for (var i = 0, ii = names.length; i < ii; i++) {
                 eve.off(names[i], f);
@@ -430,6 +439,8 @@
      | eve("login"); // no listeners
      * Use @eve to trigger the listener.
      **
+     > Arguments
+     **
      - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
      - f (function) event handler function
      **
@@ -452,20 +463,19 @@
     eve.toString = function () {
         return "You are running Eve " + version;
     };
-    glob.eve = eve;
-    typeof module != "undefined" && module.exports ? module.exports = eve : typeof define === "function" && define.amd ? define("eve", [], function() { return eve; }) : glob.eve = eve;
-})(typeof window != "undefined" ? window : this);
+    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define === "function" && define.amd ? (define("eve", [], function() { return eve; })) : (glob.eve = eve));
+})(this);
 
 // Using pattern defined here
 // http://ifandelse.com/its-not-hard-making-your-library-support-amd-and-commonjs/
 (function (glob, factory) {
     // AMD support
-    if (typeof define === "function" && define.amd) {
+    if (typeof define == "function" && define.amd) {
         // Define as an anonymous module
         define(["eve"], function (eve) {
             return factory(glob, eve);
         });
-    } else if (typeof module === "object" && module.exports) {
+    } else if (typeof module == "object" && module.exports) {
         // Next for Node.js or CommonJS
         var eve = require("eve");
         module.exports = factory(glob, eve);
@@ -7543,8 +7553,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
     }
     function equaliseTransformString(t1, t2, getBBox) {
-        t1 = Snap.parseTransformString(t1) || [];
-        t2 = Snap.parseTransformString(t2) || [];
+        t1 = typeof t1 == "string" && Snap.parseTransformString(t1) || [];
+        t2 = typeof t2 == "string" && Snap.parseTransformString(t2) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],

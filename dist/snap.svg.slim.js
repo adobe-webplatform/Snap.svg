@@ -14,18 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-03-14
+// build: 2017-04-18
 
 // Using pattern defined here
 // http://ifandelse.com/its-not-hard-making-your-library-support-amd-and-commonjs/
 (function (glob, factory) {
     // AMD support
-    if (typeof define === "function" && define.amd) {
+    if (typeof define == "function" && define.amd) {
         // Define as an anonymous module
         define(["eve"], function (eve) {
             return factory(glob, eve);
         });
-    } else if (typeof module === "object" && module.exports) {
+    } else if (typeof module == "object" && module.exports) {
         // Next for Node.js or CommonJS
         var eve = require("eve");
         module.exports = factory(glob, eve);
@@ -790,11 +790,12 @@ Snap.atan = function (num) {
  [ method ]
  **
  * Equivalent to `Math.atan2()` only works with degrees, not radians.
- - num (number) value
+ - x (number) value
+ - y (number) value
  = (number) atan2 in degrees
 \*/
-Snap.atan2 = function (num) {
-    return Snap.deg(math.atan2(num));
+Snap.atan2 = function (x, y) {
+    return Snap.deg(math.atan2(x, y));
 };
 /*\
  * Snap.angle
@@ -7102,8 +7103,8 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
     }
     function equaliseTransformString(t1, t2, getBBox) {
-        t1 = Snap.parseTransformString(t1) || [];
-        t2 = Snap.parseTransformString(t2) || [];
+        t1 = typeof t1 == "string" && Snap.parseTransformString(t1) || [];
+        t2 = typeof t2 == "string" && Snap.parseTransformString(t2) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
