@@ -253,8 +253,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      * See @Paper.g
     \*/
     proto.group = proto.g = function (first) {
-        var attr,
-            el = this.el("g");
+        var el = this.el("g");
         if (arguments.length == 1 && first && !first.type) {
             el.attr(first);
         } else if (arguments.length) {
@@ -312,8 +311,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      **
     \*/
     proto.mask = function (first) {
-        var attr,
-            el = this.el("mask");
+        var el = this.el("mask");
         if (arguments.length == 1 && first && !first.type) {
             el.attr(first);
         } else if (arguments.length) {

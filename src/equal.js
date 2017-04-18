@@ -49,12 +49,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             if (tt1[0] != tt2[0] ||
                 tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3]) ||
                 tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4])
-                ) {
-                    t1 = Snap._.transform2matrix(t1, getBBox(1));
-                    t2 = Snap._.transform2matrix(t2, getBBox(1));
-                    from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
-                    to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
-                    break;
+            ) {
+                t1 = Snap._.transform2matrix(t1, getBBox(1));
+                t2 = Snap._.transform2matrix(t2, getBBox(1));
+                from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
+                to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
+                break;
             }
             from[i] = [];
             to[i] = [];

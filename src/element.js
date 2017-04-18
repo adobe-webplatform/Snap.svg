@@ -861,12 +861,12 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         if (window && window.btoa) {
             var bb = this.getBBox(),
                 svg = Snap.format('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{width}" height="{height}" viewBox="{x} {y} {width} {height}">{contents}</svg>', {
-                x: +bb.x.toFixed(3),
-                y: +bb.y.toFixed(3),
-                width: +bb.width.toFixed(3),
-                height: +bb.height.toFixed(3),
-                contents: this.outerSVG()
-            });
+                    x: +bb.x.toFixed(3),
+                    y: +bb.y.toFixed(3),
+                    width: +bb.width.toFixed(3),
+                    height: +bb.height.toFixed(3),
+                    contents: this.outerSVG()
+                });
             return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg)));
         }
     };

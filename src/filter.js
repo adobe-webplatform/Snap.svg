@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob) {
-    var elproto = Element.prototype,
-        pproto = Paper.prototype,
+    var pproto = Paper.prototype,
         rgurl = /^\s*url\((.+)\)/,
         Str = String,
         $ = Snap._.$;

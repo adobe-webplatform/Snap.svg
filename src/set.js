@@ -17,20 +17,20 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 
     // Set
     var Set = function (items) {
-        this.items = [];
-	this.bindings = {};
-        this.length = 0;
-        this.type = "set";
-        if (items) {
-            for (var i = 0, ii = items.length; i < ii; i++) {
-                if (items[i]) {
-                    this[this.items.length] = this.items[this.items.length] = items[i];
-                    this.length++;
+            this.items = [];
+	        this.bindings = {};
+            this.length = 0;
+            this.type = "set";
+            if (items) {
+                for (var i = 0, ii = items.length; i < ii; i++) {
+                    if (items[i]) {
+                        this[this.items.length] = this.items[this.items.length] = items[i];
+                        this.length++;
+                    }
                 }
             }
-        }
-    },
-    setproto = Set.prototype;
+        },
+        setproto = Set.prototype;
     /*\
      * Set.push
      [ method ]

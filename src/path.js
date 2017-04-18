@@ -286,12 +286,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return {x: px, y: py};
     }
-    function inter(bez1, bez2) {
-        return interHelper(bez1, bez2);
-    }
-    function interCount(bez1, bez2) {
-        return interHelper(bez1, bez2, 1);
-    }
     function interHelper(bez1, bez2, justCount) {
         var bbox1 = bezierBBox(bez1),
             bbox2 = bezierBBox(bez2);
@@ -496,39 +490,39 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     }
     var unit2px = Snap._unit2px,
         getPath = {
-        path: function (el) {
-            return el.attr("path");
-        },
-        circle: function (el) {
-            var attr = unit2px(el);
-            return ellipsePath(attr.cx, attr.cy, attr.r);
-        },
-        ellipse: function (el) {
-            var attr = unit2px(el);
-            return ellipsePath(attr.cx || 0, attr.cy || 0, attr.rx, attr.ry);
-        },
-        rect: function (el) {
-            var attr = unit2px(el);
-            return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height, attr.rx, attr.ry);
-        },
-        image: function (el) {
-            var attr = unit2px(el);
-            return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height);
-        },
-        line: function (el) {
-            return "M" + [el.attr("x1") || 0, el.attr("y1") || 0, el.attr("x2"), el.attr("y2")];
-        },
-        polyline: function (el) {
-            return "M" + el.attr("points");
-        },
-        polygon: function (el) {
-            return "M" + el.attr("points") + "z";
-        },
-        deflt: function (el) {
-            var bbox = el.node.getBBox();
-            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-        }
-    };
+            path: function (el) {
+                return el.attr("path");
+            },
+            circle: function (el) {
+                var attr = unit2px(el);
+                return ellipsePath(attr.cx, attr.cy, attr.r);
+            },
+            ellipse: function (el) {
+                var attr = unit2px(el);
+                return ellipsePath(attr.cx || 0, attr.cy || 0, attr.rx, attr.ry);
+            },
+            rect: function (el) {
+                var attr = unit2px(el);
+                return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height, attr.rx, attr.ry);
+            },
+            image: function (el) {
+                var attr = unit2px(el);
+                return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height);
+            },
+            line: function (el) {
+                return "M" + [el.attr("x1") || 0, el.attr("y1") || 0, el.attr("x2"), el.attr("y2")];
+            },
+            polyline: function (el) {
+                return "M" + el.attr("points");
+            },
+            polygon: function (el) {
+                return "M" + el.attr("points") + "z";
+            },
+            deflt: function (el) {
+                var bbox = el.node.getBBox();
+                return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
+            }
+        };
     function pathToRelative(pathArray) {
         var pth = paths(pathArray),
             lowerCase = String.prototype.toLowerCase;
@@ -741,13 +735,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         var _13 = 1 / 3,
             _23 = 2 / 3;
         return [
-                _13 * x1 + _23 * ax,
-                _13 * y1 + _23 * ay,
-                _13 * x2 + _23 * ax,
-                _13 * y2 + _23 * ay,
-                x2,
-                y2
-            ];
+            _13 * x1 + _23 * ax,
+            _13 * y1 + _23 * ay,
+            _13 * x2 + _23 * ax,
+            _13 * y2 + _23 * ay,
+            x2,
+            y2
+        ];
     }
     function a2c(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
         // for more information of where this math came from visit:
@@ -771,9 +765,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             xy = rotate(x2, y2, -rad);
             x2 = xy.x;
             y2 = xy.y;
-            var cos = math.cos(PI / 180 * angle),
-                sin = math.sin(PI / 180 * angle),
-                x = (x1 - x2) / 2,
+            var x = (x1 - x2) / 2,
                 y = (y1 - y2) / 2;
             var h = x * x / (rx * rx) + y * y / (ry * ry);
             if (h > 1) {
@@ -841,7 +833,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return newres;
         }
     }
-    function findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
+    Snap.findDotAtSegment = function findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
         var t1 = 1 - t;
         return {
             x: pow(t1, 3) * p1x + pow(t1, 2) * 3 * t * c1x + t1 * 3 * t * t * c2x + pow(t, 3) * p2x,
@@ -892,7 +884,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             }
         }
 
-        var x, y, j = tvalues.length,
+        var j = tvalues.length,
             jlen = j,
             mt;
         while (j--) {
@@ -910,8 +902,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 
 
         return {
-          min: {x: mmin.apply(0, bounds[0]), y: mmin.apply(0, bounds[1])},
-          max: {x: mmax.apply(0, bounds[0]), y: mmax.apply(0, bounds[1])}
+            min: {
+                x: mmin.apply(0, bounds[0]),
+                y: mmin.apply(0, bounds[1])
+            },
+            max: {
+                x: mmax.apply(0, bounds[0]),
+                y: mmax.apply(0, bounds[1])
+            }
         };
     }
 
@@ -1080,11 +1078,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         var d = [];
         for (var i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
             var p = [
-                        {x: +crp[i - 2], y: +crp[i - 1]},
-                        {x: +crp[i],     y: +crp[i + 1]},
-                        {x: +crp[i + 2], y: +crp[i + 3]},
-                        {x: +crp[i + 4], y: +crp[i + 5]}
-                    ];
+                {x: +crp[i - 2], y: +crp[i - 1]},
+                {x: +crp[i],     y: +crp[i + 1]},
+                {x: +crp[i + 2], y: +crp[i + 3]},
+                {x: +crp[i + 4], y: +crp[i + 5]}
+            ];
             if (z) {
                 if (!i) {
                     p[0] = {x: +crp[iLen - 2], y: +crp[iLen - 1]};
@@ -1102,12 +1100,12 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 }
             }
             d.push(["C",
-                  (-p[0].x + 6 * p[1].x + p[2].x) / 6,
-                  (-p[0].y + 6 * p[1].y + p[2].y) / 6,
-                  (p[1].x + 6 * p[2].x - p[3].x) / 6,
-                  (p[1].y + 6*p[2].y - p[3].y) / 6,
-                  p[2].x,
-                  p[2].y
+                (-p[0].x + 6 * p[1].x + p[2].x) / 6,
+                (-p[0].y + 6 * p[1].y + p[2].y) / 6,
+                (p[1].x + 6 * p[2].x - p[3].x) / 6,
+                (p[1].y + 6*p[2].y - p[3].y) / 6,
+                p[2].x,
+                p[2].y
             ]);
         }
 

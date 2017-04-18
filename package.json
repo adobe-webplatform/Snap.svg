@@ -10,7 +10,7 @@
   "author": "Dmitry Baranovskiy",
   "license": "Apache-2.0",
   "dependencies": {
-    "eve": "~0.5.1"
+    "eve": "~0.5.4"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -38,7 +38,9 @@
   "eslintConfig": {
     "globals": {
       "window": true,
-      "console": true
+      "console": true,
+      "mina": true,
+      "Snap": true
     },
     "rules": {
       "block-scoped-var": 0,
@@ -60,6 +62,15 @@
       "new-cap": 0,
       "no-unused-expressions": 0,
       "no-mixed-requires": 0,
+      "indent": ["error", 4, { "SwitchCase": 1, "VariableDeclarator": 1 }],
+      "no-multi-spaces": [0, {
+        "exceptions": {
+          "VariableDeclarator": true
+        }
+      }],
+      "no-trailing-spaces": [2, { "skipBlankLines": false }],
+      "no-unused-vars": [2, {"vars": "all", "args": "none"}],
+      "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
       "quotes": [
         1,
         "double",

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
-    var has = "hasOwnProperty",
-        make = Snap._.make,
+    var make = Snap._.make,
         wrap = Snap._.wrap,
         is = Snap.is,
         getSomeDefs = Snap._.getSomeDefs,
@@ -296,8 +295,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     })(-1);
     eve.on("snap.util.attr.text", function (value) {
         if (this.type == "text") {
-            var i = 0,
-                node = this.node,
+            var node = this.node,
                 tuner = function (chunk) {
                     var out = $("tspan");
                     if (is(chunk, "array")) {
