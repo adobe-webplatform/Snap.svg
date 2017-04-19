@@ -405,8 +405,8 @@ select.docNav {
   }
   #sideNav li a {
     display: block;
-    height: 60px;
-    padding: 22px 0 0 10px;
+    height: 40px;
+    padding: 10px 0 0 10px;
     text-decoration: none;
   }
   #content header h2 {
