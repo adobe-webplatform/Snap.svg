@@ -1452,4 +1452,89 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     Snap.path.map = mapPath;
     Snap.path.toString = toString;
     Snap.path.clone = pathClone;
+    /*\
+     * Snap.path.getScaledPath
+     [ Utility method ]
+     **
+     * Returns path string scaled by num
+     **
+     * Returns path string scaled by num, except that move-to directives ('m' or 'M') remain the same. Coordinates are assumed to be numbers separated by commas, and to be separated from directives (letters) by spaces. Note that the path gets a new attribute called "originald" so that it can be returned to its original state by getOriginalPath. This is needed because animating the path string changes its format.
+     - num (number)  multiplication factor
+     **
+     = (string) new path string
+    \*/
+    Snap.path.getScaledPath = function (num) {
+            var coords = [],
+                fragmentsAr = [],
+                idx,
+                jdx,
+                kdx,
+                lettersAr = [],
+                pattern = /[achlmqstvz]/gi, 
+                pathD = this.attr("d"),
+                start = 0,
+                subfragAr = [];
+            // make sure num is a nonzero number
+            if ( num === 0 || typeof num !== "number" ) {return false;}
+            // make sure path has "d" attribute
+            if ( typeof pathD !== "string" ) {return false;}
+            // preserve original d 
+            this.attr("originald", pathD);
+            // Find fragments of d starting at any of the following letters: A,a,C,c,H,h,L,l,M,m,Q,q,S,s,T,t,V,v,Z or z (see SVG Path spec). First fragment can start with anything (M or m expected).
+            // 
+            // Start by listing each occurence of one of these letters, except for initial M or m
+            lettersAr = pathD.match(pattern);
+            if ( lettersAr[0].charAt(0) === 'M' || lettersAr[0].charAt(0) === 'm' ) {
+                lettersAr.shift();
+            }
+            // slice d into fragments, each of which starts with one of these letters
+            for (idx = 0; idx < lettersAr.length; idx++) {
+                fragmentsAr.push( pathD.slice( start, pathD.indexOf( lettersAr[idx]) ) );
+                start = pathD.indexOf( lettersAr[idx] );
+            };
+            // don't forget the last one...
+            fragmentsAr.push( pathD.slice( start));
+            // for each fragment that doesn't start with M or m, create an array of strings that were separated by spaces; the first one should just be a letter, but the others are expected to be floating-point numbers (typically 2) separated by a comma(s)
+            for (idx = 0; idx < fragmentsAr.length; idx++) {
+                if (fragmentsAr[idx].charAt(0) === 'M' || fragmentsAr[idx].charAt(0) === 'm') {continue;}
+                subfragAr = fragmentsAr[idx].split(" ");
+                // split up the pairs (or larger groups) of numbers
+                for (jdx = 0; jdx < subfragAr.length; jdx++) {
+                    coords = subfragAr[jdx].split(",");
+                    // finally do the multiplication on each number; ignore non-numbers
+                    for (kdx = 0; kdx < coords.length; kdx++) {
+                        if ( parseFloat(coords[kdx]) == coords[kdx] ) {
+                            coords[kdx] *= num; // AT LAST!
+                        }
+                    };
+                    // squish new numbers back together into comma-separated groups (typically pairs)
+                    subfragAr[jdx] = coords.join(",");
+                };
+                // squish strings back together separated by spaces
+                fragmentsAr[idx] = subfragAr.join(" ");
+            };
+            // assemble new "d" from updated fragments and return that
+            return fragmentsAr.join("");
+    };
+    /*\
+     * Snap.path.getOriginalPath
+     [ Utility method ]
+     **
+     * Returns the original path string ("d")
+     **
+     * Works on paths that have already called getScaledPath, the effects of which it reverses.
+     **
+     = (string) original path string
+    \*/
+    Snap.path.getOriginalPath = function () {
+        var originald;
+        // make sure the path has both d and originald attributes
+        if ( typeof this.attr("d") !== "string" || typeof this.attr("originald") !== "string" ) { return false; }
+        // save original value of d in a local variable
+        originald = this.attr("originald");
+        // remove originald attribute to reset to initial state
+        this.attr("originald", "");
+        // return original value of d
+        return originald;
+    };
 });
