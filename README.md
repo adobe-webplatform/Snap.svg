@@ -36,17 +36,20 @@ module: {
     {
       test: require.resolve('snapsvg/dist/snap.svg.js'),
       use: 'imports-loader?this=>window,fix=>module.exports=0',
-    }
-  ]
+    },
+  ],
 },
-resolve {
+resolve: {
   alias: {
-    snapsvg: '/snapsvg/dist/snap.svg.js',
-  }
-}
+    snapsvg: 'snapsvg/dist/snap.svg.js',
+  },
+},
 ```
 
-Then use `import Snap from 'snapsvg';` in any module you’d like to require Snap.
+Then, in any module you’d like to require Snap, use:
+```
+import Snap from 'snapsvg';
+```
 
 ### Build
 [![Build Status](https://travis-ci.org/adobe-webplatform/Snap.svg.svg?branch=dev)](https://travis-ci.org/adobe-webplatform/Snap.svg)
