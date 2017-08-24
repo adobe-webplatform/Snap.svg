@@ -316,6 +316,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 node.appendChild(tuned.firstChild);
             }
         }
+        else if (this.type == "tspan") {
+            this.node.textContent = value;
+        }
         eve.stop();
     })(-1);
     function setFontSize(value) {
