@@ -1,6 +1,6 @@
 var page = require("webpage").create();
 
-page.open("test.html", function (status) {
+page.open("index.html", function (status) {
     var errors = 0;
     if (status === "success") {
         errors = page.evaluate(function () {
