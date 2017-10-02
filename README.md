@@ -27,9 +27,28 @@ In your HTML file, load simply by:
 ```
 No other scripts are needed. Both the minified and uncompressed (for development) versions are in the `/dist` folder.
 
-To load with webpack use following command:
+#### webpack
+To load with webpack 2.x and 3.x, install [Imports Loader](https://github.com/webpack-contrib/imports-loader) (`npm i -D imports-loader`), and add the following to your webpack config:
+
 ```js
-const Snap = require(`imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js`);
+module: {
+  rules: [
+    {
+      test: require.resolve('snapsvg/dist/snap.svg.js'),
+      use: 'imports-loader?this=>window,fix=>module.exports=0',
+    },
+  ],
+},
+resolve: {
+  alias: {
+    snapsvg: 'snapsvg/dist/snap.svg.js',
+  },
+},
+```
+
+Then, in any module you’d like to require Snap, use:
+```
+import Snap from 'snapsvg';
 ```
 
 ### Build
