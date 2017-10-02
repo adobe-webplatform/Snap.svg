@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-04-18
+// build: 2017-09-13
 
 // Using pattern defined here
 // http://ifandelse.com/its-not-hard-making-your-library-support-amd-and-commonjs/
@@ -4031,6 +4031,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             while (tuned.firstChild) {
                 node.appendChild(tuned.firstChild);
             }
+        }
+        else if (this.type == "tspan") {
+            this.node.textContent = value;
         }
         eve.stop();
     })(-1);
