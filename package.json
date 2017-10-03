@@ -16,7 +16,8 @@
     "clean": "rimraf dist",
     "lint": "grunt",
     "unittest": "grunt test",
-    "test": "npm-run-all clean lint unittest"
+    "test": "npm-run-all clean lint unittest",
+    "eslintFixCore": "node eslintFixCoreScript.js"
   },
   "devDependencies": {
     "dr.js": "~0.1.0",
