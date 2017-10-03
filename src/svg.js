@@ -690,8 +690,8 @@ var Snap = (function (root) {
         },
         rgbtoString = function () {
             return this.opacity == 1 || this.opacity == null ?
-                    this.hex :
-                    "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
+                this.hex :
+                "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
         },
         prepareRGB = function (r, g, b) {
             if (g == null && is(r, "object") && "r" in r && "g" in r && "b" in r) {
@@ -885,8 +885,8 @@ var Snap = (function (root) {
         C = V - mmin(r, g, b);
         H = C == 0 ? null :
             V == r ? (g - b) / C :
-            V == g ? (b - r) / C + 2 :
-                     (r - g) / C + 4;
+                V == g ? (b - r) / C + 2 :
+                    (r - g) / C + 4;
         H = (H + 360) % 6 * 60 / 360;
         S = C == 0 ? 0 : C / V;
         return {h: H, s: S, b: V, toString: hsbtoString};
@@ -918,13 +918,13 @@ var Snap = (function (root) {
         C = M - m;
         H = C == 0 ? null :
             M == r ? (g - b) / C :
-            M == g ? (b - r) / C + 2 :
-                     (r - g) / C + 4;
+                M == g ? (b - r) / C + 2 :
+                    (r - g) / C + 4;
         H = (H + 360) % 6 * 60 / 360;
         L = (M + m) / 2;
         S = C == 0 ? 0 :
-             L < .5 ? C / (2 * L) :
-                      C / (2 - 2 * L);
+            L < .5 ? C / (2 * L) :
+                C / (2 - 2 * L);
         return {h: H, s: S, l: L, toString: hsltoString};
     };
 
@@ -1351,7 +1351,7 @@ var Snap = (function (root) {
             }
         }
     }
-   /*\
+    /*\
      * Element.attr
      [ method ]
      **
