@@ -20,7 +20,7 @@ let core = [
 ];
 
 const proc = spawn("node", ["node_modules/eslint/bin/eslint.js"]
-    .concat(core, [" --fix"]));
+    .concat(core, ["--fix"]));
 
 proc.stdout.on('data', (data) => {
     console.log(data);
