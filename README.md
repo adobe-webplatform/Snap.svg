@@ -53,6 +53,8 @@ import Snap from 'snapsvg';
 
 ### Build
 [![Build Status](https://travis-ci.org/adobe-webplatform/Snap.svg.svg?branch=dev)](https://travis-ci.org/adobe-webplatform/Snap.svg)
+[![Dependency Status](https://david-dm.org/adobe-webplatform/Snap.svg.svg)](https://david-dm.org/adobe-webplatform/Snap.svg)
+[![devDependency Status](https://david-dm.org/adobe-webplatform/Snap.svg/dev-status.svg)](https://david-dm.org/adobe-webplatform/Snap.svg#info=devDependencies)
 
 Snap.svg uses [Grunt](http://gruntjs.com/) to build.
 
