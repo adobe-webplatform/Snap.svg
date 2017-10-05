@@ -76,6 +76,9 @@ grunt
 ```
 * The results will be built into the `dist` folder.
 * Alternatively type `grunt watch` to have the build run automatically when you make changes to source files.
+* If there are `eslint` errors that make the build fail, you can run
+  `$ node eslintFixCoreScript.js` to correct these errors or use `$ grunt --force`
+  to ignore them and finish the build process.
 
 ### Repository index
 
@@ -101,6 +104,9 @@ grunt
   managers.
 - [dr.json](dr.json) - [dr.js](https://github.com/adobe-webplatform/dr.js)
   configuration file.
+- [eslintFixCoreScript.js](eslintFixCoreScript.js) - a script that uses the
+  required `eslint` npm module to automatically fix the errors that are reported
+  by the eslint task, that is defined in `Gruntfile.js`, before Grunt quits.
 - [history.md](history.md) - changelog file in Markdown format.
 - [template.dot](template.dot) - HTML file used as a template for the generated
 [doc/reference.html](doc/reference.html) file.
