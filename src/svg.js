@@ -15,7 +15,7 @@
 /* exported Snap */
 
 var Snap = (function (root) {
-    Snap.version = "0.5.1";
+    Snap.version = "0.5.2";
     /*\
      * Snap
      [ method ]

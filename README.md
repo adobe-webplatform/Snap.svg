@@ -31,28 +31,28 @@ No other scripts are needed. Both the minified and uncompressed (for development
 To load with webpack 2.x and 3.x, install [Imports Loader](https://github.com/webpack-contrib/imports-loader) (`npm i -D imports-loader`), and add the following to your webpack config:
 
 ```js
-<<<<<<< HEAD
-const Snap = require(`snapsvg/dist/snap.svg.slim.js`); // or define an alias in webpack.config.js
-=======
+const Snap = require("snapsvg/dist/snap.svg.slim.js"); // or define an alias in webpack.config.js
+```
+or
+```js
 module: {
-  rules: [
-    {
-      test: require.resolve('snapsvg/dist/snap.svg.js'),
-      use: 'imports-loader?this=>window,fix=>module.exports=0',
-    },
-  ],
+    rules: [
+        {
+            test: require.resolve("snapsvg/dist/snap.svg.js"),
+            use: "imports-loader?this=>window,fix=>module.exports=0",
+        },
+    ],
 },
 resolve: {
-  alias: {
-    snapsvg: 'snapsvg/dist/snap.svg.js',
-  },
+    alias: {
+        snapsvg: "snapsvg/dist/snap.svg.js",
+    },
 },
 ```
 
 Then, in any module you’d like to require Snap, use:
-```
+```js
 import Snap from 'snapsvg';
->>>>>>> master
 ```
 
 ### Build
