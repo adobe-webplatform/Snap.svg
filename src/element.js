@@ -152,7 +152,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 i,
                 localString = local.toTransformString(),
                 string = Str(local) == Str(this.matrix) ?
-                            Str(_.transform) : localString;
+                    Str(_.transform) : localString;
             while (papa.type != "svg" && (papa = papa.parent())) {
                 ms.push(extractTransform(papa));
             }
@@ -610,8 +610,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         p.node.appendChild(this.node);
         return p;
     };
-// SIERRA Element.marker(): clarify what a reference point is. E.g., helps you offset the object from its edge such as when centering it over a path.
-// SIERRA Element.marker(): I suggest the method should accept default reference point values.  Perhaps centered with (refX = width/2) and (refY = height/2)? Also, couldn't it assume the element's current _width_ and _height_? And please specify what _x_ and _y_ mean: offsets? If so, from where?  Couldn't they also be assigned default values?
+    // SIERRA Element.marker(): clarify what a reference point is. E.g., helps you offset the object from its edge such as when centering it over a path.
+    // SIERRA Element.marker(): I suggest the method should accept default reference point values.  Perhaps centered with (refX = width/2) and (refY = height/2)? Also, couldn't it assume the element's current _width_ and _height_? And please specify what _x_ and _y_ mean: offsets? If so, from where?  Couldn't they also be assigned default values?
     /*\
      * Element.marker
      [ method ]

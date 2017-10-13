@@ -7,3 +7,5 @@ node_modules
 playground
 *.svg
 test-bundle.js
+package-lock.json
+

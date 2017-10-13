@@ -29,10 +29,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             case "s": if (item.length == 5) {
                 return [l, 1, 1, item[3], item[4]];
             } else if (item.length == 3) {
-                return [l, 1, 1];
-            } else {
-                return [l, 1];
-            }
+                    return [l, 1, 1];
+                } else {
+                    return [l, 1];
+                }
         }
     }
     function equaliseTransformString(t1, t2, getBBox) {

@@ -16,7 +16,8 @@
     "clean": "rimraf dist",
     "lint": "grunt",
     "unittest": "grunt test",
-    "test": "npm-run-all clean lint unittest"
+    "test": "npm-run-all clean lint unittest",
+    "eslintFixCore": "node eslintFixCoreScript.js"
   },
   "devDependencies": {
     "dr.js": "~0.1.0",
@@ -62,15 +63,42 @@
       "new-cap": 0,
       "no-unused-expressions": 0,
       "no-mixed-requires": 0,
-      "indent": ["error", 4, { "SwitchCase": 1, "VariableDeclarator": 1 }],
-      "no-multi-spaces": [0, {
-        "exceptions": {
-          "VariableDeclarator": true
+      "indent": [
+        "error",
+        4,
+        {
+          "SwitchCase": 1,
+          "VariableDeclarator": 1
         }
-      }],
-      "no-trailing-spaces": [2, { "skipBlankLines": false }],
-      "no-unused-vars": [2, {"vars": "all", "args": "none"}],
-      "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
+      ],
+      "no-multi-spaces": [
+        0,
+        {
+          "exceptions": {
+            "VariableDeclarator": true
+          }
+        }
+      ],
+      "no-trailing-spaces": [
+        2,
+        {
+          "skipBlankLines": false
+        }
+      ],
+      "no-unused-vars": [
+        2,
+        {
+          "vars": "all",
+          "args": "none"
+        }
+      ],
+      "space-before-function-paren": [
+        2,
+        {
+          "anonymous": "always",
+          "named": "never"
+        }
+      ],
       "quotes": [
         1,
         "double",
