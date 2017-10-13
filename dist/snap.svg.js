@@ -1,4 +1,4 @@
-// Snap.svg 0.5.1
+// Snap.svg 0.5.2
 //
 // Copyright (c) 2013 – 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-10-02
+// build: 2017-10-13
 
 // Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -860,7 +860,7 @@ var mina = (function (eve) {
 /* exported Snap */
 
 var Snap = (function (root) {
-    Snap.version = "0.5.1";
+    Snap.version = "0.5.2";
     /*\
      * Snap
      [ method ]
@@ -1535,8 +1535,8 @@ var Snap = (function (root) {
         },
         rgbtoString = function () {
             return this.opacity == 1 || this.opacity == null ?
-                    this.hex :
-                    "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
+                this.hex :
+                "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
         },
         prepareRGB = function (r, g, b) {
             if (g == null && is(r, "object") && "r" in r && "g" in r && "b" in r) {
@@ -1730,8 +1730,8 @@ var Snap = (function (root) {
         C = V - mmin(r, g, b);
         H = C == 0 ? null :
             V == r ? (g - b) / C :
-            V == g ? (b - r) / C + 2 :
-                     (r - g) / C + 4;
+                V == g ? (b - r) / C + 2 :
+                    (r - g) / C + 4;
         H = (H + 360) % 6 * 60 / 360;
         S = C == 0 ? 0 : C / V;
         return {h: H, s: S, b: V, toString: hsbtoString};
@@ -1763,13 +1763,13 @@ var Snap = (function (root) {
         C = M - m;
         H = C == 0 ? null :
             M == r ? (g - b) / C :
-            M == g ? (b - r) / C + 2 :
-                     (r - g) / C + 4;
+                M == g ? (b - r) / C + 2 :
+                    (r - g) / C + 4;
         H = (H + 360) % 6 * 60 / 360;
         L = (M + m) / 2;
         S = C == 0 ? 0 :
-             L < .5 ? C / (2 * L) :
-                      C / (2 - 2 * L);
+            L < .5 ? C / (2 * L) :
+                C / (2 - 2 * L);
         return {h: H, s: S, l: L, toString: hsltoString};
     };
 
@@ -2196,7 +2196,7 @@ var Snap = (function (root) {
             }
         }
     }
-   /*\
+    /*\
      * Element.attr
      [ method ]
      **
@@ -2834,7 +2834,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 i,
                 localString = local.toTransformString(),
                 string = Str(local) == Str(this.matrix) ?
-                            Str(_.transform) : localString;
+                    Str(_.transform) : localString;
             while (papa.type != "svg" && (papa = papa.parent())) {
                 ms.push(extractTransform(papa));
             }
@@ -3292,8 +3292,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         p.node.appendChild(this.node);
         return p;
     };
-// SIERRA Element.marker(): clarify what a reference point is. E.g., helps you offset the object from its edge such as when centering it over a path.
-// SIERRA Element.marker(): I suggest the method should accept default reference point values.  Perhaps centered with (refX = width/2) and (refY = height/2)? Also, couldn't it assume the element's current _width_ and _height_? And please specify what _x_ and _y_ mean: offsets? If so, from where?  Couldn't they also be assigned default values?
+    // SIERRA Element.marker(): clarify what a reference point is. E.g., helps you offset the object from its edge such as when centering it over a path.
+    // SIERRA Element.marker(): I suggest the method should accept default reference point values.  Perhaps centered with (refX = width/2) and (refY = height/2)? Also, couldn't it assume the element's current _width_ and _height_? And please specify what _x_ and _y_ mean: offsets? If so, from where?  Couldn't they also be assigned default values?
     /*\
      * Element.marker
      [ method ]
@@ -8435,7 +8435,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         if (amount == null) {
             amount = 1;
         }
-//        <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" color-interpolation-filters="sRGB"/>
+        //        <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" color-interpolation-filters="sRGB"/>
         return Snap.format('<feComponentTransfer><feFuncR type="table" tableValues="{amount} {amount2}"/><feFuncG type="table" tableValues="{amount} {amount2}"/><feFuncB type="table" tableValues="{amount} {amount2}"/></feComponentTransfer>', {
             amount: amount,
             amount2: 1 - amount
