@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-10-13
+// build: 2017-10-23
 
 // Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -1860,7 +1860,7 @@ var Snap = (function (root) {
     function svgTransform2string(tstr) {
         var res = [];
         tstr = tstr.replace(/(?:^|\s)(\w+)\(([^)]+)\)/g, function (all, name, params) {
-            params = params.split(/\s*,\s*|\s+/);
+            params = params.trim().split(/\s*,\s*|\s+/);
             if (name == "rotate" && params.length == 1) {
                 params.push(0, 0);
             }
