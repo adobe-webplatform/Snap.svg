@@ -22,7 +22,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             if (res.length == 1) {
                 res = res[0];
             }
-            return f ? f(res) : res;
+            var out = f ? f(res) : res;
+            if (f && out == "r") {
+                out = f([res]);
+            }
+            return out;
         };
     }
     var Animation = function (attr, ms, easing, callback) {

@@ -1,3 +1,8 @@
+#0.5.2
+
+* Bug fixes
+* Common JS update
+
 #0.5.1
 
 * Bug fix

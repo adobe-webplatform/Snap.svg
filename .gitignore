@@ -1,7 +1,11 @@
 TAGS
+.tmp
 *~
 _*
 .DS_Store
 node_modules
 playground
 *.svg
+test-bundle.js
+package-lock.json
+

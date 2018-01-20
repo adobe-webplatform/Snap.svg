@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob) {
-    var elproto = Element.prototype,
-        pproto = Paper.prototype,
+    var pproto = Paper.prototype,
         rgurl = /^\s*url\((.+)\)/,
         Str = String,
         $ = Snap._.$;
@@ -40,8 +39,6 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         var f = Snap.parse(Str(filstr)),
             id = Snap._.id(),
-            width = paper.node.offsetWidth,
-            height = paper.node.offsetHeight,
             filter = $("filter");
         $(filter, {
             id: id,
@@ -69,7 +66,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 id = value.id;
             }
             $(this.node, {
-                filter: Snap.url(id)
+                filter: Snap.prefixURL(Snap.url(id))
             });
         }
         if (!value || value == "none") {
@@ -274,7 +271,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         if (amount == null) {
             amount = 1;
         }
-//        <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" color-interpolation-filters="sRGB"/>
+        //        <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" color-interpolation-filters="sRGB"/>
         return Snap.format('<feComponentTransfer><feFuncR type="table" tableValues="{amount} {amount2}"/><feFuncG type="table" tableValues="{amount} {amount2}"/><feFuncB type="table" tableValues="{amount} {amount2}"/></feComponentTransfer>', {
             amount: amount,
             amount2: 1 - amount

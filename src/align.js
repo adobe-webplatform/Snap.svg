@@ -47,27 +47,27 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             case "t":
                 out.dx = 0;
                 out.dy = bx.y - bb.y;
-            break;
+                break;
             case "b":
                 out.dx = 0;
                 out.dy = bx.y2 - bb.y2;
-            break;
+                break;
             case "m":
                 out.dx = 0;
                 out.dy = bx.cy - bb.cy;
-            break;
+                break;
             case "l":
                 out.dx = bx.x - bb.x;
                 out.dy = 0;
-            break;
+                break;
             case "r":
                 out.dx = bx.x2 - bb.x2;
                 out.dy = 0;
-            break;
+                break;
             default:
                 out.dx = bx.cx - bb.cx;
                 out.dy = 0;
-            break;
+                break;
         }
         out.toString = toString;
         return out;

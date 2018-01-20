@@ -13,8 +13,6 @@
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     var rgNotSpace = /\S+/g,
-        rgBadSpace = /[\t\r\n\f]/g,
-        rgTrim = /(^\s+|\s+$)/g,
         Str = String,
         elproto = Element.prototype;
     /*\

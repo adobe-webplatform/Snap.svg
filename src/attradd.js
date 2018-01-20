@@ -14,17 +14,17 @@
 Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     var operators = {
             "+": function (x, y) {
-                    return x + y;
-                },
+                return x + y;
+            },
             "-": function (x, y) {
-                    return x - y;
-                },
+                return x - y;
+            },
             "/": function (x, y) {
-                    return x / y;
-                },
+                return x / y;
+            },
             "*": function (x, y) {
-                    return x * y;
-                }
+                return x * y;
+            }
         },
         Str = String,
         reUnit = /[a-z]+$/i,
@@ -62,8 +62,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         }
     })(-10);
     eve.on("snap.util.equal", function (name, b) {
-        var A, B, a = Str(this.attr(name) || ""),
-            el = this,
+        var a = Str(this.attr(name) || ""),
             bplus = Str(b).match(reAddon);
         if (bplus) {
             eve.stop();
