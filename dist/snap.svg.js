@@ -14,34 +14,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-07
+// build: 2018-01-20
 
-// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+// Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // ┌────────────────────────────────────────────────────────────┐ \\
-// │ Eve 0.5.0 - JavaScript Events Library                      │ \\
+// │ Eve 0.5.4 - JavaScript Events Library                      │ \\
 // ├────────────────────────────────────────────────────────────┤ \\
 // │ Author Dmitry Baranovskiy (http://dmitry.baranovskiy.com/) │ \\
 // └────────────────────────────────────────────────────────────┘ \\
 
 (function (glob) {
-    var version = "0.5.0",
+    var version = "0.5.4",
         has = "hasOwnProperty",
         separator = /[\.\/]/,
         comaseparator = /\s*,\s*/,
         wildcard = "*",
-        fun = function () {},
         numsort = function (a, b) {
             return a - b;
         },
@@ -67,14 +66,12 @@
         Str = String,
         isArray = Array.isArray || function (ar) {
             return ar instanceof Array || objtos.call(ar) == "[object Array]";
-        };
+        },
     /*\
      * eve
      [ method ]
 
      * Fires event with given `name`, given scope and other parameters.
-
-     > Arguments
 
      - name (string) name of the *event*, dot (`.`) or slash (`/`) separated
      - scope (object) context for the event handlers
@@ -83,18 +80,15 @@
      = (object) array of returned values from the listeners. Array has two methods `.firstDefined()` and `.lastDefined()` to get first or last not `undefined` value.
     \*/
         eve = function (name, scope) {
-            var e = events,
-                oldstop = stop,
+            var oldstop = stop,
                 args = Array.prototype.slice.call(arguments, 2),
                 listeners = eve.listeners(name),
                 z = 0,
-                f = false,
                 l,
                 indexed = [],
                 queue = {},
                 out = [],
-                ce = current_event,
-                errors = [];
+                ce = current_event;
             out.firstDefined = firstDefined;
             out.lastDefined = lastDefined;
             current_event = name;
@@ -144,15 +138,13 @@
             current_event = ce;
             return out;
         };
-        // Undocumented. Debug only.
-        eve._events = events;
+    // Undocumented. Debug only.
+    eve._events = events;
     /*\
      * eve.listeners
      [ method ]
 
      * Internal method which gives you array of all event handlers that will be triggered by the given `name`.
-
-     > Arguments
 
      - name (string) name of the event, dot (`.`) or slash (`/`) separated
 
@@ -223,7 +215,7 @@
      - name (array) if you don’t want to use separators, you can use array of strings
      - f (function) event handler function
      **
-     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
+     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
      > Example:
      | eve.on("mouse", eatIt)(2);
      | eve.on("mouse", scream);
@@ -237,7 +229,7 @@
         if (typeof f != "function") {
             return function () {};
         }
-        var names = isArray(name) ? (isArray(name[0]) ? name : [name]) : Str(name).split(comaseparator);
+        var names = isArray(name) ? isArray(name[0]) ? name : [name] : Str(name).split(comaseparator);
         for (var i = 0, ii = names.length; i < ii; i++) {
             (function (name) {
                 var names = isArray(name) ? name : Str(name).split(separator),
@@ -272,7 +264,6 @@
      | eve.on("click", function (a, b, c) {
      |     console.log(a, b, c); // 1, 2, [event object]
      | });
-     > Arguments
      - event (string) event name
      - varargs (…) and any other arguments
      = (function) possible event handler function
@@ -297,8 +288,6 @@
      [ method ]
      **
      * Could be used inside event handler to figure out actual name of the event.
-     **
-     > Arguments
      **
      - subname (string) #optional subname of the event
      **
@@ -332,8 +321,6 @@
      * Removes given function from the list of event listeners assigned to given name.
      * If no arguments specified all the events will be cleared.
      **
-     > Arguments
-     **
      - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
      - f (function) event handler function
     \*/
@@ -348,7 +335,7 @@
             eve._events = events = {n: {}};
             return;
         }
-        var names = isArray(name) ? (isArray(name[0]) ? name : [name]) : Str(name).split(comaseparator);
+        var names = isArray(name) ? isArray(name[0]) ? name : [name] : Str(name).split(comaseparator);
         if (names.length > 1) {
             for (var i = 0, ii = names.length; i < ii; i++) {
                 eve.off(names[i], f);
@@ -439,8 +426,6 @@
      | eve("login"); // no listeners
      * Use @eve to trigger the listener.
      **
-     > Arguments
-     **
      - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
      - f (function) event handler function
      **
@@ -463,8 +448,9 @@
     eve.toString = function () {
         return "You are running Eve " + version;
     };
-    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define === "function" && define.amd ? (define("eve", [], function() { return eve; })) : (glob.eve = eve));
-})(this);
+    glob.eve = eve;
+    typeof module != "undefined" && module.exports ? module.exports = eve : typeof define === "function" && define.amd ? define("eve", [], function () { return eve; }) : glob.eve = eve;
+})(typeof window != "undefined" ? window : this);
 
 (function (glob, factory) {
     // AMD support
@@ -7413,7 +7399,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Snap.plugin(function (Snap, Element, Paper, glob) {
+Snap.plugin(function(Snap, Element, Paper, glob) {
     var names = {},
         reUnit = /[%a-z]+$/i,
         Str = String;
@@ -7421,32 +7407,39 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     function getEmpty(item) {
         var l = item[0];
         switch (l.toLowerCase()) {
-            case "t": return [l, 0, 0];
-            case "m": return [l, 1, 0, 0, 1, 0, 0];
-            case "r": if (item.length == 4) {
-                return [l, 0, item[2], item[3]];
-            } else {
-                return [l, 0];
-            }
-            case "s": if (item.length == 5) {
-                return [l, 1, 1, item[3], item[4]];
-            } else if (item.length == 3) {
-                return [l, 1, 1];
-            } else {
-                return [l, 1];
-            }
+            case "t":
+                return [l, 0, 0];
+            case "m":
+                return [l, 1, 0, 0, 1, 0, 0];
+            case "r":
+                if (item.length == 4) {
+                    return [l, 0, item[2], item[3]];
+                } else {
+                    return [l, 0];
+                }
+            case "s":
+                if (item.length == 5) {
+                    return [l, 1, 1, item[3], item[4]];
+                } else if (item.length == 3) {
+                    return [l, 1, 1];
+                } else {
+                    return [l, 1];
+                }
         }
     }
     function equaliseTransform(t1, t2, getBBox) {
-        t1 = t1 || new Snap.Matrix;
-        t2 = t2 || new Snap.Matrix;
+        t1 = t1 || new Snap.Matrix();
+        t2 = t2 || new Snap.Matrix();
         t1 = Snap.parseTransformString(t1.toTransformString()) || [];
         t2 = Snap.parseTransformString(t2.toTransformString()) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
-            i = 0, j, jj,
-            tt1, tt2;
+            i = 0,
+            j,
+            jj,
+            tt1,
+            tt2;
         for (; i < maxlength; i++) {
             tt1 = t1[i] || getEmpty(t2[i]);
             tt2 = t2[i] || getEmpty(tt1);
@@ -7454,11 +7447,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3]) ||
                 tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4])
                 ) {
-                    t1 = Snap._.transform2matrix(t1, getBBox());
-                    t2 = Snap._.transform2matrix(t2, getBBox());
-                    from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
-                    to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
-                    break;
+                t1 = Snap._.transform2matrix(t1, getBBox());
+                t2 = Snap._.transform2matrix(t2, getBBox());
+                from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
+                to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
+                break;
             }
             from[i] = [];
             to[i] = [];
@@ -7477,7 +7470,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return val;
     }
     function getUnit(unit) {
-        return function (val) {
+        return function(val) {
             return +val.toFixed(3) + unit;
         };
     }
@@ -7488,7 +7481,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return Snap.rgb(clr[0], clr[1], clr[2], clr[3]);
     }
     function getPath(path) {
-        var k = 0, i, ii, j, jj, out, a, b = [];
+        var k = 0,
+            i,
+            ii,
+            j,
+            jj,
+            out,
+            a,
+            b = [];
         for (i = 0, ii = path.length; i < ii; i++) {
             out = "[";
             a = ['"' + path[i][0] + '"'];
@@ -7518,11 +7518,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return arr1.toString() == arr2.toString();
     }
-    Element.prototype.equal = function (name, b) {
+    Element.prototype.equal = function(name, b) {
         return eve("snap.util.equal", this, name, b).firstDefined();
     };
-    eve.on("snap.util.equal", function (name, b) {
-        var A, B, a = Str(this.attr(name) || ""),
+    eve.on("snap.util.equal", function(name, b) {
+        var A,
+            B,
+            a = Str(this.attr(name) || ""),
             el = this;
         if (names[name] == "colour") {
             A = Snap.color(a);
@@ -7534,7 +7536,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "viewBox") {
-            A = this.attr(name).vb.split(" ").map(Number);
+            A = this.attr(name)
+                .vb.split(" ")
+                .map(Number);
             B = b.split(" ").map(Number);
             return {
                 from: A,
@@ -7542,17 +7546,24 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: getViewBox
             };
         }
-        if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
+        if (
+            name == "transform" ||
+            name == "gradientTransform" ||
+            name == "patternTransform"
+        ) {
             if (typeof b == "string") {
                 b = Str(b).replace(/\.{3}|\u2026/g, a);
             }
             a = this.matrix;
             if (!Snap._.rgTransform.test(b)) {
-                b = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
+                b = Snap._.transform2matrix(
+                    Snap._.svgTransform2string(b),
+                    this.getBBox()
+                );
             } else {
                 b = Snap._.transform2matrix(b, this.getBBox());
             }
-            return equaliseTransform(a, b, function () {
+            return equaliseTransform(a, b, function() {
                 return el.getBBox(1);
             });
         }
@@ -7570,7 +7581,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return {
                 from: A,
                 to: B,
-                f: function (val) { return val; }
+                f: function(val) {
+                    return val;
+                }
             };
         }
         if (isNumeric(a) && isNumeric(b)) {

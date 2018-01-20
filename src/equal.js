@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Snap.plugin(function (Snap, Element, Paper, glob) {
+Snap.plugin(function(Snap, Element, Paper, glob) {
     var names = {},
         reUnit = /[%a-z]+$/i,
         Str = String;
@@ -19,32 +19,39 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     function getEmpty(item) {
         var l = item[0];
         switch (l.toLowerCase()) {
-            case "t": return [l, 0, 0];
-            case "m": return [l, 1, 0, 0, 1, 0, 0];
-            case "r": if (item.length == 4) {
-                return [l, 0, item[2], item[3]];
-            } else {
-                return [l, 0];
-            }
-            case "s": if (item.length == 5) {
-                return [l, 1, 1, item[3], item[4]];
-            } else if (item.length == 3) {
-                return [l, 1, 1];
-            } else {
-                return [l, 1];
-            }
+            case "t":
+                return [l, 0, 0];
+            case "m":
+                return [l, 1, 0, 0, 1, 0, 0];
+            case "r":
+                if (item.length == 4) {
+                    return [l, 0, item[2], item[3]];
+                } else {
+                    return [l, 0];
+                }
+            case "s":
+                if (item.length == 5) {
+                    return [l, 1, 1, item[3], item[4]];
+                } else if (item.length == 3) {
+                    return [l, 1, 1];
+                } else {
+                    return [l, 1];
+                }
         }
     }
     function equaliseTransform(t1, t2, getBBox) {
-        t1 = t1 || new Snap.Matrix;
-        t2 = t2 || new Snap.Matrix;
+        t1 = t1 || new Snap.Matrix();
+        t2 = t2 || new Snap.Matrix();
         t1 = Snap.parseTransformString(t1.toTransformString()) || [];
         t2 = Snap.parseTransformString(t2.toTransformString()) || [];
         var maxlength = Math.max(t1.length, t2.length),
             from = [],
             to = [],
-            i = 0, j, jj,
-            tt1, tt2;
+            i = 0,
+            j,
+            jj,
+            tt1,
+            tt2;
         for (; i < maxlength; i++) {
             tt1 = t1[i] || getEmpty(t2[i]);
             tt2 = t2[i] || getEmpty(tt1);
@@ -52,11 +59,11 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 tt1[0].toLowerCase() == "r" && (tt1[2] != tt2[2] || tt1[3] != tt2[3]) ||
                 tt1[0].toLowerCase() == "s" && (tt1[3] != tt2[3] || tt1[4] != tt2[4])
                 ) {
-                    t1 = Snap._.transform2matrix(t1, getBBox());
-                    t2 = Snap._.transform2matrix(t2, getBBox());
-                    from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
-                    to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
-                    break;
+                t1 = Snap._.transform2matrix(t1, getBBox());
+                t2 = Snap._.transform2matrix(t2, getBBox());
+                from = [["m", t1.a, t1.b, t1.c, t1.d, t1.e, t1.f]];
+                to = [["m", t2.a, t2.b, t2.c, t2.d, t2.e, t2.f]];
+                break;
             }
             from[i] = [];
             to[i] = [];
@@ -75,7 +82,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return val;
     }
     function getUnit(unit) {
-        return function (val) {
+        return function(val) {
             return +val.toFixed(3) + unit;
         };
     }
@@ -86,7 +93,14 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         return Snap.rgb(clr[0], clr[1], clr[2], clr[3]);
     }
     function getPath(path) {
-        var k = 0, i, ii, j, jj, out, a, b = [];
+        var k = 0,
+            i,
+            ii,
+            j,
+            jj,
+            out,
+            a,
+            b = [];
         for (i = 0, ii = path.length; i < ii; i++) {
             out = "[";
             a = ['"' + path[i][0] + '"'];
@@ -116,11 +130,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
         }
         return arr1.toString() == arr2.toString();
     }
-    Element.prototype.equal = function (name, b) {
+    Element.prototype.equal = function(name, b) {
         return eve("snap.util.equal", this, name, b).firstDefined();
     };
-    eve.on("snap.util.equal", function (name, b) {
-        var A, B, a = Str(this.attr(name) || ""),
+    eve.on("snap.util.equal", function(name, b) {
+        var A,
+            B,
+            a = Str(this.attr(name) || ""),
             el = this;
         if (names[name] == "colour") {
             A = Snap.color(a);
@@ -132,7 +148,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             };
         }
         if (name == "viewBox") {
-            A = this.attr(name).vb.split(" ").map(Number);
+            A = this.attr(name)
+                .vb.split(" ")
+                .map(Number);
             B = b.split(" ").map(Number);
             return {
                 from: A,
@@ -140,17 +158,24 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 f: getViewBox
             };
         }
-        if (name == "transform" || name == "gradientTransform" || name == "patternTransform") {
+        if (
+            name == "transform" ||
+            name == "gradientTransform" ||
+            name == "patternTransform"
+        ) {
             if (typeof b == "string") {
                 b = Str(b).replace(/\.{3}|\u2026/g, a);
             }
             a = this.matrix;
             if (!Snap._.rgTransform.test(b)) {
-                b = Snap._.transform2matrix(Snap._.svgTransform2string(b), this.getBBox());
+                b = Snap._.transform2matrix(
+                    Snap._.svgTransform2string(b),
+                    this.getBBox()
+                );
             } else {
                 b = Snap._.transform2matrix(b, this.getBBox());
             }
-            return equaliseTransform(a, b, function () {
+            return equaliseTransform(a, b, function() {
                 return el.getBBox(1);
             });
         }
@@ -168,7 +193,9 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             return {
                 from: A,
                 to: B,
-                f: function (val) { return val; }
+                f: function(val) {
+                    return val;
+                }
             };
         }
         if (isNumeric(a) && isNumeric(b)) {
