@@ -266,11 +266,11 @@ section.examples li {
 #sideNav li a {
   color: #F0F1F1;
   display: block;
-  height: 46px;
+  height: 20px;
   font-size: 16px;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding: 12px 0 0 20px;
+  padding: 0 0 0 20px;
   text-decoration: none;
 }
 #sideNav nav.site, #sideNav .combo {
@@ -372,7 +372,7 @@ select.docNav {
     padding: 36px 0;
   }
   #sideNav li a {
-    padding: 12px 0 0 10px;
+    padding: 0 0 0 10px;
   }
   body.light #sideNav li a {
     color: #797B7B;
@@ -405,8 +405,8 @@ select.docNav {
   }
   #sideNav li a {
     display: block;
-    height: 60px;
-    padding: 22px 0 0 10px;
+    height: 20px;
+    padding: 0 0 0 10px;
     text-decoration: none;
   }
   #content header h2 {

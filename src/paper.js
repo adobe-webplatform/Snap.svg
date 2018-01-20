@@ -138,9 +138,19 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 set.height = height;
             } else {
                 preload(src, function () {
+                    var width,
+                        height,
+                        bcr = this.getBoundingClientRect && this.getBoundingClientRect();
+                    if (bcr) {
+                        width = bcr.width;
+                        height = bcr.height;
+                    } else {
+                        width = this.offsetWidth;
+                        height = this.offsetHeight;
+                    }
                     Snap._.$(el.node, {
-                        width: this.offsetWidth,
-                        height: this.offsetHeight
+                        width: width,
+                        height: height
                     });
                 });
             }
@@ -243,8 +253,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      * See @Paper.g
     \*/
     proto.group = proto.g = function (first) {
-        var attr,
-            el = this.el("g");
+        var el = this.el("g");
         if (arguments.length == 1 && first && !first.type) {
             el.attr(first);
         } else if (arguments.length) {
@@ -302,8 +311,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      **
     \*/
     proto.mask = function (first) {
-        var attr,
-            el = this.el("mask");
+        var el = this.el("mask");
         if (arguments.length == 1 && first && !first.type) {
             el.attr(first);
         } else if (arguments.length) {
@@ -657,6 +665,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             el.stops = Gstops;
             el.addStop = GaddStop;
             el.getBBox = GgetBBox;
+            el.setStops = GsetStops;
             if (cx != null) {
                 $(el.node, {
                     cx: cx,

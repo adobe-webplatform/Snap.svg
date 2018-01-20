@@ -17,15 +17,23 @@ module.exports = function(grunt) {
             "./src/mouse.js",
             "./src/filter.js",
             "./src/align.js",
-            "./src/colors.js"
+            "./src/colors.js",
         ],
-        src = [
+        bundle = [
             "./node_modules/eve/eve.js",
-            "./src/amd-banner.js",
-            "./src/amd-footer.js"
-        ];
+            // the following splice injects files here
+            "./src/banner.js",
+            "./src/footer.js"
+        ],
+        slimBundle = [
+            // the following splice injects files here
+            "./src/banner.js",
+            "./src/footer.js"
+        ];;
 
-    src.splice(2, 0, core);
+    bundle.splice(2, 0, core);
+    slimBundle.splice(1, 0, core);
+
     // Project configuration.
     grunt.initConfig({
         // Metadata.
@@ -41,7 +49,11 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: "<%= concat.target.dest %>",
-                dest: "dist/snap.svg-min.js"
+                dest: "dist/snap.svg.min.js"
+            },
+            'dist.slim': {
+                src: "<%= concat.slim.dest %>",
+                dest: "dist/snap.svg.slim.min.js"
             }
         },
         concat: {
@@ -50,7 +62,14 @@ module.exports = function(grunt) {
             },
             target: {
                 dest: "dist/snap.svg.js",
-                src: src
+                src: bundle,
+            },
+            /**
+             * The slim bundle excludes dependencies, such as eve
+             */
+            slim: {
+                dest: "dist/snap.svg.slim.js",
+                src: slimBundle,
             }
         },
         exec: {

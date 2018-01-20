@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
-    var has = "hasOwnProperty",
-        make = Snap._.make,
+    var make = Snap._.make,
         wrap = Snap._.wrap,
         is = Snap.is,
         getSomeDefs = Snap._.getSomeDefs,
@@ -32,7 +31,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (string) unwrapped path
     \*/
     Snap.deurl = function (value) {
-        var res = String(value).match(reURLValue);
+        var prefix = window ? window.location.href : "",
+            reURLValue = new RegExp("^url\\((['\"]?)(?:" + prefix + ")?([^)]+)\\1\\)$", "i"),
+            res = String(value).match(reURLValue);
         return res ? res[2] : value;
     }
     // Attributes event handlers
@@ -54,7 +55,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 id: mask.id
             });
             $(this.node, {
-                mask: URL(mask.id)
+                mask: Snap.prefixURL(URL(mask.id))
             });
         }
     });
@@ -86,7 +87,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 });
             }
             $(this.node, {
-                "clip-path": URL(clip.node.id || clip.id)
+                "clip-path": Snap.prefixURL(URL(clip.node.id || clip.id))
             });
         }
     }));
@@ -109,7 +110,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                             id: value.id
                         });
                     }
-                    var fill = URL(value.node.id);
+                    var fill = Snap.prefixURL(URL(value.node.id));
                 } else {
                     fill = value.attr(name);
                 }
@@ -123,7 +124,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                                 id: grad.id
                             });
                         }
-                        fill = URL(grad.node.id);
+                        fill = Snap.prefixURL(URL(grad.node.id));
                     } else {
                         fill = value;
                     }
@@ -294,8 +295,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
     })(-1);
     eve.on("snap.util.attr.text", function (value) {
         if (this.type == "text") {
-            var i = 0,
-                node = this.node,
+            var node = this.node,
                 tuner = function (chunk) {
                     var out = $("tspan");
                     if (is(chunk, "array")) {
@@ -315,6 +315,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
             while (tuned.firstChild) {
                 node.appendChild(tuned.firstChild);
             }
+        }
+        else if (this.type == "tspan") {
+            this.node.textContent = value;
         }
         eve.stop();
     })(-1);
@@ -363,7 +366,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                     if (!id) {
                         $(value.node, {id: value.id});
                     }
-                    this.node.style[name] = URL(id);
+                    this.node.style[name] = Snap.prefixURL(URL(id));
                     return;
                 }
             };
