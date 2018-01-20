@@ -19,20 +19,24 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
     function getEmpty(item) {
         var l = item[0];
         switch (l.toLowerCase()) {
-            case "t": return [l, 0, 0];
-            case "m": return [l, 1, 0, 0, 1, 0, 0];
-            case "r": if (item.length == 4) {
-                return [l, 0, item[2], item[3]];
-            } else {
-                return [l, 0];
-            }
-            case "s": if (item.length == 5) {
-                return [l, 1, 1, item[3], item[4]];
-            } else if (item.length == 3) {
-                return [l, 1, 1];
-            } else {
-                return [l, 1];
-            }
+            case "t":
+                return [l, 0, 0];
+            case "m":
+                return [l, 1, 0, 0, 1, 0, 0];
+            case "r":
+                if (item.length == 4) {
+                    return [l, 0, item[2], item[3]];
+                } else {
+                    return [l, 0];
+                }
+            case "s":
+                if (item.length == 5) {
+                    return [l, 1, 1, item[3], item[4]];
+                } else if (item.length == 3) {
+                    return [l, 1, 1];
+                } else {
+                    return [l, 1];
+                }
         }
     }
     function equaliseTransformString(t1, t2, getBBox) {
