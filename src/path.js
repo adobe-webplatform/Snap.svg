@@ -687,6 +687,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                     default:
                         for (j = 1, jj = pa.length; j < jj; j++) {
                             r[j] = +pa[j] + (j % 2 ? x : y);
+                            // If an exponent is entered during svg conversion,
+                            // it will not be recognized as a Number type.
+                            // It will be rounded to 6 digits.
+                            r[j] = +r[j].toFixed(6);
                         }
                 }
             } else if (pa0 == "R") {
