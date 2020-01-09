@@ -55,7 +55,7 @@
             fill: #60544F;
         }
         </style>
-        <script src="../../dist/snap.svg-min.js"></script>
+        <script src="../../dist/snap.svg.js"></script>
         <script>
         window.onload = function () {
             var s = Snap(1000, 800),
@@ -71,6 +71,9 @@
                 gcoffee = "l()#60544F-#8c7a73:50-#60544F:50-#60544F",
                 gwater = "l()#B4D6DB-#D6EDEE:50-#B4D6DB:50-#B4D6DB";
 
+            // remove "Created with Snap" desc
+            s.select('desc').remove();
+
             Snap.load("demo.svg", function (f) {
                 var top = f.select("#top"),
                     bot = f.select("#bottom"),
@@ -85,11 +88,25 @@
                         cx: f.select("#pie-chart circle").attr("cx"),
                         cy: f.select("#pie-chart circle").attr("cy"),
                         r: f.select("#pie-chart circle").attr("r"),
-                        coffee: f.select("#legend text"),
-                        water: f.selectAll("#legend text")[1],
-                        title: f.selectAll("#legend text")[2],
+                        title: f.select("#legend text"),
+                        coffee: f.selectAll("#legend text")[1],
+                        water: f.selectAll("#legend text")[2],
                         waterBox: f.select("#legend rect:nth-child(2)")
                     },
+                    radiogroup = {
+                        americano: f.select("#americano-area"),
+                        latte: f.select("#latte-area"),
+                        mocha: f.select("#mocha-area"),
+                        macchiato: f.select("#macchiato-area"),
+                        espresso: f.select("#espresso-area")
+                    },
+                    radios = Object.values(radiogroup),
+                    radioNodes = radios.map(
+                        function(obj) {
+                            return obj.node;
+                        }
+                    ),
+                    radio = 'americano',
                     angle = 0,
                     lastAngle,
                     startAngle,
@@ -98,21 +115,68 @@
                     closed,
                     grp = s.g().insertBefore(tap);
                 f.select("#pie-chart").remove();
-                f.select("#americano-area").click(function () {
+                radiogroup.americano.click(function () {
                     chosen(0);
                 });
-                f.select("#latte-area").click(function () {
+                radiogroup.latte.click(function () {
                     chosen(72);
                 });
-                f.select("#mocha-area").click(function () {
+                radiogroup.mocha.click(function () {
                     chosen(144);
                 });
-                f.select("#mochiatto-area").click(function () {
+                radiogroup.macchiato.click(function () {
                     chosen(216);
                 });
-                f.select("#espresso-area").click(function () {
+                radiogroup.espresso.click(function () {
                     chosen(288);
                 });
+                for (r in radiogroup) {
+                    var element = radiogroup[r];
+                    element.attr("role", "radio");
+                    element.attr("aria-checked", element === radiogroup.americano ? "true" : "false");
+                    element.attr("tabindex", element === radiogroup.americano ? "0" : "-1");
+                    element.focus(function () {
+                        this.attr("fill-opacity", "1").attr("stroke-width", "2");
+                    });
+                    element.blur(function () {
+                        this.attr("fill-opacity", "0").attr("stroke-width", "0");
+                    });
+                    element.keydown(function(e) {
+                        var node = e.target,
+                            i = radioNodes.indexOf(node);
+                        switch (e.key) {
+                            case 'Enter': 
+                            case ' ':
+                                e.preventDefault();
+                                node.dispatchEvent(new Event('click'));
+                                break;
+                            case 'ArrowDown':
+                            case 'ArrowRight':
+                            case 'Down':
+                            case 'Right':
+                                e.preventDefault();
+                                radios[i < radios.length - 1 ? i + 1 : 0].focus();
+                                break;
+                            case 'ArrowLeft':
+                            case 'ArrowUp':
+                            case 'Left':
+                            case 'Up':
+                                e.preventDefault();
+                                radios[i > 0 ? i - 1 : radios.length - 1].focus();
+                                break;
+                            case 'Home':
+                            case 'PageUp':
+                                e.preventDefault();
+                                radios[0].focus();
+                                break;
+                            case 'End':
+                            case 'PageDown':
+                                e.preventDefault();
+                                radios[radios.length - 1].focus();
+                                break;
+                        }
+                    });
+                }
                 x = +top.attr("cx");
                 y = +top.attr("cy");
                 R = +top.attr("rx");
@@ -121,19 +185,41 @@
                 s.add(f.select("g"));
                 lead.click(function () {
                     var path,
-                        ease;
+                        ease,
+                        label = "Open lid";
                     if (closed) {
                         path = leadOpenPath;
                         ease = mina.easein;
                         closed = 0;
+                        label = "Close lid";
                     } else {
                         path = leadClosedPath;
                         ease = mina.bounce;
                         closed = 1;
                     }
-                    lead.stop().animate({
+                    lead.blur()
+                    .attr("aria-label", label)
+                    .stop()
+                    .animate({
                         d: path
-                    }, 1000, ease);
+                    }, 1000, ease, function() {
+                        lead.focus()
+                    });
+                });
+                lead.keydown(function(e) {
+                    switch(e.key) {
+                        case 'Enter':
+                        case ' ':
+                            e.preventDefault();
+                            this.click();
+                            break;
+                    }
+                });
+                lead.focus(function() {
+                    lead.attr("stroke-width", "4");
+                });
+                lead.blur(function() {
+                    lead.attr("stroke-width", "3");
                 });
                 knob.attr({
                     fill: "#000",
@@ -163,6 +249,10 @@
                     arr.animate({
                         transform: to
                     }, 1000, mina.elastic, function () {
+                        if (radio) {
+                            radio.attr("aria-checked", "false");
+                            radio.attr("tabindex", "-1");
+                        }
                         closeCup(function () {
                             types[a]();
                             pour();
@@ -197,6 +287,10 @@
                             pieType = "water";
                             pieTitle = "Americano";
                             gstream = "l(0,1,0,0)#60544F-#60544F:33-#B4D6DB";
+                            radio = radiogroup.americano
+                                .attr("aria-checked", "true")
+                                .attr("tabindex", "0")
+                                .focus();
                         },
                         // latté
                         72: function () {
@@ -207,6 +301,10 @@
                             pieType = "milk";
                             pieTitle = "Latté";
                             gstream = "l(0,1,0,0)#60544F-#60544F:66-#fff";
+                            radio = radiogroup.latte
+                                .attr("aria-checked", "true")
+                                .attr("tabindex", "0")
+                                .focus();
                         },
                         // mocha
                         144: function () {
@@ -217,8 +315,12 @@
                             pieType = "milk";
                             pieTitle = "Mocha";
                             gstream = "l(0,1,0,0)#60544F-#60544F:33-#fff";
+                            radio = radiogroup.mocha
+                                .attr("aria-checked", "true")
+                                .attr("tabindex", "0")
+                                .focus();
                         },
-                        // machiatto
+                        // macchiato
                         216: function () {
                             cover.attr("class", "milk");
                             ct2.attr("fill", gmilk);
@@ -227,6 +329,10 @@
                             pieType = "milk";
                             pieTitle = "Macchiato";
                             gstream = "l(0,1,0,0)#60544F-#60544F:50-#fff";
+                            radio = radiogroup.macchiato
+                                .attr("aria-checked", "true")
+                                .attr("tabindex", "0")
+                                .focus();
                         },
                         // espresso
                         288: function () {
@@ -237,6 +343,10 @@
                             pieType = "milk";
                             pieTitle = "Espresso";
                             gstream = "#60544F";
+                            radio = radiogroup.espresso
+                                .attr("aria-checked", "true")
+                                .attr("tabindex", "0")
+                                .focus();
                         }
                     };
                 function closeCup(callback) {
