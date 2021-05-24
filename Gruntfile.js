@@ -14,6 +14,8 @@ module.exports = function(grunt) {
             "./src/path.js",
             "./src/set.js",
             "./src/equal.js",
+            "./src/focus.js",
+            "./src/key.js",
             "./src/mouse.js",
             "./src/filter.js",
             "./src/align.js",
