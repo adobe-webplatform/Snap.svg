@@ -578,7 +578,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          [ method ]
          **
          * Only for gradients!
-         * Updates stops of the gradient based on passed gradient descriptor. See @Ppaer.gradient
+         * Updates stops of the gradient based on passed gradient descriptor. See @Paper.gradient
          - str (string) gradient descriptor part after `()`.
          = (object) gradient element
          | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");

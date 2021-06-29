@@ -44,6 +44,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 name = evnt.substring(evnt.lastIndexOf(".") + 1),
                 a = this.attr(name),
                 atr = {};
+            if (name === "text") {
+                return;
+            }
             eve.stop();
             var unit = plus[3] || "",
                 aUnit = a.match(reUnit),
