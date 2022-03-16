@@ -90,8 +90,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
         return this.string;
     };
     function extractTransform(el, tstr) {
+        var doReturn = false;
         if (tstr == null) {
-            var doReturn = true;
+            doReturn = true;
             if (el.type == "linearGradient" || el.type == "radialGradient") {
                 tstr = el.node.getAttribute("gradientTransform");
             } else if (el.type == "pattern") {
