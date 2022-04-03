@@ -1324,7 +1324,7 @@ setInterval(function () {
     for (var key in hub) if (hub[has](key)) {
         var el = hub[key],
             node = el.node;
-        if (el.type != "svg" && !node.ownerSVGElement || el.type == "svg" && (!node.parentNode || "ownerSVGElement" in node.parentNode && !node.ownerSVGElement)) {
+        if (!node.isConnected) {
             delete hub[key];
         }
     }
