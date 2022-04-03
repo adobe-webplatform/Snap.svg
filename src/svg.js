@@ -453,7 +453,7 @@ Snap.closestPoint = function (path, x, y) {
     }
     var pathNode = path.node,
         pathLength = pathNode.getTotalLength(),
-        precision = pathLength / pathNode.pathSegList.numberOfItems * .125,
+        precision = 8; //pathLength / pathNode.pathSegList.numberOfItems * .125,
         best,
         bestLength,
         bestDistance = Infinity;
