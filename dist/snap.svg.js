@@ -14,34 +14,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2017-02-07
+// build: 2021-06-29
 
-// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-// 
+// Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // ┌────────────────────────────────────────────────────────────┐ \\
-// │ Eve 0.5.0 - JavaScript Events Library                      │ \\
+// │ Eve 0.5.4 - JavaScript Events Library                      │ \\
 // ├────────────────────────────────────────────────────────────┤ \\
 // │ Author Dmitry Baranovskiy (http://dmitry.baranovskiy.com/) │ \\
 // └────────────────────────────────────────────────────────────┘ \\
 
 (function (glob) {
-    var version = "0.5.0",
+    var version = "0.5.4",
         has = "hasOwnProperty",
         separator = /[\.\/]/,
         comaseparator = /\s*,\s*/,
         wildcard = "*",
-        fun = function () {},
         numsort = function (a, b) {
             return a - b;
         },
@@ -67,14 +66,12 @@
         Str = String,
         isArray = Array.isArray || function (ar) {
             return ar instanceof Array || objtos.call(ar) == "[object Array]";
-        };
+        },
     /*\
      * eve
      [ method ]
 
      * Fires event with given `name`, given scope and other parameters.
-
-     > Arguments
 
      - name (string) name of the *event*, dot (`.`) or slash (`/`) separated
      - scope (object) context for the event handlers
@@ -83,18 +80,15 @@
      = (object) array of returned values from the listeners. Array has two methods `.firstDefined()` and `.lastDefined()` to get first or last not `undefined` value.
     \*/
         eve = function (name, scope) {
-            var e = events,
-                oldstop = stop,
+            var oldstop = stop,
                 args = Array.prototype.slice.call(arguments, 2),
                 listeners = eve.listeners(name),
                 z = 0,
-                f = false,
                 l,
                 indexed = [],
                 queue = {},
                 out = [],
-                ce = current_event,
-                errors = [];
+                ce = current_event;
             out.firstDefined = firstDefined;
             out.lastDefined = lastDefined;
             current_event = name;
@@ -144,15 +138,13 @@
             current_event = ce;
             return out;
         };
-        // Undocumented. Debug only.
-        eve._events = events;
+    // Undocumented. Debug only.
+    eve._events = events;
     /*\
      * eve.listeners
      [ method ]
 
      * Internal method which gives you array of all event handlers that will be triggered by the given `name`.
-
-     > Arguments
 
      - name (string) name of the event, dot (`.`) or slash (`/`) separated
 
@@ -223,7 +215,7 @@
      - name (array) if you don’t want to use separators, you can use array of strings
      - f (function) event handler function
      **
-     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
+     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
      > Example:
      | eve.on("mouse", eatIt)(2);
      | eve.on("mouse", scream);
@@ -237,7 +229,7 @@
         if (typeof f != "function") {
             return function () {};
         }
-        var names = isArray(name) ? (isArray(name[0]) ? name : [name]) : Str(name).split(comaseparator);
+        var names = isArray(name) ? isArray(name[0]) ? name : [name] : Str(name).split(comaseparator);
         for (var i = 0, ii = names.length; i < ii; i++) {
             (function (name) {
                 var names = isArray(name) ? name : Str(name).split(separator),
@@ -272,7 +264,6 @@
      | eve.on("click", function (a, b, c) {
      |     console.log(a, b, c); // 1, 2, [event object]
      | });
-     > Arguments
      - event (string) event name
      - varargs (…) and any other arguments
      = (function) possible event handler function
@@ -297,8 +288,6 @@
      [ method ]
      **
      * Could be used inside event handler to figure out actual name of the event.
-     **
-     > Arguments
      **
      - subname (string) #optional subname of the event
      **
@@ -332,8 +321,6 @@
      * Removes given function from the list of event listeners assigned to given name.
      * If no arguments specified all the events will be cleared.
      **
-     > Arguments
-     **
      - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
      - f (function) event handler function
     \*/
@@ -348,7 +335,7 @@
             eve._events = events = {n: {}};
             return;
         }
-        var names = isArray(name) ? (isArray(name[0]) ? name : [name]) : Str(name).split(comaseparator);
+        var names = isArray(name) ? isArray(name[0]) ? name : [name] : Str(name).split(comaseparator);
         if (names.length > 1) {
             for (var i = 0, ii = names.length; i < ii; i++) {
                 eve.off(names[i], f);
@@ -439,8 +426,6 @@
      | eve("login"); // no listeners
      * Use @eve to trigger the listener.
      **
-     > Arguments
-     **
      - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
      - f (function) event handler function
      **
@@ -463,8 +448,9 @@
     eve.toString = function () {
         return "You are running Eve " + version;
     };
-    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define === "function" && define.amd ? (define("eve", [], function() { return eve; })) : (glob.eve = eve));
-})(this);
+    glob.eve = eve;
+    typeof module != "undefined" && module.exports ? module.exports = eve : typeof define === "function" && define.amd ? define("eve", [], function () { return eve; }) : glob.eve = eve;
+})(typeof window != "undefined" ? window : this);
 
 (function (glob, factory) {
     // AMD support
@@ -4752,6 +4738,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
                 name = evnt.substring(evnt.lastIndexOf(".") + 1),
                 a = this.attr(name),
                 atr = {};
+            if (name === "text") {
+                return;
+            }
             eve.stop();
             var unit = plus[3] || "",
                 aUnit = a.match(reUnit),
@@ -5376,7 +5365,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          [ method ]
          **
          * Only for gradients!
-         * Updates stops of the gradient based on passed gradient descriptor. See @Ppaer.gradient
+         * Updates stops of the gradient based on passed gradient descriptor. See @Paper.gradient
          - str (string) gradient descriptor part after `()`.
          = (object) gradient element
          | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
