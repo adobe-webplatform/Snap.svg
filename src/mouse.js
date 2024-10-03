@@ -14,7 +14,7 @@
 Snap.plugin(function (Snap, Element, Paper, glob) {
     var elproto = Element.prototype,
     has = "hasOwnProperty",
-    supportsTouch = "createTouch" in glob.doc,
+    supportsTouch = (('ontouchstart' in window) || window.TouchEvent || window.DocumentTouch && document instanceof DocumentTouch),
     events = [
         "click", "dblclick", "mousedown", "mousemove", "mouseout",
         "mouseover", "mouseup", "touchstart", "touchmove", "touchend",
