@@ -9,6 +9,11 @@
       "title": "Styling and Attributes",
       "file": "Basic.P2.MD",
       "path": "MD/Basic.P2.MD"
+    },
+    {
+      "title": "Transform System Deep Dive",
+      "file": "Basic.P3.MD",
+      "path": "MD/Basic.P3.MD"
     }
   ],
   "Intermediate": [],

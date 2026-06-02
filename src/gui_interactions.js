@@ -32,12 +32,19 @@
         Element.prototype.addInteractionEvent = function (
             type, action_description, other_params, replace, local_eve) {
 
-            if (other_params && typeof other_params !== "function") {
+            if (typeof other_params === "function" && other_params.isEve) {
                 local_eve = other_params;
                 other_params = undefined;
+            } else if (typeof other_params === "object" && other_params.eve && other_params.eve.isEve) {
+                local_eve = other_params.eve;
+                other_params = undefined;
             }
-            if (typeof replace === "function") {
+
+            if (typeof replace === "function" && replace.isEve) {
                 local_eve = replace;
+                replace = undefined;
+            } else if (typeof replace === "object" && replace.eve && replace.eve.isEve) {
+                local_eve = replace.eve;
                 replace = undefined;
             }
 
@@ -48,7 +55,7 @@
                 return;
             }
 
-            let index = undefined;
+            // let index = undefined;
             if (typeof action_description === "function") {
                 const other_stored_functions = this.data("stored-function") || [];
                 other_stored_functions.push(action_description);
@@ -102,14 +109,14 @@
          * @param {Function|Object|string|Array} action_description Handler function, configuration object, operation string, or array of handlers.
          * @param {Object} [other_params] Additional parameters to merge into the action description.
          * @param {boolean} [replace=false] Whether to replace existing handlers or add to them.
-         * @param {Object} [gui] GUI object for accessing eve events and other functionality.
+         * @param {Object} [local_eve] localized eve event manager.
          * @returns {Snap.Element} The element itself for chaining.
          */
         Element.prototype.addClickEvent = function (
-            action_description, other_params, replace, gui) {
+            action_description, other_params, replace, local_eve) {
             this.setCursor("pointer");
             return this.addInteractionEvent("click", action_description,
-                other_params, replace);
+                other_params, replace, local_eve);
         };
 
         /**
@@ -119,13 +126,13 @@
          * @param {Function|Object|string|Array} action_description Handler function, configuration object, operation string, or array of handlers.
          * @param {Object} [other_params] Additional parameters to merge into the action description.
          * @param {boolean} [replace=false] Whether to replace existing handlers or add to them.
-         * @param {Object} [gui] GUI object for accessing eve events and other functionality.
+         * @param {Object} [local_eve] localized eve event manager.
          * @returns {Snap.Element} The element itself for chaining.
          */
         Element.prototype.addPressEvent = function (
-            action_description, other_params, replace, gui) {
+            action_description, other_params, replace, local_eve) {
             return this.addInteractionEvent("press", action_description,
-                other_params, replace);
+                other_params, replace, local_eve);
         };
 
         /**
@@ -135,13 +142,13 @@
          * @param {Function|Object|string|Array} action_description Handler function, configuration object, operation string, or array of handlers.
          * @param {Object} [other_params] Additional parameters to merge into the action description.
          * @param {boolean} [replace=false] Whether to replace existing handlers or add to them.
-         * @param {Object} [gui] GUI object for accessing eve events and other functionality.
+         * @param {Object} [local_eve] localized eve event manager.
          * @returns {Snap.Element} The element itself for chaining.
          */
         Element.prototype.addHoldEvent = function (
-            action_description, other_params, replace, gui) {
+            action_description, other_params, replace, local_eve) {
             return this.addInteractionEvent("hold", action_description,
-                other_params, replace);
+                other_params, replace, local_eve);
         };
 
         /**
@@ -151,13 +158,13 @@
          * @param {Function|Object|string|Array} action_description Handler function, configuration object, operation string, or array of handlers.
          * @param {Object} [other_params] Additional parameters to merge into the action description.
          * @param {boolean} [replace=false] Whether to replace existing handlers or add to them.
-         * @param {Object} [gui] GUI object for accessing eve events and other functionality.
+         * @param {Object} [local_eve] localized eve event manager.
          * @returns {Snap.Element} The element itself for chaining.
          */
         Element.prototype.addLongpressEvent = function (
-            action_description, other_params, replace, gui) {
+            action_description, other_params, replace, local_eve) {
             return this.addInteractionEvent("longpress", action_description,
-                other_params, replace);
+                other_params, replace, local_eve);
         };
 
 

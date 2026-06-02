@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2025-12-15
+// build: 2026-06-02
 
 // Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -87,15 +87,15 @@
 
     /**
      * translateNamespaceAlias @method
- *
+     *
      * Internal function to translate namespace aliases in event names.
      * Translates the top-level namespace (first part before separator) if an alias exists.
- *
- * @param {string|array} name - event name or array of event name parts
- *
- * @returns {array|string} translated event name as array (or may return string if no aliases defind)
-    */
-    const translateNamespaceAlias = function(name) {
+     *
+     * @param {string|array} name - event name or array of event name parts
+     *
+     * @returns {array|string} translated event name as array (or may return string if no aliases defind)
+     */
+    const translateNamespaceAlias = function (name) {
         if (!namespace_aliases) return name;
         if (isArray(name)) {
             // Handle array format
@@ -115,7 +115,7 @@
             return nameParts;
         }
     };
-
+    let xIndex_cur = 0;
     const getNext = function (event_list, name, group, skip_global) {
         if (event_list === undefined) {
             if (!skip_global && global_event.n.hasOwnProperty(name)) {
@@ -134,144 +134,164 @@
         let i = 0;
         const ii = this.length;
         for (; i < ii; ++i) {
-            if (typeof this[i] != "undefined") {
+            if (typeof this[i] != "undefined" && !isEveError(this[i])) {
                 return this[i];
             }
         }
     };
-    let xIndex_cur = 0;
     const lastDefined = function () {
-            let i = this.length;
-            while (--i) {
-                if (typeof this[i] != "undefined") {
-                    return this[i];
-                }
+        let i = this.length;
+        while (--i) {
+            if (typeof this[i] != "undefined" && !isEveError(this[i])) {
+                return this[i];
             }
-        },
-        objtos = Object.prototype.toString,
-        Str = String,
-        isArray = Array.isArray || function (ar) {
-            return ar instanceof Array || objtos.call(ar) == "[object Array]";
-        },
-        /**
-         * eve @method
+        }
+    };
+    const getErrors = function () {
+        return this.filter(isEveError);
+    };
+    const getErrorsAsync = function () {
+        return Promise.all(this).then(function (results) {
+            return getErrors.call(results);
+        });
+    };
+    const objtos = Object.prototype.toString;
+    const Str = String;
+    const isArray = Array.isArray || function (ar) {
+        return ar instanceof Array || objtos.call(ar) == "[object Array]";
+    };
+    // Lightweight error wrapper stored in results when a listener throws.
+    const EveError = function (err) {
+        this.name = "EveError";
+        this.message = err && err.message ? err.message : String(err);
+        this.original = err;
+        this.isEveError = true;
+    };
+    const isEveError = function (value) {
+        return !!(value && value.isEveError);
+    };
+    /**
+     * eve @method
 
-         * Fires event with given `name`, given scope and other parameters.
- * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
- * @param {object} scope - context for the event handlers
- * @param {...any} varargs - the rest of arguments will be sent to event handlers
- * @returns {object} array of returned values from the listeners. Array has two methods `.firstDefined()` and `.lastDefined()` to get first or last not `undefined` value.
-        */
-        eve = function (group, name, scope) {
-            let args;
-            if (Array.isArray(group) || typeof group === "string") {
-                args = Array.prototype.slice.call(arguments, 2)
-                scope = name;
-                name = group;
-                group = undefined;
+     * Fires event with given `name`, given scope and other parameters.
+     * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
+     * @param {object} scope - context for the event handlers
+     * @param {...any} varargs - the rest of arguments will be sent to event handlers
+     * @returns {object} array of returned values from the listeners. Array has two methods `.firstDefined()` and `.lastDefined()` to get first or last not `undefined` value.
+     */
+    const eve = function (group, name, scope) {
+        let args;
+        if (Array.isArray(group) || typeof group === "string") {
+            args = Array.prototype.slice.call(arguments, 2)
+            scope = name;
+            name = group;
+            group = undefined;
+        } else {
+            group = group.id;
+        }
+
+        // Apply namespace alias translation
+        name = translateNamespaceAlias(name);
+
+        args = args || Array.prototype.slice.call(arguments, 3)
+        const oldstop = stop,
+            listeners = eve.listeners(name, group),
+            z = 0;
+        let l;
+        const indexed = [],
+            queue = {},
+            out = [],
+            ce = current_event;
+
+        if (typeof scope !== "undefined" && typeof scope !== "object") {
+            args.unshift(scope);
+            scope = undefined;
+        }
+
+        out.firstDefined = firstDefined;
+        out.lastDefined = lastDefined;
+        out.getErrors = getErrors;
+        current_event = name;
+        stop = 0;
+        // for (var i = 0, ii = listeners.length; i < ii; ++i) if ("zIndex" in listeners[i]) {
+        //     indexed.push(listeners[i].zIndex);
+        //     if (listeners[i].zIndex < 0) {
+        //         queue[listeners[i].zIndex] = listeners[i];
+        //     }
+        // }
+
+        listeners.sort(function_sort);
+
+        for (let i = 0, lim = listeners.length; i < lim; ++i) {
+            l = listeners[i];
+            try {
+                out.push(l.apply(scope, args));
+            } catch (e) {
+                const errorRecord = new EveError(e);
+                out.push(errorRecord);
+                console.error(e.message, e, args, l);
+                eve("global.error", undefined, e, l, args);
+            }
+            if (stop) {
+                break;
+            }
+        }
+
+        // indexed.sort(numsort);
+        // while (indexed[z] < 0) {
+        //     l = queue[indexed[z++]];
+        //     out.push(l.apply(scope, args));
+        //     if (stop) {
+        //         stop = oldstop;
+        //         return out;
+        //     }
+        // }
+        // for (i = 0; i < ii; ++i) {
+        //     l = listeners[i];
+        //     if ("zIndex" in l) {
+        //         if (l.zIndex == indexed[z]) {
+        //             out.push(l.apply(scope, args));
+        //             if (stop) {
+        //                 break;
+        //             }
+        //             do {
+        //                 z++;
+        //                 l = queue[indexed[z]];
+        //                 l && out.push(l.apply(scope, args));
+        //                 if (stop) {
+        //                     break;
+        //                 }
+        //             } while (l)
+        //         } else {
+        //             queue[l.zIndex] = l;
+        //         }
+        //     } else {
+        //         out.push(l.apply(scope, args));
+        //         if (stop) {
+        //             break;
+        //         }
+        //     }
+        // }
+
+        stop = oldstop;
+        current_event = ce;
+
+        if (eve._log) {
+            if (!group) group = "global";
+            if (!eve._log[group]) {
+                eve._log[group] = {};
+            }
+            name = (isArray(name)) ? name.join(separator) : name;
+            if (!eve._log[group][name]) {
+                eve._log[group][name] = [1, listeners.length];
             } else {
-                group = group.id;
+                eve._log[group][name][0]++;
+                eve._log[group][name][1] = Math.max(eve._log[group][name][1], listeners.length);
             }
+        }
 
-            // Apply namespace alias translation
-            name = translateNamespaceAlias(name);
-
-            args = args || Array.prototype.slice.call(arguments, 3)
-            const oldstop = stop,
-                listeners = eve.listeners(name, group),
-                z = 0;
-            let l;
-            const indexed = [],
-                queue = {},
-                out = [],
-                ce = current_event;
-
-            if (typeof scope !== "undefined" && typeof scope !== "object") {
-                args.unshift(scope);
-                scope = undefined;
-            }
-
-            out.firstDefined = firstDefined;
-            out.lastDefined = lastDefined;
-            current_event = name;
-            stop = 0;
-            // for (var i = 0, ii = listeners.length; i < ii; ++i) if ("zIndex" in listeners[i]) {
-            //     indexed.push(listeners[i].zIndex);
-            //     if (listeners[i].zIndex < 0) {
-            //         queue[listeners[i].zIndex] = listeners[i];
-            //     }
-            // }
-
-            listeners.sort(function_sort);
-
-            for (let i = 0, lim = listeners.length; i < lim; ++i) {
-                l = listeners[i];
-                try {
-                    out.push(l.apply(scope, args));
-                } catch (e) {
-                    console.error(e.message, e, args, l);
-                    eve("global.error", undefined, e, l, args);
-                }
-                if (stop) {
-                    break;
-                }
-            }
-
-            // indexed.sort(numsort);
-            // while (indexed[z] < 0) {
-            //     l = queue[indexed[z++]];
-            //     out.push(l.apply(scope, args));
-            //     if (stop) {
-            //         stop = oldstop;
-            //         return out;
-            //     }
-            // }
-            // for (i = 0; i < ii; ++i) {
-            //     l = listeners[i];
-            //     if ("zIndex" in l) {
-            //         if (l.zIndex == indexed[z]) {
-            //             out.push(l.apply(scope, args));
-            //             if (stop) {
-            //                 break;
-            //             }
-            //             do {
-            //                 z++;
-            //                 l = queue[indexed[z]];
-            //                 l && out.push(l.apply(scope, args));
-            //                 if (stop) {
-            //                     break;
-            //                 }
-            //             } while (l)
-            //         } else {
-            //             queue[l.zIndex] = l;
-            //         }
-            //     } else {
-            //         out.push(l.apply(scope, args));
-            //         if (stop) {
-            //             break;
-            //         }
-            //     }
-            // }
-
-            stop = oldstop;
-            current_event = ce;
-
-            if (eve._log) {
-                if (!group) group = "global";
-                if (!eve._log[group]) {
-                    eve._log[group] = {};
-                }
-                name = (isArray(name)) ? name.join(separator) : name;
-                if (!eve._log[group][name]) {
-                    eve._log[group][name] = [1, listeners.length];
-                } else {
-                    eve._log[group][name][0]++;
-                    eve._log[group][name][1] = Math.max(eve._log[group][name][1], listeners.length);
-                }
-            }
-
-            return out;
-        };
+        return out;
+    };
 
     eve.isEve = true;
 
@@ -280,11 +300,11 @@
 
      * Async version of eve that returns an array of promises from all listeners.
      * All listener functions are wrapped to ensure they return promises.
- * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
- * @param {object} scope - context for the event handlers
- * @param {...any} varargs - the rest of arguments will be sent to event handlers
- * @returns {array} array of promises from the listeners
-    */
+     * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
+     * @param {object} scope - context for the event handlers
+     * @param {...any} varargs - the rest of arguments will be sent to event handlers
+     * @returns {array} array of promises from the listeners
+     */
     eve.a = function (group, name, scope) {
         let args;
         if (Array.isArray(group) || typeof group === "string") {
@@ -308,6 +328,7 @@
 
         promises.firstDefined = firstDefined;
         promises.lastDefined = lastDefined;
+        promises.getErrors = getErrorsAsync;
 
         if (typeof scope !== "undefined" && typeof scope !== "object") {
             args.unshift(scope);
@@ -322,15 +343,24 @@
 
         for (let i = 0, lim = listeners.length; i < lim; ++i) {
             const l = listeners[i];
+            let result;
             try {
                 // Universal wrapper to ensure all returns are promises
-                const result = l.apply(scope, args);
-                promises.push(Promise.resolve(result));
+                result = l.apply(scope, args);
             } catch (e) {
                 console.error(e.message, e, args, l);
                 eve("global.error", undefined, e, l, args);
-                promises.push(Promise.reject(e));
+                promises.push(Promise.resolve(new EveError(e)));
+                if (stop) {
+                    break;
+                }
+                continue;
             }
+            promises.push(Promise.resolve(result).catch(function (e) {
+                console.error(e.message, e, args, l);
+                eve("global.error", undefined, e, l, args);
+                return new EveError(e);
+            }));
             if (stop) {
                 break;
             }
@@ -362,31 +392,32 @@
 
      * Async version that returns a single promise resolving to an array of all listener results.
      * Waits for all promises to resolve before returning the results array.
- * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
- * @param {object} scope - context for the event handlers
- * @param {...any} varargs - the rest of arguments will be sent to event handlers
- * @returns {Promise} promise that resolves to array of results from all listeners
-    */
+     * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
+     * @param {object} scope - context for the event handlers
+     * @param {...any} varargs - the rest of arguments will be sent to event handlers
+     * @returns {Promise} promise that resolves to array of results from all listeners
+     */
     eve.all = function (group, name, scope) {
         const promises = eve.a.apply(this, arguments);
 
         return Promise.all(promises).then(results => {
             results.firstDefined = firstDefined;
             results.lastDefined = lastDefined;
+            results.getErrors = getErrors;
             return results;
         });
     };
 
     /**
      * eve.localEve @method
- *
+     *
      * Creates a local eve instance that operates within a specific event group.
      * All events fired through this instance will be scoped to the specified group.
- *
- * @param {string} group_id - identifier for the event group
- *
- * @returns {function} local eve instance with all eve methods scoped to the group
-    */
+     *
+     * @param {string} group_id - identifier for the event group
+     *
+     * @returns {function} local eve instance with all eve methods scoped to the group
+     */
     eve.localEve = function (group_id) {
         eve.setGroup(group_id);
         const ret_eve = function (name, scope) {
@@ -440,12 +471,12 @@
 
     /**
      * eve.logEvents @method
- *
+     *
      * Enables or disables event logging for debugging purposes.
      * When enabled, tracks event firing statistics including call count and listener count.
- *
- * @param {boolean} off - if true, disables logging; if false or undefined, enables logging
-    */
+     *
+     * @param {boolean} off - if true, disables logging; if false or undefined, enables logging
+     */
     eve.logEvents = function (off) {
         if (off) {
             delete eve._log;
@@ -463,9 +494,9 @@
      * eve.listeners @method
 
      * Internal method which gives you array of all event handlers that will be triggered by the given `name`.
- * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated
- * @returns {array} array of event handlers
-    */
+     * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated
+     * @returns {array} array of event handlers
+     */
     eve.listeners = function (name, group, skip_global) {
         // Apply namespace alias translation
         name = translateNamespaceAlias(name);
@@ -505,8 +536,8 @@
      * If for some reasons you don’t like default separators (`.` or `/`) you can specify yours
      * here. Be aware that if you pass a string longer than one character it will be treated as
      * a list of characters.
- * @param {string} separator - new separator. Empty string resets to default: `.` or `/`.
-    */
+     * @param {string} separator - new separator. Empty string resets to default: `.` or `/`.
+     */
     eve.separator = function (sep) {
         if (sep) {
             sep = Str(sep).replace(/(?=[\.\^\]\[\-])/g, "\\");
@@ -519,12 +550,12 @@
 
     /**
      * eve.setGroup @method
- *
+     *
      * Sets the current active event group for subsequent event operations.
      * If no group is specified, resets to the default group.
- *
- * @param {string} group - #optional name of the event group to set as active
-    */
+     *
+     * @param {string} group - #optional name of the event group to set as active
+     */
     eve.setGroup = function (group) {
         // if (!group) throw new Error("group must be defined");
 
@@ -543,15 +574,15 @@
 
     /**
      * eve.fireInGroup @method
- *
+     *
      * Fires an event within a specific event group context.
      * Temporarily switches to the specified group, fires the event, then restores the previous group.
- *
- * @param {string} group - name of the event group to fire the event in
- * @param {...any} varargs - event arguments to pass to eve()
- *
- * @returns {array} array of returned values from the listeners
-    */
+     *
+     * @param {string} group - name of the event group to fire the event in
+     * @param {...any} varargs - event arguments to pass to eve()
+     *
+     * @returns {array} array of returned values from the listeners
+     */
     eve.fireInGroup = function (group) {
         const args = Array.from(arguments).slice(1);
         if (!event_groups.hasOwnProperty(group)) {
@@ -566,13 +597,13 @@
 
     /**
      * eve.addGlobalEventType @method
- *
+     *
      * Adds a global event type to the global event list.
      * Be aware that this will not add the event to the local event list. Adding a global type may prevent local events
      * starting with the same name from being triggered.
- *
- * @param {string} name - name of the global event type to add
-    */
+     *
+     * @param {string} name - name of the global event type to add
+     */
     eve.addGlobalEventType = function (name) {
         if (!global_event.n.hasOwnProperty(name)) {
             global_event.n[name] = {n: {}};
@@ -581,19 +612,19 @@
 
     /**
      * eve.on @method
- *
+     *
      * Binds given event handler with a given name. You can use wildcards “`*`” for the names:
      | eve.on("*.under.*", f);
      | eve("mouse.under.floor"); // triggers f
      * Use @eve to trigger the listener.
- *
- * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
- * @param {function} f - event handler function
- *
- * @param {array} name - if you don’t want to use separators, you can use array of strings
- * @param {function} f - event handler function
- *
- * @returns {function} returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
+     *
+     * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     * @param {function} f - event handler function
+     *
+     * @param {array} name - if you don’t want to use separators, you can use array of strings
+     * @param {function} f - event handler function
+     *
+     * @returns {function} returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
      > Example:
      | eve.on("mouse", eatIt)(2);
      | eve.on("mouse", scream);
@@ -602,7 +633,7 @@
      *
      * If you want to put your handler before non-indexed handlers, specify a negative value.
      * Note: I assume most of the time you don’t need to worry about z-index, but it’s nice to have this feature “just in case”.
-    */
+     */
     eve.on = function (name, f, group) {
         if (typeof f != "function") {
             return function () {
@@ -645,7 +676,7 @@
     };
     /**
      * eve.f @method
- *
+     *
      * Returns function that will fire given event with optional arguments.
      * Arguments that will be passed to the result function will be also
      * concated to the list of final arguments.
@@ -653,10 +684,10 @@
      | eve.on("click", function (a, b, c) {
      |     console.log(a, b, c); // 1, 2, [event object]
      | });
- * @param {string} event - event name
- * @param {...any} varargs - and any other arguments
- * @returns {function} possible event handler function
-    */
+     * @param {string} event - event name
+     * @param {...any} varargs - and any other arguments
+     * @returns {function} possible event handler function
+     */
     eve.f = function (event) {
         const attrs = [].slice.call(arguments, 1);
         return function () {
@@ -665,23 +696,23 @@
     };
     /**
      * eve.stop @method
- *
+     *
      * Is used inside an event handler to stop the event, preventing any subsequent listeners from firing.
-    */
+     */
     eve.stop = function () {
         stop = 1;
     };
     /**
      * eve.nt @method
- *
+     *
      * Could be used inside event handler to figure out actual name of the event.
- *
- * @param {string} subname - #optional subname of the event
- *
- * @returns {string} name of the event, if `subname` is not specified
+     *
+     * @param {string} subname - #optional subname of the event
+     *
+     * @returns {string} name of the event, if `subname` is not specified
      * or
- * @returns {boolean} `true`, if current event’s name contains `subname`
-    */
+     * @returns {boolean} `true`, if current event’s name contains `subname`
+     */
     eve.nt = function (subname) {
         const cur = isArray(current_event) ? current_event.join(".") : current_event;
         if (subname) {
@@ -691,28 +722,28 @@
     };
     /**
      * eve.nts @method
- *
+     *
      * Could be used inside event handler to figure out actual name of the event.
- * *
- * @returns {array} names of the event
-    */
+     * *
+     * @returns {array} names of the event
+     */
     eve.nts = function () {
         return isArray(current_event) ? current_event : current_event.split(separator);
     };
     /**
      * eve.off @method
- *
+     *
      * Removes given function from the list of event listeners assigned to given name.
      * If no arguments specified all the events will be cleared.
- *
- * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
- * @param {function} f - event handler function
-    */
+     *
+     * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     * @param {function} f - event handler function
+     */
     /**
      * eve.unbind @method
- *
+     *
      * See @eve.off
-    */
+     */
     eve.off = eve.unbind = function (name, f, group) {
         if (!name) {
             events = {n: {}};
@@ -739,6 +770,17 @@
             events_here = (group) ? event_groups[group] : events;
         events_here = events_here || events;
         const cur = [events_here, global_event];
+
+        // helper: consider wrapper/original equivalence
+        const matchListener = function (listenerFn) {
+            if (!f) return true;
+            if (listenerFn === f) return true;
+            // listener is wrapper around f
+            if (listenerFn && listenerFn._eveOriginal === f) return true;
+            // f is wrapper around listener
+            if (f && f._eveOriginal && listenerFn === f._eveOriginal) return true;
+            return false;
+        };
 
         for (i = 0, ii = names.length; i < ii; ++i) {
             for (j = 0; j < cur.length; j += splice.length - 2) {
@@ -769,17 +811,19 @@
             while (e.n) {
                 if (f) {
                     if (e.f) {
-                        for (j = 0, jj = e.f.length; j < jj; j++) if (e.f[j] == f) {
-                            e.f.splice(j, 1);
-                            break;
+                        for (j = e.f.length - 1; j >= 0; j--) {
+                            if (matchListener(e.f[j])) {
+                                e.f.splice(j, 1);
+                            }
                         }
                         !e.f.length && delete e.f;
                     }
                     for (key in e.n) if (e.n[has](key) && e.n[key].f) {
                         const funcs = e.n[key].f;
-                        for (j = 0, jj = funcs.length; j < jj; j++) if (funcs[j] == f) {
-                            funcs.splice(j, 1);
-                            break;
+                        for (j = funcs.length - 1; j >= 0; j--) {
+                            if (matchListener(funcs[j])) {
+                                funcs.splice(j, 1);
+                            }
                         }
                         !funcs.length && delete e.n[key].f;
                     }
@@ -810,15 +854,15 @@
 
     /**
      * eve.alias @method
- *
+     *
      * Sets up namespace alias mappings for backward compatibility.
      * Allows translating top-level event namespaces from one name to another.
      * When an event is fired, registered, or removed with an aliased namespace,
      * it will be automatically translated to the target namespace.
- *
- * @param {object} aliases - object containing key-value pairs where keys are alias names
+     *
+     * @param {object} aliases - object containing key-value pairs where keys are alias names
      *   and values are the target namespace names they should be translated to
- *
+     *
      > Examples:
      | // Set up aliases
      | eve.alias({
@@ -832,8 +876,8 @@
      |
      | eve("OLD_NAMESPACE.event.name", data);
      | eve("new_namespace.event.name", data);
-    */
-    eve.alias = function(aliases) {
+     */
+    eve.alias = function (aliases) {
         if (typeof aliases === 'object' && aliases !== null) {
             namespace_aliases = namespace_aliases || {};
             for (const aliasName in aliases) {
@@ -846,11 +890,11 @@
 
     /**
      * eve.clearAliases @method
- *
+     *
      * Clears all namespace alias mappings.
- *
-    */
-    eve.clearAliases = function() {
+     *
+     */
+    eve.clearAliases = function () {
         for (const key in namespace_aliases) {
             if (namespace_aliases.hasOwnProperty(key)) {
                 delete namespace_aliases[key];
@@ -860,12 +904,12 @@
 
     /**
      * eve.getAliases @method
- *
+     *
      * Returns a copy of the current namespace alias mappings.
- *
- * @returns {object} copy of current alias mappings
-    */
-    eve.getAliases = function() {
+     *
+     * @returns {object} copy of current alias mappings
+     */
+    eve.getAliases = function () {
         const aliases = {};
         if (namespace_aliases) for (const key in namespace_aliases) {
             if (namespace_aliases.hasOwnProperty(key)) {
@@ -878,8 +922,8 @@
     /**
      * eve.is
      * @method
-    * Checks if the given event is registered with the given function.
-    * @type {function(*, *, *): boolean}
+     * Checks if the given event is registered with the given function.
+     * @type {function(*, *, *): boolean}
      */
     eve.is = function (name, f, group) {
         if (!name || typeof f !== 'function') {
@@ -930,7 +974,16 @@
         while (e.n) {
             if (e.f) {
                 for (j = 0, jj = e.f.length; j < jj; j++) {
-                    if (e.f[j] === f) {
+                    const lf = e.f[j];
+                    if (lf === f) {
+                        return true;
+                    }
+                    // Stored listener is wrapper for f
+                    if (lf && lf._eveOriginal === f) {
+                        return true;
+                    }
+                    // Caller passed wrapper, stored original
+                    if (f._eveOriginal && lf === f._eveOriginal) {
                         return true;
                     }
                 }
@@ -943,18 +996,18 @@
 
     /**
      * eve.once @method
- *
+     *
      * Binds given event handler with a given name to only run once then unbind itself.
      | eve.once("login", f);
      | eve("login"); // triggers f
      | eve("login"); // no listeners
      * Use @eve to trigger the listener.
- *
- * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
- * @param {function} f - event handler function
- *
- * @returns {function} same return function as @eve.on
-    */
+     *
+     * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     * @param {function} f - event handler function
+     *
+     * @returns {function} same return function as @eve.on
+     */
     eve.once = function (name, f, group) {
         const f2 = function () {
             eve.off(name, f2, group);
@@ -966,6 +1019,11 @@
             }
             return apply;
         };
+
+        // Important: allow eve.off(name, f) to remove this once-handler before it runs.
+        // We keep a direct link between wrapper and original.
+        f2._eveOriginal = f;
+
         return eve.on(name, f2, group);
     };
 
@@ -1011,12 +1069,17 @@
         return container.data;
     };
 
+    eve.normalize = function (name){
+        if (Array.isArray(name)) return name;
+        if (typeof name === "string") return name.split(separator);
+    }
+
     /**
      * eve.version
      [ property (string) ]
- *
+     *
      * Current version of the library.
-    */
+     */
     eve.version = version;
     eve.toString = function () {
         return "You are running Eve " + version;
@@ -1072,8 +1135,10 @@
     let global_skip = 0;
     let expectedFrameDuration = 0;
     const requestAnimFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
-        setTimeout(callback, 16, new Date().getTime());
-        return true;
+        return setTimeout(callback, 16);
+    };
+    const cancelAnimFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.oCancelAnimationFrame || window.msCancelAnimationFrame || function (id) {
+        return clearTimeout(id);
     };
     let lastTimeStamp;
     const nativeSetTimeout = window.setTimeout ? window.setTimeout.bind(window) : function (callback) {
@@ -1113,6 +1178,7 @@
     /**
      * @callback MinaSetter
      * @param {AnimationValue} value The interpolated value to apply.
+     * @param {boolean} [done] True when the animation reaches its end value.
      * @returns {void}
      */
 
@@ -1155,6 +1221,7 @@
             len++;
             const d = a.dur / a.spd;
             a.s = (b - a.b) / d;
+            const isDone = a.s >= 1;
             if (a.s >= 1) {
                 delete animations[i];
                 if (last === a) last = undefined;
@@ -1177,7 +1244,7 @@
                 }
                 a._skip_step = a.skip;
             }
-            a.update();
+            a.update(isDone);
         }
         requestID = len ? requestAnimFrame(frame) : false;
     }
@@ -1241,7 +1308,7 @@
         };
     }
 
-    function createTimeoutEntry(callback, delay, args) {
+    function createTimeoutEntry(callback, delay, args, useAnimationFrame) {
         const id = TIMEOUT_PREFIX + (++timeoutCounter);
         const entry = {
             id,
@@ -1250,6 +1317,8 @@
             start: null,
             remaining: Math.max(0, delay || 0),
             nativeHandle: null,
+            rafHandle: null,
+            useAnimationFrame: !!useAnimationFrame,
             paused: isGlobalPaused,
             cleared: false,
         };
@@ -1260,21 +1329,54 @@
         return id;
     }
 
+    function clearManagedTimeoutHandles(entry) {
+        if (!entry) {
+            return;
+        }
+        if (entry.nativeHandle != null) {
+            nativeClearTimeout(entry.nativeHandle);
+            entry.nativeHandle = null;
+        }
+        if (entry.rafHandle != null) {
+            cancelAnimFrame(entry.rafHandle);
+            entry.rafHandle = null;
+        }
+    }
+
+    function armTimeoutWithAnimationFrame(entry) {
+        const tick = function () {
+            const current = managedTimeouts.get(entry.id);
+            if (!current || current.cleared || current.paused) {
+                return;
+            }
+            const elapsed = current.start != null ? (timer() - current.start) : current.remaining;
+            if (elapsed >= current.remaining) {
+                runManagedTimeout(current.id, "raf");
+                return;
+            }
+            current.rafHandle = requestAnimFrame(tick);
+        };
+        entry.rafHandle = requestAnimFrame(tick);
+    }
+
     function armTimeout(entry, wait) {
         entry.remaining = Math.max(0, wait || 0);
         entry.start = timer();
         entry.nativeHandle = nativeSetTimeout(function () {
-            runManagedTimeout(entry.id);
+            runManagedTimeout(entry.id, "native");
         }, entry.remaining);
+        if (entry.useAnimationFrame) {
+            armTimeoutWithAnimationFrame(entry);
+        }
         entry.paused = false;
     }
 
-    function runManagedTimeout(id) {
+    function runManagedTimeout(id, source) {
         const entry = managedTimeouts.get(id);
         if (!entry || entry.cleared) {
             return;
         }
-        entry.nativeHandle = null;
+        clearManagedTimeoutHandles(entry);
         if (isGlobalPaused) {
             entry.paused = true;
             entry.remaining = 0;
@@ -1282,6 +1384,11 @@
         }
         entry.cleared = true;
         managedTimeouts.delete(id);
+        // if (source === "raf") {
+        //     console.log("[mina.setTimeoutAmin] timeout executed via requestAnimationFrame", id);
+        // } else if (source === "native"){
+        //     console.log("[mina.setTimeoutAmin] timeout executed via regular", id);
+        // }
         entry.callback && entry.callback.apply(undefined, entry.args);
     }
 
@@ -1289,12 +1396,9 @@
         if (!entry || entry.cleared || entry.paused) {
             return;
         }
-        if (entry.nativeHandle != null) {
-            nativeClearTimeout(entry.nativeHandle);
-            const elapsed = entry.start != null ? (timer() - entry.start) : 0;
-            entry.remaining = Math.max(0, entry.remaining - elapsed);
-        }
-        entry.nativeHandle = null;
+        const elapsed = entry.start != null ? (timer() - entry.start) : 0;
+        entry.remaining = Math.max(0, entry.remaining - elapsed);
+        clearManagedTimeoutHandles(entry);
         entry.paused = true;
     }
 
@@ -1312,9 +1416,7 @@
         }
         entry.cleared = true;
         entry.paused = false;
-        if (entry.nativeHandle != null) {
-            nativeClearTimeout(entry.nativeHandle);
-        }
+        clearManagedTimeoutHandles(entry);
         managedTimeouts.delete(id);
         return true;
     }
@@ -1561,9 +1663,10 @@
      * Applies the easing function and updates the animated value.
      *
      * @this {Animation}
+     * @param {boolean} [isDone=false] True when the animation reaches its end value.
      * @returns {void}
      */
-    function update() {
+    function update(isDone) {
         let chng = false;
         if (this._lastRev !== undefined && this._lastRev !== this.rev) {
             chng = true;
@@ -1594,7 +1697,7 @@
             res[j] = s + (e - s) * this.easing(t);
         }
 
-        this.set(is_arr ? res : res[0]);
+        this.set(is_arr ? res : res[0], !!isDone);
         this._lastRes = res;
         this._lastRev = this.rev;
 
@@ -1792,29 +1895,78 @@
     /**
      * Back-in easing that overshoots slightly before accelerating.
      *
+     * @param {number} [s_param=1.70158] Overshoot amount.
      * @param {number} n Normalized progress in the `[0, 1]` range.
      * @returns {number}
      */
-    mina.backin = function (n) {
+    mina.backin = function (s_param, n) {
+        if (n === undefined) {
+            n = s_param;
+            s_param = undefined;
+        }
         if (n == 1) {
             return 1;
         }
-        const s = 1.70158;
+        const s = s_param !== undefined ? +s_param : 1.70158;
         return n * n * ((s + 1) * n - s);
+    };
+
+    mina.backin.withParams = function (s_param) {
+        return function (n) {
+            return mina.backin(s_param, n);
+        };
     };
     /**
      * Back-out easing that overshoots the end value before settling.
      *
+     * @param {number} [s_param=1.70158] Overshoot amount.
      * @param {number} n Normalized progress in the `[0, 1]` range.
      * @returns {number}
      */
-    mina.backout = function (n) {
+    mina.backout = function (s_param, n) {
+        if (n === undefined) {
+            n = s_param;
+            s_param = undefined;
+        }
         if (n == 0) {
             return 0;
         }
         n = n - 1;
-        const s = 1.70158;
+        const s = s_param !== undefined ? +s_param : 1.70158;
         return n * n * ((s + 1) * n + s) + 1;
+    };
+
+    mina.backout.withParams = function (s_param) {
+        return function (n) {
+            return mina.backout(s_param, n);
+        };
+    };
+    /**
+     * Symmetric back-both easing combining easeInBack and easeOutBack behaviors.
+     * Starts with a dip backward, crosses midway, and overshoots before stopping.
+     *
+     * @param {number} [s_param=1.70158] Overshoot amount (multiplied internally).
+     * @param {number} n Normalized progress `[0, 1]`.
+     * @returns {number}
+     */
+    mina.backInOut = function (s_param, n) {
+        if (n === undefined) {
+            n = s_param;
+            s_param = undefined;
+        }
+        const s = (s_param !== undefined ? +s_param : 1.70158) * 1.525;
+        n *= 2;
+        if (n < 1) {
+            return 0.5 * (n * n * ((s + 1) * n - s));
+        }
+        n -= 2;
+        return 0.5 * (n * n * ((s + 1) * n + s) + 2);
+    };
+
+    mina.backInOut.withParams = function (s_param) {
+        return function (n) {
+            return mina.backInOut(s_param, n);
+        };
     };
     /**
      * Elastic easing with optional amplitude and period customization.
@@ -2957,8 +3109,12 @@
      * @param {number} n Normalized progress `[0, 1]`.
      * @returns {number}
      */
-    mina.backInOut = function (n) {
-        const s = 1.70158 * 1.525;
+    mina.backInOut = function (s_param, n) {
+        if (n === undefined) {
+            n = s_param;
+            s_param = undefined;
+        }
+        const s = (s_param !== undefined ? +s_param : 1.70158) * 1.525;
         n *= 2;
         if (n < 1) {
             return 0.5 * (n * n * ((s + 1) * n - s));
@@ -3494,12 +3650,14 @@
     const non_easing_functions = {
         Animation: true,
         getById: true,
+        getEasings: true,
         isEasing: true,
         anim: true,
         time: true,
         setSpeed: true,
         setSkip: true,
         setTimeout: true,
+        setTimeoutAmin: true,
         setTimeoutNow: true,
         setInterval: true,
         pauseAll: true,
@@ -3519,6 +3677,39 @@
      */
     mina.isEasing = function (name) {
         return mina.hasOwnProperty(name) && !non_easing_functions[name]
+    };
+
+    const get_easings_excluded_names = {
+        compose: true,
+        delay: true
+    };
+
+    /**
+     * Returns easing function names registered on the mina namespace.
+     *
+     * @param {boolean} [unique=false] When `true`, only returns one name per unique function reference.
+     * @returns {string[]}
+     */
+    mina.getEasings = function (unique) {
+        const names = Object.keys(mina).filter(function (name) {
+            return mina.isEasing(name)
+                && !get_easings_excluded_names[name]
+                && typeof mina[name] === "function";
+        });
+
+        if (!unique) {
+            return names;
+        }
+
+        const seen = new Set();
+        return names.filter(function (name) {
+            const fn = mina[name];
+            if (seen.has(fn)) {
+                return false;
+            }
+            seen.add(fn);
+            return true;
+        });
     };
 
     /**
@@ -3631,7 +3822,21 @@
      */
     mina.setTimeout = function (callback, deley, ...args) {
         const delay = Math.max(0, (+deley || 0) * global_speed);
-        return createTimeoutEntry(callback, delay, args);
+        return createTimeoutEntry(callback, delay, args, false);
+    }
+
+    /**
+     * Schedules a timeout that races native timeout and animation-frame polling,
+     * executing whichever path reaches the target delay first.
+     *
+     * @param {Function} callback Handler to invoke.
+     * @param {number} deley Delay in milliseconds (affected by `setSpeed`).
+     * @param {...any} args Optional arguments forwarded to the callback.
+     * @returns {number}
+     */
+    mina.setTimeoutAmin = function (callback, deley, ...args) {
+        const delay = Math.max(0, (+deley || 0) * global_speed);
+        return createTimeoutEntry(callback, delay, args, true);
     }
 
     /**
@@ -3771,17 +3976,18 @@
          * depending on the argument type.
          *
          * @constructor
-         * @param {(number|string|SVGElement|Array.<Element>|string)} [width] Width of the new surface,
+         * @param {(number|string|SVGElement|Array.<Element>|string)} [w] Width of the new surface,
          *        an existing SVG DOM node, an array of elements, or a CSS selector when combined with
          *        the `height` parameter being `null` or `undefined`.
-         * @param {(number|string|Object)} [height] Height of the new surface or attribute map applied
+         * @param {(number|string|Object)} [h] Height of the new surface or attribute map applied
          *        when the first argument is an element creation string.
+         * @param {document} doc - optional document in case of a shadow object
          * @returns {(Snap.Element|Snap.Paper|Snap.Set|null)} Wrapped element, drawing paper, set of
          *          elements, or `null` when a selector matches nothing.
          */
-        function Snap(w, h) {
+        function Snap(w, h, doc) {
             if (w) {
-                if (w.nodeType || (Snap._.glob.win.jQuery && w instanceof jQuery)) {
+                if (w.nodeType || (Snap.window().jQuery && w instanceof jQuery)) {
                     return wrap(w);
                 }
                 if (is(w, "array") && Snap.set) {
@@ -3793,7 +3999,7 @@
                 if (typeof w === "string") {
                     const match = w.trim().match(/^<((?!xml)[A-Za-z_][A-Za-z0-9-_.]*)\s*\/?>$/i);
                     if (match && match[1]) {
-                        const el = wrap(glob.doc.createElement(match[1]));
+                        const el = wrap(Snap.document(doc).createElement(match[1]));
                         if (typeof h === "object") {
                             el.attr(h);
                         }
@@ -3802,7 +4008,7 @@
                 }
                 if (h == null) {
                     try {
-                        w = glob.doc.querySelector(String(w));
+                        w = Snap.document(doc).querySelector(String(w));
                         return w ? wrap(w) : null;
                     } catch (e) {
                         return null;
@@ -3812,7 +4018,7 @@
             w = w == null ? "100%" : w;
             h = h == null ? "100%" : h;
             const PaperClass = Snap.getClass("Paper");
-            return new PaperClass(w, h);
+            return new PaperClass(w, h, doc);
         }
 
         Snap.toString = function () {
@@ -3822,49 +4028,45 @@
         var glob = {
             win: root.window || {},
             doc: (root.window && root.window.document) ? root.window.document : {},
+            shadows: []
         };
         Snap._.glob = glob;
 
-        Snap.window = function () {
-            return glob.win;
-        };
-
-        Snap.document = function (snp) {
-            return (snp) ? Snap(glob.doc) : glob.doc;
-        }
 
         Snap.setWindow = function (newWindow) {
             glob.win = newWindow;
             glob.doc = newWindow.document;
         }
 
-        Snap.setDocument  = function (doc){
+        Snap.setDocument = function (doc, force_top) {
             // Check if this is a shadow root - if so, create a document-like wrapper
-            if (typeof ShadowRoot !== 'undefined' && doc instanceof ShadowRoot) {
+            let doc_obj = doc;
+            if (typeof ShadowRoot !== "undefined" && doc instanceof ShadowRoot) {
                 const mainDoc = doc.ownerDocument || (root.window && root.window.document) || {};
-                glob.doc = {
+
+                doc_obj = {
                     // Element creation uses the main document (elements need proper context)
-                    createElement: function(...args) {
+                    createElement: function (...args) {
                         return mainDoc.createElement ? mainDoc.createElement(...args) : {};
                     },
-                    createElementNS: function(...args) {
+                    createElementNS: function (...args) {
                         return mainDoc.createElementNS ? mainDoc.createElementNS(...args) : {};
                     },
-                    createTextNode: function(...args) {
+                    createTextNode: function (...args) {
                         return mainDoc.createTextNode ? mainDoc.createTextNode(...args) : {};
                     },
-                    createComment: function(...args) {
+                    createComment: function (...args) {
                         return mainDoc.createComment ? mainDoc.createComment(...args) : {};
                     },
 
                     // Queries are scoped to the shadow root
-                    querySelector: function(...args) {
+                    querySelector: function (...args) {
                         return doc.querySelector ? doc.querySelector(...args) : null;
                     },
-                    querySelectorAll: function(...args) {
+                    querySelectorAll: function (...args) {
                         return doc.querySelectorAll ? doc.querySelectorAll(...args) : [];
                     },
-                    getElementsByTagName: function(tag) {
+                    getElementsByTagName: function (tag) {
                         // Shadow roots don't have getElementsByTagName, use querySelectorAll instead
                         return doc.querySelectorAll ? doc.querySelectorAll(tag) : [];
                     },
@@ -3872,11 +4074,37 @@
                     // Provide defaultView from main document (needed for getComputedStyle)
                     get defaultView() {
                         return mainDoc.defaultView || (root.window || {});
-                    }
+                    },
+                    _doc: doc
                 };
-            } else {
-                glob.doc = doc;
             }
+            if (force_top) {
+                glob.doc = doc_obj;
+            } else {
+                if (!glob.shadows.some(d => d === doc_obj || doc_obj._doc === d)) {
+                    glob.shadows.push(glob)
+                }
+            }
+        }
+
+        Snap.window = function () {
+            return glob.win;
+        };
+
+        Snap.document = function (el, snp) {
+            if (typeof el !== "object") {
+                snp = el;
+                el = undefined
+            }
+            if (el && glob.shadows.length) {
+                const doc = el.getRootNode ? el.getRootNode
+                    : (el.node ? el.node.getRootNode() : glob.doc)
+                let doc_ret = glob.shadows.find(d => d === doc || d._doc === doc);
+                if (doc_ret) {
+                    return (snp) ? Snap(doc_ret) : doc_ret;
+                }
+            }
+            return (snp) ? Snap(glob.doc) : glob.doc;
         }
 
         Snap.getProto = function (proto_name) {
@@ -3889,6 +4117,7 @@
                     return Snap.getClass("Fragment").prototype;
             }
         };
+
 
         Snap._dataEvents = false;
         Snap.enableDataEvents = function (off) {
@@ -4058,16 +4287,16 @@
             return hub[id];
         }
 
-        function $(el, attr) {
+        function $(el, attr, el_for_doc) {
             if (attr) {
                 if (el === "#text") {
-                    el = glob.doc.createTextNode(attr.text || attr["#text"] || "");
+                    el = Snap.document(el_for_doc).createTextNode(attr.text || attr["#text"] || "");
                 }
                 if (el === "#comment") {
-                    el = glob.doc.createComment(attr.text || attr["#text"] || "");
+                    el = Snap.document(el_for_doc).createComment(attr.text || attr["#text"] || "");
                 }
                 if (typeof el === "string") {
-                    el = $(el);
+                    el = $(el, undefined, el_for_doc);
                 }
                 if (typeof attr === "string") {
                     if (el.nodeType === 1) {
@@ -4105,9 +4334,9 @@
             } else {
                 const tag = el.toLowerCase();
                 if (svgTags[has](tag)) {
-                    el = glob.doc.createElementNS(xmlns, el);
+                    el = Snap.document(el_for_doc).createElementNS(xmlns, el);
                 } else {
-                    el = glob.doc.createElement(el);
+                    el = Snap.document(el_for_doc).createElement(el);
                 }
             }
             return el;
@@ -4144,12 +4373,20 @@
         if (root.mina) available_types.animation = root.mina.Animation;
 
         /**
-         * Type checking utility function
+         * Lightweight type-checking helper.
          * @function is
          * @private
-         * @param {*} o - Object to check type of
-         * @param {string} type - Type to check against ('finite', 'array', 'object', etc.)
-         * @returns {boolean} True if object is of specified type
+         * @param {*} o - Value to test.
+         * @param {string} type - Expected type name (case-insensitive). Common values:
+         *   - `finite` : checks numeric finiteness (uses `isFinite`).
+         *   - `array`  : checks arrays (`Array.isArray` or `instanceof Array`).
+         *   - `object` : plain object check.
+         *   - `element` : Snap element.
+         *   - `SVGElement`: SVG Dom element
+         *   - `HTMLElement`: HTML Dom element
+         *   - `DOMElement`: either SVGElement or HTMLElement
+         *   - other names are compared against `Object.prototype.toString` output.
+         * @returns {boolean} `true` if `o` matches the requested type, otherwise `false`.
          */
         function is(o, type) {
             type = Str.prototype.toLowerCase.call(type);
@@ -4161,9 +4398,17 @@
                 return true;
             }
             if (type === "svgelement") {
-                const name = o.constructor && o.constructor.name;
+                const name = (typeof o === "object") && o.constructor && o.constructor.name;
                 return o instanceof SVGElement ||
                     (name && name.startsWith("SVG") && name.endsWith("Element"));
+            }
+            if (type === "htmlelement") {
+                const name = (typeof o === "object") && o.constructor && o.constructor.name;
+                return o instanceof HTMLElement ||
+                    (name && name.startsWith("HTML") && name.endsWith("Element"));
+            }
+            if (type === "domelement") {
+                return is(o, "svgelement") || is(o, "htmlelement")
             }
             return type === "null" && o == null ||
                 type === typeof o && o !== null ||
@@ -4287,9 +4532,9 @@
          * @param {number|Object} x1 - X coordinate of first point or point object
          * @param {number|Object} y1 - Y coordinate of first point or point object
          * @param {number} x2 - X coordinate of second point
-         * @param {number} y2 - Y coordinate of second point
+         * @param {number} y2 - Y Coordinate of second point
          * @param {number} x3 - X coordinate of third point
-         * @param {number} y3 - Y coordinate of third point
+         * @param {number} y3 - Y Coordinate of third point
          * @returns {number} Angle in degrees
          */
         function angle(x1, y1, x2, y2, x3, y3) {
@@ -4477,7 +4722,7 @@
          * @returns {number} angle in degrees
          */
         Snap.angle = angle;
-       /**
+        /**
          * Snap.len @method
          *
          * Returns distance between two points
@@ -4850,67 +5095,67 @@
             return "#" + (16777216 | b | g << 8 | r << 16).toString(16).slice(1);
         });
         var toHex = function (color) {
-                const i = glob.doc.getElementsByTagName("head")[0] ||
-                        glob.doc.getElementsByTagName("svg")[0],
-                    red = "rgb(255, 0, 0)";
-                toHex = cacher(function (color) {
-                    if (color.toLowerCase() === "red") {
-                        return red;
-                    }
-                    i.style.color = red;
-                    i.style.color = color;
-                    const out = glob.doc.defaultView.getComputedStyle(i, E).getPropertyValue("color");
-                    return out === red ? null : out;
-                });
-                return toHex(color);
-            },
-            hsbtoString = function () {
-                return "hsb(" + [this.h, this.s, this.b] + ")";
-            },
-            hsltoString = function () {
-                return "hsl(" + [this.h, this.s, this.l] + ")";
-            },
-            rgbtoString = function () {
-                return this.opacity === 1 || this.opacity == null ?
-                    this.hex :
-                    "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
-            },
-            prepareRGB = function (r, g, b) {
-                if (g == null && is(r, "object") && "r" in r && "g" in r && "b" in
-                    r) {
-                    b = r.b;
-                    g = r.g;
-                    r = r.r;
+            const i = glob.doc.getElementsByTagName("head")[0] ||
+                    glob.doc.getElementsByTagName("svg")[0],
+                red = "rgb(255, 0, 0)";
+            toHex = cacher(function (color) {
+                if (color.toLowerCase() === "red") {
+                    return red;
                 }
-                if (g == null && is(r, string)) {
-                    const clr = Snap.getRGB(r);
-                    r = clr.r;
-                    g = clr.g;
-                    b = clr.b;
-                }
-                if (r > 1 || g > 1 || b > 1) {
-                    r /= 255;
-                    g /= 255;
-                    b /= 255;
-                }
+                i.style.color = red;
+                i.style.color = color;
+                const out = glob.doc.defaultView.getComputedStyle(i, E).getPropertyValue("color");
+                return out === red ? null : out;
+            });
+            return toHex(color);
+        };
+        var hsbtoString = function () {
+            return "hsb(" + [this.h, this.s, this.b] + ")";
+        };
+        var hsltoString = function () {
+            return "hsl(" + [this.h, this.s, this.l] + ")";
+        };
+        var rgbtoString = function () {
+            return this.opacity === 1 || this.opacity == null ?
+                this.hex :
+                "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
+        };
+        var prepareRGB = function (r, g, b) {
+            if (g == null && is(r, "object") && "r" in r && "g" in r && "b" in
+                r) {
+                b = r.b;
+                g = r.g;
+                r = r.r;
+            }
+            if (g == null && is(r, string)) {
+                const clr = Snap.getRGB(r);
+                r = clr.r;
+                g = clr.g;
+                b = clr.b;
+            }
+            if (r > 1 || g > 1 || b > 1) {
+                r /= 255;
+                g /= 255;
+                b /= 255;
+            }
 
-                return [r, g, b];
-            },
-            packageRGB = function (r, g, b, o) {
-                r = math.round(r * 255);
-                g = math.round(g * 255);
-                b = math.round(b * 255);
-                const rgb = {
-                    r: r,
-                    g: g,
-                    b: b,
-                    opacity: is(o, "finite") ? o : 1,
-                    hex: Snap.rgb(r, g, b),
-                    toString: rgbtoString,
-                };
-                is(o, "finite") && (rgb.opacity = o);
-                return rgb;
+            return [r, g, b];
+        };
+        var packageRGB = function (r, g, b, o) {
+            r = math.round(r * 255);
+            g = math.round(g * 255);
+            b = math.round(b * 255);
+            const rgb = {
+                r: r,
+                g: g,
+                b: b,
+                opacity: is(o, "finite") ? o : 1,
+                hex: Snap.rgb(r, g, b),
+                toString: rgbtoString,
             };
+            is(o, "finite") && (rgb.opacity = o);
+            return rgb;
+        };
         /**
          * Snap.color @method
          *
@@ -5214,6 +5459,10 @@
          * @returns {string} Normalized transform string
          */
         function svgTransform2string(tstr) {
+            if (typeof tstr !== "string" && typeof tstr === "object" && tstr.toTransformString) {
+                //if something goes wrong and we get a matrix.
+                tstr = tstr.toTransformString();
+            }
             const res = [];
             tstr = tstr.replace(/(?:^|\s)(\w+)\(([^)]+)\)/g,
                 function (all, name, params) {
@@ -5332,28 +5581,28 @@
 
         Snap._.transform2matrix = transform2matrix;
         Snap._unit2px = unit2px;
-        const contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
-            function (a, b) {
-                const adown = a.nodeType === 9 ? a.documentElement : a,
-                    bup = b && b.parentNode;
-                return a === bup || !!(bup && bup.nodeType === 1 && (
-                    adown.contains ?
-                        adown.contains(bup) :
-                        a.compareDocumentPosition &&
-                        a.compareDocumentPosition(bup) & 16
-                ));
-            } :
-            function (a, b) {
-                if (b) {
-                    while (b) {
-                        b = b.parentNode;
-                        if (b === a) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            };
+        // const contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
+        //     function (a, b) {
+        //         const adown = a.nodeType === 9 ? a.documentElement : a,
+        //             bup = b && b.parentNode;
+        //         return a === bup || !!(bup && bup.nodeType === 1 && (
+        //             adown.contains ?
+        //                 adown.contains(bup) :
+        //                 a.compareDocumentPosition &&
+        //                 a.compareDocumentPosition(bup) & 16
+        //         ));
+        //     } :
+        //     function (a, b) {
+        //         if (b) {
+        //             while (b) {
+        //                 b = b.parentNode;
+        //                 if (b === a) {
+        //                     return true;
+        //                 }
+        //             }
+        //         }
+        //         return false;
+        //     };
 
         /**
          * Gets or creates a defs element for the given element
@@ -5514,7 +5763,7 @@
          */
         Snap.select = function (query) {
             query = Str(query).replace(/([^\\]):/g, "$1\\:");
-            return wrap(glob.doc.querySelector(query));
+            return wrap(Snap.document().querySelector(query));
         };
         /**
          * Snap.selectAll @method
@@ -5524,7 +5773,7 @@
          * @returns {Element} the current element
          */
         Snap.selectAll = function (query) {
-            const nodelist = glob.doc.querySelectorAll(query),
+            const nodelist = Snap.document().querySelectorAll(query),
                 set = (Snap.set || Array)();
             for (let i = 0; i < nodelist.length; ++i) {
                 set.push(wrap(nodelist[i]));
@@ -5596,10 +5845,10 @@
         // - element-class.js defines Element and registers it with Snap.registerClass("Element", Element)
         // - paper-class.js defines Paper and registers it with Snap.registerClass("Paper", Paper)
         // - fragment-class.js defines Fragment and registers it with Snap.registerClass("Fragment", Fragment)
-        
+
         // Note: Element.prototype methods (attr, css, registerRemoveFunction, cleanupAfterRemove, children, toJSON)
         // are now defined in element-class.js
-        
+
         function sanitize(svg) {
             const script_filter = /<script[\s\S]*\/script>/gmi;
             svg = svg.replace(script_filter, "");
@@ -5617,13 +5866,27 @@
          * Parses SVG fragment and converts it into a @Fragment
          *
          * @param {string} svg - SVG string
+         * @param {string|Array} filter_event - if provided, `eve.filter` is called on the string,
+         *        allowing pre-processing before adding to the DOM. The filter listener receives an
+         *        object with a `data` property containing the SVG string and should update that
+         *        property with the modified string.
+         * @param {SVGElement|HTMLElement} div - optional place to store the parsed object
          * @returns {Fragment} the @Fragment
          */
-        Snap.parse = function (svg, filter_event) {
+        Snap.parse = function (svg, filter_event, div) {
+            if (filter_event && is(filter_event, "DOMElement")) {
+                div = filter_event;
+                filter_event = undefined;
+            }
             const FragmentClass = Snap.getClass("Fragment");
             let f = glob.doc.createDocumentFragment(),
                 full = true;
-            const div = glob.doc.createElement("div");
+            const doc = (div && div.ownerDocument) ? div.ownerDocument : (f.ownerDocument || glob.doc);
+            const createdDiv = !div;
+            if (!div) {
+                div = doc.createElement("div");
+                f.appendChild(div);
+            }
             svg = fixHref(sanitize(Str(svg)));
 
             if (!svg.match(/^\s*<\s*svg(?:\s|>)/)) {
@@ -5642,6 +5905,9 @@
                     }
                 }
             }
+            if (createdDiv && div.parentNode) {
+                div.parentNode.removeChild(div);
+            }
             return new FragmentClass(f);
         };
 
@@ -5656,29 +5922,31 @@
          * @param {...any} varargs - SVG string
          * @returns {Fragment} the @Fragment
          */
-        Snap.fragment = function () {
-            const FragmentClass = Snap.getClass("Fragment");
-            const args = Array.prototype.slice.call(arguments, 0),
-                f = glob.doc.createDocumentFragment();
-            let i = 0;
-            const ii = args.length;
-            for (; i < ii; ++i) {
-                const item = args[i];
-                if (item.node && item.node.nodeType) {
-                    f.appendChild(item.node);
-                }
-                if (item.nodeType) {
-                    f.appendChild(item);
-                }
-                if (typeof item === "string") {
-                    f.appendChild(Snap.parse(item).node);
-                }
-            }
-            return new FragmentClass(f);
-        };
+        // Snap.fragment = function () {
+        //     const FragmentClass = Snap.getClass("Fragment");
+        //     const args = Array.prototype.slice.call(arguments, 0),
+        //         f = glob.doc.createDocumentFragment();
+        //     let i = 0;
+        //     const ii = args.length;
+        //     for (; i < ii; ++i) {
+        //         const item = args[i];
+        //         if (item.node && item.node.nodeType) {
+        //             f.appendChild(item.node);
+        //         }
+        //         if (item.nodeType) {
+        //             f.appendChild(item);
+        //         }
+        //         if (typeof item === "string") {
+        //             f.appendChild(Snap.parse(item).node);
+        //         }
+        //     }
+        //     return new FragmentClass(f);
+        // };
 
-        function make(name, parent) {
-            const res = $(name);
+        function make(name, parent, doc) {
+            // Pass doc parameter to $ for proper element creation context
+            // (important for shadow DOM and DocumentFragment support)
+            const res = $(name, null, doc || parent);
             parent.appendChild(res);
             const el = wrap(res);
             return el;
@@ -5709,7 +5977,7 @@
         }
 
         Snap._.wrap = wrap;
-        
+
 
         //MeasureText
         Snap.measureTextClientRect = function (text_el) {
@@ -5748,7 +6016,7 @@
             } else {
                 const attr = (this.type === "jquery") ?
                     this.node.attr(att) :
-                    $(this.node, att);
+                    $(this.node, att, this);
                 return attr;
             }
         });
@@ -5768,9 +6036,9 @@
                 });
             if (cssAttr[has](css)) {
                 attr[att] = "";
-                $(this.node, attr);
+                $(this.node, attr, this);
                 if (force_attribute) {
-                    $(this.node, attr);
+                    $(this.node, attr, this);
                     this.node.style[style] = E;
                 } else if (this.type === "jquery") { //we don't use jquery anymore. Just for backwords compatibility
                     this.node.css(style, value);
@@ -5780,7 +6048,7 @@
             } else if (css === "transform" && !(is(this.node, "SVGElement"))) {
                 this.node.style[style] = value;
             } else {
-                $(this.node, attr);
+                $(this.node, attr, this);
                 if (this.type === "jquery") {
                     this.node.attr(attr);
                 }
@@ -5803,6 +6071,8 @@
          * @param {string} url - URL
          * @param {function} callback - callback
          * @param {object} scope - #optional scope of callback
+         * @param {function} fail_callback - optional callback invoked on request failure
+         * @param {object} fail_scope - optional scope (`this`) for `fail_callback`
          * @returns {XMLHttpRequest} the XMLHttpRequest object, just in case
          */
         Snap.ajax = function (
@@ -5837,31 +6107,132 @@
                         "application/x-www-form-urlencoded");
                 }
                 if (callback) {
-                    eve.once("snap.ajax." + id + ".success", callback);
+                    console.log("[Snap.ajax] binding success callback", {id: id});
+                    eve.once(["snap", "ajax", id, "success"], (r) => {
+                        console.log("[Snap.ajax] success callback fired", {id: id, responseURL: url});
+                        callback(r);
+                        return "Done";
+                    });
                 }
                 if (fail_callback && fail_scope) {
                     fail_callback = fail_callback.bind(fail_scope);
                 }
                 if (fail_callback) {
-                    eve.once("snap.ajax." + id + ".fail", fail_callback);
+                    eve.once(["snap", "ajax", id, "fail"], fail_callback);
                 }
-                req.onreadystatechange = function () {
-                    // if (req.readyState !== 4) return;
-                    // if (req.status === 200 || req.status === 304 || req.status === 0) {
-                    //     eve(['snap', 'ajax', id, 'success'], scope, req);
-                    //     eve.unbind('snap.ajax.' + id + '.fail', fail_callback);
-                    // } else {
-                    //     eve(['snap', 'ajax', id, 'fail'], fail_scope, req);
-                    //     eve.unbind('snap.ajax.' + id + '.success', callback);
-                    // }
-                    if (this.readyState !== 4) return;
-                    if (this.status === 200 || this.status === 304 || this.status === 0) {
-                        eve(["snap", "ajax", id, "success"], scope, this);
-                        eve.unbind("snap.ajax." + id + ".fail", fail_callback);
-                    } else {
-                        eve(["snap", "ajax", id, "fail"], fail_scope, this);
-                        eve.unbind("snap.ajax." + id + ".success", callback);
+
+                // Firefox and some network-error cases can yield status===0 or trigger
+                // onerror/onabort/ontimeout instead of a clean status code. Make sure we
+                // always finish exactly once and clean up handlers.
+                let completed = false;
+
+                // TEMP DEBUG (remove after): basic ajax lifecycle info
+                // eslint-disable-next-line no-console
+                console.log("[Snap.ajax] start", {id: id, method: postData ? "POST" : "GET", url: Snap.fixUrl(url)});
+
+                const isSuccessful = function (xhr) {
+                    // Standard HTTP success codes
+                    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+                        return true;
                     }
+                    // Some legitimate local/file loads report status 0 but still provide data.
+                    // Treat status 0 as success only if we actually received a non-empty body.
+                    if (xhr.status === 0) {
+                        return !!(xhr.responseText && xhr.responseText.length);
+                    }
+                    return false;
+                };
+                const cleanup = function () {
+                    // Prevent leaks/double-fires if the browser triggers multiple end signals.
+                    req.onreadystatechange = null;
+                    req.onerror = null;
+                    req.onabort = null;
+                    req.ontimeout = null;
+                };
+                const done = function (type, xhr) {
+                    if (completed) {
+                        // eslint-disable-next-line no-console
+                        console.log("[Snap.ajax] done called twice (ignored)", {
+                            id: id,
+                            type: type,
+                            readyState: xhr && xhr.readyState,
+                            status: xhr && xhr.status
+                        });
+                        return;
+                    }
+                    completed = true;
+                    try {
+                        // eslint-disable-next-line no-console
+                        console.log("[Snap.ajax] done", {
+                            id: id,
+                            type: type,
+                            readyState: xhr && xhr.readyState,
+                            status: xhr && xhr.status,
+                            responseTextLength: xhr && xhr.responseText ? xhr.responseText.length : 0,
+                            responseURL: xhr && xhr.responseURL,
+                        });
+                        if (type === "success") {
+                            const res_eve = eve(["snap", "ajax", id, "success"], scope, xhr);
+                            console.log("[Snap.ajax] success", res_eve);
+                        } else {
+                            eve(["snap", "ajax", id, "fail"], fail_scope, xhr);
+                        }
+                    } finally {
+                        // Always unbind both. Even if event listeners throw, we must clean up.
+
+                        // if (callback) {
+                        //     console.log("[Snap.ajax] unbinding success callback", { id: id });
+                        //     eve.off("snap.ajax." + id + ".success", callback);
+                        // }
+                        // if (fail_callback) {
+                        //     eve.off("snap.ajax." + id + ".fail", fail_callback);
+                        // }
+                        cleanup();
+                    }
+                };
+
+                req.onreadystatechange = function () {
+                    if (this.readyState !== 4) {
+                        // eslint-disable-next-line no-console
+                        console.log("[Snap.ajax] readystatechange", {
+                            id: id,
+                            readyState: this.readyState,
+                            status: this.status,
+                            responseURL: this.responseURL
+                        });
+                        return;
+                    }
+                    done(isSuccessful(this) ? "success" : "fail", this);
+                };
+                req.onerror = function () {
+                    // eslint-disable-next-line no-console
+                    console.log("[Snap.ajax] error", {
+                        id: id,
+                        readyState: req.readyState,
+                        status: req.status,
+                        responseURL: req.responseURL
+                    });
+                    done("fail", req);
+                };
+                req.onabort = function () {
+                    // eslint-disable-next-line no-console
+                    console.log("[Snap.ajax] abort", {
+                        id: id,
+                        readyState: req.readyState,
+                        status: req.status,
+                        responseURL: req.responseURL
+                    });
+                    done("fail", req);
+                };
+                req.ontimeout = function () {
+                    // eslint-disable-next-line no-console
+                    console.log("[Snap.ajax] timeout", {
+                        id: id,
+                        readyState: req.readyState,
+                        status: req.status,
+                        responseURL: req.responseURL
+                    });
+                    done("fail", req);
                 };
                 if (req.readyState === 4) {
                     return req;
@@ -5908,35 +6279,80 @@
 //     }
 // };
         /**
-         * Snap.load @method
-         *
-         * Loads external SVG file as a @Fragment (see @Snap.ajax for more advanced AJAX)
-         *
-         * @param {string|arra} url - URL or [URL, post-data]
-         * @param {function} callback - callback
-         * @param {object} scope - #optional scope of callback
-         - data {svg string} allows for inclusion of cached data, and avoids the network call
+         * Loads an external SVG fragment via Ajax and parses it into Snap fragments.
+         * @param {ResourceSpecifier} url Resource URL or tuple of URL and POST payload.
+         * @param {Function} callback Invoked with the parsed fragment (and raw text) on success.
+         * @param {Object} [scope] Scope for {@link callback}.
+         * @param {string} [data] Raw SVG markup to parse instead of performing a request.
+         * @param {Function} [filter] Optional filter passed to {@link Snap.parse}.
+         * @param {Function} [fail] Called when the request fails.
+         * @param {Object} [fail_scope] Scope for {@link fail}.
+         * @param {Function} [_eve] Eve event dispatcher instance.
          */
-        Snap.load = function (
-            url, callback, scope, data, filter_event, failcallback) {
-            if (data) {
-                //already processed
-                var f = Snap.parse(data, filter_event);
-                scope ? callback.call(scope, f) : callback(f);
-            } else {
-                const process = function (req) {
-                    const f = Snap.parse(req.responseText, filter_event);
-                    scope ? callback.call(scope, f) : callback(f);
-                };
-                if (isArray(url)) {
-                    Snap.ajax(url[0], url[1], process, undefined, failcallback);
+        Snap.load = function (url, callback, scope, data, filter, fail, fail_scope, _eve) {
+            if (typeof scope === 'function') {
+                if (scope.isEve) {
+                    _eve = scope;
+                    scope = undefined;
                 } else {
-                    Snap.ajax(url, process, undefined, failcallback);
+                    _eve = fail_scope;
+                    fail_scope = data;
+                    fail = scope;
+                    data = undefined;
+                    filter = undefined;
                 }
             }
+
+            if (typeof data === 'function') {
+                if (data.isEve) {
+                    _eve = data;
+                    data = undefined;
+                } else {
+                    _eve = fail;
+                    fail_scope = filter;
+                    fail = data;
+                    data = undefined;
+                    filter = undefined;
+                }
+            }
+
+            if (typeof fail_scope === 'function' && fail_scope.isEve) {
+                _eve = fail_scope;
+                scope = fail_scope;
+            }
+
+            if (data) {
+                //already processed
+                var f = Snap.parse(data, filter);
+                scope ? callback.call(scope, f) : callback(f);
+            } else {
+                let post_data = undefined;
+                if (Array.isArray(url)) {
+                    post_data = url[1];
+                    url = url[0];
+                }
+                _eve = _eve || eve;
+                _eve(['com', 'load'], undefined, url);
+                Snap.ajax(url, post_data, function (req) {
+                    let data = undefined;
+                    if (req.responseText.startsWith('Base64:')) {
+                        data = atob(req.responseText.slice(7));
+                    }
+                    if (req.responseText.startsWith('LZBase64:')) {
+                        if (window.LZString !== undefined) {
+                            data = LZString.decompressFromBase64(req.responseText.slice(9));
+                        } else {
+                            fail.call(fail_scope, 'LZString is not loaded');
+                            return;
+                        }
+                    }
+                    const f = Snap.parse(data || req.responseText, filter);
+                    scope ?
+                        callback.call(scope, f, data || req.responseText) :
+                        callback(f, data || req.responseText);
+                }, undefined, fail, fail_scope);
+            }
         };
-
-
         const getOffset = function (elem) {
             const box = elem.getBoundingClientRect(),
                 doc = elem.ownerDocument,
@@ -5965,24 +6381,49 @@
          * @returns {(Snap.Element|null)} Snap element wrapper or `null` when nothing is found.
          */
         Snap.getElementByPoint = function (x, y) {
-            const paper = this,
-                svg = paper.canvas;
-            let target = glob.doc.elementFromPoint(x, y);
-            if (glob.win.opera && target.tagName === "svg") {
-                const so = getOffset(target),
-                    sr = target.createSVGRect();
-                sr.x = x - so.x;
-                sr.y = y - so.y;
-                sr.width = sr.height = 1;
-                const hits = target.getIntersectionList(sr, null);
-                if (hits.length) {
-                    target = hits[hits.length - 1];
+            const paper = this;
+            const candidates = [];
+
+            if (paper && paper.node) {
+                // prefer the node's root (can be ShadowRoot) if available
+                const rootNode = typeof paper.node.getRootNode === "function"
+                    ? paper.node.getRootNode()
+                    : paper.node.ownerDocument;
+                candidates.push(rootNode);
+                // if setDocument created a document-like wrapper, include it
+                if (rootNode && rootNode._doc) {
+                    candidates.push(rootNode._doc);
                 }
             }
-            if (!target) {
+
+            // finally try the global document
+            candidates.push(glob.doc);
+
+            // find a root that supports the hit-testing API
+            const root = candidates.find(r => r && (typeof r.elementsFromPoint === "function" || typeof r.elementFromPoint === "function"));
+            if (!root) return null;
+
+            try {
+                if (typeof root.elementsFromPoint === "function") {
+                    const hits = root.elementsFromPoint(x, y);
+                    if (hits && hits.length) {
+                        for (let i = 0; i < hits.length; i++) {
+                            const el = hits[i];
+                            if (!el) continue;
+                            if (el.tagName && el.tagName.toLowerCase() === "svg" && hits.length > 1) {
+                                continue;
+                            }
+                            return wrap(el);
+                        }
+                    }
+                    return null;
+                }
+
+                const target = root.elementFromPoint(x, y);
+                return target ? wrap(target) : null;
+            } catch (e) {
                 return null;
             }
-            return wrap(target);
         };
 
         if (!String.rand) {
@@ -5995,32 +6436,32 @@
              */
             String.rand = function (length, symbols, exclude) {
                 let result = [];
-                let characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                let characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
                 if (Array.isArray(symbols)) {
                     exclude = symbols;
                     symbols = undefined
                 }
                 if (symbols) {
-                    if (typeof symbols === 'string') {
+                    if (typeof symbols === "string") {
                         const s = symbols.toLowerCase();
-                        if (s === 'base64') {
-                            characters += '+/';
-                        } else if (s === 'url') {
-                            characters += '-.~_';
-                        } else if (s === 'alpha') {
+                        if (s === "base64") {
+                            characters += "+/";
+                        } else if (s === "url") {
+                            characters += "-.~_";
+                        } else if (s === "alpha") {
                             characters = characters.slice(10);
-                        } else if (s.startsWith('num')) {
-                            characters = '0123456789';
-                        } else if (s === 'upper') {
+                        } else if (s.startsWith("num")) {
+                            characters = "0123456789";
+                        } else if (s === "upper") {
                             characters = characters.slice(10, 36);
-                        } else if (s === 'lower') {
+                        } else if (s === "lower") {
                             characters = characters.slice(36);
                         }
-                    } else if (typeof symbols === 'number' &&
+                    } else if (typeof symbols === "number" &&
                         (symbols = Math.min((Math.floor(symbols)), 36))) {
                         characters = characters.slice(0, symbols);
                     } else {
-                        characters += '!@#$%^&*()_+-={}[]|;:,.<>?/\\"\'';
+                        characters += "!@#$%^&*()_+-={}[]|;:,.<>?/\\\"'";
                     }
 
                 }
@@ -6029,7 +6470,7 @@
                     result[i] = characters.charAt(
                         Math.floor(Math.random() * charactersLength));
                 }
-                result = result.join('');
+                result = result.join("");
                 return (exclude && exclude.includes(result)) ? String.rand(length, symbols, exclude) : result;
             };
         }
@@ -6042,7 +6483,7 @@
          * @param {function(Snap, Snap.Element, Snap.Paper, Window, Snap.Fragment, Function)} f Plugin callback.
          */
         Snap.plugin = function (f) {
-           f(Snap, Snap.getClass("Element"), Snap.getClass("Paper"), glob, Snap.getClass("Fragment"), eve, root.mina);
+            f(Snap, Snap.getClass("Element"), Snap.getClass("Paper"), glob, Snap.getClass("Fragment"), eve, root.mina);
         };
         root.Snap_ia = Snap;
         root.Snap = root.Snap || Snap;
@@ -6325,7 +6766,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     result = [];
                     let children = this.getChildren(true), ch;
                     for (let i = 0, l = children.length; i < l; ++i) {
-                        if (skip_hidden && (children[i].node.style.display === "none" || children[i].attr("display") === "none")) continue;
+                        if (skip_hidden && children[i].isHidden()) continue;
                         const pts = children[i].getPoints(true, skip_hidden);
                         if (window.now && children[i].type === "use") console.log(children[i], Snap.convexHull(pts));
                         pts && pts.length && (result = [...result, ...pts]);
@@ -6517,7 +6958,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     skip_hidden = settings.skip_hidden;
 
                     if (settings.relative_parent && this.isChildOf &&
-                        this.isChildOf(relative_parent)) {
+                        this.isChildOf(settings.relative_parent)) {
                         relative_parent = settings.relative_parent;
                     }
 
@@ -6624,7 +7065,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 let bboxes = children.map(function (elm) {
                     // console.log(el.id + " - " + elm.id + ": " + (Date.now() - timer));
                     // timer = Date.now();
-                    if (skip_hidden && (elm.node.style.display === "none" || elm.attr("display") === "none")) {
+                    if (skip_hidden && elm.isHidden()) {
                         console.log("In empty");
                         return null;
                     }
@@ -6996,7 +7437,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     toString: propString,
                 };
             }
-            if (tstr instanceof Snap.Matrix) {
+            if (is(tstr, "Matrix")) {
                 this.saveMatrix(tstr);
                 this._.transform = tstr.toTransformString();
             } else {
@@ -7005,9 +7446,9 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
 
             if (this.node) {
                 if (this.type == "linearGradient" || this.type == "radialGradient") {
-                    $(this.node, {gradientTransform: this.matrix});
+                    $(this.node, {gradientTransform: this.matrix}, this);
                 } else if (this.type == "pattern") {
-                    $(this.node, {patternTransform: this.matrix});
+                    $(this.node, {patternTransform: this.matrix}, this);
                 } else {
                     if (do_update) this.updateBBoxCache(undefined, apply);
 
@@ -7021,7 +7462,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                             this.node.style.transform = toTransformString;
 
                         } else {
-                            $(this.node, {transform: this.matrix});
+                            $(this.node, {transform: this.matrix}, this);
                         }
                         this.attrMonitor("transform");
                         var dom_partner = this._dom_partner;
@@ -7049,7 +7490,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                             for (let i = 0, l = element_partner.length; i < l; ++i) {
                                 let elementPartnerElement = element_partner[i];
                                 if (Snap.is(elementPartnerElement.node, "SVGElement")) {
-                                    $(elementPartnerElement.node, {transform: this.matrix});
+                                    $(elementPartnerElement.node, {transform: this.matrix}, this);
                                 } else {
                                     elementPartnerElement.setStyle({transform: this.matrix});
                                 }
@@ -7648,7 +8089,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     el.setPaper(this.paper);
                 }
 
-                if (el.domChangeReact && el.domChangeReact instanceof "function") {
+                if (el.domChangeReact && typeof el.domChangeReact === "function") {
                     el.domChangeReact();
                 }
             }
@@ -8015,7 +8456,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 id = this.id;
                 $(this.node, {
                     id: id,
-                });
+                }, this);
             }
             if (this.type === "linearGradient" || this.type === "radialGradient" ||
                 this.type === "pattern") {
@@ -8028,7 +8469,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
             }
             $(use.node, {
                 "href": "#" + id,
-            });
+            }, this);
             use.use_target = this;
             return use;
         };
@@ -8048,7 +8489,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 uses = {};
 
             function urltest(it, name) {
-                let val = $(it.node, name);
+                let val = $(it.node, name, el);
                 val = val && val.match(url);
                 val = val && val[2];
                 if (val && val.charAt() == "#") {
@@ -8060,13 +8501,13 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     uses[val] = (uses[val] || []).concat(function (id) {
                         const attr = {};
                         attr[name] = Snap.url(id);
-                        $(it.node, attr);
+                        $(it.node, attr, el);
                     });
                 }
             }
 
             function linktest(it) {
-                let val = $(it.node, "href");
+                let val = $(it.node, "href", el);
                 if (val && val.charAt() == "#") {
                     val = val.substring(1);
                 } else {
@@ -8087,10 +8528,10 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 urltest(it, "mask");
                 urltest(it, "clip-path");
                 linktest(it);
-                const oldid = $(it.node, "id");
+                const oldid = $(it.node, "id", el);
                 if (oldid) {
                     const new_id = (id_rename_callback) ? id_rename_callback(oldid) : it.id;
-                    $(it.node, {id: new_id});
+                    $(it.node, {id: new_id}, el);
                     ids.push({
                         old: oldid,
                         id: new_id,
@@ -8126,11 +8567,11 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
             const id = this.attr("id");
             const clone = wrap(this.node.cloneNode(true));
             if (!hidden) clone.insertAfter(this);
-            if ($(clone.node, "id")) {
+            if ($(clone.node, "id", this)) {
                 const new_id = (id_rename_callback) ?
-                    id_rename_callback($(clone.node, "id")) :
+                    id_rename_callback($(clone.node, "id", this)) :
                     clone.id;
-                $(clone.node, {id: new_id});
+                $(clone.node, {id: new_id}, this);
             }
             fixids(clone, id_rename_callback);
             clone.paper = this.paper;
@@ -8272,7 +8713,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 patternUnits: "userSpaceOnUse",
                 id: p.id,
                 viewBox: [x, y, width, height].join(" "),
-            });
+            }, this);
             p.node.appendChild(this.node);
             return p;
         };
@@ -8310,7 +8751,8 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 refX: refX || 0,
                 refY: refY || 0,
                 id: p.id,
-            });
+            }, this);
+            
             p.node.appendChild(this.node);
             return p;
         };
@@ -8547,6 +8989,56 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
         };
 
         /**
+         * Returns an attribute or inline style value only if it is explicitly defined on the element.
+         *
+         * This does not consult computed styles, inherited styles, or fallback attribute resolution.
+         * It is intended for checks like "is this value truly set on this node?".
+         *
+         * @function Snap.Element#getTrueAttr
+         * @param {string} attr_str Attribute or style name to inspect.
+         * @returns {string|undefined} Explicit attribute or inline style value, or `undefined` when not defined.
+         */
+        elproto.getTrueAttr = function (attr_str) {
+            const node = this.node;
+            if (!node || node.nodeType !== 1 || attr_str == null) {
+                return;
+            }
+
+            const name = String(attr_str).trim();
+            if (!name) {
+                return;
+            }
+
+            const cssName = name.replace(/[A-Z]/g, function (letter) {
+                return "-" + letter.toLowerCase();
+            });
+            const camelName = name.replace(/-([a-z])/gi, function (all, letter) {
+                return letter.toUpperCase();
+            });
+
+            if (node.hasAttribute && node.hasAttribute(name)) {
+                return node.getAttribute(name);
+            }
+            if (cssName !== name && node.hasAttribute && node.hasAttribute(cssName)) {
+                return node.getAttribute(cssName);
+            }
+            if (camelName !== name && camelName !== cssName && node.hasAttribute && node.hasAttribute(camelName)) {
+                return node.getAttribute(camelName);
+            }
+
+            const style = node.style;
+            if (!style) {
+                return;
+            }
+
+            let value = style.getPropertyValue(cssName) || style.getPropertyValue(name);
+            if (!value && camelName !== cssName) {
+                value = style[camelName] || style[name];
+            }
+            return value || undefined;
+        };
+
+        /**
          * Registers a callback to be invoked when the element is removed from the DOM.
          *
          * @function Snap.Element#registerRemoveFunction
@@ -8664,9 +9156,10 @@ Snap.plugin(function (Snap, _Element_, _future_me_, glob, _Fragment_, eve) {
      * @class Snap.Paper
      * @param {(number|string|SVGElement)} w Width of the surface or an existing SVG element.
      * @param {(number|string)} [h] Height of the surface when `w` is a numeric or string size.
+     * @param {(Document|DocumentFragment)} [doc] Document or DocumentFragment to create the SVG in. If a DocumentFragment is provided, the SVG will be created detached from the DOM.
      */
     class Paper {
-        constructor(w, h) {
+        constructor(w, h, doc) {
             let res,
                 defs;
             const proto = Paper.prototype;
@@ -8674,7 +9167,7 @@ Snap.plugin(function (Snap, _Element_, _future_me_, glob, _Fragment_, eve) {
                 if (w.snap in hub) {
                     return hub[w.snap];
                 }
-                const doc = w.ownerDocument;
+                // const doc = w.ownerDocument;
                 const ElementClass = Snap.getClass("Element");
                 res = new ElementClass(w);
                 defs = w.getElementsByTagName("defs")[0];
@@ -8688,7 +9181,9 @@ Snap.plugin(function (Snap, _Element_, _future_me_, glob, _Fragment_, eve) {
                 }
                 res.paper = res.root = res;
             } else {
-                res = Snap._.make("svg", glob.doc.body);
+                // Determine parent: DocumentFragment for detached construction, or document.body for normal use
+                const parent = (doc && doc.nodeType === 11) ? doc : Snap.document(doc).body;
+                res = Snap._.make("svg", parent, doc);
                 $(res.node, {
                     height: h,
                     version: 1.1,
@@ -9293,6 +9788,92 @@ Snap.plugin(function (Snap, _Element_, _future_me_, glob, _Fragment_, eve) {
     * @type {Function}
      */
     proto.animate_el = proto.animate
+
+    /**
+     * Creates an `<animateTransform>` element.
+     *
+     * Accepts the standard animateTransform attributes in positional order, or via an attribute object.
+     * As with {@link Snap.Paper#animate}, the final argument may be a target element that receives the
+     * animation node.
+     *
+     * @function Snap.Paper#animateTransform
+     * @param {string} [type] Transform type ("translate", "scale", "rotate", "skewX", "skewY").
+     * @param {(string|number)} [from] Starting transform value.
+     * @param {(string|number)} [to] Ending transform value.
+     * @param {(string|number)} [dur] Animation duration.
+     * @param {(string|number)} [begin] Delay before start.
+     * @param {(string|number)} [repeatCount] Repeat configuration.
+     * @param {string} [fill] Fill mode (e.g. "freeze").
+     * @param {string} [calcMode] Interpolation mode.
+     * @param {(string|Array)} [values] Value list for keyframe animation.
+     * @param {(string|Array)} [keyTimes] Key time list matching `values`.
+     * @param {(string|Array)} [keySplines] Bezier control points for spline timing.
+     * @param {(string|number)} [by] Relative delta value.
+     * @param {string} [additive] Additive mode.
+     * @param {string} [accumulate] Accumulate mode.
+     * @param {Object} [attr] Additional attributes for the `<animateTransform>` element.
+     * @param {Snap.Element} [target] Element that receives the animation via `.add`.
+     * @returns {Snap.Element} The `<animateTransform>` element.
+     */
+    proto.animateTransform = function () {
+        const args = Array.prototype.slice.call(arguments);
+        let insertionTarget = null;
+        let attr = {};
+
+        if (args.length && Snap.is(args[args.length - 1], "Element")) {
+            insertionTarget = args.pop();
+        }
+
+        if (args.length && isPlainObject(args[args.length - 1])) {
+            attr = args.pop();
+        }
+
+        if (args.length === 1 && isPlainObject(args[0])) {
+            Object.assign(attr, args.pop());
+        } else if (args.length) {
+            const keys = [
+                "type",
+                "from",
+                "to",
+                "dur",
+                "begin",
+                "repeatCount",
+                "fill",
+                "calcMode",
+                "values",
+                "keyTimes",
+                "keySplines",
+                "by",
+                "additive",
+                "accumulate"
+            ];
+            for (let i = 0; i < keys.length && i < args.length; ++i) {
+                const value = args[i];
+                if (value != null && attr[keys[i]] == null) {
+                    attr[keys[i]] = value;
+                }
+            }
+        }
+
+        if (attr.attributeName == null) {
+            attr.attributeName = "transform";
+        }
+
+        normaliseAnimationAttributes(attr);
+
+        const el = this.el("animateTransform", attr);
+        if (insertionTarget) {
+            insertionTarget.add(el);
+        }
+        return el;
+    };
+
+    /**
+     * An Alias for animateTransform tag to be able to copy to Element. Needed because Element has an
+     * animateTransform method with a different function.
+    * @type {Function}
+     */
+    proto.animateTransform_el = proto.animateTransform
 
     /**
      * Creates an `<animateMotion>` element, optionally wiring it to an existing motion path via `<mpath>`.
@@ -11402,11 +11983,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             }
             !mask.node.id && $(mask.node, {
                 id: mask.id
-            });
+            }, this);
             mask.attrMonitor("id");
             $(this.node, {
                 mask: URL(mask.id)
-            });
+            }, this);
             this.attrMonitor("mask");
         }
     });
@@ -11436,11 +12017,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 clip.node.appendChild(value.node);
                 !clip.node.id && $(clip.node, {
                     id: clip.id
-                });
+                }, this);
             }
             $(this.node, {
                 "clip-path": URL(clip.node.id || clip.id)
-            });
+            }, this);
             this.attrMonitor("clip-path");
             this.clearCHull();
         }
@@ -11463,7 +12044,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                     if (!value.node.id) {
                         $(value.node, {
                             id: value.id
-                        });
+                        }, this);
                     }
                     var fill = URL(value.node.id);
                 } else {
@@ -11477,7 +12058,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                         if (!grad.node.id) {
                             $(grad.node, {
                                 id: grad.id
-                            });
+                            }, this);
                         }
                         fill = URL(grad.node.id);
                     } else {
@@ -11489,7 +12070,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             }
             const attrs = {};
             attrs[name] = fill;
-            $(this.node, attrs);
+            $(this.node, attrs, this);
             this.node.style[name] = E;
             this.attrMonitor(name);
         };
@@ -11560,7 +12141,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             value = Snap.path.toAbsolute(value);
         }
         this.clearCHull();
-        $(this.node, {d: value});
+        $(this.node, {d: value}, this);
     })(-1);
     eve.on("snap.util.attr.points", function (value) {
         if (Array.isArray(value)) {
@@ -11619,7 +12200,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         }
         $(this.node, {
             viewBox: vb
-        });
+        }, this);
         this.attrMonitor("viewBox");
         eve.stop();
     })(-1);
@@ -11633,7 +12214,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             $(this.node, {
                 rx: value,
                 ry: value
-            });
+            }, this);
             this.attrMonitor("rx").attrMonitor("ry");
 
             this.clearCHull();
@@ -11678,7 +12259,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 } else {
                     tp = $("textPath", {
                         "xlink:href": "#" + id
-                    });
+                    }, this);
                     while (node.firstChild) {
                         tp.appendChild(node.firstChild);
                     }
@@ -11694,7 +12275,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             let i = 0;
             const node = this.node,
                 tuner = function (chunk) {
-                    const out = $("tspan");
+                    const out = $("tspan", undefined, this);
                     if (is(chunk, "array")) {
                         for (let i = 0; i < chunk.length; ++i) {
                             const newChild = tuner(chunk[i]);
@@ -11726,7 +12307,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         this.clearCHull();
         value = Snap.fixUrl(value);
         if (value) {
-            $(this.node, {href: value});
+            $(this.node, {href: value}, this);
         } else {
             this.node.removeAttribute("href");
         }
@@ -11736,7 +12317,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
     eve.on("snap.util.attr.src", function (value) {
         value = Snap.fixUrl(value);
         if (value) {
-            $(this.node, {src: value});
+            $(this.node, {src: value}, this);
         } else {
             this.node.removeAttribute("src");
         }
@@ -11749,7 +12330,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             value += "px";
         }
         if (force_attribute) {
-            $(this.node, {"font-size": value});
+            $(this.node, {"font-size": value}, this);
             this.node.style.fontSize = E;
         } else {
             this.node.style.fontSize = value;
@@ -11812,7 +12393,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 } else if (value.type == "marker") {
                     let id = value.node.id;
                     if (!id) {
-                        $(value.node, {id: value.id});
+                        $(value.node, {id: value.id}, this);
                         value.attrMonitor("id");
                         id = value.id;
                     }
@@ -11824,7 +12405,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 if (force_attribute) {
                     const attrs = {};
                     attrs[attrName] = markerValue;
-                    $(this.node, attrs);
+                    $(this.node, attrs, this);
                     this.node.style[name] = E;
                 } else {
                     this.node.style[name] = markerValue;
@@ -11847,9 +12428,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         eve.on("snap.util.attr.markerMid", setter("mid"))(-1);
     }());
     eve.on("snap.util.getattr.r", function () {
-        if (this.type == "rect" && $(this.node, "rx") == $(this.node, "ry")) {
+        if (this.type == "rect" && $(this.node, "rx", this) == $(this.node, "ry", this)) {
             eve.stop();
-            return $(this.node, "rx");
+            return $(this.node, "rx", this);
         }
     })(-1);
 
@@ -11902,7 +12483,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
     })(-1);
     eve.on("snap.util.getattr.viewBox", function () {
         eve.stop();
-        let vb = $(this.node, "viewBox").trim();
+        let vb = $(this.node, "viewBox", this).trim();
         if (vb) {
             vb = vb.split(separator);
             return Snap.box(+vb[0], +vb[1], +vb[2], +vb[3]);
@@ -11911,7 +12492,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         }
     })(-1);
     eve.on("snap.util.getattr.points", function () {
-        const p = $(this.node, "points").trim();
+        const p = $(this.node, "points", this).trim();
         eve.stop();
         if (p) {
 
@@ -11921,7 +12502,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         }
     })(-1);
     eve.on("snap.util.getattr.path", function () {
-        const p = $(this.node, "d").trim();
+        const p = $(this.node, "d", this).trim();
         eve.stop();
         return p;
     })(-1);
@@ -11935,7 +12516,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         if (inline) {
             return inline;
         }
-        return $(this.node, "font-size") || inline;
+        return $(this.node, "font-size", this) || inline;
     }
 
     eve.on("snap.util.getattr.fontSize", getFontSize)(-1);
@@ -12846,6 +13427,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
     const BBox = Snap.BBox || Snap._.BBox;
     const box = Snap.box || Snap._.box;
     const math = Snap.window().math || {multiply: Snap.Matrix.gen.multiply};//if math.js not loaded, fallback to Snap,Matrix
+    if (!math.multiply) math.multiply = Snap.Matrix.gen.multiply;
 
     if (!BBox || !box) {
         throw new Error("Snap BBox extension must be loaded before the path extension.");
@@ -12945,6 +13527,71 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
         GEN_TRANSFORM_DATA_KEY = "_ia_gen_transform_cache",
         THIRD_SAMPLE_T1 = 1 / 3,
         THIRD_SAMPLE_T2 = 2 / 3;
+
+    const getPath = {
+        path: function (el) {
+            return el.attr("d");
+        },
+        circle: function (el) {
+            const attr = unit2px(el);
+            return ellipsePath(attr.cx, attr.cy, attr.r).toString();
+        },
+        ellipse: function (el) {
+            const attr = unit2px(el);
+            return ellipsePath(attr.cx || 0, attr.cy || 0, attr.rx, attr.ry).toString();
+        },
+        rect: function (el) {
+            const attr = unit2px(el);
+            return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height,
+                attr.rx, attr.ry).toString();
+        },
+        image: function (el) {
+            const attr = unit2px(el);
+            return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height).toString();
+        },
+        line: function (el) {
+            return "M" + [
+                el.attr("x1") || 0,
+                el.attr("y1") || 0,
+                el.attr("x2"),
+                el.attr("y2")];
+        },
+        polyline: function (el) {
+            return "M" + el.attr("points");
+        },
+        polygon: function (el) {
+            return "M" + el.attr("points") + "z";
+        },
+        foreignObject: function (el) {
+            const attr = unit2px(el);
+            return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height).toString();
+        },
+        g: function (el) {
+            if (STRICT_MODE) {
+                return groupPathStrict(el);
+            } else {
+                const bbox = el.node.getBBox();
+                return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
+            }
+        },
+        deflt: function (el) {
+            const canMeasure = el && el.node && typeof el.node.getBBox === "function";
+            if (!canMeasure) {
+                return null;
+            }
+            let bbox;
+            try {
+                bbox = el.node.getBBox();
+            } catch (e) {
+                return null;
+            }
+            if (!bbox) {
+                return null;
+            }
+            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height).toString();
+        },
+    };
+    getPath["clipPath"] = getPath["g"];
 
     /**
      * Caches path parsing results for performance
@@ -13676,71 +14323,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
         return comp_path_string;
     }
 
-    var unit2px = Snap._unit2px,
-        getPath = {
-            path: function (el) {
-                return el.attr("d");
-            },
-            circle: function (el) {
-                const attr = unit2px(el);
-                return ellipsePath(attr.cx, attr.cy, attr.r);
-            },
-            ellipse: function (el) {
-                const attr = unit2px(el);
-                return ellipsePath(attr.cx || 0, attr.cy || 0, attr.rx, attr.ry);
-            },
-            rect: function (el) {
-                const attr = unit2px(el);
-                return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height,
-                    attr.rx, attr.ry);
-            },
-            image: function (el) {
-                const attr = unit2px(el);
-                return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height);
-            },
-            line: function (el) {
-                return "M" + [
-                    el.attr("x1") || 0,
-                    el.attr("y1") || 0,
-                    el.attr("x2"),
-                    el.attr("y2")];
-            },
-            polyline: function (el) {
-                return "M" + el.attr("points");
-            },
-            polygon: function (el) {
-                return "M" + el.attr("points") + "z";
-            },
-            foreignObject: function (el) {
-                var attr = unit2px(el);
-                return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height);
-            },
-            g: function (el) {
-                if (STRICT_MODE) {
-                    return groupPathStrict(el);
-                } else {
-                    const bbox = el.node.getBBox();
-                    return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-                }
-            },
-            deflt: function (el) {
-                const canMeasure = el && el.node && typeof el.node.getBBox === "function";
-                if (!canMeasure) {
-                    return null;
-                }
-                let bbox;
-                try {
-                    bbox = el.node.getBBox();
-                } catch (e) {
-                    return null;
-                }
-                if (!bbox) {
-                    return null;
-                }
-                return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-            },
-        };
-    getPath["clipPath"] = getPath["g"];
+    const unit2px = Snap._unit2px;
+
 
     function pathToRelative(pathArray) {
         const pth = paths(pathArray),
@@ -14657,9 +15241,14 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
      * @memberof Snap.path
      * @param {Element} el - Element to convert to path
      * @param {boolean} string_only - If true, returns only the path string, otherwise returns a path element
+     * @param {objects} options - Possible options to pass to convert
      * @returns {string|Element} Path string or path element depending on string_only parameter
      */
-    Snap.path.toPath = function (el, string_only) {
+    Snap.path.toPath = function (el, string_only, options) {
+        if (typeof string_only === "object") {
+            options = string_only;
+            string_only = false;
+        }
         const type = el.type;
         if (type === "path") return (string_only) ? el.attr("d") : el;
         if (!getPath.hasOwnProperty(type)) return null;
@@ -14668,14 +15257,22 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
         if (typeof converter !== "function") {
             return null;
         }
-        const d = converter(el);
+        const d = converter(el, options);
         if (!d) {
             return null;
         }
 
         if (string_only) return d;
 
-        const path = el.paper.path(d);
+        let path;
+        if (Array.isArray(d)) {
+            path = el.paper.g();
+            d.forEach(_d => {
+                path.add(el.paper.path(_d));
+            })
+        } else {
+            path = el.paper.path(d);
+        }
         el.after(path);
 
         if (el.getGeometryAttr) {
@@ -15686,13 +16283,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
     /**
      * Applies a generative transformation function to path control points
      * @method Element.genTransform
-    * @param {Function} transform - Function that accepts {x, y} and returns transformed {x, y} coordinates
-    * @param {Boolean|Object} [options] - If boolean, returns path string instead of modifying element.
-    *        If an object, can contain:
-    *        - `returnPath` {boolean}: Return the transformed `d` string without mutating the element.
-    *        - `filter` {function(Point):boolean}: Skip transformation for points where filter returns false.
-    *        - `simplify` {boolean}: Reduce/split curves to ensure each section bends less than ~60° before sampling.
-    *        - `max_size` {number}: Force curve sections to be subdivided until each span is below this length, even if `simplify` is false.
+     * @param {Function} transform - Function that accepts {x, y} and returns transformed {x, y} coordinates
+     * @param {Boolean|Object} [options] - If boolean, returns path string instead of modifying element.
+     *        If an object, can contain:
+     *        - `returnPath` {boolean}: Return the transformed `d` string without mutating the element.
+     *        - `filter` {function(Point):boolean}: Skip transformation for points where filter returns false.
+     *        - `simplify` {boolean}: Reduce/split curves to ensure each section bends less than ~60° before sampling.
+     *        - `max_size` {number}: Force curve sections to be subdivided until each span is below this length, even if `simplify` is false.
      * @returns {Element|String} Returns element for chaining, or path string if returnPath is true
      */
     elproto.genTransform = function (transform, options) {
@@ -15974,6 +16571,19 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
     Snap.path.clone = pathClone;
 
     Snap.path.getPointSample = getPointSample;
+
+
+    /**
+     * Register a path converter for a specific element type.
+     * @memberof Snap.path
+     * @param {string} type - Element type key (for example `rect`, `circle`, `path`).
+     * @param {function} converter - Converter function that accepts an element and returns a path string.
+     * @returns {void}
+     */
+    Snap.path.addPathConverter = function (type, converter) {
+        if (typeof type !== "string" && typeof converter !== "function") return;
+        getPath[type] = converter;
+    }
 })
 ;
 
@@ -17342,13 +17952,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         }
         var f = Snap.parse(Str(filstr)),
             id = Snap._.id(),
-            width = paper.node.offsetWidth,
-            height = paper.node.offsetHeight,
-            filter = $("filter");
+            // width = paper.node.offsetWidth,
+            // height = paper.node.offsetHeight,
+            filter = $("filter", undefined, this);
         $(filter, {
             id: id,
             filterUnits: (local) ? "objectBoundingBox" : "userSpaceOnUse",
-        });
+        }, this);
         filter.appendChild(f.node);
         paper.defs.appendChild(filter);
         const ElementClass = Snap.getClass("Element");
@@ -17366,7 +17976,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
 
     eve.on("snap.util.getattr.filter", function () {
         eve.stop();
-        var p = $(this.node, "filter");
+        var p = $(this.node, "filter", this);
         if (p) {
             var match = Str(p).match(rgurl);
             return match && Snap.select(match[1]);
@@ -17377,12 +17987,12 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             eve.stop();
             var id = value.node.id;
             if (!id) {
-                $(value.node, {id: value.id});
+                $(value.node, {id: value.id}, this);
                 id = value.id;
             }
             $(this.node, {
                 filter: Snap.url(id),
-            });
+            }, this);
         }
         if (!value || value == "none") {
             eve.stop();
@@ -27554,4 +28164,4 @@ function voronoi(points) {
 	Snap.mina = mina;
 	return Snap;
 }));
-;
+; //# sourceURL=Snap.svg.js

@@ -27,6 +27,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
     const BBox = Snap.BBox || Snap._.BBox;
     const box = Snap.box || Snap._.box;
     const math = Snap.window().math || {multiply: Snap.Matrix.gen.multiply};//if math.js not loaded, fallback to Snap,Matrix
+    if (!math.multiply) math.multiply = Snap.Matrix.gen.multiply;
 
     if (!BBox || !box) {
         throw new Error("Snap BBox extension must be loaded before the path extension.");
@@ -126,6 +127,71 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
         GEN_TRANSFORM_DATA_KEY = "_ia_gen_transform_cache",
         THIRD_SAMPLE_T1 = 1 / 3,
         THIRD_SAMPLE_T2 = 2 / 3;
+
+    const getPath = {
+        path: function (el) {
+            return el.attr("d");
+        },
+        circle: function (el) {
+            const attr = unit2px(el);
+            return ellipsePath(attr.cx, attr.cy, attr.r).toString();
+        },
+        ellipse: function (el) {
+            const attr = unit2px(el);
+            return ellipsePath(attr.cx || 0, attr.cy || 0, attr.rx, attr.ry).toString();
+        },
+        rect: function (el) {
+            const attr = unit2px(el);
+            return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height,
+                attr.rx, attr.ry).toString();
+        },
+        image: function (el) {
+            const attr = unit2px(el);
+            return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height).toString();
+        },
+        line: function (el) {
+            return "M" + [
+                el.attr("x1") || 0,
+                el.attr("y1") || 0,
+                el.attr("x2"),
+                el.attr("y2")];
+        },
+        polyline: function (el) {
+            return "M" + el.attr("points");
+        },
+        polygon: function (el) {
+            return "M" + el.attr("points") + "z";
+        },
+        foreignObject: function (el) {
+            const attr = unit2px(el);
+            return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height).toString();
+        },
+        g: function (el) {
+            if (STRICT_MODE) {
+                return groupPathStrict(el);
+            } else {
+                const bbox = el.node.getBBox();
+                return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
+            }
+        },
+        deflt: function (el) {
+            const canMeasure = el && el.node && typeof el.node.getBBox === "function";
+            if (!canMeasure) {
+                return null;
+            }
+            let bbox;
+            try {
+                bbox = el.node.getBBox();
+            } catch (e) {
+                return null;
+            }
+            if (!bbox) {
+                return null;
+            }
+            return rectPath(bbox.x, bbox.y, bbox.width, bbox.height).toString();
+        },
+    };
+    getPath["clipPath"] = getPath["g"];
 
     /**
      * Caches path parsing results for performance
@@ -857,71 +923,8 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
         return comp_path_string;
     }
 
-    var unit2px = Snap._unit2px,
-        getPath = {
-            path: function (el) {
-                return el.attr("d");
-            },
-            circle: function (el) {
-                const attr = unit2px(el);
-                return ellipsePath(attr.cx, attr.cy, attr.r);
-            },
-            ellipse: function (el) {
-                const attr = unit2px(el);
-                return ellipsePath(attr.cx || 0, attr.cy || 0, attr.rx, attr.ry);
-            },
-            rect: function (el) {
-                const attr = unit2px(el);
-                return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height,
-                    attr.rx, attr.ry);
-            },
-            image: function (el) {
-                const attr = unit2px(el);
-                return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height);
-            },
-            line: function (el) {
-                return "M" + [
-                    el.attr("x1") || 0,
-                    el.attr("y1") || 0,
-                    el.attr("x2"),
-                    el.attr("y2")];
-            },
-            polyline: function (el) {
-                return "M" + el.attr("points");
-            },
-            polygon: function (el) {
-                return "M" + el.attr("points") + "z";
-            },
-            foreignObject: function (el) {
-                var attr = unit2px(el);
-                return rectPath(attr.x || 0, attr.y || 0, attr.width, attr.height);
-            },
-            g: function (el) {
-                if (STRICT_MODE) {
-                    return groupPathStrict(el);
-                } else {
-                    const bbox = el.node.getBBox();
-                    return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-                }
-            },
-            deflt: function (el) {
-                const canMeasure = el && el.node && typeof el.node.getBBox === "function";
-                if (!canMeasure) {
-                    return null;
-                }
-                let bbox;
-                try {
-                    bbox = el.node.getBBox();
-                } catch (e) {
-                    return null;
-                }
-                if (!bbox) {
-                    return null;
-                }
-                return rectPath(bbox.x, bbox.y, bbox.width, bbox.height);
-            },
-        };
-    getPath["clipPath"] = getPath["g"];
+    const unit2px = Snap._unit2px;
+
 
     function pathToRelative(pathArray) {
         const pth = paths(pathArray),
@@ -1838,9 +1841,14 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
      * @memberof Snap.path
      * @param {Element} el - Element to convert to path
      * @param {boolean} string_only - If true, returns only the path string, otherwise returns a path element
+     * @param {objects} options - Possible options to pass to convert
      * @returns {string|Element} Path string or path element depending on string_only parameter
      */
-    Snap.path.toPath = function (el, string_only) {
+    Snap.path.toPath = function (el, string_only, options) {
+        if (typeof string_only === "object") {
+            options = string_only;
+            string_only = false;
+        }
         const type = el.type;
         if (type === "path") return (string_only) ? el.attr("d") : el;
         if (!getPath.hasOwnProperty(type)) return null;
@@ -1849,14 +1857,22 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
         if (typeof converter !== "function") {
             return null;
         }
-        const d = converter(el);
+        const d = converter(el, options);
         if (!d) {
             return null;
         }
 
         if (string_only) return d;
 
-        const path = el.paper.path(d);
+        let path;
+        if (Array.isArray(d)) {
+            path = el.paper.g();
+            d.forEach(_d => {
+                path.add(el.paper.path(_d));
+            })
+        } else {
+            path = el.paper.path(d);
+        }
         el.after(path);
 
         if (el.getGeometryAttr) {
@@ -2867,13 +2883,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
     /**
      * Applies a generative transformation function to path control points
      * @method Element.genTransform
-    * @param {Function} transform - Function that accepts {x, y} and returns transformed {x, y} coordinates
-    * @param {Boolean|Object} [options] - If boolean, returns path string instead of modifying element.
-    *        If an object, can contain:
-    *        - `returnPath` {boolean}: Return the transformed `d` string without mutating the element.
-    *        - `filter` {function(Point):boolean}: Skip transformation for points where filter returns false.
-    *        - `simplify` {boolean}: Reduce/split curves to ensure each section bends less than ~60° before sampling.
-    *        - `max_size` {number}: Force curve sections to be subdivided until each span is below this length, even if `simplify` is false.
+     * @param {Function} transform - Function that accepts {x, y} and returns transformed {x, y} coordinates
+     * @param {Boolean|Object} [options] - If boolean, returns path string instead of modifying element.
+     *        If an object, can contain:
+     *        - `returnPath` {boolean}: Return the transformed `d` string without mutating the element.
+     *        - `filter` {function(Point):boolean}: Skip transformation for points where filter returns false.
+     *        - `simplify` {boolean}: Reduce/split curves to ensure each section bends less than ~60° before sampling.
+     *        - `max_size` {number}: Force curve sections to be subdivided until each span is below this length, even if `simplify` is false.
      * @returns {Element|String} Returns element for chaining, or path string if returnPath is true
      */
     elproto.genTransform = function (transform, options) {
@@ -3155,5 +3171,18 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve, mina) {
     Snap.path.clone = pathClone;
 
     Snap.path.getPointSample = getPointSample;
+
+
+    /**
+     * Register a path converter for a specific element type.
+     * @memberof Snap.path
+     * @param {string} type - Element type key (for example `rect`, `circle`, `path`).
+     * @param {function} converter - Converter function that accepts an element and returns a path string.
+     * @returns {void}
+     */
+    Snap.path.addPathConverter = function (type, converter) {
+        if (typeof type !== "string" && typeof converter !== "function") return;
+        getPath[type] = converter;
+    }
 })
 ;

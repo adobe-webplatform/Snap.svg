@@ -198,7 +198,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     result = [];
                     let children = this.getChildren(true), ch;
                     for (let i = 0, l = children.length; i < l; ++i) {
-                        if (skip_hidden && (children[i].node.style.display === "none" || children[i].attr("display") === "none")) continue;
+                        if (skip_hidden && children[i].isHidden()) continue;
                         const pts = children[i].getPoints(true, skip_hidden);
                         if (window.now && children[i].type === "use") console.log(children[i], Snap.convexHull(pts));
                         pts && pts.length && (result = [...result, ...pts]);
@@ -390,7 +390,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     skip_hidden = settings.skip_hidden;
 
                     if (settings.relative_parent && this.isChildOf &&
-                        this.isChildOf(relative_parent)) {
+                        this.isChildOf(settings.relative_parent)) {
                         relative_parent = settings.relative_parent;
                     }
 
@@ -497,7 +497,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 let bboxes = children.map(function (elm) {
                     // console.log(el.id + " - " + elm.id + ": " + (Date.now() - timer));
                     // timer = Date.now();
-                    if (skip_hidden && (elm.node.style.display === "none" || elm.attr("display") === "none")) {
+                    if (skip_hidden && elm.isHidden()) {
                         console.log("In empty");
                         return null;
                     }
@@ -869,7 +869,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     toString: propString,
                 };
             }
-            if (tstr instanceof Snap.Matrix) {
+            if (is(tstr, "Matrix")) {
                 this.saveMatrix(tstr);
                 this._.transform = tstr.toTransformString();
             } else {
@@ -878,9 +878,9 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
 
             if (this.node) {
                 if (this.type == "linearGradient" || this.type == "radialGradient") {
-                    $(this.node, {gradientTransform: this.matrix});
+                    $(this.node, {gradientTransform: this.matrix}, this);
                 } else if (this.type == "pattern") {
-                    $(this.node, {patternTransform: this.matrix});
+                    $(this.node, {patternTransform: this.matrix}, this);
                 } else {
                     if (do_update) this.updateBBoxCache(undefined, apply);
 
@@ -894,7 +894,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                             this.node.style.transform = toTransformString;
 
                         } else {
-                            $(this.node, {transform: this.matrix});
+                            $(this.node, {transform: this.matrix}, this);
                         }
                         this.attrMonitor("transform");
                         var dom_partner = this._dom_partner;
@@ -922,7 +922,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                             for (let i = 0, l = element_partner.length; i < l; ++i) {
                                 let elementPartnerElement = element_partner[i];
                                 if (Snap.is(elementPartnerElement.node, "SVGElement")) {
-                                    $(elementPartnerElement.node, {transform: this.matrix});
+                                    $(elementPartnerElement.node, {transform: this.matrix}, this);
                                 } else {
                                     elementPartnerElement.setStyle({transform: this.matrix});
                                 }
@@ -1521,7 +1521,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     el.setPaper(this.paper);
                 }
 
-                if (el.domChangeReact && el.domChangeReact instanceof "function") {
+                if (el.domChangeReact && typeof el.domChangeReact === "function") {
                     el.domChangeReact();
                 }
             }
@@ -1888,7 +1888,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 id = this.id;
                 $(this.node, {
                     id: id,
-                });
+                }, this);
             }
             if (this.type === "linearGradient" || this.type === "radialGradient" ||
                 this.type === "pattern") {
@@ -1901,7 +1901,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
             }
             $(use.node, {
                 "href": "#" + id,
-            });
+            }, this);
             use.use_target = this;
             return use;
         };
@@ -1921,7 +1921,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 uses = {};
 
             function urltest(it, name) {
-                let val = $(it.node, name);
+                let val = $(it.node, name, el);
                 val = val && val.match(url);
                 val = val && val[2];
                 if (val && val.charAt() == "#") {
@@ -1933,13 +1933,13 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                     uses[val] = (uses[val] || []).concat(function (id) {
                         const attr = {};
                         attr[name] = Snap.url(id);
-                        $(it.node, attr);
+                        $(it.node, attr, el);
                     });
                 }
             }
 
             function linktest(it) {
-                let val = $(it.node, "href");
+                let val = $(it.node, "href", el);
                 if (val && val.charAt() == "#") {
                     val = val.substring(1);
                 } else {
@@ -1960,10 +1960,10 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 urltest(it, "mask");
                 urltest(it, "clip-path");
                 linktest(it);
-                const oldid = $(it.node, "id");
+                const oldid = $(it.node, "id", el);
                 if (oldid) {
                     const new_id = (id_rename_callback) ? id_rename_callback(oldid) : it.id;
-                    $(it.node, {id: new_id});
+                    $(it.node, {id: new_id}, el);
                     ids.push({
                         old: oldid,
                         id: new_id,
@@ -1999,11 +1999,11 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
             const id = this.attr("id");
             const clone = wrap(this.node.cloneNode(true));
             if (!hidden) clone.insertAfter(this);
-            if ($(clone.node, "id")) {
+            if ($(clone.node, "id", this)) {
                 const new_id = (id_rename_callback) ?
-                    id_rename_callback($(clone.node, "id")) :
+                    id_rename_callback($(clone.node, "id", this)) :
                     clone.id;
-                $(clone.node, {id: new_id});
+                $(clone.node, {id: new_id}, this);
             }
             fixids(clone, id_rename_callback);
             clone.paper = this.paper;
@@ -2145,7 +2145,7 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 patternUnits: "userSpaceOnUse",
                 id: p.id,
                 viewBox: [x, y, width, height].join(" "),
-            });
+            }, this);
             p.node.appendChild(this.node);
             return p;
         };
@@ -2183,7 +2183,8 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 refX: refX || 0,
                 refY: refY || 0,
                 id: p.id,
-            });
+            }, this);
+            
             p.node.appendChild(this.node);
             return p;
         };
@@ -2417,6 +2418,56 @@ Snap.plugin(function (Snap, _future_me_, Paper, glob, Fragment, eve) {
                 return this;
             }
             return this.attr(params, value, true);
+        };
+
+        /**
+         * Returns an attribute or inline style value only if it is explicitly defined on the element.
+         *
+         * This does not consult computed styles, inherited styles, or fallback attribute resolution.
+         * It is intended for checks like "is this value truly set on this node?".
+         *
+         * @function Snap.Element#getTrueAttr
+         * @param {string} attr_str Attribute or style name to inspect.
+         * @returns {string|undefined} Explicit attribute or inline style value, or `undefined` when not defined.
+         */
+        elproto.getTrueAttr = function (attr_str) {
+            const node = this.node;
+            if (!node || node.nodeType !== 1 || attr_str == null) {
+                return;
+            }
+
+            const name = String(attr_str).trim();
+            if (!name) {
+                return;
+            }
+
+            const cssName = name.replace(/[A-Z]/g, function (letter) {
+                return "-" + letter.toLowerCase();
+            });
+            const camelName = name.replace(/-([a-z])/gi, function (all, letter) {
+                return letter.toUpperCase();
+            });
+
+            if (node.hasAttribute && node.hasAttribute(name)) {
+                return node.getAttribute(name);
+            }
+            if (cssName !== name && node.hasAttribute && node.hasAttribute(cssName)) {
+                return node.getAttribute(cssName);
+            }
+            if (camelName !== name && camelName !== cssName && node.hasAttribute && node.hasAttribute(camelName)) {
+                return node.getAttribute(camelName);
+            }
+
+            const style = node.style;
+            if (!style) {
+                return;
+            }
+
+            let value = style.getPropertyValue(cssName) || style.getPropertyValue(name);
+            if (!value && camelName !== cssName) {
+                value = style[camelName] || style[name];
+            }
+            return value || undefined;
         };
 
         /**

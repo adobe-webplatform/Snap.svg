@@ -3,4 +3,4 @@
 	Snap.mina = mina;
 	return Snap;
 }));
-;
+; //# sourceURL=Snap.svg.js

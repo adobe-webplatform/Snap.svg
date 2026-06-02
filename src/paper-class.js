@@ -26,9 +26,10 @@ Snap.plugin(function (Snap, _Element_, _future_me_, glob, _Fragment_, eve) {
      * @class Snap.Paper
      * @param {(number|string|SVGElement)} w Width of the surface or an existing SVG element.
      * @param {(number|string)} [h] Height of the surface when `w` is a numeric or string size.
+     * @param {(Document|DocumentFragment)} [doc] Document or DocumentFragment to create the SVG in. If a DocumentFragment is provided, the SVG will be created detached from the DOM.
      */
     class Paper {
-        constructor(w, h) {
+        constructor(w, h, doc) {
             let res,
                 defs;
             const proto = Paper.prototype;
@@ -36,7 +37,7 @@ Snap.plugin(function (Snap, _Element_, _future_me_, glob, _Fragment_, eve) {
                 if (w.snap in hub) {
                     return hub[w.snap];
                 }
-                const doc = w.ownerDocument;
+                // const doc = w.ownerDocument;
                 const ElementClass = Snap.getClass("Element");
                 res = new ElementClass(w);
                 defs = w.getElementsByTagName("defs")[0];
@@ -50,7 +51,9 @@ Snap.plugin(function (Snap, _Element_, _future_me_, glob, _Fragment_, eve) {
                 }
                 res.paper = res.root = res;
             } else {
-                res = Snap._.make("svg", glob.doc.body);
+                // Determine parent: DocumentFragment for detached construction, or document.body for normal use
+                const parent = (doc && doc.nodeType === 11) ? doc : Snap.document(doc).body;
+                res = Snap._.make("svg", parent, doc);
                 $(res.node, {
                     height: h,
                     version: 1.1,
@@ -655,6 +658,92 @@ Snap.plugin(function (Snap, _Element_, _future_me_, glob, _Fragment_, eve) {
     * @type {Function}
      */
     proto.animate_el = proto.animate
+
+    /**
+     * Creates an `<animateTransform>` element.
+     *
+     * Accepts the standard animateTransform attributes in positional order, or via an attribute object.
+     * As with {@link Snap.Paper#animate}, the final argument may be a target element that receives the
+     * animation node.
+     *
+     * @function Snap.Paper#animateTransform
+     * @param {string} [type] Transform type ("translate", "scale", "rotate", "skewX", "skewY").
+     * @param {(string|number)} [from] Starting transform value.
+     * @param {(string|number)} [to] Ending transform value.
+     * @param {(string|number)} [dur] Animation duration.
+     * @param {(string|number)} [begin] Delay before start.
+     * @param {(string|number)} [repeatCount] Repeat configuration.
+     * @param {string} [fill] Fill mode (e.g. "freeze").
+     * @param {string} [calcMode] Interpolation mode.
+     * @param {(string|Array)} [values] Value list for keyframe animation.
+     * @param {(string|Array)} [keyTimes] Key time list matching `values`.
+     * @param {(string|Array)} [keySplines] Bezier control points for spline timing.
+     * @param {(string|number)} [by] Relative delta value.
+     * @param {string} [additive] Additive mode.
+     * @param {string} [accumulate] Accumulate mode.
+     * @param {Object} [attr] Additional attributes for the `<animateTransform>` element.
+     * @param {Snap.Element} [target] Element that receives the animation via `.add`.
+     * @returns {Snap.Element} The `<animateTransform>` element.
+     */
+    proto.animateTransform = function () {
+        const args = Array.prototype.slice.call(arguments);
+        let insertionTarget = null;
+        let attr = {};
+
+        if (args.length && Snap.is(args[args.length - 1], "Element")) {
+            insertionTarget = args.pop();
+        }
+
+        if (args.length && isPlainObject(args[args.length - 1])) {
+            attr = args.pop();
+        }
+
+        if (args.length === 1 && isPlainObject(args[0])) {
+            Object.assign(attr, args.pop());
+        } else if (args.length) {
+            const keys = [
+                "type",
+                "from",
+                "to",
+                "dur",
+                "begin",
+                "repeatCount",
+                "fill",
+                "calcMode",
+                "values",
+                "keyTimes",
+                "keySplines",
+                "by",
+                "additive",
+                "accumulate"
+            ];
+            for (let i = 0; i < keys.length && i < args.length; ++i) {
+                const value = args[i];
+                if (value != null && attr[keys[i]] == null) {
+                    attr[keys[i]] = value;
+                }
+            }
+        }
+
+        if (attr.attributeName == null) {
+            attr.attributeName = "transform";
+        }
+
+        normaliseAnimationAttributes(attr);
+
+        const el = this.el("animateTransform", attr);
+        if (insertionTarget) {
+            insertionTarget.add(el);
+        }
+        return el;
+    };
+
+    /**
+     * An Alias for animateTransform tag to be able to copy to Element. Needed because Element has an
+     * animateTransform method with a different function.
+    * @type {Function}
+     */
+    proto.animateTransform_el = proto.animateTransform
 
     /**
      * Creates an `<animateMotion>` element, optionally wiring it to an existing motion path via `<mpath>`.

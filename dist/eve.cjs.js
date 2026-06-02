@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2025-12-15
+// build: 2026-06-02
 
 // Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -87,15 +87,15 @@
 
     /**
      * translateNamespaceAlias @method
- *
+     *
      * Internal function to translate namespace aliases in event names.
      * Translates the top-level namespace (first part before separator) if an alias exists.
- *
- * @param {string|array} name - event name or array of event name parts
- *
- * @returns {array|string} translated event name as array (or may return string if no aliases defind)
-    */
-    const translateNamespaceAlias = function(name) {
+     *
+     * @param {string|array} name - event name or array of event name parts
+     *
+     * @returns {array|string} translated event name as array (or may return string if no aliases defind)
+     */
+    const translateNamespaceAlias = function (name) {
         if (!namespace_aliases) return name;
         if (isArray(name)) {
             // Handle array format
@@ -115,7 +115,7 @@
             return nameParts;
         }
     };
-
+    let xIndex_cur = 0;
     const getNext = function (event_list, name, group, skip_global) {
         if (event_list === undefined) {
             if (!skip_global && global_event.n.hasOwnProperty(name)) {
@@ -134,144 +134,164 @@
         let i = 0;
         const ii = this.length;
         for (; i < ii; ++i) {
-            if (typeof this[i] != "undefined") {
+            if (typeof this[i] != "undefined" && !isEveError(this[i])) {
                 return this[i];
             }
         }
     };
-    let xIndex_cur = 0;
     const lastDefined = function () {
-            let i = this.length;
-            while (--i) {
-                if (typeof this[i] != "undefined") {
-                    return this[i];
-                }
+        let i = this.length;
+        while (--i) {
+            if (typeof this[i] != "undefined" && !isEveError(this[i])) {
+                return this[i];
             }
-        },
-        objtos = Object.prototype.toString,
-        Str = String,
-        isArray = Array.isArray || function (ar) {
-            return ar instanceof Array || objtos.call(ar) == "[object Array]";
-        },
-        /**
-         * eve @method
+        }
+    };
+    const getErrors = function () {
+        return this.filter(isEveError);
+    };
+    const getErrorsAsync = function () {
+        return Promise.all(this).then(function (results) {
+            return getErrors.call(results);
+        });
+    };
+    const objtos = Object.prototype.toString;
+    const Str = String;
+    const isArray = Array.isArray || function (ar) {
+        return ar instanceof Array || objtos.call(ar) == "[object Array]";
+    };
+    // Lightweight error wrapper stored in results when a listener throws.
+    const EveError = function (err) {
+        this.name = "EveError";
+        this.message = err && err.message ? err.message : String(err);
+        this.original = err;
+        this.isEveError = true;
+    };
+    const isEveError = function (value) {
+        return !!(value && value.isEveError);
+    };
+    /**
+     * eve @method
 
-         * Fires event with given `name`, given scope and other parameters.
- * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
- * @param {object} scope - context for the event handlers
- * @param {...any} varargs - the rest of arguments will be sent to event handlers
- * @returns {object} array of returned values from the listeners. Array has two methods `.firstDefined()` and `.lastDefined()` to get first or last not `undefined` value.
-        */
-        eve = function (group, name, scope) {
-            let args;
-            if (Array.isArray(group) || typeof group === "string") {
-                args = Array.prototype.slice.call(arguments, 2)
-                scope = name;
-                name = group;
-                group = undefined;
+     * Fires event with given `name`, given scope and other parameters.
+     * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
+     * @param {object} scope - context for the event handlers
+     * @param {...any} varargs - the rest of arguments will be sent to event handlers
+     * @returns {object} array of returned values from the listeners. Array has two methods `.firstDefined()` and `.lastDefined()` to get first or last not `undefined` value.
+     */
+    const eve = function (group, name, scope) {
+        let args;
+        if (Array.isArray(group) || typeof group === "string") {
+            args = Array.prototype.slice.call(arguments, 2)
+            scope = name;
+            name = group;
+            group = undefined;
+        } else {
+            group = group.id;
+        }
+
+        // Apply namespace alias translation
+        name = translateNamespaceAlias(name);
+
+        args = args || Array.prototype.slice.call(arguments, 3)
+        const oldstop = stop,
+            listeners = eve.listeners(name, group),
+            z = 0;
+        let l;
+        const indexed = [],
+            queue = {},
+            out = [],
+            ce = current_event;
+
+        if (typeof scope !== "undefined" && typeof scope !== "object") {
+            args.unshift(scope);
+            scope = undefined;
+        }
+
+        out.firstDefined = firstDefined;
+        out.lastDefined = lastDefined;
+        out.getErrors = getErrors;
+        current_event = name;
+        stop = 0;
+        // for (var i = 0, ii = listeners.length; i < ii; ++i) if ("zIndex" in listeners[i]) {
+        //     indexed.push(listeners[i].zIndex);
+        //     if (listeners[i].zIndex < 0) {
+        //         queue[listeners[i].zIndex] = listeners[i];
+        //     }
+        // }
+
+        listeners.sort(function_sort);
+
+        for (let i = 0, lim = listeners.length; i < lim; ++i) {
+            l = listeners[i];
+            try {
+                out.push(l.apply(scope, args));
+            } catch (e) {
+                const errorRecord = new EveError(e);
+                out.push(errorRecord);
+                console.error(e.message, e, args, l);
+                eve("global.error", undefined, e, l, args);
+            }
+            if (stop) {
+                break;
+            }
+        }
+
+        // indexed.sort(numsort);
+        // while (indexed[z] < 0) {
+        //     l = queue[indexed[z++]];
+        //     out.push(l.apply(scope, args));
+        //     if (stop) {
+        //         stop = oldstop;
+        //         return out;
+        //     }
+        // }
+        // for (i = 0; i < ii; ++i) {
+        //     l = listeners[i];
+        //     if ("zIndex" in l) {
+        //         if (l.zIndex == indexed[z]) {
+        //             out.push(l.apply(scope, args));
+        //             if (stop) {
+        //                 break;
+        //             }
+        //             do {
+        //                 z++;
+        //                 l = queue[indexed[z]];
+        //                 l && out.push(l.apply(scope, args));
+        //                 if (stop) {
+        //                     break;
+        //                 }
+        //             } while (l)
+        //         } else {
+        //             queue[l.zIndex] = l;
+        //         }
+        //     } else {
+        //         out.push(l.apply(scope, args));
+        //         if (stop) {
+        //             break;
+        //         }
+        //     }
+        // }
+
+        stop = oldstop;
+        current_event = ce;
+
+        if (eve._log) {
+            if (!group) group = "global";
+            if (!eve._log[group]) {
+                eve._log[group] = {};
+            }
+            name = (isArray(name)) ? name.join(separator) : name;
+            if (!eve._log[group][name]) {
+                eve._log[group][name] = [1, listeners.length];
             } else {
-                group = group.id;
+                eve._log[group][name][0]++;
+                eve._log[group][name][1] = Math.max(eve._log[group][name][1], listeners.length);
             }
+        }
 
-            // Apply namespace alias translation
-            name = translateNamespaceAlias(name);
-
-            args = args || Array.prototype.slice.call(arguments, 3)
-            const oldstop = stop,
-                listeners = eve.listeners(name, group),
-                z = 0;
-            let l;
-            const indexed = [],
-                queue = {},
-                out = [],
-                ce = current_event;
-
-            if (typeof scope !== "undefined" && typeof scope !== "object") {
-                args.unshift(scope);
-                scope = undefined;
-            }
-
-            out.firstDefined = firstDefined;
-            out.lastDefined = lastDefined;
-            current_event = name;
-            stop = 0;
-            // for (var i = 0, ii = listeners.length; i < ii; ++i) if ("zIndex" in listeners[i]) {
-            //     indexed.push(listeners[i].zIndex);
-            //     if (listeners[i].zIndex < 0) {
-            //         queue[listeners[i].zIndex] = listeners[i];
-            //     }
-            // }
-
-            listeners.sort(function_sort);
-
-            for (let i = 0, lim = listeners.length; i < lim; ++i) {
-                l = listeners[i];
-                try {
-                    out.push(l.apply(scope, args));
-                } catch (e) {
-                    console.error(e.message, e, args, l);
-                    eve("global.error", undefined, e, l, args);
-                }
-                if (stop) {
-                    break;
-                }
-            }
-
-            // indexed.sort(numsort);
-            // while (indexed[z] < 0) {
-            //     l = queue[indexed[z++]];
-            //     out.push(l.apply(scope, args));
-            //     if (stop) {
-            //         stop = oldstop;
-            //         return out;
-            //     }
-            // }
-            // for (i = 0; i < ii; ++i) {
-            //     l = listeners[i];
-            //     if ("zIndex" in l) {
-            //         if (l.zIndex == indexed[z]) {
-            //             out.push(l.apply(scope, args));
-            //             if (stop) {
-            //                 break;
-            //             }
-            //             do {
-            //                 z++;
-            //                 l = queue[indexed[z]];
-            //                 l && out.push(l.apply(scope, args));
-            //                 if (stop) {
-            //                     break;
-            //                 }
-            //             } while (l)
-            //         } else {
-            //             queue[l.zIndex] = l;
-            //         }
-            //     } else {
-            //         out.push(l.apply(scope, args));
-            //         if (stop) {
-            //             break;
-            //         }
-            //     }
-            // }
-
-            stop = oldstop;
-            current_event = ce;
-
-            if (eve._log) {
-                if (!group) group = "global";
-                if (!eve._log[group]) {
-                    eve._log[group] = {};
-                }
-                name = (isArray(name)) ? name.join(separator) : name;
-                if (!eve._log[group][name]) {
-                    eve._log[group][name] = [1, listeners.length];
-                } else {
-                    eve._log[group][name][0]++;
-                    eve._log[group][name][1] = Math.max(eve._log[group][name][1], listeners.length);
-                }
-            }
-
-            return out;
-        };
+        return out;
+    };
 
     eve.isEve = true;
 
@@ -280,11 +300,11 @@
 
      * Async version of eve that returns an array of promises from all listeners.
      * All listener functions are wrapped to ensure they return promises.
- * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
- * @param {object} scope - context for the event handlers
- * @param {...any} varargs - the rest of arguments will be sent to event handlers
- * @returns {array} array of promises from the listeners
-    */
+     * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
+     * @param {object} scope - context for the event handlers
+     * @param {...any} varargs - the rest of arguments will be sent to event handlers
+     * @returns {array} array of promises from the listeners
+     */
     eve.a = function (group, name, scope) {
         let args;
         if (Array.isArray(group) || typeof group === "string") {
@@ -308,6 +328,7 @@
 
         promises.firstDefined = firstDefined;
         promises.lastDefined = lastDefined;
+        promises.getErrors = getErrorsAsync;
 
         if (typeof scope !== "undefined" && typeof scope !== "object") {
             args.unshift(scope);
@@ -322,15 +343,24 @@
 
         for (let i = 0, lim = listeners.length; i < lim; ++i) {
             const l = listeners[i];
+            let result;
             try {
                 // Universal wrapper to ensure all returns are promises
-                const result = l.apply(scope, args);
-                promises.push(Promise.resolve(result));
+                result = l.apply(scope, args);
             } catch (e) {
                 console.error(e.message, e, args, l);
                 eve("global.error", undefined, e, l, args);
-                promises.push(Promise.reject(e));
+                promises.push(Promise.resolve(new EveError(e)));
+                if (stop) {
+                    break;
+                }
+                continue;
             }
+            promises.push(Promise.resolve(result).catch(function (e) {
+                console.error(e.message, e, args, l);
+                eve("global.error", undefined, e, l, args);
+                return new EveError(e);
+            }));
             if (stop) {
                 break;
             }
@@ -362,31 +392,32 @@
 
      * Async version that returns a single promise resolving to an array of all listener results.
      * Waits for all promises to resolve before returning the results array.
- * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
- * @param {object} scope - context for the event handlers
- * @param {...any} varargs - the rest of arguments will be sent to event handlers
- * @returns {Promise} promise that resolves to array of results from all listeners
-    */
+     * @param {string} name - name of the *event*, dot (`.`) or slash (`/`) separated
+     * @param {object} scope - context for the event handlers
+     * @param {...any} varargs - the rest of arguments will be sent to event handlers
+     * @returns {Promise} promise that resolves to array of results from all listeners
+     */
     eve.all = function (group, name, scope) {
         const promises = eve.a.apply(this, arguments);
 
         return Promise.all(promises).then(results => {
             results.firstDefined = firstDefined;
             results.lastDefined = lastDefined;
+            results.getErrors = getErrors;
             return results;
         });
     };
 
     /**
      * eve.localEve @method
- *
+     *
      * Creates a local eve instance that operates within a specific event group.
      * All events fired through this instance will be scoped to the specified group.
- *
- * @param {string} group_id - identifier for the event group
- *
- * @returns {function} local eve instance with all eve methods scoped to the group
-    */
+     *
+     * @param {string} group_id - identifier for the event group
+     *
+     * @returns {function} local eve instance with all eve methods scoped to the group
+     */
     eve.localEve = function (group_id) {
         eve.setGroup(group_id);
         const ret_eve = function (name, scope) {
@@ -440,12 +471,12 @@
 
     /**
      * eve.logEvents @method
- *
+     *
      * Enables or disables event logging for debugging purposes.
      * When enabled, tracks event firing statistics including call count and listener count.
- *
- * @param {boolean} off - if true, disables logging; if false or undefined, enables logging
-    */
+     *
+     * @param {boolean} off - if true, disables logging; if false or undefined, enables logging
+     */
     eve.logEvents = function (off) {
         if (off) {
             delete eve._log;
@@ -463,9 +494,9 @@
      * eve.listeners @method
 
      * Internal method which gives you array of all event handlers that will be triggered by the given `name`.
- * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated
- * @returns {array} array of event handlers
-    */
+     * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated
+     * @returns {array} array of event handlers
+     */
     eve.listeners = function (name, group, skip_global) {
         // Apply namespace alias translation
         name = translateNamespaceAlias(name);
@@ -505,8 +536,8 @@
      * If for some reasons you don’t like default separators (`.` or `/`) you can specify yours
      * here. Be aware that if you pass a string longer than one character it will be treated as
      * a list of characters.
- * @param {string} separator - new separator. Empty string resets to default: `.` or `/`.
-    */
+     * @param {string} separator - new separator. Empty string resets to default: `.` or `/`.
+     */
     eve.separator = function (sep) {
         if (sep) {
             sep = Str(sep).replace(/(?=[\.\^\]\[\-])/g, "\\");
@@ -519,12 +550,12 @@
 
     /**
      * eve.setGroup @method
- *
+     *
      * Sets the current active event group for subsequent event operations.
      * If no group is specified, resets to the default group.
- *
- * @param {string} group - #optional name of the event group to set as active
-    */
+     *
+     * @param {string} group - #optional name of the event group to set as active
+     */
     eve.setGroup = function (group) {
         // if (!group) throw new Error("group must be defined");
 
@@ -543,15 +574,15 @@
 
     /**
      * eve.fireInGroup @method
- *
+     *
      * Fires an event within a specific event group context.
      * Temporarily switches to the specified group, fires the event, then restores the previous group.
- *
- * @param {string} group - name of the event group to fire the event in
- * @param {...any} varargs - event arguments to pass to eve()
- *
- * @returns {array} array of returned values from the listeners
-    */
+     *
+     * @param {string} group - name of the event group to fire the event in
+     * @param {...any} varargs - event arguments to pass to eve()
+     *
+     * @returns {array} array of returned values from the listeners
+     */
     eve.fireInGroup = function (group) {
         const args = Array.from(arguments).slice(1);
         if (!event_groups.hasOwnProperty(group)) {
@@ -566,13 +597,13 @@
 
     /**
      * eve.addGlobalEventType @method
- *
+     *
      * Adds a global event type to the global event list.
      * Be aware that this will not add the event to the local event list. Adding a global type may prevent local events
      * starting with the same name from being triggered.
- *
- * @param {string} name - name of the global event type to add
-    */
+     *
+     * @param {string} name - name of the global event type to add
+     */
     eve.addGlobalEventType = function (name) {
         if (!global_event.n.hasOwnProperty(name)) {
             global_event.n[name] = {n: {}};
@@ -581,19 +612,19 @@
 
     /**
      * eve.on @method
- *
+     *
      * Binds given event handler with a given name. You can use wildcards “`*`” for the names:
      | eve.on("*.under.*", f);
      | eve("mouse.under.floor"); // triggers f
      * Use @eve to trigger the listener.
- *
- * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
- * @param {function} f - event handler function
- *
- * @param {array} name - if you don’t want to use separators, you can use array of strings
- * @param {function} f - event handler function
- *
- * @returns {function} returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
+     *
+     * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     * @param {function} f - event handler function
+     *
+     * @param {array} name - if you don’t want to use separators, you can use array of strings
+     * @param {function} f - event handler function
+     *
+     * @returns {function} returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
      > Example:
      | eve.on("mouse", eatIt)(2);
      | eve.on("mouse", scream);
@@ -602,7 +633,7 @@
      *
      * If you want to put your handler before non-indexed handlers, specify a negative value.
      * Note: I assume most of the time you don’t need to worry about z-index, but it’s nice to have this feature “just in case”.
-    */
+     */
     eve.on = function (name, f, group) {
         if (typeof f != "function") {
             return function () {
@@ -645,7 +676,7 @@
     };
     /**
      * eve.f @method
- *
+     *
      * Returns function that will fire given event with optional arguments.
      * Arguments that will be passed to the result function will be also
      * concated to the list of final arguments.
@@ -653,10 +684,10 @@
      | eve.on("click", function (a, b, c) {
      |     console.log(a, b, c); // 1, 2, [event object]
      | });
- * @param {string} event - event name
- * @param {...any} varargs - and any other arguments
- * @returns {function} possible event handler function
-    */
+     * @param {string} event - event name
+     * @param {...any} varargs - and any other arguments
+     * @returns {function} possible event handler function
+     */
     eve.f = function (event) {
         const attrs = [].slice.call(arguments, 1);
         return function () {
@@ -665,23 +696,23 @@
     };
     /**
      * eve.stop @method
- *
+     *
      * Is used inside an event handler to stop the event, preventing any subsequent listeners from firing.
-    */
+     */
     eve.stop = function () {
         stop = 1;
     };
     /**
      * eve.nt @method
- *
+     *
      * Could be used inside event handler to figure out actual name of the event.
- *
- * @param {string} subname - #optional subname of the event
- *
- * @returns {string} name of the event, if `subname` is not specified
+     *
+     * @param {string} subname - #optional subname of the event
+     *
+     * @returns {string} name of the event, if `subname` is not specified
      * or
- * @returns {boolean} `true`, if current event’s name contains `subname`
-    */
+     * @returns {boolean} `true`, if current event’s name contains `subname`
+     */
     eve.nt = function (subname) {
         const cur = isArray(current_event) ? current_event.join(".") : current_event;
         if (subname) {
@@ -691,28 +722,28 @@
     };
     /**
      * eve.nts @method
- *
+     *
      * Could be used inside event handler to figure out actual name of the event.
- * *
- * @returns {array} names of the event
-    */
+     * *
+     * @returns {array} names of the event
+     */
     eve.nts = function () {
         return isArray(current_event) ? current_event : current_event.split(separator);
     };
     /**
      * eve.off @method
- *
+     *
      * Removes given function from the list of event listeners assigned to given name.
      * If no arguments specified all the events will be cleared.
- *
- * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
- * @param {function} f - event handler function
-    */
+     *
+     * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     * @param {function} f - event handler function
+     */
     /**
      * eve.unbind @method
- *
+     *
      * See @eve.off
-    */
+     */
     eve.off = eve.unbind = function (name, f, group) {
         if (!name) {
             events = {n: {}};
@@ -739,6 +770,17 @@
             events_here = (group) ? event_groups[group] : events;
         events_here = events_here || events;
         const cur = [events_here, global_event];
+
+        // helper: consider wrapper/original equivalence
+        const matchListener = function (listenerFn) {
+            if (!f) return true;
+            if (listenerFn === f) return true;
+            // listener is wrapper around f
+            if (listenerFn && listenerFn._eveOriginal === f) return true;
+            // f is wrapper around listener
+            if (f && f._eveOriginal && listenerFn === f._eveOriginal) return true;
+            return false;
+        };
 
         for (i = 0, ii = names.length; i < ii; ++i) {
             for (j = 0; j < cur.length; j += splice.length - 2) {
@@ -769,17 +811,19 @@
             while (e.n) {
                 if (f) {
                     if (e.f) {
-                        for (j = 0, jj = e.f.length; j < jj; j++) if (e.f[j] == f) {
-                            e.f.splice(j, 1);
-                            break;
+                        for (j = e.f.length - 1; j >= 0; j--) {
+                            if (matchListener(e.f[j])) {
+                                e.f.splice(j, 1);
+                            }
                         }
                         !e.f.length && delete e.f;
                     }
                     for (key in e.n) if (e.n[has](key) && e.n[key].f) {
                         const funcs = e.n[key].f;
-                        for (j = 0, jj = funcs.length; j < jj; j++) if (funcs[j] == f) {
-                            funcs.splice(j, 1);
-                            break;
+                        for (j = funcs.length - 1; j >= 0; j--) {
+                            if (matchListener(funcs[j])) {
+                                funcs.splice(j, 1);
+                            }
                         }
                         !funcs.length && delete e.n[key].f;
                     }
@@ -810,15 +854,15 @@
 
     /**
      * eve.alias @method
- *
+     *
      * Sets up namespace alias mappings for backward compatibility.
      * Allows translating top-level event namespaces from one name to another.
      * When an event is fired, registered, or removed with an aliased namespace,
      * it will be automatically translated to the target namespace.
- *
- * @param {object} aliases - object containing key-value pairs where keys are alias names
+     *
+     * @param {object} aliases - object containing key-value pairs where keys are alias names
      *   and values are the target namespace names they should be translated to
- *
+     *
      > Examples:
      | // Set up aliases
      | eve.alias({
@@ -832,8 +876,8 @@
      |
      | eve("OLD_NAMESPACE.event.name", data);
      | eve("new_namespace.event.name", data);
-    */
-    eve.alias = function(aliases) {
+     */
+    eve.alias = function (aliases) {
         if (typeof aliases === 'object' && aliases !== null) {
             namespace_aliases = namespace_aliases || {};
             for (const aliasName in aliases) {
@@ -846,11 +890,11 @@
 
     /**
      * eve.clearAliases @method
- *
+     *
      * Clears all namespace alias mappings.
- *
-    */
-    eve.clearAliases = function() {
+     *
+     */
+    eve.clearAliases = function () {
         for (const key in namespace_aliases) {
             if (namespace_aliases.hasOwnProperty(key)) {
                 delete namespace_aliases[key];
@@ -860,12 +904,12 @@
 
     /**
      * eve.getAliases @method
- *
+     *
      * Returns a copy of the current namespace alias mappings.
- *
- * @returns {object} copy of current alias mappings
-    */
-    eve.getAliases = function() {
+     *
+     * @returns {object} copy of current alias mappings
+     */
+    eve.getAliases = function () {
         const aliases = {};
         if (namespace_aliases) for (const key in namespace_aliases) {
             if (namespace_aliases.hasOwnProperty(key)) {
@@ -878,8 +922,8 @@
     /**
      * eve.is
      * @method
-    * Checks if the given event is registered with the given function.
-    * @type {function(*, *, *): boolean}
+     * Checks if the given event is registered with the given function.
+     * @type {function(*, *, *): boolean}
      */
     eve.is = function (name, f, group) {
         if (!name || typeof f !== 'function') {
@@ -930,7 +974,16 @@
         while (e.n) {
             if (e.f) {
                 for (j = 0, jj = e.f.length; j < jj; j++) {
-                    if (e.f[j] === f) {
+                    const lf = e.f[j];
+                    if (lf === f) {
+                        return true;
+                    }
+                    // Stored listener is wrapper for f
+                    if (lf && lf._eveOriginal === f) {
+                        return true;
+                    }
+                    // Caller passed wrapper, stored original
+                    if (f._eveOriginal && lf === f._eveOriginal) {
                         return true;
                     }
                 }
@@ -943,18 +996,18 @@
 
     /**
      * eve.once @method
- *
+     *
      * Binds given event handler with a given name to only run once then unbind itself.
      | eve.once("login", f);
      | eve("login"); // triggers f
      | eve("login"); // no listeners
      * Use @eve to trigger the listener.
- *
- * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
- * @param {function} f - event handler function
- *
- * @returns {function} same return function as @eve.on
-    */
+     *
+     * @param {string} name - name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+     * @param {function} f - event handler function
+     *
+     * @returns {function} same return function as @eve.on
+     */
     eve.once = function (name, f, group) {
         const f2 = function () {
             eve.off(name, f2, group);
@@ -966,6 +1019,11 @@
             }
             return apply;
         };
+
+        // Important: allow eve.off(name, f) to remove this once-handler before it runs.
+        // We keep a direct link between wrapper and original.
+        f2._eveOriginal = f;
+
         return eve.on(name, f2, group);
     };
 
@@ -1011,12 +1069,17 @@
         return container.data;
     };
 
+    eve.normalize = function (name){
+        if (Array.isArray(name)) return name;
+        if (typeof name === "string") return name.split(separator);
+    }
+
     /**
      * eve.version
      [ property (string) ]
- *
+     *
      * Current version of the library.
-    */
+     */
     eve.version = version;
     eve.toString = function () {
         return "You are running Eve " + version;

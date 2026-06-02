@@ -26,17 +26,18 @@
          * depending on the argument type.
          *
          * @constructor
-         * @param {(number|string|SVGElement|Array.<Element>|string)} [width] Width of the new surface,
+         * @param {(number|string|SVGElement|Array.<Element>|string)} [w] Width of the new surface,
          *        an existing SVG DOM node, an array of elements, or a CSS selector when combined with
          *        the `height` parameter being `null` or `undefined`.
-         * @param {(number|string|Object)} [height] Height of the new surface or attribute map applied
+         * @param {(number|string|Object)} [h] Height of the new surface or attribute map applied
          *        when the first argument is an element creation string.
+         * @param {document} doc - optional document in case of a shadow object
          * @returns {(Snap.Element|Snap.Paper|Snap.Set|null)} Wrapped element, drawing paper, set of
          *          elements, or `null` when a selector matches nothing.
          */
-        function Snap(w, h) {
+        function Snap(w, h, doc) {
             if (w) {
-                if (w.nodeType || (Snap._.glob.win.jQuery && w instanceof jQuery)) {
+                if (w.nodeType || (Snap.window().jQuery && w instanceof jQuery)) {
                     return wrap(w);
                 }
                 if (is(w, "array") && Snap.set) {
@@ -48,7 +49,7 @@
                 if (typeof w === "string") {
                     const match = w.trim().match(/^<((?!xml)[A-Za-z_][A-Za-z0-9-_.]*)\s*\/?>$/i);
                     if (match && match[1]) {
-                        const el = wrap(glob.doc.createElement(match[1]));
+                        const el = wrap(Snap.document(doc).createElement(match[1]));
                         if (typeof h === "object") {
                             el.attr(h);
                         }
@@ -57,7 +58,7 @@
                 }
                 if (h == null) {
                     try {
-                        w = glob.doc.querySelector(String(w));
+                        w = Snap.document(doc).querySelector(String(w));
                         return w ? wrap(w) : null;
                     } catch (e) {
                         return null;
@@ -67,7 +68,7 @@
             w = w == null ? "100%" : w;
             h = h == null ? "100%" : h;
             const PaperClass = Snap.getClass("Paper");
-            return new PaperClass(w, h);
+            return new PaperClass(w, h, doc);
         }
 
         Snap.toString = function () {
@@ -77,49 +78,45 @@
         var glob = {
             win: root.window || {},
             doc: (root.window && root.window.document) ? root.window.document : {},
+            shadows: []
         };
         Snap._.glob = glob;
 
-        Snap.window = function () {
-            return glob.win;
-        };
-
-        Snap.document = function (snp) {
-            return (snp) ? Snap(glob.doc) : glob.doc;
-        }
 
         Snap.setWindow = function (newWindow) {
             glob.win = newWindow;
             glob.doc = newWindow.document;
         }
 
-        Snap.setDocument  = function (doc){
+        Snap.setDocument = function (doc, force_top) {
             // Check if this is a shadow root - if so, create a document-like wrapper
-            if (typeof ShadowRoot !== 'undefined' && doc instanceof ShadowRoot) {
+            let doc_obj = doc;
+            if (typeof ShadowRoot !== "undefined" && doc instanceof ShadowRoot) {
                 const mainDoc = doc.ownerDocument || (root.window && root.window.document) || {};
-                glob.doc = {
+
+                doc_obj = {
                     // Element creation uses the main document (elements need proper context)
-                    createElement: function(...args) {
+                    createElement: function (...args) {
                         return mainDoc.createElement ? mainDoc.createElement(...args) : {};
                     },
-                    createElementNS: function(...args) {
+                    createElementNS: function (...args) {
                         return mainDoc.createElementNS ? mainDoc.createElementNS(...args) : {};
                     },
-                    createTextNode: function(...args) {
+                    createTextNode: function (...args) {
                         return mainDoc.createTextNode ? mainDoc.createTextNode(...args) : {};
                     },
-                    createComment: function(...args) {
+                    createComment: function (...args) {
                         return mainDoc.createComment ? mainDoc.createComment(...args) : {};
                     },
 
                     // Queries are scoped to the shadow root
-                    querySelector: function(...args) {
+                    querySelector: function (...args) {
                         return doc.querySelector ? doc.querySelector(...args) : null;
                     },
-                    querySelectorAll: function(...args) {
+                    querySelectorAll: function (...args) {
                         return doc.querySelectorAll ? doc.querySelectorAll(...args) : [];
                     },
-                    getElementsByTagName: function(tag) {
+                    getElementsByTagName: function (tag) {
                         // Shadow roots don't have getElementsByTagName, use querySelectorAll instead
                         return doc.querySelectorAll ? doc.querySelectorAll(tag) : [];
                     },
@@ -127,11 +124,37 @@
                     // Provide defaultView from main document (needed for getComputedStyle)
                     get defaultView() {
                         return mainDoc.defaultView || (root.window || {});
-                    }
+                    },
+                    _doc: doc
                 };
-            } else {
-                glob.doc = doc;
             }
+            if (force_top) {
+                glob.doc = doc_obj;
+            } else {
+                if (!glob.shadows.some(d => d === doc_obj || doc_obj._doc === d)) {
+                    glob.shadows.push(glob)
+                }
+            }
+        }
+
+        Snap.window = function () {
+            return glob.win;
+        };
+
+        Snap.document = function (el, snp) {
+            if (typeof el !== "object") {
+                snp = el;
+                el = undefined
+            }
+            if (el && glob.shadows.length) {
+                const doc = el.getRootNode ? el.getRootNode
+                    : (el.node ? el.node.getRootNode() : glob.doc)
+                let doc_ret = glob.shadows.find(d => d === doc || d._doc === doc);
+                if (doc_ret) {
+                    return (snp) ? Snap(doc_ret) : doc_ret;
+                }
+            }
+            return (snp) ? Snap(glob.doc) : glob.doc;
         }
 
         Snap.getProto = function (proto_name) {
@@ -144,6 +167,7 @@
                     return Snap.getClass("Fragment").prototype;
             }
         };
+
 
         Snap._dataEvents = false;
         Snap.enableDataEvents = function (off) {
@@ -313,16 +337,16 @@
             return hub[id];
         }
 
-        function $(el, attr) {
+        function $(el, attr, el_for_doc) {
             if (attr) {
                 if (el === "#text") {
-                    el = glob.doc.createTextNode(attr.text || attr["#text"] || "");
+                    el = Snap.document(el_for_doc).createTextNode(attr.text || attr["#text"] || "");
                 }
                 if (el === "#comment") {
-                    el = glob.doc.createComment(attr.text || attr["#text"] || "");
+                    el = Snap.document(el_for_doc).createComment(attr.text || attr["#text"] || "");
                 }
                 if (typeof el === "string") {
-                    el = $(el);
+                    el = $(el, undefined, el_for_doc);
                 }
                 if (typeof attr === "string") {
                     if (el.nodeType === 1) {
@@ -360,9 +384,9 @@
             } else {
                 const tag = el.toLowerCase();
                 if (svgTags[has](tag)) {
-                    el = glob.doc.createElementNS(xmlns, el);
+                    el = Snap.document(el_for_doc).createElementNS(xmlns, el);
                 } else {
-                    el = glob.doc.createElement(el);
+                    el = Snap.document(el_for_doc).createElement(el);
                 }
             }
             return el;
@@ -399,12 +423,20 @@
         if (root.mina) available_types.animation = root.mina.Animation;
 
         /**
-         * Type checking utility function
+         * Lightweight type-checking helper.
          * @function is
          * @private
-         * @param {*} o - Object to check type of
-         * @param {string} type - Type to check against ('finite', 'array', 'object', etc.)
-         * @returns {boolean} True if object is of specified type
+         * @param {*} o - Value to test.
+         * @param {string} type - Expected type name (case-insensitive). Common values:
+         *   - `finite` : checks numeric finiteness (uses `isFinite`).
+         *   - `array`  : checks arrays (`Array.isArray` or `instanceof Array`).
+         *   - `object` : plain object check.
+         *   - `element` : Snap element.
+         *   - `SVGElement`: SVG Dom element
+         *   - `HTMLElement`: HTML Dom element
+         *   - `DOMElement`: either SVGElement or HTMLElement
+         *   - other names are compared against `Object.prototype.toString` output.
+         * @returns {boolean} `true` if `o` matches the requested type, otherwise `false`.
          */
         function is(o, type) {
             type = Str.prototype.toLowerCase.call(type);
@@ -416,9 +448,17 @@
                 return true;
             }
             if (type === "svgelement") {
-                const name = o.constructor && o.constructor.name;
+                const name = (typeof o === "object") && o.constructor && o.constructor.name;
                 return o instanceof SVGElement ||
                     (name && name.startsWith("SVG") && name.endsWith("Element"));
+            }
+            if (type === "htmlelement") {
+                const name = (typeof o === "object") && o.constructor && o.constructor.name;
+                return o instanceof HTMLElement ||
+                    (name && name.startsWith("HTML") && name.endsWith("Element"));
+            }
+            if (type === "domelement") {
+                return is(o, "svgelement") || is(o, "htmlelement")
             }
             return type === "null" && o == null ||
                 type === typeof o && o !== null ||
@@ -542,9 +582,9 @@
          * @param {number|Object} x1 - X coordinate of first point or point object
          * @param {number|Object} y1 - Y coordinate of first point or point object
          * @param {number} x2 - X coordinate of second point
-         * @param {number} y2 - Y coordinate of second point
+         * @param {number} y2 - Y Coordinate of second point
          * @param {number} x3 - X coordinate of third point
-         * @param {number} y3 - Y coordinate of third point
+         * @param {number} y3 - Y Coordinate of third point
          * @returns {number} Angle in degrees
          */
         function angle(x1, y1, x2, y2, x3, y3) {
@@ -732,7 +772,7 @@
          * @returns {number} angle in degrees
          */
         Snap.angle = angle;
-       /**
+        /**
          * Snap.len @method
          *
          * Returns distance between two points
@@ -1105,67 +1145,67 @@
             return "#" + (16777216 | b | g << 8 | r << 16).toString(16).slice(1);
         });
         var toHex = function (color) {
-                const i = glob.doc.getElementsByTagName("head")[0] ||
-                        glob.doc.getElementsByTagName("svg")[0],
-                    red = "rgb(255, 0, 0)";
-                toHex = cacher(function (color) {
-                    if (color.toLowerCase() === "red") {
-                        return red;
-                    }
-                    i.style.color = red;
-                    i.style.color = color;
-                    const out = glob.doc.defaultView.getComputedStyle(i, E).getPropertyValue("color");
-                    return out === red ? null : out;
-                });
-                return toHex(color);
-            },
-            hsbtoString = function () {
-                return "hsb(" + [this.h, this.s, this.b] + ")";
-            },
-            hsltoString = function () {
-                return "hsl(" + [this.h, this.s, this.l] + ")";
-            },
-            rgbtoString = function () {
-                return this.opacity === 1 || this.opacity == null ?
-                    this.hex :
-                    "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
-            },
-            prepareRGB = function (r, g, b) {
-                if (g == null && is(r, "object") && "r" in r && "g" in r && "b" in
-                    r) {
-                    b = r.b;
-                    g = r.g;
-                    r = r.r;
+            const i = glob.doc.getElementsByTagName("head")[0] ||
+                    glob.doc.getElementsByTagName("svg")[0],
+                red = "rgb(255, 0, 0)";
+            toHex = cacher(function (color) {
+                if (color.toLowerCase() === "red") {
+                    return red;
                 }
-                if (g == null && is(r, string)) {
-                    const clr = Snap.getRGB(r);
-                    r = clr.r;
-                    g = clr.g;
-                    b = clr.b;
-                }
-                if (r > 1 || g > 1 || b > 1) {
-                    r /= 255;
-                    g /= 255;
-                    b /= 255;
-                }
+                i.style.color = red;
+                i.style.color = color;
+                const out = glob.doc.defaultView.getComputedStyle(i, E).getPropertyValue("color");
+                return out === red ? null : out;
+            });
+            return toHex(color);
+        };
+        var hsbtoString = function () {
+            return "hsb(" + [this.h, this.s, this.b] + ")";
+        };
+        var hsltoString = function () {
+            return "hsl(" + [this.h, this.s, this.l] + ")";
+        };
+        var rgbtoString = function () {
+            return this.opacity === 1 || this.opacity == null ?
+                this.hex :
+                "rgba(" + [this.r, this.g, this.b, this.opacity] + ")";
+        };
+        var prepareRGB = function (r, g, b) {
+            if (g == null && is(r, "object") && "r" in r && "g" in r && "b" in
+                r) {
+                b = r.b;
+                g = r.g;
+                r = r.r;
+            }
+            if (g == null && is(r, string)) {
+                const clr = Snap.getRGB(r);
+                r = clr.r;
+                g = clr.g;
+                b = clr.b;
+            }
+            if (r > 1 || g > 1 || b > 1) {
+                r /= 255;
+                g /= 255;
+                b /= 255;
+            }
 
-                return [r, g, b];
-            },
-            packageRGB = function (r, g, b, o) {
-                r = math.round(r * 255);
-                g = math.round(g * 255);
-                b = math.round(b * 255);
-                const rgb = {
-                    r: r,
-                    g: g,
-                    b: b,
-                    opacity: is(o, "finite") ? o : 1,
-                    hex: Snap.rgb(r, g, b),
-                    toString: rgbtoString,
-                };
-                is(o, "finite") && (rgb.opacity = o);
-                return rgb;
+            return [r, g, b];
+        };
+        var packageRGB = function (r, g, b, o) {
+            r = math.round(r * 255);
+            g = math.round(g * 255);
+            b = math.round(b * 255);
+            const rgb = {
+                r: r,
+                g: g,
+                b: b,
+                opacity: is(o, "finite") ? o : 1,
+                hex: Snap.rgb(r, g, b),
+                toString: rgbtoString,
             };
+            is(o, "finite") && (rgb.opacity = o);
+            return rgb;
+        };
         /**
          * Snap.color @method
          *
@@ -1469,6 +1509,10 @@
          * @returns {string} Normalized transform string
          */
         function svgTransform2string(tstr) {
+            if (typeof tstr !== "string" && typeof tstr === "object" && tstr.toTransformString) {
+                //if something goes wrong and we get a matrix.
+                tstr = tstr.toTransformString();
+            }
             const res = [];
             tstr = tstr.replace(/(?:^|\s)(\w+)\(([^)]+)\)/g,
                 function (all, name, params) {
@@ -1587,28 +1631,28 @@
 
         Snap._.transform2matrix = transform2matrix;
         Snap._unit2px = unit2px;
-        const contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
-            function (a, b) {
-                const adown = a.nodeType === 9 ? a.documentElement : a,
-                    bup = b && b.parentNode;
-                return a === bup || !!(bup && bup.nodeType === 1 && (
-                    adown.contains ?
-                        adown.contains(bup) :
-                        a.compareDocumentPosition &&
-                        a.compareDocumentPosition(bup) & 16
-                ));
-            } :
-            function (a, b) {
-                if (b) {
-                    while (b) {
-                        b = b.parentNode;
-                        if (b === a) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            };
+        // const contains = glob.doc.contains || glob.doc.compareDocumentPosition ?
+        //     function (a, b) {
+        //         const adown = a.nodeType === 9 ? a.documentElement : a,
+        //             bup = b && b.parentNode;
+        //         return a === bup || !!(bup && bup.nodeType === 1 && (
+        //             adown.contains ?
+        //                 adown.contains(bup) :
+        //                 a.compareDocumentPosition &&
+        //                 a.compareDocumentPosition(bup) & 16
+        //         ));
+        //     } :
+        //     function (a, b) {
+        //         if (b) {
+        //             while (b) {
+        //                 b = b.parentNode;
+        //                 if (b === a) {
+        //                     return true;
+        //                 }
+        //             }
+        //         }
+        //         return false;
+        //     };
 
         /**
          * Gets or creates a defs element for the given element
@@ -1769,7 +1813,7 @@
          */
         Snap.select = function (query) {
             query = Str(query).replace(/([^\\]):/g, "$1\\:");
-            return wrap(glob.doc.querySelector(query));
+            return wrap(Snap.document().querySelector(query));
         };
         /**
          * Snap.selectAll @method
@@ -1779,7 +1823,7 @@
          * @returns {Element} the current element
          */
         Snap.selectAll = function (query) {
-            const nodelist = glob.doc.querySelectorAll(query),
+            const nodelist = Snap.document().querySelectorAll(query),
                 set = (Snap.set || Array)();
             for (let i = 0; i < nodelist.length; ++i) {
                 set.push(wrap(nodelist[i]));
@@ -1851,10 +1895,10 @@
         // - element-class.js defines Element and registers it with Snap.registerClass("Element", Element)
         // - paper-class.js defines Paper and registers it with Snap.registerClass("Paper", Paper)
         // - fragment-class.js defines Fragment and registers it with Snap.registerClass("Fragment", Fragment)
-        
+
         // Note: Element.prototype methods (attr, css, registerRemoveFunction, cleanupAfterRemove, children, toJSON)
         // are now defined in element-class.js
-        
+
         function sanitize(svg) {
             const script_filter = /<script[\s\S]*\/script>/gmi;
             svg = svg.replace(script_filter, "");
@@ -1872,13 +1916,27 @@
          * Parses SVG fragment and converts it into a @Fragment
          *
          * @param {string} svg - SVG string
+         * @param {string|Array} filter_event - if provided, `eve.filter` is called on the string,
+         *        allowing pre-processing before adding to the DOM. The filter listener receives an
+         *        object with a `data` property containing the SVG string and should update that
+         *        property with the modified string.
+         * @param {SVGElement|HTMLElement} div - optional place to store the parsed object
          * @returns {Fragment} the @Fragment
          */
-        Snap.parse = function (svg, filter_event) {
+        Snap.parse = function (svg, filter_event, div) {
+            if (filter_event && is(filter_event, "DOMElement")) {
+                div = filter_event;
+                filter_event = undefined;
+            }
             const FragmentClass = Snap.getClass("Fragment");
             let f = glob.doc.createDocumentFragment(),
                 full = true;
-            const div = glob.doc.createElement("div");
+            const doc = (div && div.ownerDocument) ? div.ownerDocument : (f.ownerDocument || glob.doc);
+            const createdDiv = !div;
+            if (!div) {
+                div = doc.createElement("div");
+                f.appendChild(div);
+            }
             svg = fixHref(sanitize(Str(svg)));
 
             if (!svg.match(/^\s*<\s*svg(?:\s|>)/)) {
@@ -1897,6 +1955,9 @@
                     }
                 }
             }
+            if (createdDiv && div.parentNode) {
+                div.parentNode.removeChild(div);
+            }
             return new FragmentClass(f);
         };
 
@@ -1911,29 +1972,31 @@
          * @param {...any} varargs - SVG string
          * @returns {Fragment} the @Fragment
          */
-        Snap.fragment = function () {
-            const FragmentClass = Snap.getClass("Fragment");
-            const args = Array.prototype.slice.call(arguments, 0),
-                f = glob.doc.createDocumentFragment();
-            let i = 0;
-            const ii = args.length;
-            for (; i < ii; ++i) {
-                const item = args[i];
-                if (item.node && item.node.nodeType) {
-                    f.appendChild(item.node);
-                }
-                if (item.nodeType) {
-                    f.appendChild(item);
-                }
-                if (typeof item === "string") {
-                    f.appendChild(Snap.parse(item).node);
-                }
-            }
-            return new FragmentClass(f);
-        };
+        // Snap.fragment = function () {
+        //     const FragmentClass = Snap.getClass("Fragment");
+        //     const args = Array.prototype.slice.call(arguments, 0),
+        //         f = glob.doc.createDocumentFragment();
+        //     let i = 0;
+        //     const ii = args.length;
+        //     for (; i < ii; ++i) {
+        //         const item = args[i];
+        //         if (item.node && item.node.nodeType) {
+        //             f.appendChild(item.node);
+        //         }
+        //         if (item.nodeType) {
+        //             f.appendChild(item);
+        //         }
+        //         if (typeof item === "string") {
+        //             f.appendChild(Snap.parse(item).node);
+        //         }
+        //     }
+        //     return new FragmentClass(f);
+        // };
 
-        function make(name, parent) {
-            const res = $(name);
+        function make(name, parent, doc) {
+            // Pass doc parameter to $ for proper element creation context
+            // (important for shadow DOM and DocumentFragment support)
+            const res = $(name, null, doc || parent);
             parent.appendChild(res);
             const el = wrap(res);
             return el;
@@ -1964,7 +2027,7 @@
         }
 
         Snap._.wrap = wrap;
-        
+
 
         //MeasureText
         Snap.measureTextClientRect = function (text_el) {
@@ -2003,7 +2066,7 @@
             } else {
                 const attr = (this.type === "jquery") ?
                     this.node.attr(att) :
-                    $(this.node, att);
+                    $(this.node, att, this);
                 return attr;
             }
         });
@@ -2023,9 +2086,9 @@
                 });
             if (cssAttr[has](css)) {
                 attr[att] = "";
-                $(this.node, attr);
+                $(this.node, attr, this);
                 if (force_attribute) {
-                    $(this.node, attr);
+                    $(this.node, attr, this);
                     this.node.style[style] = E;
                 } else if (this.type === "jquery") { //we don't use jquery anymore. Just for backwords compatibility
                     this.node.css(style, value);
@@ -2035,7 +2098,7 @@
             } else if (css === "transform" && !(is(this.node, "SVGElement"))) {
                 this.node.style[style] = value;
             } else {
-                $(this.node, attr);
+                $(this.node, attr, this);
                 if (this.type === "jquery") {
                     this.node.attr(attr);
                 }
@@ -2058,6 +2121,8 @@
          * @param {string} url - URL
          * @param {function} callback - callback
          * @param {object} scope - #optional scope of callback
+         * @param {function} fail_callback - optional callback invoked on request failure
+         * @param {object} fail_scope - optional scope (`this`) for `fail_callback`
          * @returns {XMLHttpRequest} the XMLHttpRequest object, just in case
          */
         Snap.ajax = function (
@@ -2092,31 +2157,132 @@
                         "application/x-www-form-urlencoded");
                 }
                 if (callback) {
-                    eve.once("snap.ajax." + id + ".success", callback);
+                    console.log("[Snap.ajax] binding success callback", {id: id});
+                    eve.once(["snap", "ajax", id, "success"], (r) => {
+                        console.log("[Snap.ajax] success callback fired", {id: id, responseURL: url});
+                        callback(r);
+                        return "Done";
+                    });
                 }
                 if (fail_callback && fail_scope) {
                     fail_callback = fail_callback.bind(fail_scope);
                 }
                 if (fail_callback) {
-                    eve.once("snap.ajax." + id + ".fail", fail_callback);
+                    eve.once(["snap", "ajax", id, "fail"], fail_callback);
                 }
-                req.onreadystatechange = function () {
-                    // if (req.readyState !== 4) return;
-                    // if (req.status === 200 || req.status === 304 || req.status === 0) {
-                    //     eve(['snap', 'ajax', id, 'success'], scope, req);
-                    //     eve.unbind('snap.ajax.' + id + '.fail', fail_callback);
-                    // } else {
-                    //     eve(['snap', 'ajax', id, 'fail'], fail_scope, req);
-                    //     eve.unbind('snap.ajax.' + id + '.success', callback);
-                    // }
-                    if (this.readyState !== 4) return;
-                    if (this.status === 200 || this.status === 304 || this.status === 0) {
-                        eve(["snap", "ajax", id, "success"], scope, this);
-                        eve.unbind("snap.ajax." + id + ".fail", fail_callback);
-                    } else {
-                        eve(["snap", "ajax", id, "fail"], fail_scope, this);
-                        eve.unbind("snap.ajax." + id + ".success", callback);
+
+                // Firefox and some network-error cases can yield status===0 or trigger
+                // onerror/onabort/ontimeout instead of a clean status code. Make sure we
+                // always finish exactly once and clean up handlers.
+                let completed = false;
+
+                // TEMP DEBUG (remove after): basic ajax lifecycle info
+                // eslint-disable-next-line no-console
+                console.log("[Snap.ajax] start", {id: id, method: postData ? "POST" : "GET", url: Snap.fixUrl(url)});
+
+                const isSuccessful = function (xhr) {
+                    // Standard HTTP success codes
+                    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+                        return true;
                     }
+                    // Some legitimate local/file loads report status 0 but still provide data.
+                    // Treat status 0 as success only if we actually received a non-empty body.
+                    if (xhr.status === 0) {
+                        return !!(xhr.responseText && xhr.responseText.length);
+                    }
+                    return false;
+                };
+                const cleanup = function () {
+                    // Prevent leaks/double-fires if the browser triggers multiple end signals.
+                    req.onreadystatechange = null;
+                    req.onerror = null;
+                    req.onabort = null;
+                    req.ontimeout = null;
+                };
+                const done = function (type, xhr) {
+                    if (completed) {
+                        // eslint-disable-next-line no-console
+                        console.log("[Snap.ajax] done called twice (ignored)", {
+                            id: id,
+                            type: type,
+                            readyState: xhr && xhr.readyState,
+                            status: xhr && xhr.status
+                        });
+                        return;
+                    }
+                    completed = true;
+                    try {
+                        // eslint-disable-next-line no-console
+                        console.log("[Snap.ajax] done", {
+                            id: id,
+                            type: type,
+                            readyState: xhr && xhr.readyState,
+                            status: xhr && xhr.status,
+                            responseTextLength: xhr && xhr.responseText ? xhr.responseText.length : 0,
+                            responseURL: xhr && xhr.responseURL,
+                        });
+                        if (type === "success") {
+                            const res_eve = eve(["snap", "ajax", id, "success"], scope, xhr);
+                            console.log("[Snap.ajax] success", res_eve);
+                        } else {
+                            eve(["snap", "ajax", id, "fail"], fail_scope, xhr);
+                        }
+                    } finally {
+                        // Always unbind both. Even if event listeners throw, we must clean up.
+
+                        // if (callback) {
+                        //     console.log("[Snap.ajax] unbinding success callback", { id: id });
+                        //     eve.off("snap.ajax." + id + ".success", callback);
+                        // }
+                        // if (fail_callback) {
+                        //     eve.off("snap.ajax." + id + ".fail", fail_callback);
+                        // }
+                        cleanup();
+                    }
+                };
+
+                req.onreadystatechange = function () {
+                    if (this.readyState !== 4) {
+                        // eslint-disable-next-line no-console
+                        console.log("[Snap.ajax] readystatechange", {
+                            id: id,
+                            readyState: this.readyState,
+                            status: this.status,
+                            responseURL: this.responseURL
+                        });
+                        return;
+                    }
+                    done(isSuccessful(this) ? "success" : "fail", this);
+                };
+                req.onerror = function () {
+                    // eslint-disable-next-line no-console
+                    console.log("[Snap.ajax] error", {
+                        id: id,
+                        readyState: req.readyState,
+                        status: req.status,
+                        responseURL: req.responseURL
+                    });
+                    done("fail", req);
+                };
+                req.onabort = function () {
+                    // eslint-disable-next-line no-console
+                    console.log("[Snap.ajax] abort", {
+                        id: id,
+                        readyState: req.readyState,
+                        status: req.status,
+                        responseURL: req.responseURL
+                    });
+                    done("fail", req);
+                };
+                req.ontimeout = function () {
+                    // eslint-disable-next-line no-console
+                    console.log("[Snap.ajax] timeout", {
+                        id: id,
+                        readyState: req.readyState,
+                        status: req.status,
+                        responseURL: req.responseURL
+                    });
+                    done("fail", req);
                 };
                 if (req.readyState === 4) {
                     return req;
@@ -2163,35 +2329,80 @@
 //     }
 // };
         /**
-         * Snap.load @method
-         *
-         * Loads external SVG file as a @Fragment (see @Snap.ajax for more advanced AJAX)
-         *
-         * @param {string|arra} url - URL or [URL, post-data]
-         * @param {function} callback - callback
-         * @param {object} scope - #optional scope of callback
-         - data {svg string} allows for inclusion of cached data, and avoids the network call
+         * Loads an external SVG fragment via Ajax and parses it into Snap fragments.
+         * @param {ResourceSpecifier} url Resource URL or tuple of URL and POST payload.
+         * @param {Function} callback Invoked with the parsed fragment (and raw text) on success.
+         * @param {Object} [scope] Scope for {@link callback}.
+         * @param {string} [data] Raw SVG markup to parse instead of performing a request.
+         * @param {Function} [filter] Optional filter passed to {@link Snap.parse}.
+         * @param {Function} [fail] Called when the request fails.
+         * @param {Object} [fail_scope] Scope for {@link fail}.
+         * @param {Function} [_eve] Eve event dispatcher instance.
          */
-        Snap.load = function (
-            url, callback, scope, data, filter_event, failcallback) {
-            if (data) {
-                //already processed
-                var f = Snap.parse(data, filter_event);
-                scope ? callback.call(scope, f) : callback(f);
-            } else {
-                const process = function (req) {
-                    const f = Snap.parse(req.responseText, filter_event);
-                    scope ? callback.call(scope, f) : callback(f);
-                };
-                if (isArray(url)) {
-                    Snap.ajax(url[0], url[1], process, undefined, failcallback);
+        Snap.load = function (url, callback, scope, data, filter, fail, fail_scope, _eve) {
+            if (typeof scope === 'function') {
+                if (scope.isEve) {
+                    _eve = scope;
+                    scope = undefined;
                 } else {
-                    Snap.ajax(url, process, undefined, failcallback);
+                    _eve = fail_scope;
+                    fail_scope = data;
+                    fail = scope;
+                    data = undefined;
+                    filter = undefined;
                 }
             }
+
+            if (typeof data === 'function') {
+                if (data.isEve) {
+                    _eve = data;
+                    data = undefined;
+                } else {
+                    _eve = fail;
+                    fail_scope = filter;
+                    fail = data;
+                    data = undefined;
+                    filter = undefined;
+                }
+            }
+
+            if (typeof fail_scope === 'function' && fail_scope.isEve) {
+                _eve = fail_scope;
+                scope = fail_scope;
+            }
+
+            if (data) {
+                //already processed
+                var f = Snap.parse(data, filter);
+                scope ? callback.call(scope, f) : callback(f);
+            } else {
+                let post_data = undefined;
+                if (Array.isArray(url)) {
+                    post_data = url[1];
+                    url = url[0];
+                }
+                _eve = _eve || eve;
+                _eve(['com', 'load'], undefined, url);
+                Snap.ajax(url, post_data, function (req) {
+                    let data = undefined;
+                    if (req.responseText.startsWith('Base64:')) {
+                        data = atob(req.responseText.slice(7));
+                    }
+                    if (req.responseText.startsWith('LZBase64:')) {
+                        if (window.LZString !== undefined) {
+                            data = LZString.decompressFromBase64(req.responseText.slice(9));
+                        } else {
+                            fail.call(fail_scope, 'LZString is not loaded');
+                            return;
+                        }
+                    }
+                    const f = Snap.parse(data || req.responseText, filter);
+                    scope ?
+                        callback.call(scope, f, data || req.responseText) :
+                        callback(f, data || req.responseText);
+                }, undefined, fail, fail_scope);
+            }
         };
-
-
         const getOffset = function (elem) {
             const box = elem.getBoundingClientRect(),
                 doc = elem.ownerDocument,
@@ -2220,24 +2431,49 @@
          * @returns {(Snap.Element|null)} Snap element wrapper or `null` when nothing is found.
          */
         Snap.getElementByPoint = function (x, y) {
-            const paper = this,
-                svg = paper.canvas;
-            let target = glob.doc.elementFromPoint(x, y);
-            if (glob.win.opera && target.tagName === "svg") {
-                const so = getOffset(target),
-                    sr = target.createSVGRect();
-                sr.x = x - so.x;
-                sr.y = y - so.y;
-                sr.width = sr.height = 1;
-                const hits = target.getIntersectionList(sr, null);
-                if (hits.length) {
-                    target = hits[hits.length - 1];
+            const paper = this;
+            const candidates = [];
+
+            if (paper && paper.node) {
+                // prefer the node's root (can be ShadowRoot) if available
+                const rootNode = typeof paper.node.getRootNode === "function"
+                    ? paper.node.getRootNode()
+                    : paper.node.ownerDocument;
+                candidates.push(rootNode);
+                // if setDocument created a document-like wrapper, include it
+                if (rootNode && rootNode._doc) {
+                    candidates.push(rootNode._doc);
                 }
             }
-            if (!target) {
+
+            // finally try the global document
+            candidates.push(glob.doc);
+
+            // find a root that supports the hit-testing API
+            const root = candidates.find(r => r && (typeof r.elementsFromPoint === "function" || typeof r.elementFromPoint === "function"));
+            if (!root) return null;
+
+            try {
+                if (typeof root.elementsFromPoint === "function") {
+                    const hits = root.elementsFromPoint(x, y);
+                    if (hits && hits.length) {
+                        for (let i = 0; i < hits.length; i++) {
+                            const el = hits[i];
+                            if (!el) continue;
+                            if (el.tagName && el.tagName.toLowerCase() === "svg" && hits.length > 1) {
+                                continue;
+                            }
+                            return wrap(el);
+                        }
+                    }
+                    return null;
+                }
+
+                const target = root.elementFromPoint(x, y);
+                return target ? wrap(target) : null;
+            } catch (e) {
                 return null;
             }
-            return wrap(target);
         };
 
         if (!String.rand) {
@@ -2250,32 +2486,32 @@
              */
             String.rand = function (length, symbols, exclude) {
                 let result = [];
-                let characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                let characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
                 if (Array.isArray(symbols)) {
                     exclude = symbols;
                     symbols = undefined
                 }
                 if (symbols) {
-                    if (typeof symbols === 'string') {
+                    if (typeof symbols === "string") {
                         const s = symbols.toLowerCase();
-                        if (s === 'base64') {
-                            characters += '+/';
-                        } else if (s === 'url') {
-                            characters += '-.~_';
-                        } else if (s === 'alpha') {
+                        if (s === "base64") {
+                            characters += "+/";
+                        } else if (s === "url") {
+                            characters += "-.~_";
+                        } else if (s === "alpha") {
                             characters = characters.slice(10);
-                        } else if (s.startsWith('num')) {
-                            characters = '0123456789';
-                        } else if (s === 'upper') {
+                        } else if (s.startsWith("num")) {
+                            characters = "0123456789";
+                        } else if (s === "upper") {
                             characters = characters.slice(10, 36);
-                        } else if (s === 'lower') {
+                        } else if (s === "lower") {
                             characters = characters.slice(36);
                         }
-                    } else if (typeof symbols === 'number' &&
+                    } else if (typeof symbols === "number" &&
                         (symbols = Math.min((Math.floor(symbols)), 36))) {
                         characters = characters.slice(0, symbols);
                     } else {
-                        characters += '!@#$%^&*()_+-={}[]|;:,.<>?/\\"\'';
+                        characters += "!@#$%^&*()_+-={}[]|;:,.<>?/\\\"'";
                     }
 
                 }
@@ -2284,7 +2520,7 @@
                     result[i] = characters.charAt(
                         Math.floor(Math.random() * charactersLength));
                 }
-                result = result.join('');
+                result = result.join("");
                 return (exclude && exclude.includes(result)) ? String.rand(length, symbols, exclude) : result;
             };
         }
@@ -2297,7 +2533,7 @@
          * @param {function(Snap, Snap.Element, Snap.Paper, Window, Snap.Fragment, Function)} f Plugin callback.
          */
         Snap.plugin = function (f) {
-           f(Snap, Snap.getClass("Element"), Snap.getClass("Paper"), glob, Snap.getClass("Fragment"), eve, root.mina);
+            f(Snap, Snap.getClass("Element"), Snap.getClass("Paper"), glob, Snap.getClass("Fragment"), eve, root.mina);
         };
         root.Snap_ia = Snap;
         root.Snap = root.Snap || Snap;

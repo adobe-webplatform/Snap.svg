@@ -39,13 +39,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         }
         var f = Snap.parse(Str(filstr)),
             id = Snap._.id(),
-            width = paper.node.offsetWidth,
-            height = paper.node.offsetHeight,
-            filter = $("filter");
+            // width = paper.node.offsetWidth,
+            // height = paper.node.offsetHeight,
+            filter = $("filter", undefined, this);
         $(filter, {
             id: id,
             filterUnits: (local) ? "objectBoundingBox" : "userSpaceOnUse",
-        });
+        }, this);
         filter.appendChild(f.node);
         paper.defs.appendChild(filter);
         const ElementClass = Snap.getClass("Element");
@@ -63,7 +63,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
 
     eve.on("snap.util.getattr.filter", function () {
         eve.stop();
-        var p = $(this.node, "filter");
+        var p = $(this.node, "filter", this);
         if (p) {
             var match = Str(p).match(rgurl);
             return match && Snap.select(match[1]);
@@ -74,12 +74,12 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             eve.stop();
             var id = value.node.id;
             if (!id) {
-                $(value.node, {id: value.id});
+                $(value.node, {id: value.id}, this);
                 id = value.id;
             }
             $(this.node, {
                 filter: Snap.url(id),
-            });
+            }, this);
         }
         if (!value || value == "none") {
             eve.stop();

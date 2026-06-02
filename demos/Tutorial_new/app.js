@@ -86,9 +86,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 shadow.appendChild(container);
 
                 // Load Snap.svg library in shadow DOM context
-                const snapScript = document.createElement('script');
-                snapScript.src = '../../dist/snap.svg.js';
-                snapScript.onload = () => {
+                // const snapScript = document.createElement('script');
+                // snapScript.src = '../../dist/snap.svg.js';
+                // snapScript.onload = () => {
                     // Execute the demo JS after Snap is loaded
                     // Use Snap.setDocument() to work with shadow DOM
 
@@ -113,18 +113,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                             }
                             
                             // Tell Snap to use the shadow root as its document context
-                            Snap.setDocument(shadowRoot);
+                            window.Snap.setDocument(shadowRoot);
+                            window.Snap.setDocument(shadowRoot, true);
                             
                             // Execute the demo code
                             ${jsContent}
                             
                             // Restore regular document context after demo
-                            Snap.setDocument(document);
+                            window.Snap.setDocument(document, true);
                         })();
                     `;
                     shadow.appendChild(demoScript);
-                };
-                shadow.appendChild(snapScript);
+                // };
+                // shadow.appendChild(snapScript);
 
             } catch (error) {
                 console.error('Error loading demo:', demoDiv.id, error);

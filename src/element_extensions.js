@@ -461,6 +461,8 @@
 
 
         let old_remove = Element.prototype.remove;
+        let old_select = Element.prototype.select;
+        let old_selectAll = Element.prototype.selectAll;
 
         /**
          * Removes the element from the DOM along with any associated linked resources and partners.
@@ -512,6 +514,176 @@
             return old_remove.bind(this)();
         };
 
+        function replaceNumericIdSelectors(cssQuery) {
+            const regex = /#(\d[\w-]*)/g;
+            return cssQuery.replace(regex, (_, id) => `[id="${id}"]`);
+        }
+
+        function normalizeSearchPathElement(value) {
+            if (!value) return null;
+            const el = Snap(value.node || value);
+            if (!el || !el.node) return null;
+            if (el.type !== "svg") return null;
+            return el;
+        }
+
+        function getSortedSearchRoots(el) {
+            const roots = [el];
+            const paths = el._searchPaths;
+            if (!paths || !paths.length) {
+                return roots;
+            }
+            paths.forEach((p) => roots.push(p));
+
+            roots.sort((a, b) => {
+                if (a === b) return 0;
+                if (a.isAbove(b)) return -1;
+                if (a.isBelow(b)) return 1;
+                return 0;
+            });
+
+            return roots;
+        }
+
+        /**
+         * Adds an additional SVG root as a search path for cross-paper select/selectAll.
+         * Search paths are stored lazily and kept sorted by DOM position.
+         *
+         * @function Snap.Element#searchPathAdd
+         * @param {Paper|SVGElement|Snap.Element} paperOrSvg Search-root paper/SVG.
+         * @returns {Snap.Element} Current element for chaining.
+         */
+        Element.prototype.searchPathAdd = function (paperOrSvg) {
+            const target = normalizeSearchPathElement(paperOrSvg);
+            if (!target) return this;
+
+            if (target === this) return this;
+
+            // Exclude roots that are in the same ancestry branch as this element.
+            if (this.isChildOf(target) || target.isChildOf(this)) return this;
+
+            this._searchPaths = this._searchPaths || [];
+            this._searchPathListeners = this._searchPathListeners || {};
+
+            if (this._searchPaths.includes(target)) return this;
+
+            this._searchPaths.push(target);
+            this._searchPaths.sort((a, b) => {
+                if (a === b) return 0;
+                if (a.isAbove(b)) return -1;
+                if (a.isBelow(b)) return 1;
+                return 0;
+            });
+
+            if (!this._searchPathListeners[target.id]) {
+                const owner = this;
+                target.registerRemoveFunction(function () {
+                    owner.searchPathRemove(target);
+                });
+                this._searchPathListeners[target.id] = true;
+            }
+
+            return this;
+        };
+
+        /**
+         * Removes an SVG root from this element's search paths, or clears .
+         *
+         * @function Snap.Element#searchPathRemove
+         * @param {Paper|SVGElement|Snap.Element|null} paperOrSvg Search-root paper/SVG.
+         * @returns {Snap.Element} Current element for chaining.
+         */
+        Element.prototype.searchPathRemove = function (paperOrSvg) {
+            if (!paperOrSvg) {
+                delete this._searchPaths;
+                delete this._searchPathListeners;
+                return this;
+            }
+            const target = normalizeSearchPathElement(paperOrSvg);
+
+            if (!target || !this._searchPaths || !this._searchPaths.length) return this;
+
+            const index = this._searchPaths.indexOf(target);
+            if (index >= 0) this._searchPaths.splice(index, 1);
+
+            if (!this._searchPaths.length) {
+                delete this._searchPaths;
+                delete this._searchPathListeners;
+            }
+
+            return this;
+        };
+
+        /**
+         * Returns the first descendant matching the selector, including registered search paths.
+         *
+         * @function Snap.Element#select
+         * @param {string} query CSS selector compatible with SVG.
+         * @returns {Snap.Element|null} Wrapped element or null.
+         */
+        Element.prototype.select = function (query) {
+            query = replaceNumericIdSelectors(query);
+
+            if (!this._searchPaths || !this._searchPaths.length) {
+                return old_select.call(this, query);
+            }
+
+            const roots = getSortedSearchRoots(this);
+            for (let i = 0; i < roots.length; ++i) {
+                const found = roots[i].node.querySelector(query);
+                if (found) return Snap(found);
+            }
+            return null;
+        };
+
+        /**
+         * Returns all descendants matching the selector, including registered search paths.
+         *
+         * @function Snap.Element#selectAll
+         * @param {string} query CSS selector compatible with SVG.
+         * @returns {Array<Element>|Set} Collection containing all matches.
+         */
+        Element.prototype.selectAll = function (query) {
+            query = replaceNumericIdSelectors(query);
+
+            if (!this._searchPaths || !this._searchPaths.length) {
+                return old_selectAll.call(this, query);
+            }
+
+            const set = (Snap.set || Array)();
+            const seenNodes = new Set();
+            const roots = getSortedSearchRoots(this);
+
+            for (let r = 0; r < roots.length; ++r) {
+                const nodelist = roots[r].node.querySelectorAll(query);
+                for (let i = 0; i < nodelist.length; ++i) {
+                    if (!seenNodes.has(nodelist[i])) {
+                        seenNodes.add(nodelist[i]);
+                        set.push(Snap(nodelist[i]));
+                    }
+                }
+            }
+
+            return set;
+        };
+
+        const HIDE_POINTER_EVENTS_DATA_KEY = "_ia_hide_prev_pointer_events";
+        const HIDE_POINTER_EVENTS_INIT_KEY = "_ia_hide_pointer_events_initialized";
+
+        function getPointerEventsState(el) {
+            const attrValue = el.attr("pointer-events");
+            return attrValue == null ? "" : ("" + attrValue).trim();
+        }
+
+        function restorePointerEventsState(el, state) {
+            const attrValue = typeof state === "string" ? state : "";
+            if (attrValue) {
+                el.attr("pointer-events", attrValue);
+            } else {
+                el.attr({"pointer-events": null});
+            }
+        }
+
         /**
          * Hides the element by setting its display style to 'none'.
          *
@@ -519,7 +691,15 @@
          * @returns {void}
          */
         Element.prototype.hide = function () {
-            this.setStyle("display", "none");
+            if (!this.data(HIDE_POINTER_EVENTS_INIT_KEY)) {
+                this.data(HIDE_POINTER_EVENTS_DATA_KEY, getPointerEventsState(this));
+                this.data(HIDE_POINTER_EVENTS_INIT_KEY, true);
+            }
+
+            // this.attr("pointer-events", "none");
+
+            // this.setStyle("display", "none");
+            this.setStyle("visibility", "hidden");
         }
 
         /**
@@ -529,7 +709,25 @@
          * @returns {void}
          */
         Element.prototype.show = function () {
-            this.setStyle("display", "");
+            if (this.data(HIDE_POINTER_EVENTS_INIT_KEY)) {
+                const prevState = this.data(HIDE_POINTER_EVENTS_DATA_KEY);
+
+                // restorePointerEventsState(this, prevState);
+            }
+            this.setStyle("visibility", "inherit");
+        }
+
+        /**
+         * Returns true if the element is currently hidden (via visibility or display).
+         *
+         * @function Snap.Element#isHidden
+         * @returns {boolean}
+         */
+        Element.prototype.isHidden = function () {
+            return this.node.style.visibility === 'hidden' ||
+                this.attr('visibility') === 'hidden' ||
+                this.node.style.display === 'none' ||
+                this.attr('display') === 'none';
         }
 
         /**
@@ -555,7 +753,8 @@
         Element.prototype.hideSlowly = function (time, after) {
             if (time === undefined) time = 500;
             this.animate({opacity: 0}, time, undefined, () => {
-                this.setStyle("display", "none")
+                // this.setStyle("display", "none")
+                this.hide();
                 typeof after === "function" && after();
             });
         }
@@ -571,7 +770,8 @@
         Element.prototype.showSlowly = function (time, after) {
             if (time === undefined) time = 500;
             let opacity = +this.attr("opacity") || 1;
-            this.setStyle({"display": "", opacity: 0});
+            this.setStyle({opacity: 0});
+            this.show();
             this.animate({opacity: opacity}, time, undefined, () => {
                     typeof after === "function" && after()
                 }
@@ -1810,13 +2010,13 @@
          * @param {Snap.Matrix|string|boolean} [prev_trans] Previous transformation matrix to build upon.
          * @param {number} [cx=0] X offset to subtract from translation.
          * @param {number} [cy=0] Y offset to subtract from translation.
-         * @param {boolean} [use_bbox_cache] Whether to use bounding box cache.
+         * @param {boolean} [use_cache] Whether to use bounding box cache.
          * @returns {Snap.Element} The element itself for chaining.
          */
         Element.prototype.translateAnimate = function (duration,
                                                        x, y,
                                                        prev_trans, cx, cy,
-                                                       use_bbox_cache,
+                                                       use_cache,
                                                        easing) {
 
             easing = easing || mina.easeinout;
@@ -1826,7 +2026,7 @@
             }
 
             if (typeof cx === "boolean") {
-                use_bbox_cache = cx;
+                use_cache = cx;
                 cx = 0;
                 cy = 0;
             } else if (isNaN(cx) || isNaN(cy)) {
@@ -1847,7 +2047,7 @@
             const matrix = prev_trans.clone().multLeft(trans_matrix);
 
             let cache_function;
-            if (use_bbox_cache) cache_function = () => this.transform(matrix, use_bbox_cache, true); //The last parameter forces change of cache
+            if (use_cache) cache_function = () => this.transform(matrix, use_cache, true); //The last parameter forces change of cache
 
             return this.animateTransform(matrix, duration, easing, cache_function);
 
@@ -3291,10 +3491,9 @@
             const start = mina.time();
             const end = start + duration;
 
-            const set = function (res) {
+            const set = function (res, done) {
                 let step_matrix;
                 let t = res[0];
-                const done = t >= .99999;
 
                 if (matrixEasingFn) {
                     const easedMatrix = matrixEasingFn(t);
@@ -3330,7 +3529,7 @@
                 } else {
                     if ((matrixEasingFn || transformInterpolator) &&
                         !step_matrix.equals(matrix, 1e-3)
-                    ){
+                    ) {
                         //end matrix is sufficiently different from target, suggesting special easing function or interpolator overwrites target
                         el.transform(step_matrix);
                     } else {
@@ -3732,8 +3931,9 @@
             }
 
             const resolveTransform = function (progress) {
-                const clamped = Math.max(0, Math.min(1, progress || 0));
-                const resolver = transform_t.call(el, clamped);
+                // const clamped = Math.max(0, Math.min(1, progress || 0));
+                // const resolver = transform_t.call(el, clamped);
+                const resolver = transform_t.call(el, progress);
                 return (typeof resolver === "function") ? resolver : null;
             };
 
@@ -3770,10 +3970,9 @@
             const start = mina.time();
             const end = start + duration;
 
-            const set = function (res) {
+            const set = function (res, done) {
                 perfStats.frames++;
                 const t = res[0];
-                const done = t >= .99999;
                 const transformFn = resolveTransform(done ? 1 : t);
                 applyTransform(transformFn);
             };
@@ -3935,12 +4134,12 @@
             const dom_partner = el._dom_partner;
             const element_partner = el._element_partner;
 
-            const set = function (res) {
+            const set = function (res, done) {
                 // console.log("anim", cur);
 
                 let t = res[0];
 
-                let done = t >= .99999;
+                // let done = t >= .99999;
 
                 t = easing(t);
                 let extra = 0;
@@ -4257,7 +4456,7 @@
 
                 const p1 = points[0], p2 = points[1], p3 = points[2], p4 = points[3], p5 = points[4];
 
-                //determine ellipse equation from five points: ax^2+by^2+cxy+dx+ey+1=0
+                //determine ellipse equation from five points: ax^2+by^2+cxy+dx+ey+F = 0
                 const matrix = [[p1.x ** 2, p1.y ** 2, p1.x * p1.y, p1.x, p1.y], [p2.x ** 2, p2.y ** 2, p2.x * p2.y, p2.x, p2.y], [p3.x ** 2, p3.y ** 2, p3.x * p3.y, p3.x, p3.y], [p4.x ** 2, p4.y ** 2, p4.x * p4.y, p4.x, p4.y], [p5.x ** 2, p5.y ** 2, p5.x * p5.y, p5.x, p5.y],];
 
                 let usolve;
@@ -4453,8 +4652,8 @@
                 case "polygon":
                 case "polyline":
                 case "path":
-                    if (!regressor && !root.ss) return null;
-                    regressor = regressor ? regressor : root.ss.linearRegression;
+                    if (!regressor && !root.ss && !root.math && !root.math.linearRegression) return null;
+                    regressor = regressor ? regressor : root.math.linearRegression || root.ss.linearRegression;
                     const l = el.getTotalLength();
                     const inc = l / sample;
                     const points = [];
@@ -4649,6 +4848,7 @@
          * @returns {void}
          */
         Element.prototype.addMessage = function (message, eve, in_event = "message", out_event = "clear_message") {
+            this.removeMessage();
             let in_fun = () => {
                 // let st = ["gui", "message"];
                 eve(in_event, undefined, message);
@@ -4769,11 +4969,14 @@
                 }
                 // console.log("ratios", width / height, bbox.width / bbox.height);
             }
+            // getBitmap may be called while an element is hidden using either display or visibility.
+            // Force a visible snapshot state, then restore both attributes immediately.
             let disp = this.attr("display");
-            this.attr({display: ""});
+            let visibility = this.attr("visibility");
+            this.attr({display: "", visibility: "visible"});
             let svg_data = this.svgEncapsulateBox(this, border, width, height,
                 bbox, defs);
-            this.attr({display: disp});
+            this.attr({display: disp, visibility: visibility});
 
             let canvas = document.createElement("canvas");
 

@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2025-12-15
+// build: 2026-06-02
 
 // @ts-nocheck
 // Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
@@ -63,8 +63,10 @@
     let global_skip = 0;
     let expectedFrameDuration = 0;
     const requestAnimFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
-        setTimeout(callback, 16, new Date().getTime());
-        return true;
+        return setTimeout(callback, 16);
+    };
+    const cancelAnimFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.oCancelAnimationFrame || window.msCancelAnimationFrame || function (id) {
+        return clearTimeout(id);
     };
     let lastTimeStamp;
     const nativeSetTimeout = window.setTimeout ? window.setTimeout.bind(window) : function (callback) {
@@ -104,6 +106,7 @@
     /**
      * @callback MinaSetter
      * @param {AnimationValue} value The interpolated value to apply.
+     * @param {boolean} [done] True when the animation reaches its end value.
      * @returns {void}
      */
 
@@ -146,6 +149,7 @@
             len++;
             const d = a.dur / a.spd;
             a.s = (b - a.b) / d;
+            const isDone = a.s >= 1;
             if (a.s >= 1) {
                 delete animations[i];
                 if (last === a) last = undefined;
@@ -168,7 +172,7 @@
                 }
                 a._skip_step = a.skip;
             }
-            a.update();
+            a.update(isDone);
         }
         requestID = len ? requestAnimFrame(frame) : false;
     }
@@ -232,7 +236,7 @@
         };
     }
 
-    function createTimeoutEntry(callback, delay, args) {
+    function createTimeoutEntry(callback, delay, args, useAnimationFrame) {
         const id = TIMEOUT_PREFIX + (++timeoutCounter);
         const entry = {
             id,
@@ -241,6 +245,8 @@
             start: null,
             remaining: Math.max(0, delay || 0),
             nativeHandle: null,
+            rafHandle: null,
+            useAnimationFrame: !!useAnimationFrame,
             paused: isGlobalPaused,
             cleared: false,
         };
@@ -251,21 +257,54 @@
         return id;
     }
 
+    function clearManagedTimeoutHandles(entry) {
+        if (!entry) {
+            return;
+        }
+        if (entry.nativeHandle != null) {
+            nativeClearTimeout(entry.nativeHandle);
+            entry.nativeHandle = null;
+        }
+        if (entry.rafHandle != null) {
+            cancelAnimFrame(entry.rafHandle);
+            entry.rafHandle = null;
+        }
+    }
+
+    function armTimeoutWithAnimationFrame(entry) {
+        const tick = function () {
+            const current = managedTimeouts.get(entry.id);
+            if (!current || current.cleared || current.paused) {
+                return;
+            }
+            const elapsed = current.start != null ? (timer() - current.start) : current.remaining;
+            if (elapsed >= current.remaining) {
+                runManagedTimeout(current.id, "raf");
+                return;
+            }
+            current.rafHandle = requestAnimFrame(tick);
+        };
+        entry.rafHandle = requestAnimFrame(tick);
+    }
+
     function armTimeout(entry, wait) {
         entry.remaining = Math.max(0, wait || 0);
         entry.start = timer();
         entry.nativeHandle = nativeSetTimeout(function () {
-            runManagedTimeout(entry.id);
+            runManagedTimeout(entry.id, "native");
         }, entry.remaining);
+        if (entry.useAnimationFrame) {
+            armTimeoutWithAnimationFrame(entry);
+        }
         entry.paused = false;
     }
 
-    function runManagedTimeout(id) {
+    function runManagedTimeout(id, source) {
         const entry = managedTimeouts.get(id);
         if (!entry || entry.cleared) {
             return;
         }
-        entry.nativeHandle = null;
+        clearManagedTimeoutHandles(entry);
         if (isGlobalPaused) {
             entry.paused = true;
             entry.remaining = 0;
@@ -273,6 +312,11 @@
         }
         entry.cleared = true;
         managedTimeouts.delete(id);
+        // if (source === "raf") {
+        //     console.log("[mina.setTimeoutAmin] timeout executed via requestAnimationFrame", id);
+        // } else if (source === "native"){
+        //     console.log("[mina.setTimeoutAmin] timeout executed via regular", id);
+        // }
         entry.callback && entry.callback.apply(undefined, entry.args);
     }
 
@@ -280,12 +324,9 @@
         if (!entry || entry.cleared || entry.paused) {
             return;
         }
-        if (entry.nativeHandle != null) {
-            nativeClearTimeout(entry.nativeHandle);
-            const elapsed = entry.start != null ? (timer() - entry.start) : 0;
-            entry.remaining = Math.max(0, entry.remaining - elapsed);
-        }
-        entry.nativeHandle = null;
+        const elapsed = entry.start != null ? (timer() - entry.start) : 0;
+        entry.remaining = Math.max(0, entry.remaining - elapsed);
+        clearManagedTimeoutHandles(entry);
         entry.paused = true;
     }
 
@@ -303,9 +344,7 @@
         }
         entry.cleared = true;
         entry.paused = false;
-        if (entry.nativeHandle != null) {
-            nativeClearTimeout(entry.nativeHandle);
-        }
+        clearManagedTimeoutHandles(entry);
         managedTimeouts.delete(id);
         return true;
     }
@@ -552,9 +591,10 @@
      * Applies the easing function and updates the animated value.
      *
      * @this {Animation}
+     * @param {boolean} [isDone=false] True when the animation reaches its end value.
      * @returns {void}
      */
-    function update() {
+    function update(isDone) {
         let chng = false;
         if (this._lastRev !== undefined && this._lastRev !== this.rev) {
             chng = true;
@@ -585,7 +625,7 @@
             res[j] = s + (e - s) * this.easing(t);
         }
 
-        this.set(is_arr ? res : res[0]);
+        this.set(is_arr ? res : res[0], !!isDone);
         this._lastRes = res;
         this._lastRev = this.rev;
 
@@ -783,29 +823,78 @@
     /**
      * Back-in easing that overshoots slightly before accelerating.
      *
+     * @param {number} [s_param=1.70158] Overshoot amount.
      * @param {number} n Normalized progress in the `[0, 1]` range.
      * @returns {number}
      */
-    mina.backin = function (n) {
+    mina.backin = function (s_param, n) {
+        if (n === undefined) {
+            n = s_param;
+            s_param = undefined;
+        }
         if (n == 1) {
             return 1;
         }
-        const s = 1.70158;
+        const s = s_param !== undefined ? +s_param : 1.70158;
         return n * n * ((s + 1) * n - s);
+    };
+
+    mina.backin.withParams = function (s_param) {
+        return function (n) {
+            return mina.backin(s_param, n);
+        };
     };
     /**
      * Back-out easing that overshoots the end value before settling.
      *
+     * @param {number} [s_param=1.70158] Overshoot amount.
      * @param {number} n Normalized progress in the `[0, 1]` range.
      * @returns {number}
      */
-    mina.backout = function (n) {
+    mina.backout = function (s_param, n) {
+        if (n === undefined) {
+            n = s_param;
+            s_param = undefined;
+        }
         if (n == 0) {
             return 0;
         }
         n = n - 1;
-        const s = 1.70158;
+        const s = s_param !== undefined ? +s_param : 1.70158;
         return n * n * ((s + 1) * n + s) + 1;
+    };
+
+    mina.backout.withParams = function (s_param) {
+        return function (n) {
+            return mina.backout(s_param, n);
+        };
+    };
+    /**
+     * Symmetric back-both easing combining easeInBack and easeOutBack behaviors.
+     * Starts with a dip backward, crosses midway, and overshoots before stopping.
+     *
+     * @param {number} [s_param=1.70158] Overshoot amount (multiplied internally).
+     * @param {number} n Normalized progress `[0, 1]`.
+     * @returns {number}
+     */
+    mina.backInOut = function (s_param, n) {
+        if (n === undefined) {
+            n = s_param;
+            s_param = undefined;
+        }
+        const s = (s_param !== undefined ? +s_param : 1.70158) * 1.525;
+        n *= 2;
+        if (n < 1) {
+            return 0.5 * (n * n * ((s + 1) * n - s));
+        }
+        n -= 2;
+        return 0.5 * (n * n * ((s + 1) * n + s) + 2);
+    };
+
+    mina.backInOut.withParams = function (s_param) {
+        return function (n) {
+            return mina.backInOut(s_param, n);
+        };
     };
     /**
      * Elastic easing with optional amplitude and period customization.
@@ -1948,8 +2037,12 @@
      * @param {number} n Normalized progress `[0, 1]`.
      * @returns {number}
      */
-    mina.backInOut = function (n) {
-        const s = 1.70158 * 1.525;
+    mina.backInOut = function (s_param, n) {
+        if (n === undefined) {
+            n = s_param;
+            s_param = undefined;
+        }
+        const s = (s_param !== undefined ? +s_param : 1.70158) * 1.525;
         n *= 2;
         if (n < 1) {
             return 0.5 * (n * n * ((s + 1) * n - s));
@@ -2485,12 +2578,14 @@
     const non_easing_functions = {
         Animation: true,
         getById: true,
+        getEasings: true,
         isEasing: true,
         anim: true,
         time: true,
         setSpeed: true,
         setSkip: true,
         setTimeout: true,
+        setTimeoutAmin: true,
         setTimeoutNow: true,
         setInterval: true,
         pauseAll: true,
@@ -2510,6 +2605,39 @@
      */
     mina.isEasing = function (name) {
         return mina.hasOwnProperty(name) && !non_easing_functions[name]
+    };
+
+    const get_easings_excluded_names = {
+        compose: true,
+        delay: true
+    };
+
+    /**
+     * Returns easing function names registered on the mina namespace.
+     *
+     * @param {boolean} [unique=false] When `true`, only returns one name per unique function reference.
+     * @returns {string[]}
+     */
+    mina.getEasings = function (unique) {
+        const names = Object.keys(mina).filter(function (name) {
+            return mina.isEasing(name)
+                && !get_easings_excluded_names[name]
+                && typeof mina[name] === "function";
+        });
+
+        if (!unique) {
+            return names;
+        }
+
+        const seen = new Set();
+        return names.filter(function (name) {
+            const fn = mina[name];
+            if (seen.has(fn)) {
+                return false;
+            }
+            seen.add(fn);
+            return true;
+        });
     };
 
     /**
@@ -2622,7 +2750,21 @@
      */
     mina.setTimeout = function (callback, deley, ...args) {
         const delay = Math.max(0, (+deley || 0) * global_speed);
-        return createTimeoutEntry(callback, delay, args);
+        return createTimeoutEntry(callback, delay, args, false);
+    }
+
+    /**
+     * Schedules a timeout that races native timeout and animation-frame polling,
+     * executing whichever path reaches the target delay first.
+     *
+     * @param {Function} callback Handler to invoke.
+     * @param {number} deley Delay in milliseconds (affected by `setSpeed`).
+     * @param {...any} args Optional arguments forwarded to the callback.
+     * @returns {number}
+     */
+    mina.setTimeoutAmin = function (callback, deley, ...args) {
+        const delay = Math.max(0, (+deley || 0) * global_speed);
+        return createTimeoutEntry(callback, delay, args, true);
     }
 
     /**

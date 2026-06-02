@@ -51,11 +51,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             }
             !mask.node.id && $(mask.node, {
                 id: mask.id
-            });
+            }, this);
             mask.attrMonitor("id");
             $(this.node, {
                 mask: URL(mask.id)
-            });
+            }, this);
             this.attrMonitor("mask");
         }
     });
@@ -85,11 +85,11 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 clip.node.appendChild(value.node);
                 !clip.node.id && $(clip.node, {
                     id: clip.id
-                });
+                }, this);
             }
             $(this.node, {
                 "clip-path": URL(clip.node.id || clip.id)
-            });
+            }, this);
             this.attrMonitor("clip-path");
             this.clearCHull();
         }
@@ -112,7 +112,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                     if (!value.node.id) {
                         $(value.node, {
                             id: value.id
-                        });
+                        }, this);
                     }
                     var fill = URL(value.node.id);
                 } else {
@@ -126,7 +126,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                         if (!grad.node.id) {
                             $(grad.node, {
                                 id: grad.id
-                            });
+                            }, this);
                         }
                         fill = URL(grad.node.id);
                     } else {
@@ -138,7 +138,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             }
             const attrs = {};
             attrs[name] = fill;
-            $(this.node, attrs);
+            $(this.node, attrs, this);
             this.node.style[name] = E;
             this.attrMonitor(name);
         };
@@ -209,7 +209,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             value = Snap.path.toAbsolute(value);
         }
         this.clearCHull();
-        $(this.node, {d: value});
+        $(this.node, {d: value}, this);
     })(-1);
     eve.on("snap.util.attr.points", function (value) {
         if (Array.isArray(value)) {
@@ -268,7 +268,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         }
         $(this.node, {
             viewBox: vb
-        });
+        }, this);
         this.attrMonitor("viewBox");
         eve.stop();
     })(-1);
@@ -282,7 +282,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             $(this.node, {
                 rx: value,
                 ry: value
-            });
+            }, this);
             this.attrMonitor("rx").attrMonitor("ry");
 
             this.clearCHull();
@@ -327,7 +327,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 } else {
                     tp = $("textPath", {
                         "xlink:href": "#" + id
-                    });
+                    }, this);
                     while (node.firstChild) {
                         tp.appendChild(node.firstChild);
                     }
@@ -343,7 +343,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             let i = 0;
             const node = this.node,
                 tuner = function (chunk) {
-                    const out = $("tspan");
+                    const out = $("tspan", undefined, this);
                     if (is(chunk, "array")) {
                         for (let i = 0; i < chunk.length; ++i) {
                             const newChild = tuner(chunk[i]);
@@ -375,7 +375,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         this.clearCHull();
         value = Snap.fixUrl(value);
         if (value) {
-            $(this.node, {href: value});
+            $(this.node, {href: value}, this);
         } else {
             this.node.removeAttribute("href");
         }
@@ -385,7 +385,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
     eve.on("snap.util.attr.src", function (value) {
         value = Snap.fixUrl(value);
         if (value) {
-            $(this.node, {src: value});
+            $(this.node, {src: value}, this);
         } else {
             this.node.removeAttribute("src");
         }
@@ -398,7 +398,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             value += "px";
         }
         if (force_attribute) {
-            $(this.node, {"font-size": value});
+            $(this.node, {"font-size": value}, this);
             this.node.style.fontSize = E;
         } else {
             this.node.style.fontSize = value;
@@ -461,7 +461,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 } else if (value.type == "marker") {
                     let id = value.node.id;
                     if (!id) {
-                        $(value.node, {id: value.id});
+                        $(value.node, {id: value.id}, this);
                         value.attrMonitor("id");
                         id = value.id;
                     }
@@ -473,7 +473,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 if (force_attribute) {
                     const attrs = {};
                     attrs[attrName] = markerValue;
-                    $(this.node, attrs);
+                    $(this.node, attrs, this);
                     this.node.style[name] = E;
                 } else {
                     this.node.style[name] = markerValue;
@@ -496,9 +496,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         eve.on("snap.util.attr.markerMid", setter("mid"))(-1);
     }());
     eve.on("snap.util.getattr.r", function () {
-        if (this.type == "rect" && $(this.node, "rx") == $(this.node, "ry")) {
+        if (this.type == "rect" && $(this.node, "rx", this) == $(this.node, "ry", this)) {
             eve.stop();
-            return $(this.node, "rx");
+            return $(this.node, "rx", this);
         }
     })(-1);
 
@@ -551,7 +551,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
     })(-1);
     eve.on("snap.util.getattr.viewBox", function () {
         eve.stop();
-        let vb = $(this.node, "viewBox").trim();
+        let vb = $(this.node, "viewBox", this).trim();
         if (vb) {
             vb = vb.split(separator);
             return Snap.box(+vb[0], +vb[1], +vb[2], +vb[3]);
@@ -560,7 +560,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         }
     })(-1);
     eve.on("snap.util.getattr.points", function () {
-        const p = $(this.node, "points").trim();
+        const p = $(this.node, "points", this).trim();
         eve.stop();
         if (p) {
 
@@ -570,7 +570,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         }
     })(-1);
     eve.on("snap.util.getattr.path", function () {
-        const p = $(this.node, "d").trim();
+        const p = $(this.node, "d", this).trim();
         eve.stop();
         return p;
     })(-1);
@@ -584,7 +584,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         if (inline) {
             return inline;
         }
-        return $(this.node, "font-size") || inline;
+        return $(this.node, "font-size", this) || inline;
     }
 
     eve.on("snap.util.getattr.fontSize", getFontSize)(-1);

@@ -5,11 +5,25 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
     const mathAbs = Math.abs;
     const TWO_PI = Math.PI * 2;
 
-    function clamp01(t) {
+    function normalizeT(t) {
+        if (!isFinite(t)) {
+            return 0;
+        }
+        return t;
+    }
+
+    function fullClamp(t) {
         if (!isFinite(t)) {
             return 0;
         }
         return t < 0 ? 0 : (t > 1 ? 1 : t);
+    }
+
+    function halfClamp(t) {
+        if (!isFinite(t)) {
+            return 0;
+        }
+        return t < 0 ? 0 : t;
     }
 
     function isPlainObject(val) {
@@ -1147,19 +1161,19 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
             const easeList = this._normalizeEasing(easingDefs, variableCount);
             const self = this;
             return function (t) {
-                const clamped = clamp01(t == null ? 0 : t);
+                const clamped = normalizeT(t == null ? 0 : t);
                 const args = new Array(parsed.length);
                 let variableCursor = 0;
                 for (let i = 0; i < parsed.length; i++) {
                     const item = parsed[i];
                     if (item.kind === "range") {
                         const ease = easeList[variableCursor] || easeList[easeList.length - 1];
-                        const eased = ease ? clamp01(ease(clamped)) : clamped;
+                        const eased = ease ? normalizeT(ease(clamped)) : clamped;
                         args[i] = lerpValue(item.from, item.to, eased);
                         variableCursor++;
                     } else if (item.kind === "object-range") {
                         const ease = easeList[variableCursor] || easeList[easeList.length - 1];
-                        const eased = ease ? clamp01(ease(clamped)) : clamped;
+                        const eased = ease ? normalizeT(ease(clamped)) : clamped;
                         args[i] = resolveObjectRange(item.spec, eased);
                         variableCursor++;
                     } else if (item.kind === "fn") {
@@ -1829,7 +1843,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                 const point = ensurePoint(pt, origin);
                 const local = axisFrame.toLocal(point);
                 const axisCoord = local.y;
-                const normalized = clamp01(axisCoord / span);
+                const normalized = halfClamp(axisCoord / span);
                 const sampleAxis = minAxis + normalized * span;
                 const sample = sampleAtAxis(cache, sampleAxis) || {x: 0, y: 0};
                 const deflection = (sample[deflectionKey] || 0) * gain;
@@ -2038,7 +2052,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
     function cantileverSmallBend(point, thetaTip, L, segments) {
         const length = Math.max(1e-6, isFinite(L) ? Math.abs(L) : 0);
         const tipRotation = isFinite(thetaTip) ? thetaTip : 0;
-        const clampDistance = clamp01(resolvePointDistance(point) / (length || 1)) * length;
+        const clampDistance = halfClamp(resolvePointDistance(point) / (length || 1)) * length;
         const slices = Math.max(1, segments && isFinite(segments) ? Math.floor(segments) : 64);
 
         if (!clampDistance) {
@@ -2076,10 +2090,10 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
 
         function resolvePointDistance(input) {
             if (typeof input === "number") {
-                return Math.max(0, Math.min(length, input));
+                return input;
             }
             if (input && typeof input === "object" && isFinite(input.y)) {
-                return Math.max(0, Math.min(length, +input.y));
+                return +input.y;
             }
             return 0;
         }
@@ -2156,3 +2170,4 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
         };
     }
 });
+
