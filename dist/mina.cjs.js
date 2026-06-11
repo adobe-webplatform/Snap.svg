@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2026-06-02
+// build: 2026-06-11
 
 // @ts-nocheck
 // Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
@@ -317,7 +317,12 @@
         // } else if (source === "native"){
         //     console.log("[mina.setTimeoutAmin] timeout executed via regular", id);
         // }
-        entry.callback && entry.callback.apply(undefined, entry.args);
+        try{
+            entry.callback && entry.callback.apply(undefined, entry.args);
+        } catch (e){
+            console.error(e);
+        }
+
     }
 
     function pauseManagedTimeout(entry) {

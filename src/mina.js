@@ -299,7 +299,12 @@
         // } else if (source === "native"){
         //     console.log("[mina.setTimeoutAmin] timeout executed via regular", id);
         // }
-        entry.callback && entry.callback.apply(undefined, entry.args);
+        try{
+            entry.callback && entry.callback.apply(undefined, entry.args);
+        } catch (e){
+            console.error(e);
+        }
+
     }
 
     function pauseManagedTimeout(entry) {

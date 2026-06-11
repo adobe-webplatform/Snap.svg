@@ -1301,14 +1301,27 @@
                     timelimit[0] :
                     1000;
             }
+            const win = Snap.window ? Snap.window() : null;
+            const setIntervalFn = win && typeof win.setInterval === "function"
+                ? win.setInterval.bind(win)
+                : (typeof setInterval === "function" ? setInterval : null);
+            const clearIntervalFn = win && typeof win.clearInterval === "function"
+                ? win.clearInterval.bind(win)
+                : (typeof clearInterval === "function" ? clearInterval : null);
+            if (!setIntervalFn || !clearIntervalFn) {
+                if (fail_callback) {
+                    fail_callback();
+                }
+                return;
+            }
             const start_time = Date.now();
-            let timer = setInterval(function () {
+            let timer = setIntervalFn(function () {
                 if (condition()) {
-                    clearInterval(timer);
+                    clearIntervalFn(timer);
                     // console.log("Success waiting");
                     callback();
                 } else if (Date.now() - start_time > timelimit) {
-                    clearInterval(timer);
+                    clearIntervalFn(timer);
                     if (fail_callback) fail_callback();
                 }
             }, step);

@@ -1881,7 +1881,12 @@
 
             return collect;
         }();
-        setInterval(gurbage_collect, 1e4);
+        const hubSetInterval = glob.win && typeof glob.win.setInterval === "function"
+            ? glob.win.setInterval.bind(glob.win)
+            : (typeof setInterval === "function" ? setInterval : null);
+        if (hubSetInterval) {
+            hubSetInterval(gurbage_collect, 1e4);
+        }
 
         // function paperMetForNonGroups(el, fun_name, paper) {
         //     return function () {
@@ -1916,10 +1921,8 @@
          * Parses SVG fragment and converts it into a @Fragment
          *
          * @param {string} svg - SVG string
-         * @param {string|Array} filter_event - if provided, `eve.filter` is called on the string,
-         *        allowing pre-processing before adding to the DOM. The filter listener receives an
-         *        object with a `data` property containing the SVG string and should update that
-         *        property with the modified string.
+         * @param {string|Array} filter_event - if provided, eve.filter is called on the string, allowing
+         * pre-processing before adding to the dom. Filter listener expects {data:svg} and must update data.
          * @param {SVGElement|HTMLElement} div - optional place to store the parsed object
          * @returns {Fragment} the @Fragment
          */
@@ -2127,7 +2130,12 @@
          */
         Snap.ajax = function (
             url, postData, callback, scope, fail_callback, fail_scope) {
-            const req = new XMLHttpRequest,
+            const XMLHttpRequestCtor = (glob.win && glob.win.XMLHttpRequest) ||
+                (typeof XMLHttpRequest !== "undefined" ? XMLHttpRequest : null);
+            if (!XMLHttpRequestCtor) {
+                return;
+            }
+            const req = new XMLHttpRequestCtor,
                 id = ID();
             if (req) {
                 if (is(postData, "function")) {
@@ -2386,13 +2394,19 @@
                 Snap.ajax(url, post_data, function (req) {
                     let data = undefined;
                     if (req.responseText.startsWith('Base64:')) {
-                        data = atob(req.responseText.slice(7));
+                        const base64Decoder = (glob.win && glob.win.atob) ||
+                            (typeof atob === "function" ? atob : null);
+                        if (!base64Decoder) {
+                            fail && fail.call(fail_scope, "atob is not available");
+                            return;
+                        }
+                        data = base64Decoder(req.responseText.slice(7));
                     }
                     if (req.responseText.startsWith('LZBase64:')) {
-                        if (window.LZString !== undefined) {
-                            data = LZString.decompressFromBase64(req.responseText.slice(9));
+                        if (glob.win.LZString !== undefined) {
+                            data = glob.win.LZString.decompressFromBase64(req.responseText.slice(9));
                         } else {
-                            fail.call(fail_scope, 'LZString is not loaded');
+                            fail && fail.call(fail_scope, 'LZString is not loaded');
                             return;
                         }
                     }

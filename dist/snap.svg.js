@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// build: 2026-06-02
+// build: 2026-06-11
 
 // Copyright (c) 2017 Adobe Systems Incorporated. All rights reserved.
 //
@@ -1389,7 +1389,12 @@
         // } else if (source === "native"){
         //     console.log("[mina.setTimeoutAmin] timeout executed via regular", id);
         // }
-        entry.callback && entry.callback.apply(undefined, entry.args);
+        try{
+            entry.callback && entry.callback.apply(undefined, entry.args);
+        } catch (e){
+            console.error(e);
+        }
+
     }
 
     function pauseManagedTimeout(entry) {
@@ -5831,7 +5836,12 @@
 
             return collect;
         }();
-        setInterval(gurbage_collect, 1e4);
+        const hubSetInterval = glob.win && typeof glob.win.setInterval === "function"
+            ? glob.win.setInterval.bind(glob.win)
+            : (typeof setInterval === "function" ? setInterval : null);
+        if (hubSetInterval) {
+            hubSetInterval(gurbage_collect, 1e4);
+        }
 
         // function paperMetForNonGroups(el, fun_name, paper) {
         //     return function () {
@@ -5866,10 +5876,8 @@
          * Parses SVG fragment and converts it into a @Fragment
          *
          * @param {string} svg - SVG string
-         * @param {string|Array} filter_event - if provided, `eve.filter` is called on the string,
-         *        allowing pre-processing before adding to the DOM. The filter listener receives an
-         *        object with a `data` property containing the SVG string and should update that
-         *        property with the modified string.
+         * @param {string|Array} filter_event - if provided, eve.filter is called on the string, allowing
+         * pre-processing before adding to the dom. Filter listener expects {data:svg} and must update data.
          * @param {SVGElement|HTMLElement} div - optional place to store the parsed object
          * @returns {Fragment} the @Fragment
          */
@@ -6077,7 +6085,12 @@
          */
         Snap.ajax = function (
             url, postData, callback, scope, fail_callback, fail_scope) {
-            const req = new XMLHttpRequest,
+            const XMLHttpRequestCtor = (glob.win && glob.win.XMLHttpRequest) ||
+                (typeof XMLHttpRequest !== "undefined" ? XMLHttpRequest : null);
+            if (!XMLHttpRequestCtor) {
+                return;
+            }
+            const req = new XMLHttpRequestCtor,
                 id = ID();
             if (req) {
                 if (is(postData, "function")) {
@@ -6336,13 +6349,19 @@
                 Snap.ajax(url, post_data, function (req) {
                     let data = undefined;
                     if (req.responseText.startsWith('Base64:')) {
-                        data = atob(req.responseText.slice(7));
+                        const base64Decoder = (glob.win && glob.win.atob) ||
+                            (typeof atob === "function" ? atob : null);
+                        if (!base64Decoder) {
+                            fail && fail.call(fail_scope, "atob is not available");
+                            return;
+                        }
+                        data = base64Decoder(req.responseText.slice(7));
                     }
                     if (req.responseText.startsWith('LZBase64:')) {
-                        if (window.LZString !== undefined) {
-                            data = LZString.decompressFromBase64(req.responseText.slice(9));
+                        if (glob.win.LZString !== undefined) {
+                            data = glob.win.LZString.decompressFromBase64(req.responseText.slice(9));
                         } else {
-                            fail.call(fail_scope, 'LZString is not loaded');
+                            fail && fail.call(fail_scope, 'LZString is not loaded');
                             return;
                         }
                     }
@@ -17817,7 +17836,12 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                         if (typeof alt_click_event === "function") {
                             alt_click_event()
                         } else {
-                           el.node.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+                           const MouseEventCtor = glob.win && glob.win.MouseEvent
+                               ? glob.win.MouseEvent
+                               : (typeof MouseEvent !== "undefined" ? MouseEvent : null);
+                           if (MouseEventCtor) {
+                               el.node.dispatchEvent(new MouseEventCtor("click", {bubbles: true, cancelable: true}));
+                           }
                         }
                         eve("snap.drag.click." + el.id)
                     }
@@ -31636,14 +31660,27 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                     timelimit[0] :
                     1000;
             }
+            const win = Snap.window ? Snap.window() : null;
+            const setIntervalFn = win && typeof win.setInterval === "function"
+                ? win.setInterval.bind(win)
+                : (typeof setInterval === "function" ? setInterval : null);
+            const clearIntervalFn = win && typeof win.clearInterval === "function"
+                ? win.clearInterval.bind(win)
+                : (typeof clearInterval === "function" ? clearInterval : null);
+            if (!setIntervalFn || !clearIntervalFn) {
+                if (fail_callback) {
+                    fail_callback();
+                }
+                return;
+            }
             const start_time = Date.now();
-            let timer = setInterval(function () {
+            let timer = setIntervalFn(function () {
                 if (condition()) {
-                    clearInterval(timer);
+                    clearIntervalFn(timer);
                     // console.log("Success waiting");
                     callback();
                 } else if (Date.now() - start_time > timelimit) {
-                    clearInterval(timer);
+                    clearIntervalFn(timer);
                     if (fail_callback) fail_callback();
                 }
             }, step);

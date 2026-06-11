@@ -366,7 +366,12 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment, eve) {
                         if (typeof alt_click_event === "function") {
                             alt_click_event()
                         } else {
-                           el.node.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+                           const MouseEventCtor = glob.win && glob.win.MouseEvent
+                               ? glob.win.MouseEvent
+                               : (typeof MouseEvent !== "undefined" ? MouseEvent : null);
+                           if (MouseEventCtor) {
+                               el.node.dispatchEvent(new MouseEventCtor("click", {bubbles: true, cancelable: true}));
+                           }
                         }
                         eve("snap.drag.click." + el.id)
                     }
