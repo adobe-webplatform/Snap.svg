@@ -1,4 +1,4 @@
-[Snap.svg](http://snapsvg.io) · [![Build Status](https://travis-ci.org/adobe-webplatform/Snap.svg.svg?branch=dev)](https://travis-ci.org/adobe-webplatform/Snap.svg)  [![CDNJS](https://img.shields.io/cdnjs/v/snap.svg.svg)](https://cdnjs.com/libraries/snap.svg/) [![GitHub Tag](https://img.shields.io/github/tag/adobe-webplatform/snap.svg.svg)](https://github.com/adobe-webplatform/Snap.svg/releases) [![License](https://img.shields.io/npm/l/snapsvg.svg)](https://github.com/adobe-webplatform/Snap.svg/blob/master/LICENSE)
+[Snap.svg](http://snapsvg.io) · [![CDNJS](https://img.shields.io/cdnjs/v/snap.svg.svg)](https://cdnjs.com/libraries/snap.svg/) [![GitHub Tag](https://img.shields.io/github/tag/adobe-webplatform/snap.svg.svg)](https://github.com/adobe-webplatform/Snap.svg/releases) [![License](https://img.shields.io/npm/l/snapsvg.svg)](https://github.com/adobe-webplatform/Snap.svg/blob/master/LICENSE)
 ======
 
 A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://snapsvg.io).
@@ -6,10 +6,16 @@ A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://s
 [Follow us on Twitter.](https://twitter.com/snapsvg)
 
 ### Install
-* [Bower](http://bower.io/) - `bower install snap.svg` ![Bower](https://img.shields.io/bower/v/snap.svg.svg)
 * [npm](http://npmjs.com/) - `npm install snapsvg` [![npm version](https://img.shields.io/npm/v/snapsvg.svg?style=flat)](https://www.npmjs.com/package/snapsvg) [![Downloads](https://img.shields.io/npm/dt/snapsvg.svg)](https://www.npmjs.com/package/snapsvg)
-* Manual Minified - https://github.com/adobe-webplatform/Snap.svg/raw/master/dist/snap.svg-min.js
-* Manual Unminified - https://raw.githubusercontent.com/adobe-webplatform/Snap.svg/master/dist/snap.svg.js
+* CDN - [`https://cdn.jsdelivr.net/npm/snapsvg/dist/snap.svg.min.js`](https://cdn.jsdelivr.net/npm/snapsvg/dist/snap.svg.min.js) (or via [cdnjs](https://cdnjs.com/libraries/snap.svg/))
+* Manual download - grab [`dist/snap.svg.min.js`](https://raw.githubusercontent.com/adobe-webplatform/Snap.svg/master/dist/snap.svg.min.js) (minified) or [`dist/snap.svg.js`](https://raw.githubusercontent.com/adobe-webplatform/Snap.svg/master/dist/snap.svg.js) (unminified)
+
+The npm package ships four builds in `dist/`:
+
+| File | Format | Use |
+| --- | --- | --- |
+| `snap.svg.js` / `snap.svg.min.js` | UMD/IIFE (global `Snap`) | `<script>` tags, CDN |
+| `snap.svg.esm.js` / `snap.svg.esm.min.js` | ES module | `import` / bundlers |
 
 
 ### Learn
@@ -21,72 +27,53 @@ A JavaScript SVG library for the modern web. Learn more at [snapsvg.io](http://s
 
 ### Use
 
-In your HTML file, load simply by:
+In a browser, load with a `<script>` tag — it exposes a global `Snap`:
 ```html
 <script src="snap.svg.min.js"></script>
 ```
 No other scripts are needed. Both the minified and uncompressed (for development) versions are in the `/dist` folder.
 
-#### webpack
-To load with webpack 2.x and 3.x, install [Imports Loader](https://github.com/webpack-contrib/imports-loader) (`npm i -D imports-loader`), and add the following to your webpack config:
-
-```js
-const Snap = require("snapsvg/dist/snap.svg.slim.js"); // or define an alias in webpack.config.js
-```
-or
-```js
-module: {
-    rules: [
-        {
-            test: require.resolve("snapsvg/dist/snap.svg.js"),
-            use: "imports-loader?this=>window,fix=>module.exports=0",
-        },
-    ],
-},
-resolve: {
-    alias: {
-        snapsvg: "snapsvg/dist/snap.svg.js",
-    },
-},
-```
-
-Then, in any module you’d like to require Snap, use:
+With a bundler (webpack, Vite, Rollup, esbuild) or in Node, import the package directly. Snap exposes an ES module build through its `exports` map, so no loader configuration is required:
 ```js
 import Snap from 'snapsvg';
+
+const paper = Snap(800, 600);
+paper.circle(150, 150, 100);
+```
+
+CommonJS `require()` resolves to the UMD build automatically:
+```js
+const Snap = require('snapsvg');
 ```
 
 ### Build
-[![Build Status](https://travis-ci.org/adobe-webplatform/Snap.svg.svg?branch=dev)](https://travis-ci.org/adobe-webplatform/Snap.svg)
-[![Dependency Status](https://david-dm.org/adobe-webplatform/Snap.svg.svg)](https://david-dm.org/adobe-webplatform/Snap.svg)
-[![devDependency Status](https://david-dm.org/adobe-webplatform/Snap.svg/dev-status.svg)](https://david-dm.org/adobe-webplatform/Snap.svg#info=devDependencies)
 
-Snap.svg uses [Grunt](http://gruntjs.com/) to build.
+Snap.svg is written as ES modules in `src/` and bundled with [Rollup](https://rollupjs.org/).
 
-* Open the terminal from the Snap.svg directory:
-```sh
-cd Snap.svg
-```
-* Install dependencies with npm:
+* From the Snap.svg directory, install dependencies:
 ```sh
 npm install
 ```
-_*Snap.svg uses Grunt 0.4.0. You might want to [read](http://gruntjs.com/getting-started) more on their website if you haven’t upgraded since a lot has changed._
-
-* To build the files run
+* Build the `dist/` bundles (UMD/IIFE and ESM, both minified and unminified):
 ```sh
-grunt
+npm run build
 ```
-* The results will be built into the `dist` folder.
-* Alternatively type `grunt watch` to have the build run automatically when you make changes to source files.
-* If there are `eslint` errors that make the build fail, you can run
-  `$ node eslintFixCoreScript.js` to correct these errors or use `$ grunt --force`
-  to ignore them and finish the build process.
+* Rebuild automatically while editing the source:
+```sh
+npm run build:watch
+```
+
+Linting and formatting use [Biome](https://biomejs.org/):
+
+* `npm run lint` — report problems (also runs automatically before `build`)
+* `npm run format` — format `src/`
+* `npm run check` — apply safe lint/format fixes
 
 ### Repository index
 
 - [demos/](demos) - examples of what Snap.svg can do and how to do it.
-- [dist/snap.svg-min.js](dist/snap.svg-min.js) - latest version of minified Snap.svg library file.
-- [dist/snap.svg.js](dist/snap.svg.js) - latest version of Snap.svg library file.
+- [dist/](dist) - built library bundles: `snap.svg.js` / `snap.svg.min.js`
+  (UMD/IIFE) and `snap.svg.esm.js` / `snap.svg.esm.min.js` (ES module).
 - [doc/](doc/) - contains `reference.html` generated from `template.dot` in the
   root directory using the Dr. JS tool (which uses the [dr.json](dr.json) file, and it contains these directories too: `css`, `fonts`, `img`, `js`.
   with assets also used in the full website of Snap.svg: [www.snapsvg.io](https://snapsvg.io).
@@ -95,20 +82,18 @@ grunt
 - [test/](test/) contains all unit tests.
 - [.gitignore](.gitignore) - used by Git.
 - [.gitmodules](.gitmodules) - used by Git.
-- [.travis.yml](.travis.yml) - used by GitHub to connect the repository to
-  Travis CI service.
 - [CONTRIBUTING](CONTRIBUTING), [LICENSE](LICENSE), [NOTICE](NOTICE) and
   [README.md](README.md) (this file) are offering you information about the
   other files and about the project.
-- [Gruntfile.js](Gruntfile.js) - [Grunt JavaScript Task Runner](https://gruntjs.com/) configuration file for the entire project.
+- [rollup.config.js](rollup.config.js) - [Rollup](https://rollupjs.org/) build
+  configuration that bundles `src/` into the `dist/` files.
+- [biome.json](biome.json) - [Biome](https://biomejs.org/) linter and formatter
+  configuration.
 - [bower.json](bower.json), [component.json](component.json) and
   [package.json](package.json) are configuration files for different package
   managers.
 - [dr.json](dr.json) - [dr.js](https://github.com/adobe-webplatform/dr.js)
   configuration file.
-- [eslintFixCoreScript.js](eslintFixCoreScript.js) - a script that uses the
-  required `eslint` npm module to automatically fix the errors that are reported
-  by the eslint task, that is defined in `Gruntfile.js`, before Grunt quits.
 - [history.md](history.md) - changelog file in Markdown format.
 - [template.dot](template.dot) - HTML file used as a template for the generated
 [doc/reference.html](doc/reference.html) file.
@@ -116,12 +101,9 @@ grunt
 
 ### Testing
 
-Tests are located in `test` folder. To run tests, simply open `test/index.html`. Automatic tests use PhantomJS to scrap this file, so you can use it as a reference.
+Browser tests live in the `test` folder — open `test/index.html` in a browser to run them against the build in `dist/`.
 
-Alternatively, install [PhantomJS](http://phantomjs.org) and run command
-```sh
-grunt test
-```
+`npm test` performs a clean rebuild (`clean` + `build`), which verifies the source compiles and bundles without errors.
 
 ### Contribute
 

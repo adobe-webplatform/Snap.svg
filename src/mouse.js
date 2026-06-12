@@ -11,140 +11,184 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Snap.plugin(function (Snap, Element, Paper, glob) {
-    var elproto = Element.prototype,
-        has = "hasOwnProperty",
-        supportsPointer = "onmspointerdown" in window.document || "onpointerdown" in window.document,
-        supportsTouch = "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch,
-        events = [
-            "click", "dblclick", "mousedown", "mousemove", "mouseout",
-            "mouseover", "mouseup", "touchstart", "touchmove", "touchend",
-            "touchcancel", "pointerup", "pointerdown", "pointermove",
-            "pointerout", "pointerover"
-        ],
-        touchMap = {
-            mousedown: "touchstart",
-            mousemove: "touchmove",
-            mouseup: "touchend"
-        },
-        pointerMap = {
-            mouseup: "pointerup",
-            mousedown: "pointerdown",
-            mousemove: "pointermove",
-            mouseout: "pointerout",
-            mouseover: "pointerover"
-        },
-        getScroll = function (xy, el) {
-            var name = xy == "y" ? "scrollTop" : "scrollLeft",
-                doc = el && el.node ? el.node.ownerDocument : glob.doc;
-            return doc[name in doc.documentElement ? "documentElement" : "body"][name];
-        },
-        preventTouch = function () {
-            return this.originalEvent.preventDefault();
-        },
-        stopTouch = function () {
-            return this.originalEvent.stopPropagation();
-        },
-        addEvent = function (obj, type, fn, element) {
-            var realName = supportsTouch && touchMap[type] ? touchMap[type] : supportsPointer && pointerMap[type] ? pointerMap[type] : type,
-                f = function (e) {
-                    var scrollY = getScroll("y", element),
-                        scrollX = getScroll("x", element);
-                    if (supportsTouch && touchMap[has](type)) {
-                        for (var i = 0, ii = e.targetTouches && e.targetTouches.length; i < ii; i++) {
-                            if (e.targetTouches[i].target == obj || obj.contains(e.targetTouches[i].target)) {
-                                var olde = e;
-                                e = e.targetTouches[i];
-                                e.originalEvent = olde;
-                                e.preventDefault = preventTouch;
-                                e.stopPropagation = stopTouch;
-                                break;
-                            }
-                        }
-                    }
-                    var x = e.clientX + scrollX,
-                        y = e.clientY + scrollY;
-                    return fn.call(element, e, x, y);
-                },
-                pointerName = pointerMap[type];
 
-            if (type !== realName) {
-                obj.addEventListener(type, f, false);
-            }
+import eve from "./eve.js";
+import { Snap } from "./svg.js";
 
-            if (pointerName) {
-                obj.addEventListener(pointerName, f, false);
-            }
+Snap.plugin((Snap, Element, _Paper, glob) => {
+  const elproto = Element.prototype;
+  const has = "hasOwnProperty";
+  const win = Snap._.glob.win;
+  const supportsPointer =
+    "onmspointerdown" in win.document || "onpointerdown" in win.document;
+  const supportsTouch =
+    "ontouchstart" in win ||
+    (win.DocumentTouch && win.document instanceof DocumentTouch);
+  const events = [
+    "click",
+    "dblclick",
+    "mousedown",
+    "mousemove",
+    "mouseout",
+    "mouseover",
+    "mouseup",
+    "touchstart",
+    "touchmove",
+    "touchend",
+    "touchcancel",
+    "pointerup",
+    "pointerdown",
+    "pointermove",
+    "pointerout",
+    "pointerover",
+  ];
+  const touchMap = {
+    mousedown: "touchstart",
+    mousemove: "touchmove",
+    mouseup: "touchend",
+  };
+  const pointerMap = {
+    mouseup: "pointerup",
+    mousedown: "pointerdown",
+    mousemove: "pointermove",
+    mouseout: "pointerout",
+    mouseover: "pointerover",
+  };
+  const getScroll = (xy, el) => {
+    const name = xy == "y" ? "scrollTop" : "scrollLeft";
+    const doc = el?.node ? el.node.ownerDocument : glob.doc;
+    return doc[name in doc.documentElement ? "documentElement" : "body"][name];
+  };
+  const preventTouch = function () {
+    return this.originalEvent.preventDefault();
+  };
+  const stopTouch = function () {
+    return this.originalEvent.stopPropagation();
+  };
+  const addEvent = (obj, type, fn, element) => {
+    const realName =
+      supportsTouch && touchMap[type]
+        ? touchMap[type]
+        : supportsPointer && pointerMap[type]
+          ? pointerMap[type]
+          : type;
+    const f = (ev) => {
+      let e = ev;
+      const scrollY = getScroll("y", element);
+      const scrollX = getScroll("x", element);
+      if (supportsTouch && touchMap[has](type)) {
+        for (let i = 0, ii = e.targetTouches?.length; i < ii; i++) {
+          if (
+            e.targetTouches[i].target == obj ||
+            obj.contains(e.targetTouches[i].target)
+          ) {
+            const olde = e;
+            e = e.targetTouches[i];
+            e.originalEvent = olde;
+            e.preventDefault = preventTouch;
+            e.stopPropagation = stopTouch;
+            break;
+          }
+        }
+      }
+      const x = e.clientX + scrollX;
+      const y = e.clientY + scrollY;
+      return fn.call(element, e, x, y);
+    };
+    const pointerName = pointerMap[type];
 
-            obj.addEventListener(realName, f, false);
+    if (type != realName) {
+      obj.addEventListener(type, f, false);
+    }
 
-            return function () {
-                if (type !== realName) {
-                    obj.removeEventListener(type, f, false);
-                }
+    if (pointerName) {
+      obj.addEventListener(pointerName, f, false);
+    }
 
-                if (pointerName) {
-                    obj.removeEventListener(pointerName, f, false);
-                }
+    obj.addEventListener(realName, f, false);
 
-                obj.removeEventListener(realName, f, false);
-                return true;
-            };
-        },
-        drag = [],
-        dragMove = function (e) {
-            var x = e.clientX,
-                y = e.clientY,
-                scrollY = getScroll("y"),
-                scrollX = getScroll("x"),
-                dragi,
-                j = drag.length;
-            while (j--) {
-                dragi = drag[j];
-                if (supportsTouch) {
-                    var i = e.touches && e.touches.length,
-                        touch;
-                    while (i--) {
-                        touch = e.touches[i];
-                        if (touch.identifier == dragi.el._drag.id || dragi.el.node.contains(touch.target)) {
-                            x = touch.clientX;
-                            y = touch.clientY;
-                            (e.originalEvent ? e.originalEvent : e).preventDefault();
-                            break;
-                        }
-                    }
-                } else {
-                    e.preventDefault();
-                }
-                // var node = dragi.el.node,
-                //     o,
-                //     next = node.nextSibling,
-                //     parent = node.parentNode,
-                //     display = node.style.display;
-                // glob.win.opera && parent.removeChild(node);
-                // node.style.display = "none";
-                // o = dragi.el.paper.getElementByPoint(x, y);
-                // node.style.display = display;
-                // glob.win.opera && (next ? parent.insertBefore(node, next) : parent.appendChild(node));
-                // o && eve("snap.drag.over." + dragi.el.id, dragi.el, o);
-                x += scrollX;
-                y += scrollY;
-                eve("snap.drag.move." + dragi.el.id, dragi.move_scope || dragi.el, x - dragi.el._drag.x, y - dragi.el._drag.y, x, y, e);
-            }
-        },
-        dragUp = function (e) {
-            Snap.unmousemove(dragMove).unmouseup(dragUp);
-            var i = drag.length,
-                dragi;
-            while (i--) {
-                dragi = drag[i];
-                dragi.el._drag = {};
-                eve("snap.drag.end." + dragi.el.id, dragi.end_scope || dragi.start_scope || dragi.move_scope || dragi.el, e);
-                eve.off("snap.drag.*." + dragi.el.id);
-            }
-            drag = [];
-        };
-    /*\
+    return () => {
+      if (type != realName) {
+        obj.removeEventListener(type, f, false);
+      }
+
+      if (pointerName) {
+        obj.removeEventListener(pointerName, f, false);
+      }
+
+      obj.removeEventListener(realName, f, false);
+      return true;
+    };
+  };
+  let drag = [];
+  const dragMove = (e) => {
+    let x = e.clientX;
+    let y = e.clientY;
+    const scrollY = getScroll("y");
+    const scrollX = getScroll("x");
+    let dragi;
+    let j = drag.length;
+    while (j--) {
+      dragi = drag[j];
+      if (supportsTouch) {
+        let i = e.touches?.length;
+        let touch;
+        while (i--) {
+          touch = e.touches[i];
+          if (
+            touch.identifier == dragi.el._drag.id ||
+            dragi.el.node.contains(touch.target)
+          ) {
+            x = touch.clientX;
+            y = touch.clientY;
+            (e.originalEvent ? e.originalEvent : e).preventDefault();
+            break;
+          }
+        }
+      } else {
+        e.preventDefault();
+      }
+      // var node = dragi.el.node,
+      //     o,
+      //     next = node.nextSibling,
+      //     parent = node.parentNode,
+      //     display = node.style.display;
+      // glob.win.opera && parent.removeChild(node);
+      // node.style.display = "none";
+      // o = dragi.el.paper.getElementByPoint(x, y);
+      // node.style.display = display;
+      // glob.win.opera && (next ? parent.insertBefore(node, next) : parent.appendChild(node));
+      // o && eve("snap.drag.over." + dragi.el.id, dragi.el, o);
+      x += scrollX;
+      y += scrollY;
+      eve(
+        `snap.drag.move.${dragi.el.id}`,
+        dragi.move_scope || dragi.el,
+        x - dragi.el._drag.x,
+        y - dragi.el._drag.y,
+        x,
+        y,
+        e,
+      );
+    }
+  };
+  const dragUp = (e) => {
+    Snap.unmousemove(dragMove).unmouseup(dragUp);
+    let i = drag.length;
+    let dragi;
+    while (i--) {
+      dragi = drag[i];
+      dragi.el._drag = {};
+      eve(
+        `snap.drag.end.${dragi.el.id}`,
+        dragi.end_scope || dragi.start_scope || dragi.move_scope || dragi.el,
+        e,
+      );
+      eve.off(`snap.drag.*.${dragi.el.id}`);
+    }
+    drag = [];
+  };
+  /*\
      * Element.click
      [ method ]
      **
@@ -152,7 +196,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.unclick
      [ method ]
      **
@@ -161,7 +205,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.dblclick
      [ method ]
      **
@@ -169,7 +213,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.undblclick
      [ method ]
      **
@@ -178,7 +222,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.mousedown
      [ method ]
      **
@@ -186,7 +230,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.unmousedown
      [ method ]
      **
@@ -195,7 +239,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.mousemove
      [ method ]
      **
@@ -203,7 +247,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.unmousemove
      [ method ]
      **
@@ -212,7 +256,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.mouseout
      [ method ]
      **
@@ -220,7 +264,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.unmouseout
      [ method ]
      **
@@ -229,7 +273,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.mouseover
      [ method ]
      **
@@ -237,7 +281,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.unmouseover
      [ method ]
      **
@@ -246,7 +290,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.mouseup
      [ method ]
      **
@@ -254,7 +298,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.unmouseup
      [ method ]
      **
@@ -263,7 +307,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.touchstart
      [ method ]
      **
@@ -271,7 +315,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.untouchstart
      [ method ]
      **
@@ -280,7 +324,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.touchmove
      [ method ]
      **
@@ -288,7 +332,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.untouchmove
      [ method ]
      **
@@ -297,7 +341,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.touchend
      [ method ]
      **
@@ -305,7 +349,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.untouchend
      [ method ]
      **
@@ -314,7 +358,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      = (object) @Element
     \*/
 
-    /*\
+  /*\
      * Element.touchcancel
      [ method ]
      **
@@ -322,7 +366,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    /*\
+  /*\
      * Element.untouchcancel
      [ method ]
      **
@@ -330,41 +374,48 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - handler (function) handler for the event
      = (object) @Element
     \*/
-    for (var i = events.length; i--;) {
-        (function (eventName) {
-            Snap[eventName] = elproto[eventName] = function (fn, scope) {
-                if (Snap.is(fn, "function")) {
-                    this.events = this.events || [];
-                    this.events.push({
-                        name: eventName,
-                        f: fn,
-                        unbind: addEvent(this.node || document, eventName, fn, scope || this)
-                    });
-                } else {
-                    for (var i = 0, ii = this.events.length; i < ii; i++) if (this.events[i].name == eventName) {
-                        try {
-                            this.events[i].f.call(this);
-                        } catch (e) {}
-                    }
-                }
-                return this;
-            };
-            Snap["un" + eventName] =
-            elproto["un" + eventName] = function (fn) {
-                var events = this.events || [],
-                    l = events.length;
-                while (l--) if (events[l].name == eventName &&
-                               (events[l].f == fn || !fn)) {
-                    events[l].unbind();
-                    events.splice(l, 1);
-                    !events.length && delete this.events;
-                    return this;
-                }
-                return this;
-            };
-        })(events[i]);
-    }
-    /*\
+  for (let i = events.length; i--; ) {
+    ((eventName) => {
+      Snap[eventName] = elproto[eventName] = function (fn, scope) {
+        if (Snap.is(fn, "function")) {
+          this.events = this.events || [];
+          this.events.push({
+            name: eventName,
+            f: fn,
+            unbind: addEvent(
+              this.node || document,
+              eventName,
+              fn,
+              scope || this,
+            ),
+          });
+        } else {
+          for (let i = 0, ii = this.events.length; i < ii; i++)
+            if (this.events[i].name == eventName) {
+              try {
+                this.events[i].f.call(this);
+              } catch (_e) {}
+            }
+        }
+        return this;
+      };
+      Snap[`un${eventName}`] = elproto[`un${eventName}`] = function (fn) {
+        const events = this.events || [];
+        let l = events.length;
+        while (l--)
+          if (events[l].name == eventName && (events[l].f == fn || !fn)) {
+            events[l].unbind();
+            events.splice(l, 1);
+            if (!events.length) {
+              this.events = undefined;
+            }
+            return this;
+          }
+        return this;
+      };
+    })(events[i]);
+  }
+  /*\
      * Element.hover
      [ method ]
      **
@@ -375,10 +426,13 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - ocontext (object) #optional context for hover out handler
      = (object) @Element
     \*/
-    elproto.hover = function (f_in, f_out, scope_in, scope_out) {
-        return this.mouseover(f_in, scope_in).mouseout(f_out, scope_out || scope_in);
-    };
-    /*\
+  elproto.hover = function (f_in, f_out, scope_in, scope_out) {
+    return this.mouseover(f_in, scope_in).mouseout(
+      f_out,
+      scope_out || scope_in,
+    );
+  };
+  /*\
      * Element.unhover
      [ method ]
      **
@@ -387,15 +441,15 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      - f_out (function) handler for hover out
      = (object) @Element
     \*/
-    elproto.unhover = function (f_in, f_out) {
-        return this.unmouseover(f_in).unmouseout(f_out);
-    };
-    var draggable = [];
-    // SIERRA unclear what _context_ refers to for starting, ending, moving the drag gesture.
-    // SIERRA Element.drag(): _x position of the mouse_: Where are the x/y values offset from?
-    // SIERRA Element.drag(): much of this member's doc appears to be duplicated for some reason.
-    // SIERRA Unclear about this sentence: _Additionally following drag events will be triggered: drag.start.<id> on start, drag.end.<id> on end and drag.move.<id> on every move._ Is there a global _drag_ object to which you can assign handlers keyed by an element's ID?
-    /*\
+  elproto.unhover = function (f_in, f_out) {
+    return this.unmouseover(f_in).unmouseout(f_out);
+  };
+  const draggable = [];
+  // SIERRA unclear what _context_ refers to for starting, ending, moving the drag gesture.
+  // SIERRA Element.drag(): _x position of the mouse_: Where are the x/y values offset from?
+  // SIERRA Element.drag(): much of this member's doc appears to be duplicated for some reason.
+  // SIERRA Unclear about this sentence: _Additionally following drag events will be triggered: drag.start.<id> on start, drag.end.<id> on end and drag.move.<id> on every move._ Is there a global _drag_ object to which you can assign handlers keyed by an element's ID?
+  /*\
      * Element.drag
      [ method ]
      **
@@ -425,64 +479,80 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
      o event (object) DOM event object
      = (object) @Element
     \*/
-    elproto.drag = function (onmove, onstart, onend, move_scope, start_scope, end_scope) {
-        var el = this;
-        if (!arguments.length) {
-            var origTransform;
-            return el.drag(function (dx, dy) {
-                this.attr({
-                    transform: origTransform + (origTransform ? "T" : "t") + [dx, dy]
-                });
-            }, function () {
-                origTransform = this.transform().local;
-            });
-        }
-        function start(e, x, y) {
-            (e.originalEvent || e).preventDefault();
-            el._drag.x = x;
-            el._drag.y = y;
-            el._drag.id = e.identifier;
-            !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
-            drag.push({el: el, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
-            onstart && eve.on("snap.drag.start." + el.id, onstart);
-            onmove && eve.on("snap.drag.move." + el.id, onmove);
-            onend && eve.on("snap.drag.end." + el.id, onend);
-            eve("snap.drag.start." + el.id, start_scope || move_scope || el, x, y, e);
-        }
-        function init(e, x, y) {
-            eve("snap.draginit." + el.id, el, e, x, y);
-        }
-        eve.on("snap.draginit." + el.id, start);
-        el._drag = {};
-        draggable.push({el: el, start: start, init: init});
-        el.mousedown(init);
-        return el;
+  elproto.drag = function (
+    onmove,
+    onstart,
+    onend,
+    move_scope,
+    start_scope,
+    end_scope,
+  ) {
+    const el = this;
+    if (!arguments.length) {
+      let origTransform;
+      return el.drag(
+        function (dx, dy) {
+          this.attr({
+            transform: origTransform + (origTransform ? "T" : "t") + [dx, dy],
+          });
+        },
+        function () {
+          origTransform = this.transform().local;
+        },
+      );
+    }
+    const start = (e, x, y) => {
+      (e.originalEvent || e).preventDefault();
+      el._drag.x = x;
+      el._drag.y = y;
+      el._drag.id = e.identifier;
+      !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
+      drag.push({
+        el,
+        move_scope,
+        start_scope,
+        end_scope,
+      });
+      onstart && eve.on(`snap.drag.start.${el.id}`, onstart);
+      onmove && eve.on(`snap.drag.move.${el.id}`, onmove);
+      onend && eve.on(`snap.drag.end.${el.id}`, onend);
+      eve(`snap.drag.start.${el.id}`, start_scope || move_scope || el, x, y, e);
     };
-    /*
+    const init = (e, x, y) => {
+      eve(`snap.draginit.${el.id}`, el, e, x, y);
+    };
+    eve.on(`snap.draginit.${el.id}`, start);
+    el._drag = {};
+    draggable.push({ el, start, init: init });
+    el.mousedown(init);
+    return el;
+  };
+  /*
      * Element.onDragOver
      [ method ]
      **
      * Shortcut to assign event handler for `drag.over.<id>` event, where `id` is the element's `id` (see @Element.id)
      - f (function) handler for event, first argument would be the element you are dragging over
     \*/
-    // elproto.onDragOver = function (f) {
-    //     f ? eve.on("snap.drag.over." + this.id, f) : eve.unbind("snap.drag.over." + this.id);
-    // };
-    /*\
+  // elproto.onDragOver = function (f) {
+  //     f ? eve.on("snap.drag.over." + this.id, f) : eve.unbind("snap.drag.over." + this.id);
+  // };
+  /*\
      * Element.undrag
      [ method ]
      **
      * Removes all drag event handlers from the given element
     \*/
-    elproto.undrag = function () {
-        var i = draggable.length;
-        while (i--) if (draggable[i].el == this) {
-            this.unmousedown(draggable[i].init);
-            draggable.splice(i, 1);
-            eve.unbind("snap.drag.*." + this.id);
-            eve.unbind("snap.draginit." + this.id);
-        }
-        !draggable.length && Snap.unmousemove(dragMove).unmouseup(dragUp);
-        return this;
-    };
+  elproto.undrag = function () {
+    let i = draggable.length;
+    while (i--)
+      if (draggable[i].el == this) {
+        this.unmousedown(draggable[i].init);
+        draggable.splice(i, 1);
+        eve.unbind(`snap.drag.*.${this.id}`);
+        eve.unbind(`snap.draginit.${this.id}`);
+      }
+    !draggable.length && Snap.unmousemove(dragMove).unmouseup(dragUp);
+    return this;
+  };
 });

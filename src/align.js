@@ -11,14 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
-    var box = Snap._.box,
-        is = Snap.is,
-        firstLetter = /^[^a-z]*([tbmlrc])/i,
-        toString = function () {
-            return "T" + this.dx + "," + this.dy;
-        };
-    /*\
+import { Snap } from "./svg.js";
+
+Snap.plugin((Snap, Element, _Paper, _glob, _Fragment) => {
+  const box = Snap._.box;
+  const is = Snap.is;
+  const firstLetter = /^[^a-z]*([tbmlrc])/i;
+  const toString = function () {
+    return `T${this.dx},${this.dy}`;
+  };
+  /*\
      * Element.getAlign
      [ method ]
      **
@@ -32,47 +34,49 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      * or
      | var dy = el.getAlign(el2, "top").dy;
     \*/
-    Element.prototype.getAlign = function (el, way) {
-        if (way == null && is(el, "string")) {
-            way = el;
-            el = null;
-        }
-        el = el || this.paper;
-        var bx = el.getBBox ? el.getBBox() : box(el),
-            bb = this.getBBox(),
-            out = {};
-        way = way && way.match(firstLetter);
-        way = way ? way[1].toLowerCase() : "c";
-        switch (way) {
-            case "t":
-                out.dx = 0;
-                out.dy = bx.y - bb.y;
-                break;
-            case "b":
-                out.dx = 0;
-                out.dy = bx.y2 - bb.y2;
-                break;
-            case "m":
-                out.dx = 0;
-                out.dy = bx.cy - bb.cy;
-                break;
-            case "l":
-                out.dx = bx.x - bb.x;
-                out.dy = 0;
-                break;
-            case "r":
-                out.dx = bx.x2 - bb.x2;
-                out.dy = 0;
-                break;
-            default:
-                out.dx = bx.cx - bb.cx;
-                out.dy = 0;
-                break;
-        }
-        out.toString = toString;
-        return out;
-    };
-    /*\
+  Element.prototype.getAlign = function (el2, way2) {
+    let el = el2;
+    let way = way2;
+    if (way == null && is(el, "string")) {
+      way = el;
+      el = null;
+    }
+    el = el || this.paper;
+    const bx = el.getBBox ? el.getBBox() : box(el);
+    const bb = this.getBBox();
+    const out = {};
+    way = way?.match(firstLetter);
+    way = way ? way[1].toLowerCase() : "c";
+    switch (way) {
+      case "t":
+        out.dx = 0;
+        out.dy = bx.y - bb.y;
+        break;
+      case "b":
+        out.dx = 0;
+        out.dy = bx.y2 - bb.y2;
+        break;
+      case "m":
+        out.dx = 0;
+        out.dy = bx.cy - bb.cy;
+        break;
+      case "l":
+        out.dx = bx.x - bb.x;
+        out.dy = 0;
+        break;
+      case "r":
+        out.dx = bx.x2 - bb.x2;
+        out.dy = 0;
+        break;
+      default:
+        out.dx = bx.cx - bb.cx;
+        out.dy = 0;
+        break;
+    }
+    out.toString = toString;
+    return out;
+  };
+  /*\
      * Element.align
      [ method ]
      **
@@ -86,7 +90,7 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      * or
      | el.align("middle");
     \*/
-    Element.prototype.align = function (el, way) {
-        return this.transform("..." + this.getAlign(el, way));
-    };
+  Element.prototype.align = function (el, way) {
+    return this.transform(`...${this.getAlign(el, way)}`);
+  };
 });

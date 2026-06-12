@@ -1,8 +1,0 @@
-language: node_js
-node_js:
-  - "node"
-
-sudo: true
-
-notifications:
-  slack: snapsvg:1zY6dZQuE1vhnug8pLSbbYMv

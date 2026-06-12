@@ -1,3 +1,24 @@
+#1.0.0
+
+* Modernised the build: migrated from Grunt to Rollup and converted the source
+  into native ES modules under `src/`
+* Distribution now ships an ES module build (`dist/snap.svg.esm.js`) alongside
+  the existing UMD/IIFE bundles
+* Switched linting from ESLint to Biome
+* Performance: added a fast path for attribute setting that writes plain
+  numeric, hex-colour and path values straight to the DOM, bypassing the event
+  pipeline — bulk element creation is now on par with comparable libraries
+* Performance: memoised attribute-name conversion and other hot-path
+  optimisations across `svg.js` and `eve.js`
+* Added a path math module: Bézier analytics, `Snap.path.smooth()`,
+  `Snap.path.simplify()` and `Snap.grid()`
+* Fixed an infinite recursion / stack overflow in `Element.drag()`
+* Fixed strict-mode `ReferenceError`s caused by loop and variable scoping in
+  the ES module source
+* Fixed path elements created from an array of arrays producing a malformed
+  `d` attribute (e.g. `"M,12,13,..."`)
+* Various bug fixes
+
 #0.5.2
 
 * Bug fixes

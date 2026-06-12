@@ -11,36 +11,47 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
-    var elproto = Element.prototype,
-        is = Snap.is,
-        Str = String,
-        has = "hasOwnProperty";
-    function slice(from, to, f) {
-        return function (arr) {
-            var res = arr.slice(from, to);
-            if (res.length == 1) {
-                res = res[0];
-            }
-            var out = f ? f(res) : res;
-            if (f && out == "r") {
-                out = f([res]);
-            }
-            return out;
-        };
-    }
-    var Animation = function (attr, ms, easing, callback) {
-        if (typeof easing == "function" && !easing.length) {
-            callback = easing;
-            easing = mina.linear;
-        }
-        this.attr = attr;
-        this.dur = ms;
-        easing && (this.easing = easing);
-        callback && (this.callback = callback);
+
+import eve from "./eve.js";
+import mina from "./mina.js";
+import { Snap } from "./svg.js";
+
+Snap.plugin((Snap, Element, _Paper, _glob, _Fragment) => {
+  const elproto = Element.prototype;
+  const is = Snap.is;
+  const Str = String;
+  const has = "hasOwnProperty";
+  const slice = (from, to, f) => {
+    return (arr) => {
+      let res = arr.slice(from, to);
+      if (res.length == 1) {
+        res = res[0];
+      }
+      let out = f ? f(res) : res;
+      if (f && out == "r") {
+        out = f([res]);
+      }
+      return out;
     };
-    Snap._.Animation = Animation;
-    /*\
+  };
+  const Animation = function (attr, ms, easing2, callback2) {
+    let easing = easing2;
+    let callback = callback2;
+    if (typeof easing == "function" && !easing.length) {
+      callback = easing;
+      easing = mina.linear;
+    }
+    this.attr = attr;
+    this.dur = ms;
+    if (easing) {
+      this.easing = easing;
+    }
+    if (callback) {
+      this.callback = callback;
+    }
+  };
+  Snap._.Animation = Animation;
+  /*\
      * Snap.animation
      [ method ]
      **
@@ -52,10 +63,9 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      - callback (function) #optional callback function that fires when animation ends
      = (object) animation object
     \*/
-    Snap.animation = function (attr, ms, easing, callback) {
-        return new Animation(attr, ms, easing, callback);
-    };
-    /*\
+  Snap.animation = (attr, ms, easing, callback) =>
+    new Animation(attr, ms, easing, callback);
+  /*\
      * Element.inAnim
      [ method ]
      **
@@ -70,27 +80,23 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      o     stop (function) stops the animation
      o }
     \*/
-    elproto.inAnim = function () {
-        var el = this,
-            res = [];
-        for (var id in el.anims) if (el.anims[has](id)) {
-            (function (a) {
-                res.push({
-                    anim: new Animation(a._attrs, a.dur, a.easing, a._callback),
-                    mina: a,
-                    curStatus: a.status(),
-                    status: function (val) {
-                        return a.status(val);
-                    },
-                    stop: function () {
-                        a.stop();
-                    }
-                });
-            }(el.anims[id]));
-        }
-        return res;
-    };
-    /*\
+  elproto.inAnim = function () {
+    const res = [];
+    for (const id in this.anims)
+      if (this.anims[has](id)) {
+        ((a) => {
+          res.push({
+            anim: new Animation(a._attrs, a.dur, a.easing, a._callback),
+            mina: a,
+            curStatus: a.status(),
+            status: (val) => a.status(val),
+            stop: () => a.stop(),
+          });
+        })(this.anims[id]);
+      }
+    return res;
+  };
+  /*\
      * Snap.animate
      [ method ]
      **
@@ -120,17 +126,19 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      | // in given context is equivalent to
      | rect.animate({x: 10}, 1000);
     \*/
-    Snap.animate = function (from, to, setter, ms, easing, callback) {
-        if (typeof easing == "function" && !easing.length) {
-            callback = easing;
-            easing = mina.linear;
-        }
-        var now = mina.time(),
-            anim = mina(from, to, now, now + ms, mina.time, setter, easing);
-        callback && eve.once("mina.finish." + anim.id, callback);
-        return anim;
-    };
-    /*\
+  Snap.animate = (from, to, setter, ms, easing2, callback2) => {
+    let easing = easing2;
+    let callback = callback2;
+    if (typeof easing == "function" && !easing.length) {
+      callback = easing;
+      easing = mina.linear;
+    }
+    const now = mina.time();
+    const anim = mina(from, to, now, now + ms, mina.time, setter, easing);
+    callback && eve.once(`mina.finish.${anim.id}`, callback);
+    return anim;
+  };
+  /*\
      * Element.stop
      [ method ]
      **
@@ -138,14 +146,14 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      **
      = (Element) the current element
     \*/
-    elproto.stop = function () {
-        var anims = this.inAnim();
-        for (var i = 0, ii = anims.length; i < ii; i++) {
-            anims[i].stop();
-        }
-        return this;
-    };
-    /*\
+  elproto.stop = function () {
+    const anims = this.inAnim();
+    for (let i = 0, ii = anims.length; i < ii; i++) {
+      anims[i].stop();
+    }
+    return this;
+  };
+  /*\
      * Element.animate
      [ method ]
      **
@@ -157,55 +165,74 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      - callback (function) #optional callback function that executes when the animation ends
      = (Element) the current element
     \*/
-    elproto.animate = function (attrs, ms, easing, callback) {
-        if (typeof easing == "function" && !easing.length) {
-            callback = easing;
-            easing = mina.linear;
+  elproto.animate = function (attrs2, ms2, easing2, callback2) {
+    let attrs = attrs2;
+    let ms = ms2;
+    let easing = easing2;
+    let callback = callback2;
+    if (typeof easing == "function" && !easing.length) {
+      callback = easing;
+      easing = mina.linear;
+    }
+    if (attrs instanceof Animation) {
+      callback = attrs.callback;
+      easing = attrs.easing;
+      ms = attrs.dur;
+      attrs = attrs.attr;
+    }
+    let fkeys = [];
+    let tkeys = [];
+    const keys = {};
+    let from;
+    let to;
+    let f;
+    let eq;
+    for (const key in attrs)
+      if (attrs[has](key)) {
+        if (this.equal) {
+          eq = this.equal(key, Str(attrs[key]));
+          from = eq.from;
+          to = eq.to;
+          f = eq.f;
+        } else {
+          from = +this.attr(key);
+          to = +attrs[key];
         }
-        if (attrs instanceof Animation) {
-            callback = attrs.callback;
-            easing = attrs.easing;
-            ms = attrs.dur;
-            attrs = attrs.attr;
-        }
-        var fkeys = [], tkeys = [], keys = {}, from, to, f, eq,
-            el = this;
-        for (var key in attrs) if (attrs[has](key)) {
-            if (el.equal) {
-                eq = el.equal(key, Str(attrs[key]));
-                from = eq.from;
-                to = eq.to;
-                f = eq.f;
-            } else {
-                from = +el.attr(key);
-                to = +attrs[key];
-            }
-            var len = is(from, "array") ? from.length : 1;
-            keys[key] = slice(fkeys.length, fkeys.length + len, f);
-            fkeys = fkeys.concat(from);
-            tkeys = tkeys.concat(to);
-        }
-        var now = mina.time(),
-            anim = mina(fkeys, tkeys, now, now + ms, mina.time, function (val) {
-                var attr = {};
-                for (var key in keys) if (keys[has](key)) {
-                    attr[key] = keys[key](val);
-                }
-                el.attr(attr);
-            }, easing);
-        el.anims[anim.id] = anim;
-        anim._attrs = attrs;
-        anim._callback = callback;
-        eve("snap.animcreated." + el.id, anim);
-        eve.once("mina.finish." + anim.id, function () {
-            eve.off("mina.*." + anim.id);
-            delete el.anims[anim.id];
-            callback && callback.call(el);
-        });
-        eve.once("mina.stop." + anim.id, function () {
-            eve.off("mina.*." + anim.id);
-            delete el.anims[anim.id];
-        });
-        return el;
-    };
+        const len = is(from, "array") ? from.length : 1;
+        keys[key] = slice(fkeys.length, fkeys.length + len, f);
+        fkeys = fkeys.concat(from);
+        tkeys = tkeys.concat(to);
+      }
+    const now = mina.time();
+    const anim = mina(
+      fkeys,
+      tkeys,
+      now,
+      now + ms,
+      mina.time,
+      (val) => {
+        const attr = {};
+        for (const key in keys)
+          if (keys[has](key)) {
+            attr[key] = keys[key](val);
+          }
+        this.attr(attr);
+      },
+      easing,
+    );
+    this.anims[anim.id] = anim;
+    anim._attrs = attrs;
+    anim._callback = callback;
+    eve(`snap.animcreated.${this.id}`, anim);
+    eve.once(`mina.finish.${anim.id}`, () => {
+      eve.off(`mina.*.${anim.id}`);
+      delete this.anims[anim.id];
+      callback?.call(this);
+    });
+    eve.once(`mina.stop.${anim.id}`, () => {
+      eve.off(`mina.*.${anim.id}`);
+      delete this.anims[anim.id];
+    });
+    return this;
+  };
 });

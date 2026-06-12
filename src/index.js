@@ -1,0 +1,16 @@
+export { Snap as default } from "./svg.js";
+import "./element.js";
+import "./animation.js";
+import "./matrix.js";
+import "./attr.js";
+import "./class.js";
+import "./attradd.js";
+import "./paper.js";
+import "./path.js";
+import "./pathmath.js";
+import "./set.js";
+import "./equal.js";
+import "./mouse.js";
+import "./filter.js";
+import "./align.js";
+import "./colors.js";

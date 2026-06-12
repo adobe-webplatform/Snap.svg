@@ -11,10 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
-    var proto = Paper.prototype,
-        is = Snap.is;
-    /*\
+
+import eve from "./eve.js";
+import { Snap } from "./svg.js";
+
+Snap.plugin((Snap, Element, Paper, glob, _Fragment) => {
+  const proto = Paper.prototype;
+  const is = Snap.is;
+  /*\
      * Paper.rect
      [ method ]
      *
@@ -34,28 +38,34 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      | // rectangle with rounded corners
      | var c = paper.rect(40, 40, 50, 50, 10);
     \*/
-    proto.rect = function (x, y, w, h, rx, ry) {
-        var attr;
-        if (ry == null) {
-            ry = rx;
-        }
-        if (is(x, "object") && x == "[object Object]") {
-            attr = x;
-        } else if (x != null) {
-            attr = {
-                x: x,
-                y: y,
-                width: w,
-                height: h
-            };
-            if (rx != null) {
-                attr.rx = rx;
-                attr.ry = ry;
-            }
-        }
-        return this.el("rect", attr);
-    };
-    /*\
+  proto.rect = function (x, y, width, height, rx, ry = rx) {
+    let attr;
+    if (is(x, "object") && x == "[object Object]") {
+      attr = x;
+    } else if (x != null) {
+      if (width == null) {
+        attr = {
+          x: 0,
+          y: 0,
+          width: x,
+          height: y,
+        };
+      } else {
+        attr = {
+          x,
+          y,
+          width,
+          height,
+        };
+      }
+      if (rx != null) {
+        attr.rx = rx;
+        attr.ry = ry;
+      }
+    }
+    return this.el("rect", attr);
+  };
+  /*\
      * Paper.circle
      [ method ]
      **
@@ -69,40 +79,40 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      > Usage
      | var c = paper.circle(50, 50, 40);
     \*/
-    proto.circle = function (cx, cy, r) {
-        var attr;
-        if (is(cx, "object") && cx == "[object Object]") {
-            attr = cx;
-        } else if (cx != null) {
-            attr = {
-                cx: cx,
-                cy: cy,
-                r: r
-            };
-        }
-        return this.el("circle", attr);
+  proto.circle = function (cx, cy, r = 0) {
+    let attr;
+    if (is(cx, "object") && cx == "[object Object]") {
+      attr = cx;
+    } else if (cx != null) {
+      attr = {
+        cx,
+        cy,
+        r,
+      };
+    }
+    return this.el("circle", attr);
+  };
+
+  const preload = (() => {
+    function onerror() {
+      this.parentNode.removeChild(this);
+    }
+    return (src, f) => {
+      const img = glob.doc.createElement("img");
+      const body = glob.doc.body;
+      img.style.cssText = "position:absolute;left:-9999em;top:-9999em";
+      img.onload = () => {
+        f.call(img);
+        img.onload = img.onerror = null;
+        body.removeChild(img);
+      };
+      img.onerror = onerror;
+      body.appendChild(img);
+      img.src = src;
     };
+  })();
 
-    var preload = (function () {
-        function onerror() {
-            this.parentNode.removeChild(this);
-        }
-        return function (src, f) {
-            var img = glob.doc.createElement("img"),
-                body = glob.doc.body;
-            img.style.cssText = "position:absolute;left:-9999em;top:-9999em";
-            img.onload = function () {
-                f.call(img);
-                img.onload = img.onerror = null;
-                body.removeChild(img);
-            };
-            img.onerror = onerror;
-            body.appendChild(img);
-            img.src = src;
-        };
-    }());
-
-    /*\
+  /*\
      * Paper.image
      [ method ]
      **
@@ -120,45 +130,45 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      > Usage
      | var c = paper.image("apple.png", 10, 10, 80, 80);
     \*/
-    proto.image = function (src, x, y, width, height) {
-        var el = this.el("image");
-        if (is(src, "object") && "src" in src) {
-            el.attr(src);
-        } else if (src != null) {
-            var set = {
-                "xlink:href": src,
-                preserveAspectRatio: "none"
-            };
-            if (x != null && y != null) {
-                set.x = x;
-                set.y = y;
-            }
-            if (width != null && height != null) {
-                set.width = width;
-                set.height = height;
-            } else {
-                preload(src, function () {
-                    var width,
-                        height,
-                        bcr = this.getBoundingClientRect && this.getBoundingClientRect();
-                    if (bcr) {
-                        width = bcr.width;
-                        height = bcr.height;
-                    } else {
-                        width = this.offsetWidth;
-                        height = this.offsetHeight;
-                    }
-                    Snap._.$(el.node, {
-                        width: width,
-                        height: height
-                    });
-                });
-            }
-            Snap._.$(el.node, set);
-        }
-        return el;
-    };
-    /*\
+  proto.image = function (src, x, y, width, height) {
+    const el = this.el("image");
+    if (is(src, "object") && "src" in src) {
+      el.attr(src);
+    } else if (src != null) {
+      const set = {
+        "xlink:href": src,
+        preserveAspectRatio: "none",
+      };
+      if (x != null && y != null) {
+        set.x = x;
+        set.y = y;
+      }
+      if (width != null && height != null) {
+        set.width = width;
+        set.height = height;
+      } else {
+        preload(src, function () {
+          let width;
+          let height;
+          const bcr = this.getBoundingClientRect?.();
+          if (bcr) {
+            width = bcr.width;
+            height = bcr.height;
+          } else {
+            width = this.offsetWidth;
+            height = this.offsetHeight;
+          }
+          Snap._.$(el.node, {
+            width,
+            height,
+          });
+        });
+      }
+      Snap._.$(el.node, set);
+    }
+    return el;
+  };
+  /*\
      * Paper.ellipse
      [ method ]
      **
@@ -173,22 +183,22 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      > Usage
      | var c = paper.ellipse(50, 50, 40, 20);
     \*/
-    proto.ellipse = function (cx, cy, rx, ry) {
-        var attr;
-        if (is(cx, "object") && cx == "[object Object]") {
-            attr = cx;
-        } else if (cx != null) {
-            attr ={
-                cx: cx,
-                cy: cy,
-                rx: rx,
-                ry: ry
-            };
-        }
-        return this.el("ellipse", attr);
-    };
-    // SIERRA Paper.path(): Unclear from the link what a Catmull-Rom curveto is, and why it would make life any easier.
-    /*\
+  proto.ellipse = function (cx, cy, rx = 0, ry = 0) {
+    let attr;
+    if (is(cx, "object") && cx == "[object Object]") {
+      attr = cx;
+    } else if (cx != null) {
+      attr = {
+        cx,
+        cy,
+        rx,
+        ry,
+      };
+    }
+    return this.el("ellipse", attr);
+  };
+  // SIERRA Paper.path(): Unclear from the link what a Catmull-Rom curveto is, and why it would make life any easier.
+  /*\
      * Paper.path
      [ method ]
      **
@@ -218,16 +228,16 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      | // draw a diagonal line:
      | // move to 10,10, line to 90,90
     \*/
-    proto.path = function (d) {
-        var attr;
-        if (is(d, "object") && !is(d, "array")) {
-            attr = d;
-        } else if (d) {
-            attr = {d: d};
-        }
-        return this.el("path", attr);
-    };
-    /*\
+  proto.path = function (d) {
+    let attr;
+    if (is(d, "object") && !is(d, "array")) {
+      attr = d;
+    } else if (d) {
+      attr = { d: d };
+    }
+    return this.el("path", attr);
+  };
+  /*\
      * Paper.g
      [ method ]
      **
@@ -246,22 +256,22 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      |     g = paper.g();
      | g.add(c2, c1);
     \*/
-    /*\
+  /*\
      * Paper.group
      [ method ]
      **
      * See @Paper.g
     \*/
-    proto.group = proto.g = function (first) {
-        var el = this.el("g");
-        if (arguments.length == 1 && first && !first.type) {
-            el.attr(first);
-        } else if (arguments.length) {
-            el.add(Array.prototype.slice.call(arguments, 0));
-        }
-        return el;
-    };
-    /*\
+  proto.group = proto.g = function (...list) {
+    const el = this.el("g");
+    if (list.length == 1 && list[0] && !list[0].type) {
+      el.attr(list[0]);
+    } else if (list.length) {
+      el.add(list.slice(0));
+    }
+    return el;
+  };
+  /*\
      * Paper.svg
      [ method ]
      **
@@ -278,30 +288,30 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (object) the `svg` element
      **
     \*/
-    proto.svg = function (x, y, width, height, vbx, vby, vbw, vbh) {
-        var attrs = {};
-        if (is(x, "object") && y == null) {
-            attrs = x;
-        } else {
-            if (x != null) {
-                attrs.x = x;
-            }
-            if (y != null) {
-                attrs.y = y;
-            }
-            if (width != null) {
-                attrs.width = width;
-            }
-            if (height != null) {
-                attrs.height = height;
-            }
-            if (vbx != null && vby != null && vbw != null && vbh != null) {
-                attrs.viewBox = [vbx, vby, vbw, vbh];
-            }
-        }
-        return this.el("svg", attrs);
-    };
-    /*\
+  proto.svg = function (x, y, width, height, vbx, vby, vbw, vbh) {
+    let attrs = {};
+    if (is(x, "object") && y == null) {
+      attrs = x;
+    } else {
+      if (x != null) {
+        attrs.x = x;
+      }
+      if (y != null) {
+        attrs.y = y;
+      }
+      if (width != null) {
+        attrs.width = width;
+      }
+      if (height != null) {
+        attrs.height = height;
+      }
+      if (vbx != null && vby != null && vbw != null && vbh != null) {
+        attrs.viewBox = [vbx, vby, vbw, vbh];
+      }
+    }
+    return this.el("svg", attrs);
+  };
+  /*\
      * Paper.mask
      [ method ]
      **
@@ -310,16 +320,16 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (object) the `mask` element
      **
     \*/
-    proto.mask = function (first) {
-        var el = this.el("mask");
-        if (arguments.length == 1 && first && !first.type) {
-            el.attr(first);
-        } else if (arguments.length) {
-            el.add(Array.prototype.slice.call(arguments, 0));
-        }
-        return el;
-    };
-    /*\
+  proto.mask = function (...list) {
+    const el = this.el("mask");
+    if (list.length == 1 && list[0] && !list[0].type) {
+      el.attr(list[0]);
+    } else if (list.length) {
+      el.add(list.slice(0));
+    }
+    return el;
+  };
+  /*\
      * Paper.ptrn
      [ method ]
      **
@@ -336,32 +346,33 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (object) the `pattern` element
      **
     \*/
-    proto.ptrn = function (x, y, width, height, vx, vy, vw, vh) {
-        if (is(x, "object")) {
-            var attr = x;
-        } else {
-            attr = {patternUnits: "userSpaceOnUse"};
-            if (x) {
-                attr.x = x;
-            }
-            if (y) {
-                attr.y = y;
-            }
-            if (width != null) {
-                attr.width = width;
-            }
-            if (height != null) {
-                attr.height = height;
-            }
-            if (vx != null && vy != null && vw != null && vh != null) {
-                attr.viewBox = [vx, vy, vw, vh];
-            } else {
-                attr.viewBox = [x || 0, y || 0, width || 0, height || 0];
-            }
-        }
-        return this.el("pattern", attr);
-    };
-    /*\
+  proto.ptrn = function (x, y, width, height, vx, vy, vw, vh) {
+    let attr;
+    if (is(x, "object")) {
+      attr = x;
+    } else {
+      attr = { patternUnits: "userSpaceOnUse" };
+      if (x) {
+        attr.x = x;
+      }
+      if (y) {
+        attr.y = y;
+      }
+      if (width != null) {
+        attr.width = width;
+      }
+      if (height != null) {
+        attr.height = height;
+      }
+      if (vx != null && vy != null && vw != null && vh != null) {
+        attr.viewBox = [vx, vy, vw, vh];
+      } else {
+        attr.viewBox = [x || 0, y || 0, width || 0, height || 0];
+      }
+    }
+    return this.el("pattern", attr);
+  };
+  /*\
      * Paper.use
      [ method ]
      **
@@ -373,23 +384,23 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (object) the `use` element
      **
     \*/
-    proto.use = function (id) {
-        if (id != null) {
-            if (id instanceof Element) {
-                if (!id.attr("id")) {
-                    id.attr({id: Snap._.id(id)});
-                }
-                id = id.attr("id");
-            }
-            if (String(id).charAt() == "#") {
-                id = id.substring(1);
-            }
-            return this.el("use", {"xlink:href": "#" + id});
-        } else {
-            return Element.prototype.use.call(this);
+  proto.use = function (ID) {
+    let id = ID;
+    if (id != null) {
+      if (id instanceof Element) {
+        if (!id.attr("id")) {
+          id.attr({ id: Snap._.id(id) });
         }
-    };
-    /*\
+        id = id.attr("id");
+      }
+      if (String(id).charAt() == "#") {
+        id = id.substring(1);
+      }
+      return this.el("use", { "xlink:href": `#${id}` });
+    }
+    return Element.prototype.use.call(this);
+  };
+  /*\
      * Paper.symbol
      [ method ]
      **
@@ -401,15 +412,15 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      = (object) the `symbol` element
      **
     \*/
-    proto.symbol = function (vx, vy, vw, vh) {
-        var attr = {};
-        if (vx != null && vy != null && vw != null && vh != null) {
-            attr.viewBox = [vx, vy, vw, vh];
-        }
+  proto.symbol = function (vx, vy, vw, vh) {
+    const attr = {};
+    if (vx != null && vy != null && vw != null && vh != null) {
+      attr.viewBox = [vx, vy, vw, vh];
+    }
 
-        return this.el("symbol", attr);
-    };
-    /*\
+    return this.el("symbol", attr);
+  };
+  /*\
      * Paper.text
      [ method ]
      **
@@ -429,20 +440,20 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      | var pth = paper.path("M10,10L100,100");
      | t1.attr({textpath: pth});
     \*/
-    proto.text = function (x, y, text) {
-        var attr = {};
-        if (is(x, "object")) {
-            attr = x;
-        } else if (x != null) {
-            attr = {
-                x: x,
-                y: y,
-                text: text || ""
-            };
-        }
-        return this.el("text", attr);
-    };
-    /*\
+  proto.text = function (x, y, text) {
+    let attr = {};
+    if (is(x, "object")) {
+      attr = x;
+    } else if (x != null) {
+      attr = {
+        x,
+        y,
+        text: text || "",
+      };
+    }
+    return this.el("text", attr);
+  };
+  /*\
      * Paper.line
      [ method ]
      **
@@ -457,21 +468,21 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      > Usage
      | var t1 = paper.line(50, 50, 100, 100);
     \*/
-    proto.line = function (x1, y1, x2, y2) {
-        var attr = {};
-        if (is(x1, "object")) {
-            attr = x1;
-        } else if (x1 != null) {
-            attr = {
-                x1: x1,
-                x2: x2,
-                y1: y1,
-                y2: y2
-            };
-        }
-        return this.el("line", attr);
-    };
-    /*\
+  proto.line = function (x1, y1, x2, y2) {
+    let attr = {};
+    if (is(x1, "object")) {
+      attr = x1;
+    } else if (x1 != null) {
+      attr = {
+        x1,
+        x2,
+        y1,
+        y2,
+      };
+    }
+    return this.el("line", attr);
+  };
+  /*\
      * Paper.polyline
      [ method ]
      **
@@ -486,41 +497,43 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      | var p1 = paper.polyline([10, 10, 100, 100]);
      | var p2 = paper.polyline(10, 10, 100, 100);
     \*/
-    proto.polyline = function (points) {
-        if (arguments.length > 1) {
-            points = Array.prototype.slice.call(arguments, 0);
-        }
-        var attr = {};
-        if (is(points, "object") && !is(points, "array")) {
-            attr = points;
-        } else if (points != null) {
-            attr = {points: points};
-        }
-        return this.el("polyline", attr);
-    };
-    /*\
+  proto.polyline = function (...list) {
+    let points = list[0];
+    if (list.length > 1) {
+      points = list.slice(0);
+    }
+    let attr = {};
+    if (is(points, "object") && !is(points, "array")) {
+      attr = points;
+    } else if (points != null) {
+      attr = { points: points };
+    }
+    return this.el("polyline", attr);
+  };
+  /*\
      * Paper.polygon
      [ method ]
      **
      * Draws a polygon. See @Paper.polyline
     \*/
-    proto.polygon = function (points) {
-        if (arguments.length > 1) {
-            points = Array.prototype.slice.call(arguments, 0);
-        }
-        var attr = {};
-        if (is(points, "object") && !is(points, "array")) {
-            attr = points;
-        } else if (points != null) {
-            attr = {points: points};
-        }
-        return this.el("polygon", attr);
-    };
-    // gradients
-    (function () {
-        var $ = Snap._.$;
-        // gradients' helpers
-        /*\
+  proto.polygon = function (...list) {
+    let points = list[0];
+    if (list.length > 1) {
+      points = list.slice(0);
+    }
+    let attr = {};
+    if (is(points, "object") && !is(points, "array")) {
+      attr = points;
+    } else if (points != null) {
+      attr = { points: points };
+    }
+    return this.el("polygon", attr);
+  };
+  // gradients
+  (() => {
+    const $ = Snap._.$;
+    // gradients' helpers
+    /*\
          * Element.stops
          [ method ]
          **
@@ -528,10 +541,10 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          * Returns array of gradient stops elements.
          = (array) the stops array.
         \*/
-        function Gstops() {
-            return this.selectAll("stop");
-        }
-        /*\
+    function Gstops() {
+      return this.selectAll("stop");
+    }
+    /*\
          * Element.addStop
          [ method ]
          **
@@ -541,47 +554,47 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          - offset (number) stops offset 0..100
          = (object) gradient element
         \*/
-        function GaddStop(color, offset) {
-            var stop = $("stop"),
-                attr = {
-                    offset: +offset + "%"
-                };
-            color = Snap.color(color);
-            attr["stop-color"] = color.hex;
-            if (color.opacity < 1) {
-                attr["stop-opacity"] = color.opacity;
-            }
-            $(stop, attr);
-            var stops = this.stops(),
-                inserted;
-            for (var i = 0; i < stops.length; i++) {
-                var stopOffset = parseFloat(stops[i].attr("offset"));
-                if (stopOffset > offset) {
-                    this.node.insertBefore(stop, stops[i].node);
-                    inserted = true;
-                    break;
-                }
-            }
-            if (!inserted) {
-                this.node.appendChild(stop);
-            }
-            return this;
+    function GaddStop(colour, offset) {
+      let color = colour;
+      const stop = $("stop");
+      const attr = {
+        offset: `${+offset}%`,
+      };
+      color = Snap.color(color);
+      attr["stop-color"] = color.hex;
+      if (color.opacity < 1) {
+        attr["stop-opacity"] = color.opacity;
+      }
+      $(stop, attr);
+      const stops = this.stops();
+      let inserted;
+      for (let i = 0; i < stops.length; i++) {
+        const stopOffset = Number.parseFloat(stops[i].attr("offset"));
+        if (stopOffset > offset) {
+          this.node.insertBefore(stop, stops[i].node);
+          inserted = true;
+          break;
         }
-        function GgetBBox() {
-            if (this.type == "linearGradient") {
-                var x1 = $(this.node, "x1") || 0,
-                    x2 = $(this.node, "x2") || 1,
-                    y1 = $(this.node, "y1") || 0,
-                    y2 = $(this.node, "y2") || 0;
-                return Snap._.box(x1, y1, math.abs(x2 - x1), math.abs(y2 - y1));
-            } else {
-                var cx = this.node.cx || .5,
-                    cy = this.node.cy || .5,
-                    r = this.node.r || 0;
-                return Snap._.box(cx - r, cy - r, r * 2, r * 2);
-            }
-        }
-        /*\
+      }
+      if (!inserted) {
+        this.node.appendChild(stop);
+      }
+      return this;
+    }
+    function GgetBBox() {
+      if (this.type == "linearGradient") {
+        const x1 = $(this.node, "x1") || 0;
+        const x2 = $(this.node, "x2") || 1;
+        const y1 = $(this.node, "y1") || 0;
+        const y2 = $(this.node, "y2") || 0;
+        return Snap._.box(x1, y1, Math.abs(x2 - x1), Math.abs(y2 - y1));
+      }
+      const cx = this.node.cx || 0.5;
+      const cy = this.node.cy || 0.5;
+      const r = this.node.r || 0;
+      return Snap._.box(cx - r, cy - r, r * 2, r * 2);
+    }
+    /*\
          * Element.setStops
          [ method ]
          **
@@ -592,96 +605,100 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          | var g = paper.gradient("l(0, 0, 1, 1)#000-#f00-#fff");
          | g.setStops("#fff-#000-#f00-#fc0");
         \*/
-        function GsetStops(str) {
-            var grad = str,
-                stops = this.stops();
-            if (typeof str == "string") {
-                grad = eve("snap.util.grad.parse", null, "l(0,0,0,1)" + str).firstDefined().stops;
-            }
-            if (!Snap.is(grad, "array")) {
-                return;
-            }
-            for (var i = 0; i < stops.length; i++) {
-                if (grad[i]) {
-                    var color = Snap.color(grad[i].color),
-                        attr = {"offset": grad[i].offset + "%"};
-                    attr["stop-color"] = color.hex;
-                    if (color.opacity < 1) {
-                        attr["stop-opacity"] = color.opacity;
-                    }
-                    stops[i].attr(attr);
-                } else {
-                    stops[i].remove();
-                }
-            }
-            for (i = stops.length; i < grad.length; i++) {
-                this.addStop(grad[i].color, grad[i].offset);
-            }
-            return this;
+    function GsetStops(str) {
+      let grad = str;
+      const stops = this.stops();
+      if (typeof str == "string") {
+        grad = eve(
+          "snap.util.grad.parse",
+          null,
+          `l(0,0,0,1)${str}`,
+        ).firstDefined().stops;
+      }
+      if (!Snap.is(grad, "array")) {
+        return;
+      }
+      for (let i = 0; i < stops.length; i++) {
+        if (grad[i]) {
+          const color = Snap.color(grad[i].color);
+          const attr = { offset: `${grad[i].offset}%` };
+          attr["stop-color"] = color.hex;
+          if (color.opacity < 1) {
+            attr["stop-opacity"] = color.opacity;
+          }
+          stops[i].attr(attr);
+        } else {
+          stops[i].remove();
         }
-        function gradient(defs, str) {
-            var grad = eve("snap.util.grad.parse", null, str).firstDefined(),
-                el;
-            if (!grad) {
-                return null;
-            }
-            grad.params.unshift(defs);
-            if (grad.type.toLowerCase() == "l") {
-                el = gradientLinear.apply(0, grad.params);
-            } else {
-                el = gradientRadial.apply(0, grad.params);
-            }
-            if (grad.type != grad.type.toLowerCase()) {
-                $(el.node, {
-                    gradientUnits: "userSpaceOnUse"
-                });
-            }
-            var stops = grad.stops,
-                len = stops.length;
-            for (var i = 0; i < len; i++) {
-                var stop = stops[i];
-                el.addStop(stop.color, stop.offset);
-            }
-            return el;
-        }
-        function gradientLinear(defs, x1, y1, x2, y2) {
-            var el = Snap._.make("linearGradient", defs);
-            el.stops = Gstops;
-            el.addStop = GaddStop;
-            el.getBBox = GgetBBox;
-            el.setStops = GsetStops;
-            if (x1 != null) {
-                $(el.node, {
-                    x1: x1,
-                    y1: y1,
-                    x2: x2,
-                    y2: y2
-                });
-            }
-            return el;
-        }
-        function gradientRadial(defs, cx, cy, r, fx, fy) {
-            var el = Snap._.make("radialGradient", defs);
-            el.stops = Gstops;
-            el.addStop = GaddStop;
-            el.getBBox = GgetBBox;
-            el.setStops = GsetStops;
-            if (cx != null) {
-                $(el.node, {
-                    cx: cx,
-                    cy: cy,
-                    r: r
-                });
-            }
-            if (fx != null && fy != null) {
-                $(el.node, {
-                    fx: fx,
-                    fy: fy
-                });
-            }
-            return el;
-        }
-        /*\
+      }
+      for (let i = stops.length; i < grad.length; i++) {
+        this.addStop(grad[i].color, grad[i].offset);
+      }
+      return this;
+    }
+    const gradient = (defs, str) => {
+      const grad = eve("snap.util.grad.parse", null, str).firstDefined();
+      let el;
+      if (!grad) {
+        return null;
+      }
+      grad.params.unshift(defs);
+      if (grad.type.toLowerCase() == "l") {
+        el = gradientLinear.apply(0, grad.params);
+      } else {
+        el = gradientRadial.apply(0, grad.params);
+      }
+      if (grad.type != grad.type.toLowerCase()) {
+        $(el.node, {
+          gradientUnits: "userSpaceOnUse",
+        });
+      }
+      const stops = grad.stops;
+      const len = stops.length;
+      for (let i = 0; i < len; i++) {
+        const stop = stops[i];
+        el.addStop(stop.color, stop.offset);
+      }
+      return el;
+    };
+    const gradientLinear = (defs, x1, y1, x2, y2) => {
+      const el = Snap._.make("linearGradient", defs);
+      el.stops = Gstops;
+      el.addStop = GaddStop;
+      el.getBBox = GgetBBox;
+      el.setStops = GsetStops;
+      if (x1 != null) {
+        $(el.node, {
+          x1,
+          y1,
+          x2,
+          y2,
+        });
+      }
+      return el;
+    };
+    const gradientRadial = (defs, cx, cy, r, fx, fy) => {
+      const el = Snap._.make("radialGradient", defs);
+      el.stops = Gstops;
+      el.addStop = GaddStop;
+      el.getBBox = GgetBBox;
+      el.setStops = GsetStops;
+      if (cx != null) {
+        $(el.node, {
+          cx,
+          cy,
+          r,
+        });
+      }
+      if (fx != null && fy != null) {
+        $(el.node, {
+          fx,
+          fy,
+        });
+      }
+      return el;
+    };
+    /*\
          * Paper.gradient
          [ method ]
          **
@@ -718,65 +735,64 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
          | });
          = (object) the `gradient` element
         \*/
-        proto.gradient = function (str) {
-            return gradient(this.defs, str);
-        };
-        proto.gradientLinear = function (x1, y1, x2, y2) {
-            return gradientLinear(this.defs, x1, y1, x2, y2);
-        };
-        proto.gradientRadial = function (cx, cy, r, fx, fy) {
-            return gradientRadial(this.defs, cx, cy, r, fx, fy);
-        };
-        /*\
+    proto.gradient = function (str) {
+      return gradient(this.defs, str);
+    };
+    proto.gradientLinear = function (x1, y1, x2, y2) {
+      return gradientLinear(this.defs, x1, y1, x2, y2);
+    };
+    proto.gradientRadial = function (cx, cy, r, fx, fy) {
+      return gradientRadial(this.defs, cx, cy, r, fx, fy);
+    };
+    /*\
          * Paper.toString
          [ method ]
          **
          * Returns SVG code for the @Paper
          = (string) SVG code for the @Paper
         \*/
-        proto.toString = function () {
-            var doc = this.node.ownerDocument,
-                f = doc.createDocumentFragment(),
-                d = doc.createElement("div"),
-                svg = this.node.cloneNode(true),
-                res;
-            f.appendChild(d);
-            d.appendChild(svg);
-            Snap._.$(svg, {xmlns: "http://www.w3.org/2000/svg"});
-            res = d.innerHTML;
-            f.removeChild(f.firstChild);
-            return res;
-        };
-        /*\
+    proto.toString = function () {
+      const doc = this.node.ownerDocument;
+      const f = doc.createDocumentFragment();
+      const d = doc.createElement("div");
+      const svg = this.node.cloneNode(true);
+      f.appendChild(d);
+      d.appendChild(svg);
+      Snap._.$(svg, { xmlns: "http://www.w3.org/2000/svg" });
+      const res = d.innerHTML;
+      f.removeChild(f.firstChild);
+      return res;
+    };
+    /*\
          * Paper.toDataURL
          [ method ]
          **
          * Returns SVG code for the @Paper as Data URI string.
          = (string) Data URI string
         \*/
-        proto.toDataURL = function () {
-            if (window && window.btoa) {
-                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(this)));
-            }
-        };
-        /*\
+    proto.toDataURL = function () {
+      if (window?.btoa) {
+        return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(this)))}`;
+      }
+    };
+    /*\
          * Paper.clear
          [ method ]
          **
          * Removes all child nodes of the paper, except <defs>.
         \*/
-        proto.clear = function () {
-            var node = this.node.firstChild,
-                next;
-            while (node) {
-                next = node.nextSibling;
-                if (node.tagName != "defs") {
-                    node.parentNode.removeChild(node);
-                } else {
-                    proto.clear.call({node: node});
-                }
-                node = next;
-            }
-        };
-    }());
+    proto.clear = function () {
+      let node = this.node.firstChild;
+      let next;
+      while (node) {
+        next = node.nextSibling;
+        if (node.tagName != "defs") {
+          node.parentNode.removeChild(node);
+        } else {
+          proto.clear.call({ node: node });
+        }
+        node = next;
+      }
+    };
+  })();
 });

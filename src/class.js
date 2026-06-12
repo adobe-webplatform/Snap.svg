@@ -11,11 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
-    var rgNotSpace = /\S+/g,
-        Str = String,
-        elproto = Element.prototype;
-    /*\
+import { Snap } from "./svg.js";
+
+Snap.plugin((_Snap, Element, _Paper, _glob, _Fragment) => {
+  const rgNotSpace = /\S+/g;
+  const Str = String;
+  const elproto = Element.prototype;
+  /*\
      * Element.addClass
      [ method ]
      **
@@ -24,33 +26,35 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      **
      = (Element) original element.
     \*/
-    elproto.addClass = function (value) {
-        var classes = Str(value || "").match(rgNotSpace) || [],
-            elem = this.node,
-            className = elem.className.baseVal,
-            curClasses = className.match(rgNotSpace) || [],
-            j,
-            pos,
-            clazz,
-            finalValue;
+  elproto.addClass = function (value) {
+    const classes = Str(value || "").match(rgNotSpace) || [];
+    const elem = this.node;
+    const className = elem.className.baseVal;
+    const curClasses = className.match(rgNotSpace) || [];
+    let j;
+    let pos;
+    let clazz;
+    let finalValue;
 
-        if (classes.length) {
-            j = 0;
-            while (clazz = classes[j++]) {
-                pos = curClasses.indexOf(clazz);
-                if (!~pos) {
-                    curClasses.push(clazz);
-                }
-            }
-
-            finalValue = curClasses.join(" ");
-            if (className != finalValue) {
-                elem.className.baseVal = finalValue;
-            }
+    if (classes.length) {
+      j = 0;
+      clazz = classes[j++];
+      while (clazz) {
+        pos = curClasses.indexOf(clazz);
+        if (!~pos) {
+          curClasses.push(clazz);
         }
-        return this;
-    };
-    /*\
+        clazz = classes[j++];
+      }
+
+      finalValue = curClasses.join(" ");
+      if (className != finalValue) {
+        elem.className.baseVal = finalValue;
+      }
+    }
+    return this;
+  };
+  /*\
      * Element.removeClass
      [ method ]
      **
@@ -59,32 +63,34 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      **
      = (Element) original element.
     \*/
-    elproto.removeClass = function (value) {
-        var classes = Str(value || "").match(rgNotSpace) || [],
-            elem = this.node,
-            className = elem.className.baseVal,
-            curClasses = className.match(rgNotSpace) || [],
-            j,
-            pos,
-            clazz,
-            finalValue;
-        if (curClasses.length) {
-            j = 0;
-            while (clazz = classes[j++]) {
-                pos = curClasses.indexOf(clazz);
-                if (~pos) {
-                    curClasses.splice(pos, 1);
-                }
-            }
-
-            finalValue = curClasses.join(" ");
-            if (className != finalValue) {
-                elem.className.baseVal = finalValue;
-            }
+  elproto.removeClass = function (value) {
+    const classes = Str(value || "").match(rgNotSpace) || [];
+    const elem = this.node;
+    const className = elem.className.baseVal;
+    const curClasses = className.match(rgNotSpace) || [];
+    let j;
+    let pos;
+    let clazz;
+    let finalValue;
+    if (curClasses.length) {
+      j = 0;
+      clazz = classes[j++];
+      while (clazz) {
+        pos = curClasses.indexOf(clazz);
+        if (~pos) {
+          curClasses.splice(pos, 1);
         }
-        return this;
-    };
-    /*\
+        clazz = classes[j++];
+      }
+
+      finalValue = curClasses.join(" ");
+      if (className != finalValue) {
+        elem.className.baseVal = finalValue;
+      }
+    }
+    return this;
+  };
+  /*\
      * Element.hasClass
      [ method ]
      **
@@ -93,13 +99,13 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      **
      = (boolean) `true` if the element has given class
     \*/
-    elproto.hasClass = function (value) {
-        var elem = this.node,
-            className = elem.className.baseVal,
-            curClasses = className.match(rgNotSpace) || [];
-        return !!~curClasses.indexOf(value);
-    };
-    /*\
+  elproto.hasClass = function (value) {
+    const elem = this.node;
+    const className = elem.className.baseVal;
+    const curClasses = className.match(rgNotSpace) || [];
+    return !!~curClasses.indexOf(value);
+  };
+  /*\
      * Element.toggleClass
      [ method ]
      **
@@ -110,36 +116,37 @@ Snap.plugin(function (Snap, Element, Paper, glob, Fragment) {
      **
      = (Element) original element.
     \*/
-    elproto.toggleClass = function (value, flag) {
-        if (flag != null) {
-            if (flag) {
-                return this.addClass(value);
-            } else {
-                return this.removeClass(value);
-            }
-        }
-        var classes = (value || "").match(rgNotSpace) || [],
-            elem = this.node,
-            className = elem.className.baseVal,
-            curClasses = className.match(rgNotSpace) || [],
-            j,
-            pos,
-            clazz,
-            finalValue;
-        j = 0;
-        while (clazz = classes[j++]) {
-            pos = curClasses.indexOf(clazz);
-            if (~pos) {
-                curClasses.splice(pos, 1);
-            } else {
-                curClasses.push(clazz);
-            }
-        }
+  elproto.toggleClass = function (value, flag) {
+    if (flag != null) {
+      if (flag) {
+        return this.addClass(value);
+      }
+      return this.removeClass(value);
+    }
+    const classes = (value || "").match(rgNotSpace) || [];
+    const elem = this.node;
+    const className = elem.className.baseVal;
+    const curClasses = className.match(rgNotSpace) || [];
+    let j;
+    let pos;
+    let clazz;
+    let finalValue;
+    j = 0;
+    clazz = classes[j++];
+    while (clazz) {
+      pos = curClasses.indexOf(clazz);
+      if (~pos) {
+        curClasses.splice(pos, 1);
+      } else {
+        curClasses.push(clazz);
+      }
+      clazz = classes[j++];
+    }
 
-        finalValue = curClasses.join(" ");
-        if (className != finalValue) {
-            elem.className.baseVal = finalValue;
-        }
-        return this;
-    };
+    finalValue = curClasses.join(" ");
+    if (className != finalValue) {
+      elem.className.baseVal = finalValue;
+    }
+    return this;
+  };
 });
