@@ -342,4 +342,5 @@ mina.bounce = (num) => {
   }
   return l;
 };
+window.mina = mina;
 export default mina;

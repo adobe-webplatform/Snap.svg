@@ -3781,6 +3781,7 @@ var Snap = (function () {
     }
     return l;
   };
+  window.mina = mina;
 
   // Copyright (c) 2016 Adobe Systems Incorporated. All rights reserved.
   //
